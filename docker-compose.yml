@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - ./htdocs:/var/www/html:rw
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-ace}
+      DB_USERNAME: ${POSTGRES_USER:-ace}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-ace}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ace}
+      POSTGRES_USER: ${POSTGRES_USER:-ace}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ace}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
