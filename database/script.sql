@@ -6,12 +6,6 @@ CREATE TABLE papel (
     descricao TEXT
 );
 
-INSERT INTO papel (nome, descricao)
-VALUES
-('ADMIN', 'Administrador do sistema'),
-('ESCOLA', 'Escola'),
-('ALUNO', 'Aluno');
-
 CREATE TABLE usuario (
     cd_usuario INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,

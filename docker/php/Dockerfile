@@ -7,6 +7,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev \
 
 WORKDIR /var/www/html
 
-COPY htdocs/ /var/www/html/
-
 EXPOSE 80
