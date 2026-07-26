@@ -5,6 +5,7 @@ class Autoloader
     public static function register(): void
     {
         spl_autoload_register(function ($class) {
+            $className = ltrim($class, '\\');
 
             $directories = [
                 __DIR__ . '/../Controllers/',
@@ -15,19 +16,22 @@ class Autoloader
 
             foreach ($directories as $directory) {
                 $files = [
-                    $directory . $class . '.php',
-                    $directory . $class . '.php',
+                    $directory . $className . '.php',
+                    $directory . lcfirst($className) . '.php',
+                    $directory . strtolower($className) . '.php',
                 ];
 
                 if (
-                    str_ends_with($class, 'service')
+                    str_ends_with(strtolower($className), 'service')
                     && str_contains($directory, '/Services/')
                 ) {
-                    $serviceName = substr($class, 0, -7);
+                    $serviceName = substr($className, 0, -7);
                     $files[] = $directory . $serviceName . '.php';
+                    $files[] = $directory . lcfirst($serviceName) . '.php';
+                    $files[] = $directory . strtolower($serviceName) . '.php';
                 }
 
-                foreach ($files as $file) {
+                foreach (array_unique($files) as $file) {
                     if (file_exists($file)) {
                         require_once $file;
                         return;

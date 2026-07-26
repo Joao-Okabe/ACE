@@ -1,4 +1,7 @@
-document.getElementById("cep").addEventListener("blur", async function () {
+const cepInput = document.getElementById("cep");
+
+if (cepInput) {
+    cepInput.addEventListener("blur", async function () {
 
     let cep = this.value.replace(/\D/g, "");
 
@@ -20,7 +23,7 @@ document.getElementById("cep").addEventListener("blur", async function () {
         document.getElementById("logradouro").value = endereco.logradouro;
         document.getElementById("bairro").value = endereco.bairro;
         document.getElementById("cidade").value = endereco.localidade;
-        document.getElementById("estado").value = endereco.uf;
+        document.getElementById("uf").value = endereco.uf;
 
     } catch (error) {
 
@@ -30,4 +33,5 @@ document.getElementById("cep").addEventListener("blur", async function () {
 
     }
 
-});
+    });
+}

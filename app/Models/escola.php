@@ -9,7 +9,21 @@ class Escola extends Model
     public function listar(): array
     {
         $stmt = $this->pdo->query("
-            SELECT *
+            SELECT
+                cd_escola,
+                cd_usuario,
+                nome,
+                telefone,
+                cep,
+                logradouro,
+                numero,
+                bairro,
+                cidade,
+                uf,
+                categoria_administrativa,
+                img_logo,
+                criada_em,
+                ativa
             FROM escola
             ORDER BY nome
         ");
@@ -53,7 +67,9 @@ class Escola extends Model
                 numero,
                 bairro,
                 cidade,
-                uf
+                uf,
+                categoria_administrativa,
+                img_logo
             )
             VALUES
             (
@@ -65,20 +81,24 @@ class Escola extends Model
                 :numero,
                 :bairro,
                 :cidade,
-                :uf
+                :uf,
+                :categoria,
+                :img_logo
             )
         ");
 
         $stmt->execute([
-            ':usuario'    => $dados['usuario'],
-            ':nome'       => $dados['nome'],
-            ':telefone'   => $dados['telefone'],
-            ':cep'        => $dados['cep'],
+            ':usuario' => $dados['usuario'],
+            ':nome' => $dados['nome'],
+            ':telefone' => $dados['telefone'],
+            ':cep' => $dados['cep'],
             ':logradouro' => $dados['logradouro'],
-            ':numero'     => $dados['numero'],
-            ':bairro'     => $dados['bairro'],
-            ':cidade'     => $dados['cidade'],
-            ':uf'         => $dados['uf']
+            ':numero' => $dados['numero'],
+            ':bairro' => $dados['bairro'],
+            ':cidade' => $dados['cidade'],
+            ':uf' => $dados['uf'],
+            ':categoria' => $dados['categoria_administrativa'],
+            ':img_logo' => $dados['img_logo'] ?? null
         ]);
     }
 
@@ -97,20 +117,24 @@ class Escola extends Model
                 numero = :numero,
                 bairro = :bairro,
                 cidade = :cidade,
-                uf = :uf
+                uf = :uf,
+                categoria_administrativa = :categoria,
+                img_logo = :img_logo
             WHERE cd_escola = :id
         ");
 
         $stmt->execute([
-            ':nome'       => $dados['nome'],
-            ':telefone'   => $dados['telefone'],
-            ':cep'        => $dados['cep'],
+            ':nome' => $dados['nome'],
+            ':telefone' => $dados['telefone'],
+            ':cep' => $dados['cep'],
             ':logradouro' => $dados['logradouro'],
-            ':numero'     => $dados['numero'],
-            ':bairro'     => $dados['bairro'],
-            ':cidade'     => $dados['cidade'],
-            ':uf'         => $dados['uf'],
-            ':id'         => $id
+            ':numero' => $dados['numero'],
+            ':bairro' => $dados['bairro'],
+            ':cidade' => $dados['cidade'],
+            ':uf' => $dados['uf'],
+            ':categoria' => $dados['categoria_administrativa'],
+            ':img_logo' => $dados['img_logo'] ?? null,
+            ':id' => $id
         ]);
     }
 

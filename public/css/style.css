@@ -1,0 +1,134 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #f4f7f6;
+    color: #1f2933;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.page {
+    width: min(960px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.form-panel {
+    background: #ffffff;
+    border: 1px solid #d9e2df;
+    border-radius: 8px;
+    padding: 28px;
+    box-shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
+}
+
+h1 {
+    margin: 0 0 24px;
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.field {
+    display: grid;
+    gap: 8px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+input,
+select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #bcc8c5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #1f2933;
+    font: inherit;
+    background: #ffffff;
+}
+
+input:focus,
+select:focus {
+    border-color: #110b4e;
+    outline: 3px solid rgba(36, 123, 101, 0.18);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+button,
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 0;
+    border-radius: 6px;
+    padding: 10px 18px;
+    background: #110b4e;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.secondary {
+    background: #e6eeeb;
+    color: #1f2933;
+}
+
+.alert {
+    margin: 0 0 20px;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-weight: 700;
+}
+
+.success {
+    background: #e2f6ec;
+    color: #110b4e;
+}
+
+.error {
+    background: #fde8e8;
+    color: #9b1c1c;
+}
+
+@media (max-width: 680px) {
+    .page {
+        width: min(100% - 24px, 960px);
+        padding: 24px 0;
+    }
+
+    .form-panel {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+}

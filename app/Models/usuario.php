@@ -15,25 +15,66 @@ class Usuario extends Model
             INSERT INTO usuario
             (
                 email,
-                senha,
-                cd_papel
+                senha
             )
             VALUES
             (
                 :email,
-                :senha,
-                :papel
+                :senha
             )
             RETURNING cd_usuario
         ");
 
         $stmt->execute([
             ':email' => $dados['email'],
-            ':senha' => $dados['senha'],
-            ':papel' => $dados['papel']
+            ':senha' => $dados['senha']
         ]);
 
         return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Vincula um papel ao usuário
+     */
+    public function vincularPapel(int $idUsuario, int $idPapel): void
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO usuario_papel
+            (
+                cd_usuario,
+                cd_papel
+            )
+            VALUES
+            (
+                :usuario,
+                :papel
+            )
+        ");
+
+        $stmt->execute([
+            ':usuario' => $idUsuario,
+            ':papel' => $idPapel
+        ]);
+    }
+
+    /**
+     * Busca um papel pelo nome
+     */
+    public function buscarPapelPorNome(string $nome): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM papel
+            WHERE nome = :nome
+        ");
+
+        $stmt->execute([
+            ':nome' => $nome
+        ]);
+
+        $papel = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $papel ?: null;
     }
 
     /**

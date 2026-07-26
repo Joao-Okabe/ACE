@@ -13,9 +13,7 @@ class escolaController
         return $this->service;
     }
 
-    /**
-     * Lista todas as escolas
-     */
+    //Lista todas as escolas
     public function index(): void
     {
         $escolas = $this->service()->listar();
@@ -23,36 +21,33 @@ class escolaController
         require __DIR__ . '/../Views/escola/listar.php';
     }
 
-    /**
-     * Exibe o formulário de cadastro
-     */
+    //Exibe o formulário de cadastro
     public function create(): void
     {
         require __DIR__ . '/../Views/escola/cadastrar.php';
     }
 
-    /**
-     * Salva uma nova escola
-     */
+    //Salva uma nova escola
     public function store(): void
     {
         try {
 
             $this->service()->cadastrar($_POST);
 
-            header("Location: /escolas");
+            header("Location: /escolas/cadastrar?sucesso=1");
             exit;
 
         } catch (Exception $e) {
 
-            echo $e->getMessage();
+            $erro = $e->getMessage();
+            $dados = $_POST;
+
+            require __DIR__ . '/../Views/escola/cadastrar.php';
 
         }
     }
 
-    /**
-     * Exibe o formulário de edição
-     */
+    //Exibe formulário de edição
     public function edit(int $id): void
     {
         $escola = $this->service()->buscar($id);
@@ -60,9 +55,7 @@ class escolaController
         require __DIR__ . '/../Views/escola/editar.php';
     }
 
-    /**
-     * Atualiza a escola
-     */
+    //Atualiza escola
     public function update(int $id): void
     {
         try {
@@ -79,9 +72,7 @@ class escolaController
         }
     }
 
-    /**
-     * Remove uma escola
-     */
+    //Remove escola
     public function destroy(int $id): void
     {
         try {
