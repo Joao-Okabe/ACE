@@ -16,15 +16,15 @@ class Autoloader
             foreach ($directories as $directory) {
                 $files = [
                     $directory . $class . '.php',
-                    $directory . strtolower($class) . '.php',
+                    $directory . $class . '.php',
                 ];
 
                 if (
-                    str_ends_with(strtolower($class), 'service')
+                    str_ends_with($class, 'service')
                     && str_contains($directory, '/Services/')
                 ) {
                     $serviceName = substr($class, 0, -7);
-                    $files[] = $directory . strtolower($serviceName) . '.php';
+                    $files[] = $directory . $serviceName . '.php';
                 }
 
                 foreach ($files as $file) {
