@@ -7,7 +7,6 @@ body {
     min-height: 100vh;
     background: #f4f7f6;
     color: #1f2933;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 .page {
@@ -22,6 +21,11 @@ body {
     border-radius: 8px;
     padding: 28px;
     box-shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
+}
+
+.auth-panel {
+    max-width: 520px;
+    margin: 0 auto;
 }
 
 h1 {
@@ -88,8 +92,6 @@ button,
     color: #ffffff;
     font: inherit;
     font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .secondary {
@@ -112,6 +114,12 @@ button,
 .error {
     background: #fde8e8;
     color: #9b1c1c;
+}
+
+.session-info {
+    margin: 0 0 12px;
+    color: #3e4c59;
+    font-size: 16px;
 }
 
 @media (max-width: 680px) {

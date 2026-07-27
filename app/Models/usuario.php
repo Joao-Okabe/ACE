@@ -98,6 +98,30 @@ class Usuario extends Model
     }
 
     /**
+     * Lista os papéis de um usuário
+     */
+    public function listarPapeis(int $idUsuario): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT p.nome
+            FROM papel p
+            INNER JOIN usuario_papel up
+                ON up.cd_papel = p.cd_papel
+            WHERE up.cd_usuario = :usuario
+            ORDER BY p.nome
+        ");
+
+        $stmt->execute([
+            ':usuario' => $idUsuario
+        ]);
+
+        return array_column(
+            $stmt->fetchAll(PDO::FETCH_ASSOC),
+            'nome'
+        );
+    }
+
+    /**
      * Atualiza a senha
      */
     public function atualizarSenha(int $id, string $senha): void
