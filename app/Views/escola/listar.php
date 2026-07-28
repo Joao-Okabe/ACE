@@ -9,15 +9,20 @@
     <h2>Escolas cadastradas</h2>
         <table>
             <tr>
+                <th>Código da Escola</th>
                 <th>Nome</th>
+                <th>Telefone</th>
+                <th>CEP</th>
+                <th>Estado</th>
                 <th>Categoria</th>
             </tr>
             <?php foreach ($escolas as $escola): ?>
                 <tr>
+                    <td><?= htmlspecialchars($escola['cd_escola']) ?></td>
                     <td><?= htmlspecialchars($escola['nome']) ?></td>
                     <td><?= htmlspecialchars($escola['telefone']) ?></td>
                     <td><?= htmlspecialchars($escola['cep']) ?></td>
-                    <td><?= htmlspecialchars($escola['ativa']) ?></td>
+                    <td><? if (($escola['ativa']) == 1 ) { echo "Ativa"; } else { echo "Inativa"; } ?></td>
                     <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
                 </tr>
             <?php endforeach; ?>
