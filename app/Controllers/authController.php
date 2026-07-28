@@ -42,18 +42,6 @@ class authController
         }
     }
 
-    public function dashboard(): void
-    {
-        if (empty($_SESSION['usuario'])) {
-            header("Location: /login");
-            exit;
-        }
-
-        $usuario = $_SESSION['usuario'];
-
-        require __DIR__ . '/../Views/auth/dashboard.php';
-    }
-
     public function logout(): void
     {
         $_SESSION = [];

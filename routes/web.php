@@ -46,3 +46,7 @@ $router->post(
     '/escolas',
     [escolaController::class, 'store']
 );
+
+$router->get(
+    '/dashboard', [DashboardController::class, 'index']
+);

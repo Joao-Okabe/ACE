@@ -3,9 +3,7 @@
 class Escola extends Model
 {
 
-    /**
-     * Lista todas as escolas
-     */
+    //Lista Escolas
     public function listar(): array
     {
         $stmt = $this->pdo->query("
@@ -31,9 +29,7 @@ class Escola extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Busca uma escola
-     */
+    //Busca Escola
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare("

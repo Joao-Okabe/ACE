@@ -24,6 +24,19 @@
                 <a href="/logout" class="button">Sair</a>
             </div>
         </section>
+        <h2>Escolas cadastradas</h2>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+            </tr>
+            <?php foreach ($escolas as $escola): ?>
+                <tr>
+                    <td><?= htmlspecialchars($escola['nome']) ?></td>
+                    <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
     </main>
 </body>
 </html>
