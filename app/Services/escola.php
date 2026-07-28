@@ -102,15 +102,7 @@ class EscolaService
 
                 'cep' => $this->normalizarCampoOpcional($dados['cep'] ?? null),
 
-                'logradouro' => $this->normalizarCampoOpcional($dados['logradouro'] ?? null),
-
                 'numero' => $this->normalizarCampoOpcional($dados['numero'] ?? null),
-
-                'bairro' => $this->normalizarCampoOpcional($dados['bairro'] ?? null),
-
-                'cidade' => $this->normalizarCampoOpcional($dados['cidade'] ?? null),
-
-                'uf' => $this->normalizarUf($dados['uf'] ?? null),
 
                 'categoria_administrativa' => $dados['categoria_administrativa'],
 

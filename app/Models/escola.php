@@ -13,11 +13,7 @@ class Escola extends Model
                 nome,
                 telefone,
                 cep,
-                logradouro,
                 numero,
-                bairro,
-                cidade,
-                uf,
                 categoria_administrativa,
                 img_logo,
                 criada_em,
@@ -59,11 +55,7 @@ class Escola extends Model
                 nome,
                 telefone,
                 cep,
-                logradouro,
                 numero,
-                bairro,
-                cidade,
-                uf,
                 categoria_administrativa,
                 img_logo
             )
@@ -73,11 +65,7 @@ class Escola extends Model
                 :nome,
                 :telefone,
                 :cep,
-                :logradouro,
                 :numero,
-                :bairro,
-                :cidade,
-                :uf,
                 :categoria,
                 :img_logo
             )
@@ -88,11 +76,7 @@ class Escola extends Model
             ':nome' => $dados['nome'],
             ':telefone' => $dados['telefone'],
             ':cep' => $dados['cep'],
-            ':logradouro' => $dados['logradouro'],
             ':numero' => $dados['numero'],
-            ':bairro' => $dados['bairro'],
-            ':cidade' => $dados['cidade'],
-            ':uf' => $dados['uf'],
             ':categoria' => $dados['categoria_administrativa'],
             ':img_logo' => $dados['img_logo'] ?? null
         ]);
@@ -109,11 +93,7 @@ class Escola extends Model
                 nome = :nome,
                 telefone = :telefone,
                 cep = :cep,
-                logradouro = :logradouro,
                 numero = :numero,
-                bairro = :bairro,
-                cidade = :cidade,
-                uf = :uf,
                 categoria_administrativa = :categoria,
                 img_logo = :img_logo
             WHERE cd_escola = :id
@@ -123,11 +103,7 @@ class Escola extends Model
             ':nome' => $dados['nome'],
             ':telefone' => $dados['telefone'],
             ':cep' => $dados['cep'],
-            ':logradouro' => $dados['logradouro'],
             ':numero' => $dados['numero'],
-            ':bairro' => $dados['bairro'],
-            ':cidade' => $dados['cidade'],
-            ':uf' => $dados['uf'],
             ':categoria' => $dados['categoria_administrativa'],
             ':img_logo' => $dados['img_logo'] ?? null,
             ':id' => $id

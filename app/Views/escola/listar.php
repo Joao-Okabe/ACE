@@ -15,6 +15,9 @@
             <?php foreach ($escolas as $escola): ?>
                 <tr>
                     <td><?= htmlspecialchars($escola['nome']) ?></td>
+                    <td><?= htmlspecialchars($escola['telefone']) ?></td>
+                    <td><?= htmlspecialchars($escola['cep']) ?></td>
+                    <td><?= htmlspecialchars($escola['ativa']) ?></td>
                     <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
                 </tr>
             <?php endforeach; ?>
