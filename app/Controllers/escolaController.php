@@ -14,8 +14,9 @@ class escolaController
     }
 
     //Lista todas as escolas
-    public function index(): void
+    public function list(): void
     {
+        $usuario = $_SESSION['usuario'] ?? null;
         $escolas = $this->service()->listar();
 
         require __DIR__ . '/../Views/escola/listar.php';

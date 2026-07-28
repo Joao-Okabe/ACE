@@ -52,5 +52,5 @@ $router->get(
 );
 
 $router->get(
-    '/escolas/listar', [listarEscolasController::class, 'index']
+    '/escolas/listar', [escolaController::class, 'list']
 );
