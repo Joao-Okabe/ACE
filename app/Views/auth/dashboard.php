@@ -21,22 +21,10 @@
 
             <div class="actions full">
                 <a href="/escolas/cadastrar" class="button secondary">Cadastrar escola</a>
+                <a href="/escolas/listar" class="button secondary">Cadastrar escola</a>
                 <a href="/logout" class="button">Sair</a>
             </div>
         </section>
-        <h2>Escolas cadastradas</h2>
-        <table>
-            <tr>
-                <th>Nome</th>
-                <th>Categoria</th>
-            </tr>
-            <?php foreach ($escolas as $escola): ?>
-                <tr>
-                    <td><?= htmlspecialchars($escola['nome']) ?></td>
-                    <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
     </main>
 </body>
 </html>

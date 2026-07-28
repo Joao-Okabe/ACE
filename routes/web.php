@@ -48,5 +48,9 @@ $router->post(
 );
 
 $router->get(
-    '/dashboard', [DashboardController::class, 'index']
+    '/dashboard', [dashboardController::class, 'index']
+);
+
+$router->get(
+    '/escolas/listar', [listarEscolasController::class, 'index']
 );
