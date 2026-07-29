@@ -2,7 +2,6 @@
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 ?>
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -24,7 +23,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
             <?php endif; ?>
 
-            <form action="/escolas" method="post" class="form-grid">
+            <form action="/escolas" method="post" class="form-grid" enctype="multipart/form-data">
                 <div class="field full">
                     <label for="nome">Nome da escola</label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required>
@@ -85,10 +84,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </div>
 
                 <div class="field full">
-                    <label for="img_logo">URL da logo</label>
-                    <input type="url" id="img_logo" name="img_logo" value="<?= $valor('img_logo') ?>">
+                    <label>Selecione a imagem:</label>
+                    <input type="file" accept="image/*" name="img_logo">
                 </div>
-
                 <div class="actions full">
                     <a href="/usuarios/cadastrar" class="button secondary">Cadastrar usuário</a>
                     <button type="submit">Cadastrar escola</button>
@@ -96,7 +94,6 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </form>
         </section>
     </main>
-
     <script src="/js/cep.api.js"></script>
 </body>
 </html>

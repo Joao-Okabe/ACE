@@ -72,6 +72,46 @@ class EscolaService
             PASSWORD_DEFAULT
         );
 
+        $arquivo = $_FILES['img_logo'] ?? null;
+
+        if ($arquivo === null || !isset($arquivo['tmp_name']) || !is_uploaded_file($arquivo['tmp_name'])) {
+            throw new Exception('Selecione uma imagem para o logo da escola.');
+        }
+
+        $nomeArquivo = $arquivo['name'];
+        $tamanhoArquivo = (int) $arquivo['size'];
+        $erroArquivo = (int) $arquivo['error'];
+        $tmpArquivo = $arquivo['tmp_name'];
+
+        $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+        $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
+        }
+
+        if ($erroArquivo !== 0) {
+            throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
+        }
+
+        if ($tamanhoArquivo > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $pastaUploads = __DIR__ . '/../../public/uploads';
+
+        if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
+        $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
+        $caminhoPublico = '/uploads/' . $novoNomeArquivo;
+
+        if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
+            throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
+        }
+
         $papelEscola = $this->usuarioModel->buscarPapelPorNome('ESCOLA');
 
         if ($papelEscola === null) {
@@ -106,7 +146,7 @@ class EscolaService
 
                 'categoria_administrativa' => $dados['categoria_administrativa'],
 
-                'img_logo' => $this->normalizarCampoOpcional($dados['img_logo'] ?? null)
+                'img_logo' => $caminhoPublico
 
             ]);
 
