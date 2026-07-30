@@ -58,3 +58,7 @@ $router->get(
 $router->get(
     '/escolas/editar', [escolaController::class, 'edit']
 );
+
+$router->get(
+    '/alunos/cadastrar', [alunoController::class, 'cadastrar']
+);

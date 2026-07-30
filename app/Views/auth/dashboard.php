@@ -27,7 +27,7 @@ $usuario = $usuario ?? null;
             <?php endif; ?>
 
             <div class="actions full">
-                <a href="/escolas/cadastrar" class="button secondary">Cadastrar escola</a>
+                <a href="/aluno/cadastrar" class="button secondary">Cadastrar aluno</a>
                 <a href="/escolas/listar" class="button secondary">Listar escolas</a>
                 <a href="/logout" class="button">Sair</a>
             </div>
