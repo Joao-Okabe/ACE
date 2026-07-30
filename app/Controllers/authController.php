@@ -31,6 +31,8 @@ class authController
             session_regenerate_id(true);
 
             $_SESSION['usuario'] = $usuario;
+            $_SESSION['usuario_id'] = $usuario['id'] ?? null;
+            $_SESSION['usuario_email'] = $usuario['email'] ?? null;
 
             header("Location: /dashboard");
             exit;
