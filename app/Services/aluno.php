@@ -32,4 +32,158 @@ class AlunoService
 
         return $aluno;
     }
+
+    public function cadastrar(array $dados): void
+    {
+        if (empty($dados['nome'])) {
+            throw new Exception("Informe o nome do(a) aluno(a). ");
+        }
+
+        if (empty($dados['email'])) {
+            throw new Exception("Informe um e-mail.");
+        }
+
+        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Informe um e-mail válido.");
+        }
+
+        if (empty($dados['senha'])) {
+            throw new Exception("Informe uma senha.");
+        }
+
+        if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
+            throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+        }
+
+        $senhaHash = password_hash(
+            $dados['senha'],
+            PASSWORD_DEFAULT
+        );
+
+        $papelAluno = $this->usuarioModel->buscarPapelPorNome('ALUNO');
+
+        if ($papelAluno === null) {
+            throw new Exception("Papel ALUNO não encontrado.");
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $idUsuario = $this->usuarioModel->cadastrar([
+                'email' => $dados['email'],
+                'senha' => $senhaHash
+            ]);
+
+            $this->usuarioModel->vincularPapel(
+                $idUsuario,
+                (int) $papelAluno['cd_papel']
+            );
+
+            // tratar upload de foto_perfil (opcional)
+            $arquivo = $_FILES['foto_perfil'] ?? null;
+            $caminhoPublicoFoto = null;
+
+            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
+                $nomeArquivo = $arquivo['name'];
+                $tamanhoArquivo = (int) $arquivo['size'];
+                $erroArquivo = (int) $arquivo['error'];
+                $tmpArquivo = $arquivo['tmp_name'];
+
+                $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+                $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+                if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
+                    throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
+                }
+
+                if ($erroArquivo !== 0) {
+                    throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
+                }
+
+                if ($tamanhoArquivo > 2 * 1024 * 1024) {
+                    throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+                }
+
+                $pastaUploads = __DIR__ . '/../../public/uploads';
+
+                if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
+                    throw new Exception('Não foi possível criar a pasta de uploads.');
+                }
+
+                $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
+                $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
+                $caminhoPublicoFoto = '/uploads/' . $novoNomeArquivo;
+
+                if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
+                    throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
+                }
+            }
+
+            // validações adicionais
+            if (empty($dados['escola'])) {
+                throw new Exception('Selecione a escola do aluno.');
+            }
+
+            if (empty($dados['data_nascimento'])) {
+                throw new Exception('Informe a data de nascimento.');
+            }
+
+            $this->alunoModel->cadastrar([
+                'usuario' => $idUsuario,
+                'escola' => $dados['escola'] ?? null,
+                'nome' => $dados['nome'],
+                'ra' => $dados['ra'] ?? null,
+                'data_nascimento' => $dados['data_nascimento'] ?? null,
+                'sexo' => $dados['sexo'] ?? null,
+                'telefone' => $this->normalizarCampoOpcional($dados['telefone'] ?? null),
+                'cep' => $this->normalizarCampoOpcional($dados['cep'] ?? null),
+                'foto_perfil' => $caminhoPublicoFoto
+            ]);
+
+            $this->pdo->commit();
+
+        } catch (Exception $e) {
+
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+
+        }
+    }
+
+    private function normalizarCampoOpcional(?string $valor): ?string
+    {
+        if ($valor === null) {
+            return null;
+        }
+
+        $valor = trim($valor);
+
+        return $valor === '' ? null : $valor;
+    }
+
+    private function normalizarUf(?string $uf): ?string
+    {
+        $uf = $this->normalizarCampoOpcional($uf);
+
+        return $uf === null ? null : strtoupper(substr($uf, 0, 2));
+    }
+
+    /**
+     * Remove escola
+     */
+    public function remover(int $id): void
+    {
+        $this->alunoModel->remover($id);
+    }
+
+    /**
+     * Atualiza aluno
+     */
+    public function atualizar(int $id, array $dados): void
+    {
+        $this->alunoModel->atualizar($id, $dados);
+    }
 }

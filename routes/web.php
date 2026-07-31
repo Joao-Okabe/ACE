@@ -59,6 +59,34 @@ $router->get(
     '/escolas/editar', [escolaController::class, 'edit']
 );
 
+$router->post(
+    '/escolas/atualizar', [escolaController::class, 'update']
+);
+
 $router->get(
-    '/alunos/cadastrar', [alunoController::class, 'cadastrar']
+    '/escolas/remover', [escolaController::class, 'destroy']
+);
+
+$router->get(
+    '/alunos/cadastrar', [alunoController::class, 'create']
+);
+
+$router->post(
+    '/alunos', [alunoController::class, 'store']
+);
+
+$router->get(
+    '/alunos/listar', [alunoController::class, 'list']
+);
+
+$router->get(
+    '/alunos/editar', [alunoController::class, 'edit']
+);
+
+$router->post(
+    '/alunos/atualizar', [alunoController::class, 'update']
+);
+
+$router->get(
+    '/alunos/remover', [alunoController::class, 'destroy']
 );

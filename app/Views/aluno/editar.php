@@ -1,5 +1,5 @@
 <?php
-$dados = $dados ?? [];
+$dados = $aluno ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 ?>
 <!doctype html>
@@ -7,23 +7,19 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cadastro de aluno</title>
+    <title>Editar aluno</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <main class="page">
         <section class="form-panel">
-            <h1>Cadastro de aluno</h1>
-
-            <?php if (!empty($_GET['sucesso'])): ?>
-                <p class="alert success">Aluno(a) cadastrado(a) com sucesso.</p>
-            <?php endif; ?>
+            <h1>Editar aluno</h1>
 
             <?php if (!empty($erro)): ?>
                 <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
             <?php endif; ?>
 
-            <form action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
+            <form action="/alunos/atualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
                 <div class="field full">
                     <label for="nome">Nome do(a) aluno(a)</label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required>
@@ -50,46 +46,30 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </div>
 
                 <div class="field">
-                    <label for="email">E-mail de acesso</label>
-                    <input type="email" id="email" name="email" value="<?= $valor('email') ?>" required>
-                </div>
-
-                <div class="field">
-                    <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" required>
-                </div>
-
-                <div class="field">
                     <label for="escola">Escola</label>
-                    <select id="escola" name="escola" required>
+                    <select id="escola" name="cd_escola">
                         <option value="">Selecione</option>
                         <?php foreach ($escolas as $escola): ?>
-                            <option value="<?= htmlspecialchars($escola['cd_escola']) ?>" <?= ($valor('escola') == $escola['cd_escola']) ? 'selected' : '' ?>><?= htmlspecialchars($escola['nome']) ?></option>
+                            <option value="<?= htmlspecialchars($escola['cd_escola']) ?>" <?= $escola['cd_escola'] == $valor('cd_escola') ? 'selected' : '' ?>><?= htmlspecialchars($escola['nome']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="field">
-                    <label for="telefone">Telefone</label>
-                    <input type="text" id="telefone" name="telefone" value="<?= $valor('telefone') ?>">
-                </div>
-
-                <div class="field">
-                    <label for="cep">CEP</label>
-                    <input type="text" id="cep" name="cep" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric">
-                </div>
-
                 <div class="field full">
                     <label>Foto de perfil</label>
+                    <?php if (!empty($dados['foto_perfil'])): ?>
+                        <div class="preview">
+                            <img src="<?= htmlspecialchars($dados['foto_perfil']) ?>" alt="Foto atual de <?= htmlspecialchars($dados['nome']) ?>" width="100" height="100">
+                        </div>
+                    <?php endif; ?>
                     <input type="file" accept="image/*" name="foto_perfil">
                 </div>
+
                 <div class="actions full">
-                    <a href="/usuarios/cadastrar" class="button secondary">Cadastrar usuário</a>
-                    <button type="submit">Cadastrar Aluno</button>
+                    <button type="submit">Salvar</button>
                 </div>
             </form>
         </section>
     </main>
-    <script src="/js/cep.api.js"></script>
 </body>
 </html>
