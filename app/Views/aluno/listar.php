@@ -25,9 +25,9 @@
                     <?php endif; ?>
                     <?= htmlspecialchars($aluno['nome']) ?>
                 </td>
-                <td><?= htmlspecialchars($aluno['ra']) ?></td>
-                <td><?= htmlspecialchars($aluno['cd_escola']) ?></td>
-                <td><?= htmlspecialchars($aluno['telefone']) ?></td>
+                <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
+                <td><?= htmlspecialchars($aluno['cd_escola'] ?? '') ?></td>
+                <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
                 <td>
                     <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>">Editar</a>
                     <a href="/alunos/remover?id=<?= urlencode($aluno['cd_aluno']) ?>">Remover</a>
