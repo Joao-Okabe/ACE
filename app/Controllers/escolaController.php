@@ -49,21 +49,35 @@ class escolaController
     }
 
     //Exibe formulário de edição
-    public function edit(int $id): void
+    public function edit(): void
     {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
         $escola = $this->service()->buscar($id);
 
         require __DIR__ . '/../Views/escola/editar.php';
     }
 
     //Atualiza escola
-    public function update(int $id): void
+    public function update(): void
     {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
         try {
 
             $this->service()->atualizar($id, $_POST);
 
-            header("Location: /escolas");
+            header("Location: /escolas/listar");
             exit;
 
         } catch (Exception $e) {
@@ -74,13 +88,20 @@ class escolaController
     }
 
     //Remove escola
-    public function destroy(int $id): void
+    public function destroy(): void
     {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
         try {
 
             $this->service()->remover($id);
 
-            header("Location: /escolas");
+            header("Location: /escolas/listar");
             exit;
 
         } catch (Exception $e) {

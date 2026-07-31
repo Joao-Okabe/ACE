@@ -23,10 +23,30 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
             <?php endif; ?>
 
-            <form action="/escolas" method="post" class="form-grid" enctype="multipart/form-data">
+            <form action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
                 <div class="field full">
                     <label for="nome">Nome do(a) aluno(a)</label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required>
+                </div>
+
+                <div class="field">
+                    <label for="ra">RA</label>
+                    <input type="text" id="ra" name="ra" value="<?= $valor('ra') ?>">
+                </div>
+
+                <div class="field">
+                    <label for="data_nascimento">Data de nascimento</label>
+                    <input type="date" id="data_nascimento" name="data_nascimento" value="<?= $valor('data_nascimento') ?>">
+                </div>
+
+                <div class="field">
+                    <label for="sexo">Sexo</label>
+                    <select id="sexo" name="sexo">
+                        <option value="">Selecione</option>
+                        <option value="M" <?= $valor('sexo') === 'M' ? 'selected' : '' ?>>Masculino</option>
+                        <option value="F" <?= $valor('sexo') === 'F' ? 'selected' : '' ?>>Feminino</option>
+                        <option value="O" <?= $valor('sexo') === 'O' ? 'selected' : '' ?>>Outro</option>
+                    </select>
                 </div>
 
                 <div class="field">
@@ -40,11 +60,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </div>
 
                 <div class="field">
-                    <label for="categoria_administrativa">Categoria</label>
-                    <select id="categoria_administrativa" name="categoria_administrativa" required>
+                    <label for="escola">Escola</label>
+                    <select id="escola" name="escola" required>
                         <option value="">Selecione</option>
-                        <option value="PUBLICA" <?= $valor('categoria_administrativa') === 'PUBLICA' ? 'selected' : '' ?>>Pública</option>
-                        <option value="PRIVADA" <?= $valor('categoria_administrativa') === 'PRIVADA' ? 'selected' : '' ?>>Privada</option>
+                        <?php foreach ($escolas as $escola): ?>
+                            <option value="<?= htmlspecialchars($escola['cd_escola']) ?>" <?= ($valor('escola') == $escola['cd_escola']) ? 'selected' : '' ?>><?= htmlspecialchars($escola['nome']) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -59,37 +80,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </div>
 
                 <div class="field full">
-                    <label for="logradouro">Logradouro</label>
-                    <input type="text" id="logradouro" name="logradouro" value="<?= $valor('logradouro') ?>">
-                </div>
-
-                <div class="field">
-                    <label for="numero">Número</label>
-                    <input type="text" id="numero" name="numero" value="<?= $valor('numero') ?>">
-                </div>
-
-                <div class="field">
-                    <label for="bairro">Bairro</label>
-                    <input type="text" id="bairro" name="bairro" value="<?= $valor('bairro') ?>">
-                </div>
-
-                <div class="field">
-                    <label for="cidade">Cidade</label>
-                    <input type="text" id="cidade" name="cidade" value="<?= $valor('cidade') ?>">
-                </div>
-
-                <div class="field">
-                    <label for="uf">UF</label>
-                    <input type="text" id="uf" name="uf" value="<?= $valor('uf') ?>" maxlength="2">
-                </div>
-
-                <div class="field full">
-                    <label>Selecione a imagem:</label>
-                    <input type="file" accept="image/*" name="img_logo">
+                    <label>Foto de perfil</label>
+                    <input type="file" accept="image/*" name="foto_perfil">
                 </div>
                 <div class="actions full">
                     <a href="/usuarios/cadastrar" class="button secondary">Cadastrar usuário</a>
-                    <button type="submit">Cadastrar escola</button>
+                    <button type="submit">Cadastrar Aluno</button>
                 </div>
             </form>
         </section>
