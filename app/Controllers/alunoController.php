@@ -14,6 +14,7 @@ class alunoController
         return $this->service;
     }
 
+    //Passa sessão do usuário e exibe tela de cadastro de aluno
     public function create(): void
     {
         $usuario = $_SESSION['usuario'] ?? null;
@@ -21,7 +22,7 @@ class alunoController
         require __DIR__ . '/../Views/aluno/cadastrar.php';
     }
 
-    //Salva uma nova escola
+    //Salva um novo aluno
     public function store(): void
     {
         try {
@@ -43,12 +44,14 @@ class alunoController
         }
     }
 
+    //Lista todos os alunos
     public function list(): void
     {
         $alunos = $this->service()->listar();
         require __DIR__ . '/../Views/aluno/listar.php';
     }
 
+    //Exibe formulário de edição do Aluno
     public function edit(): void
     {
         $id = (int) ($_GET['id'] ?? 0);
@@ -63,30 +66,7 @@ class alunoController
         require __DIR__ . '/../Views/aluno/editar.php';
     }
 
-    public function update(): void
-    {
-        $id = (int) ($_GET['id'] ?? 0);
-        if ($id <= 0) {
-            http_response_code(400);
-            echo 'ID inválido';
-            return;
-        }
-
-        try {
-            // use service to update if method exists
-            if (method_exists($this->service(), 'atualizar')) {
-                $this->service()->atualizar($id, $_POST);
-            } else {
-                $this->service()->alunoModel->atualizar($id, $_POST);
-            }
-
-            header("Location: /alunos/listar");
-            exit;
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-    }
-
+    //Remove Aluno
     public function destroy(): void
     {
         $id = (int) ($_GET['id'] ?? 0);

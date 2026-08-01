@@ -47,6 +47,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
                 <div class="actions full">
                     <a href="/escolas/cadastrar" class="button secondary">Cadastrar escola</a>
+                    <a href="/login" class="button secondary">Realizar Login</a>
                     <button type="submit">Cadastrar</button>
                 </div>
             </form>

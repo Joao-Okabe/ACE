@@ -3,12 +3,7 @@
 class Usuario extends Model
 {
 
-    /**
-     * Cadastra um novo usuário
-     *
-     * @param array $dados
-     * @return int ID do usuário criado
-     */
+    // Cadastra Usuário e retorna o ID para auth
     public function cadastrar(array $dados): int
     {
         $stmt = $this->pdo->prepare("
@@ -33,9 +28,7 @@ class Usuario extends Model
         return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * Vincula um papel ao usuário
-     */
+    //Vincula Papel do usuário
     public function vincularPapel(int $idUsuario, int $idPapel): void
     {
         $stmt = $this->pdo->prepare("
@@ -57,9 +50,7 @@ class Usuario extends Model
         ]);
     }
 
-    /**
-     * Busca um papel pelo nome
-     */
+    //Busca papel por nome
     public function buscarPapelPorNome(string $nome): ?array
     {
         $stmt = $this->pdo->prepare("
@@ -77,9 +68,7 @@ class Usuario extends Model
         return $papel ?: null;
     }
 
-    /**
-     * Busca um usuário pelo e-mail
-     */
+    //Busca usuario pelo email
     public function buscarPorEmail(string $email): ?array
     {
         $stmt = $this->pdo->prepare("
@@ -97,9 +86,7 @@ class Usuario extends Model
         return $usuario ?: null;
     }
 
-    /**
-     * Lista os papéis de um usuário
-     */
+    //Lista Papéis
     public function listarPapeis(int $idUsuario): array
     {
         $stmt = $this->pdo->prepare("
@@ -121,9 +108,7 @@ class Usuario extends Model
         );
     }
 
-    /**
-     * Atualiza a senha
-     */
+    //Atualiza Senha
     public function atualizarSenha(int $id, string $senha): void
     {
         $stmt = $this->pdo->prepare("
@@ -138,9 +123,7 @@ class Usuario extends Model
         ]);
     }
 
-    /**
-     * Remove um usuário
-     */
+    //Remove usuario
     public function remover(int $id): void
     {
         $stmt = $this->pdo->prepare("

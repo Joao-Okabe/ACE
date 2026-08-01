@@ -17,22 +17,6 @@ class AlunoService
         $this->alunoModel = new Aluno();
     }
 
-    public function listar(): array
-    {
-        return $this->alunoModel->listar();
-    }
-
-    public function buscar(int $id): array
-    {
-        $aluno = $this->alunoModel->buscar($id);
-
-        if ($aluno === null) {
-            throw new Exception("Aluno não encontrada.");
-        }
-
-        return $aluno;
-    }
-
     public function cadastrar(array $dados): void
     {
         if (empty($dados['nome'])) {
@@ -153,6 +137,34 @@ class AlunoService
         }
     }
 
+    public function listar(): array
+    {
+        return $this->alunoModel->listar();
+    }
+
+    public function buscar(int $id): array
+    {
+        $aluno = $this->alunoModel->buscar($id);
+
+        if ($aluno === null) {
+            throw new Exception("Aluno não encontrada.");
+        }
+
+        return $aluno;
+    }
+
+    //Atualiza Aluno
+    public function atualizar(int $id, array $dados): void
+    {
+        $this->alunoModel->atualizar($id, $dados);
+    }
+
+    //Remove Aluno
+    public function remover(int $id): void
+    {
+        $this->alunoModel->remover($id);
+    }
+
     private function normalizarCampoOpcional(?string $valor): ?string
     {
         if ($valor === null) {
@@ -162,28 +174,5 @@ class AlunoService
         $valor = trim($valor);
 
         return $valor === '' ? null : $valor;
-    }
-
-    private function normalizarUf(?string $uf): ?string
-    {
-        $uf = $this->normalizarCampoOpcional($uf);
-
-        return $uf === null ? null : strtoupper(substr($uf, 0, 2));
-    }
-
-    /**
-     * Remove escola
-     */
-    public function remover(int $id): void
-    {
-        $this->alunoModel->remover($id);
-    }
-
-    /**
-     * Atualiza aluno
-     */
-    public function atualizar(int $id, array $dados): void
-    {
-        $this->alunoModel->atualizar($id, $dados);
     }
 }

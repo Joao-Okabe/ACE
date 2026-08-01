@@ -1,6 +1,7 @@
 <?php
 class Aluno extends Model
 {
+    //Cadastra Aluno
     public function cadastrar(array $dados): void
     {
         $stmt = $this->pdo->prepare("
@@ -39,39 +40,7 @@ class Aluno extends Model
         ]);
     }
 
-    public function listar(): array
-    {
-        $stmt = $this->pdo->query("
-        SELECT  cd_aluno, 
-                cd_usuario, 
-                cd_escola, 
-                nome, 
-                ra, 
-                data_nascimento, 
-                sexo, 
-                telefone,
-                cep,
-                foto_perfil,
-                criado_em,
-                ativo 
-        FROM aluno ORDER BY cd_aluno");
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function buscar(int $id): ?array
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM aluno WHERE cd_aluno = :id");
-
-        $stmt->execute([
-            ':id' => $id
-        ]);
-
-        $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $aluno ?: null;
-    }
-
+    // Atualizar Aluno
     public function atualizar(int $id, array $dados): void
     {
         $stmt = $this->pdo->prepare("
@@ -99,6 +68,42 @@ class Aluno extends Model
         ]);
     }
 
+    //Lista Alunos
+    public function listar(): array
+    {
+        $stmt = $this->pdo->query("
+        SELECT  cd_aluno, 
+                cd_usuario, 
+                cd_escola, 
+                nome, 
+                ra, 
+                data_nascimento, 
+                sexo, 
+                telefone,
+                cep,
+                foto_perfil,
+                criado_em,
+                ativo 
+        FROM aluno ORDER BY cd_aluno");
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //Busca Escola
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM aluno WHERE cd_aluno = :id");
+
+        $stmt->execute([
+            ':id' => $id
+        ]);
+
+        $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $aluno ?: null;
+    }
+
+    //Remove aluno
     public function remover(int $id): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM aluno WHERE cd_aluno = :id");

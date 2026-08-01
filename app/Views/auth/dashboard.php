@@ -11,9 +11,7 @@ $usuario = $usuario ?? null;
 </head>
 <body>
     <main class="page">
-        <section class="form-panel auth-panel">
             <h1>Dashboard</h1>
-
             <?php if ($usuario !== null): ?>
                 <p class="session-info">
                     <?= htmlspecialchars($usuario['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>
@@ -27,11 +25,11 @@ $usuario = $usuario ?? null;
             <?php endif; ?>
 
             <div class="actions full">
-                <a href="/aluno/cadastrar" class="button secondary">Cadastrar aluno</a>
                 <a href="/escolas/listar" class="button secondary">Listar escolas</a>
+                <a href="/alunos/cadastrar" class="button secondary">Cadastrar aluno</a>
+                <a href="/alunos/listar" class="button secondary">Listar alunos</a>
                 <a href="/logout" class="button">Sair</a>
             </div>
-        </section>
     </main>
 </body>
 </html>
