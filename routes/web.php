@@ -18,11 +18,6 @@ $router->post(
 );
 
 $router->get(
-    '/dashboard',
-    [authController::class, 'dashboard']
-);
-
-$router->get(
     '/logout',
     [authController::class, 'logout']
 );
