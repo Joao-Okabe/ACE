@@ -6,7 +6,10 @@
     <title>Alunos</title>
 </head>
 <body>
-    <h2>Alunos cadastrados</h2>
+    <div>
+        <h2>Alunos cadastrados</h2>
+        <a href="/alunos/cadastrar" class="button secondary">Cadastrar aluno</a>
+    </div>
     <table>
         <tr>
             <th>Código</th>

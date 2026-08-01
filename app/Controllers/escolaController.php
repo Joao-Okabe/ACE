@@ -13,15 +13,6 @@ class escolaController
         return $this->service;
     }
 
-    //Lista todas as escolas
-    public function list(): void
-    {
-        $usuario = $_SESSION['usuario'] ?? null;
-        $escolas = $this->service()->listar();
-
-        require __DIR__ . '/../Views/escola/listar.php';
-    }
-
     //Exibe o formulário de cadastro
     public function create(): void
     {
@@ -48,7 +39,16 @@ class escolaController
         }
     }
 
-    //Exibe formulário de edição
+    //Lista todas as escolas
+    public function list(): void
+    {
+        $usuario = $_SESSION['usuario'] ?? null;
+        $escolas = $this->service()->listar();
+
+        require __DIR__ . '/../Views/escola/listar.php';
+    }
+
+    //Exibe formulário de edição de Escola
     public function edit(): void
     {
         $id = (int) ($_GET['id'] ?? 0);

@@ -2,6 +2,68 @@
 
 class Escola extends Model
 {
+    // Cadastro de escola
+    public function cadastrar(array $dados): void
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO escola
+            (
+                cd_usuario,
+                nome,
+                telefone,
+                cep,
+                numero,
+                categoria_administrativa,
+                img_logo
+            )
+            VALUES
+            (
+                :usuario,
+                :nome,
+                :telefone,
+                :cep,
+                :numero,
+                :categoria,
+                :img_logo
+            )
+        ");
+
+        $stmt->execute([
+            ':usuario' => $dados['usuario'],
+            ':nome' => $dados['nome'],
+            ':telefone' => $dados['telefone'],
+            ':cep' => $dados['cep'],
+            ':numero' => $dados['numero'],
+            ':categoria' => $dados['categoria_administrativa'],
+            ':img_logo' => $dados['img_logo'] ?? null
+        ]);
+    }
+
+    //Atualiza Escola
+    public function atualizar(int $id, array $dados): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE escola
+            SET
+                nome = :nome,
+                telefone = :telefone,
+                cep = :cep,
+                numero = :numero,
+                categoria_administrativa = :categoria,
+                img_logo = :img_logo
+            WHERE cd_escola = :id
+        ");
+
+        $stmt->execute([
+            ':nome' => $dados['nome'],
+            ':telefone' => $dados['telefone'],
+            ':cep' => $dados['cep'],
+            ':numero' => $dados['numero'],
+            ':categoria' => $dados['categoria_administrativa'],
+            ':img_logo' => $dados['img_logo'] ?? null,
+            ':id' => $id
+        ]);
+    }
 
     //Lista Escolas
     public function listar(): array
@@ -43,76 +105,8 @@ class Escola extends Model
         return $escola ?: null;
     }
 
-    /**
-     * Cadastra uma escola
-     */
-    public function cadastrar(array $dados): void
-    {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO escola
-            (
-                cd_usuario,
-                nome,
-                telefone,
-                cep,
-                numero,
-                categoria_administrativa,
-                img_logo
-            )
-            VALUES
-            (
-                :usuario,
-                :nome,
-                :telefone,
-                :cep,
-                :numero,
-                :categoria,
-                :img_logo
-            )
-        ");
 
-        $stmt->execute([
-            ':usuario' => $dados['usuario'],
-            ':nome' => $dados['nome'],
-            ':telefone' => $dados['telefone'],
-            ':cep' => $dados['cep'],
-            ':numero' => $dados['numero'],
-            ':categoria' => $dados['categoria_administrativa'],
-            ':img_logo' => $dados['img_logo'] ?? null
-        ]);
-    }
-
-    /**
-     * Atualiza uma escola
-     */
-    public function atualizar(int $id, array $dados): void
-    {
-        $stmt = $this->pdo->prepare("
-            UPDATE escola
-            SET
-                nome = :nome,
-                telefone = :telefone,
-                cep = :cep,
-                numero = :numero,
-                categoria_administrativa = :categoria,
-                img_logo = :img_logo
-            WHERE cd_escola = :id
-        ");
-
-        $stmt->execute([
-            ':nome' => $dados['nome'],
-            ':telefone' => $dados['telefone'],
-            ':cep' => $dados['cep'],
-            ':numero' => $dados['numero'],
-            ':categoria' => $dados['categoria_administrativa'],
-            ':img_logo' => $dados['img_logo'] ?? null,
-            ':id' => $id
-        ]);
-    }
-
-    /**
-     * Remove uma escola
-     */
+    //Remove Escola
     public function remover(int $id): void
     {
         $stmt = $this->pdo->prepare("

@@ -17,25 +17,7 @@ class EscolaService
         $this->escolaModel = new Escola();
     }
 
-    //Lista Escola
-    public function listar(): array
-    {
-        return $this->escolaModel->listar();
-    }
-
-    //Busca escola
-    public function buscar(int $id): array
-    {
-        $escola = $this->escolaModel->buscar($id);
-
-        if ($escola === null) {
-            throw new Exception("Escola não encontrada.");
-        }
-
-        return $escola;
-    }
-
-    //Cadastro completo
+    //Cadastro de escola
     public function cadastrar(array $dados): void
     {
 
@@ -164,27 +146,25 @@ class EscolaService
 
     }
 
-    private function normalizarCampoOpcional(?string $valor): ?string
+    //Lista Escola
+    public function listar(): array
     {
-        if ($valor === null) {
-            return null;
+        return $this->escolaModel->listar();
+    }
+
+    //Busca escola
+    public function buscar(int $id): array
+    {
+        $escola = $this->escolaModel->buscar($id);
+
+        if ($escola === null) {
+            throw new Exception("Escola não encontrada.");
         }
 
-        $valor = trim($valor);
-
-        return $valor === '' ? null : $valor;
+        return $escola;
     }
 
-    private function normalizarUf(?string $uf): ?string
-    {
-        $uf = $this->normalizarCampoOpcional($uf);
-
-        return $uf === null ? null : strtoupper(substr($uf, 0, 2));
-    }
-
-    /**
-     * Atualiza escola
-     */
+    //Atualiza Escola
     public function atualizar(
         int $id,
         array $dados
@@ -197,11 +177,20 @@ class EscolaService
 
     }
 
-    /**
-     * Remove escola
-     */
+    //Remove escola
     public function remover(int $id): void
     {
         $this->escolaModel->remover($id);
+    }
+
+    private function normalizarCampoOpcional(?string $valor): ?string
+    {
+        if ($valor === null) {
+            return null;
+        }
+
+        $valor = trim($valor);
+
+        return $valor === '' ? null : $valor;
     }
 }
