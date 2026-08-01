@@ -12,11 +12,6 @@ $router->get(
     [authController::class, 'login']
 );
 
-$router->post(
-    '/login',
-    [authController::class, 'autenticar']
-);
-
 $router->get(
     '/dashboard',
     [authController::class, 'dashboard']
