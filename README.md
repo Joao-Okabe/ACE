@@ -192,30 +192,29 @@ Repo da Documentação:
 
 ## 👥 Equipe
 
-
-- Caroline Caetano -> Design
-
-
 - Clara Lopes Romão -> Front-End
 
-(https://github.com/Claralops)
-    
-- Gustavo Willians -> Documentação
-
-(https://github.com/MaxyLygts)
+    (https://github.com/Claralops)
     
 - João Antônio Okabe Van Berghem -> Back-End
 
-(https://github.com/Joao-Okabe)
+    (https://github.com/Joao-Okabe)
 
 - Kauã Santos da Silva -> Mobile 
 
-(https://github.com/kaua132465)
+    (https://github.com/kaua132465)
 
 - Yasmin da Silva Santos -> Documentação + Liderança
 
-(https://github.com/yaaszou)
+    (https://github.com/yaaszou)
 
+- Caroline Caetano -> Design
+
+    (https://github.com/carolicaetano3)
+    
+- Gustavo Willians -> Documentação
+
+    (https://github.com/MaxyLygts)
 
 ---
 
