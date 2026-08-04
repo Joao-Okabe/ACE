@@ -6,11 +6,14 @@ class UsuarioService
 
     private Usuario $usuarioModel;
 
+    private VinculoUsuarioEscola $vinculoUsuarioEscolaModel;
+
     public function __construct()
     {
-        $this->pdo = Database::connect();
 
         $this->usuarioModel = new Usuario();
+
+        $this->vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
     }
 
     public function cadastrar(array $dados): int
@@ -48,7 +51,7 @@ class UsuarioService
                 'senha' => $senhaHash
             ]);
 
-            $this->usuarioModel->vincularPapel(
+            $this->vinculoUsuarioEscolaModel->vincularPapel(
                 $idUsuario,
                 (int) $dados['papel']
             );
