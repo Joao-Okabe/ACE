@@ -8,6 +8,10 @@ class AlunoService
 
     private Aluno $alunoModel;
 
+    private VinculoUsuarioEscola $vinculoEscolaUsuarioModel;
+
+    private Papel $papelModel;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -15,6 +19,10 @@ class AlunoService
         $this->usuarioModel = new Usuario();
 
         $this->alunoModel = new Aluno();
+
+        $this->vinculoEscolaUsuarioModel = new VinculoUsuarioEscola();
+
+        $this->papelModel = new Papel();
     }
 
     public function cadastrar(array $dados): void
@@ -44,7 +52,7 @@ class AlunoService
             PASSWORD_DEFAULT
         );
 
-        $papelAluno = $this->usuarioModel->buscarPapelPorNome('ALUNO');
+        $papelAluno = $this->papelModel->buscarPapelPorNome('ALUNO');
 
         if ($papelAluno === null) {
             throw new Exception("Papel ALUNO não encontrado.");
@@ -52,16 +60,6 @@ class AlunoService
 
         try {
             $this->pdo->beginTransaction();
-
-            $idUsuario = $this->usuarioModel->cadastrar([
-                'email' => $dados['email'],
-                'senha' => $senhaHash
-            ]);
-
-            $this->usuarioModel->vincularPapel(
-                $idUsuario,
-                (int) $papelAluno['cd_papel']
-            );
 
             // tratar upload de foto_perfil (opcional)
             $arquivo = $_FILES['foto_perfil'] ?? null;
@@ -111,6 +109,17 @@ class AlunoService
             if (empty($dados['data_nascimento'])) {
                 throw new Exception('Informe a data de nascimento.');
             }
+
+            $idUsuario = $this->usuarioModel->cadastrar([
+                'email' => $dados['email'],
+                'senha' => $senhaHash
+            ]);
+
+            $this->vinculoEscolaUsuarioModel->vincularPapel(
+                $idUsuario,
+                (int) $dados['cd_escola'], //Passa o id da escola para o vinculo
+                (int) $papelAluno['cd_papel']
+            );
 
             $this->alunoModel->cadastrar([
                 'usuario' => $idUsuario,
