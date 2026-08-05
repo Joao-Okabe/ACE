@@ -1,6 +1,6 @@
 <?php
 
-class authController
+class AuthController
 {
     private ?AuthService $service = null;
 

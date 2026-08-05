@@ -10,6 +10,7 @@ class UsuarioService
 
     public function __construct()
     {
+        $this->pdo = Database::connect();
 
         $this->usuarioModel = new Usuario();
 
@@ -24,6 +25,10 @@ class UsuarioService
 
         if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Informe um e-mail válido.");
+        }
+
+        if (empty($dados['escola'])) {
+            throw new Exception("Informe a escola do usuário.");
         }
 
         if (empty($dados['senha'])) {
@@ -53,6 +58,7 @@ class UsuarioService
 
             $this->vinculoUsuarioEscolaModel->vincularPapel(
                 $idUsuario,
+                (int) $dados['escola'],
                 (int) $dados['papel']
             );
 

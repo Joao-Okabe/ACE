@@ -1,6 +1,6 @@
 <?php
 
-class dashboardController
+class DashboardController
 {
     public function index(): void
     {

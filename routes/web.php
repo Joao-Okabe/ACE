@@ -4,50 +4,45 @@ $router = new Router();
 
 $router->get(
     '/',
-    [authController::class, 'login']
+    [AuthController::class, 'login']
 );
 
 $router->get(
     '/login',
-    [authController::class, 'login']
-);
-
-$router->get(
-    '/dashboard',
-    [authController::class, 'dashboard']
+    [AuthController::class, 'login']
 );
 
 $router->get(
     '/logout',
-    [authController::class, 'logout']
+    [AuthController::class, 'logout']
 );
 
 $router->get(
     '/usuarios/cadastrar',
-    [usuarioController::class, 'create']
+    [UsuarioController::class, 'create']
 );
 
 $router->post(
     '/usuarios',
-    [usuarioController::class, 'store']
+    [UsuarioController::class, 'store']
 );
 
 $router->get(
     '/escolas/cadastrar',
-    [escolaController::class, 'create']
+    [EscolaController::class, 'create']
 );
 
 $router->post(
     '/escolas',
-    [escolaController::class, 'store']
+    [EscolaController::class, 'store']
 );
 
 $router->get(
-    '/dashboard', [dashboardController::class, 'index']
+    '/dashboard', [DashboardController::class, 'index']
 );
 
 $router->get(
-    '/escolas/listar', [escolaController::class, 'list']
+    '/escolas/listar', [EscolaController::class, 'list']
 );
 
 $router->get(
