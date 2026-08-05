@@ -1,6 +1,6 @@
 <?php
 
-class escolaController
+class EscolaController
 {
     private ?EscolaService $service = null;
 
@@ -34,7 +34,10 @@ class escolaController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            require __DIR__ . '/../Views/escola/cadastrar.php';
+            $escolaService = new EscolaService();
+            $escolas = $escolaService->listar();
+
+            require __DIR__ . '/../Views/usuario/cadastrar.php';
 
         }
     }

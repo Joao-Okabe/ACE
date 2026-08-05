@@ -1,6 +1,6 @@
 <?php
 
-class alunoController 
+class AlunoController 
 {
 
     private ?AlunoService $service = null;

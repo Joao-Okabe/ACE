@@ -1,6 +1,6 @@
 <?php
 
-class usuarioController
+class UsuarioController
 {
     private ?UsuarioService $service = null;
 
@@ -15,6 +15,8 @@ class usuarioController
 
     public function create(): void
     {
+        $escolaService = new EscolaService();
+        $escolas = $escolaService->listar();
         require __DIR__ . '/../Views/usuario/cadastrar.php';
     }
 

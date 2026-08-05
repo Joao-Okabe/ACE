@@ -8,7 +8,6 @@ class Escola extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO escola
             (
-                cd_usuario,
                 nome,
                 telefone,
                 cep,
@@ -18,7 +17,6 @@ class Escola extends Model
             )
             VALUES
             (
-                :usuario,
                 :nome,
                 :telefone,
                 :cep,
@@ -29,7 +27,6 @@ class Escola extends Model
         ");
 
         $stmt->execute([
-            ':usuario' => $dados['usuario'],
             ':nome' => $dados['nome'],
             ':telefone' => $dados['telefone'],
             ':cep' => $dados['cep'],
@@ -71,7 +68,6 @@ class Escola extends Model
         $stmt = $this->pdo->query("
             SELECT
                 cd_escola,
-                cd_usuario,
                 nome,
                 telefone,
                 cep,

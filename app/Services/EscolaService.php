@@ -94,29 +94,11 @@ class EscolaService
             throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
         }
 
-        $papelEscola = $this->usuarioModel->buscarPapelPorNome('ESCOLA');
-
-        if ($papelEscola === null) {
-            throw new Exception("Papel ESCOLA não encontrado.");
-        }
-
         try {
 
             $this->pdo->beginTransaction();
 
-            $idUsuario = $this->usuarioModel->cadastrar([
-                'email' => $dados['email'],
-                'senha' => $senhaHash
-            ]);
-
-            $this->usuarioModel->vincularPapel(
-                $idUsuario,
-                (int) $papelEscola['cd_papel']
-            );
-
             $this->escolaModel->cadastrar([
-
-                'usuario' => $idUsuario,
 
                 'nome' => $dados['nome'],
 

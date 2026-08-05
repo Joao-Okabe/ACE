@@ -31,6 +31,12 @@ class Autoloader
                     $files[] = $directory . strtolower($serviceName) . '.php';
                 }
 
+                if (str_contains($directory, '/Models/')) {
+                    $files[] = $directory . $className . 'Model.php';
+                    $files[] = $directory . lcfirst($className) . 'Model.php';
+                    $files[] = $directory . strtolower($className) . 'model.php';
+                }
+
                 foreach (array_unique($files) as $file) {
                     if (file_exists($file)) {
                         require_once $file;
