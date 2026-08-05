@@ -7,7 +7,6 @@ class Aluno extends Model
         $stmt = $this->pdo->prepare("
         INSERT INTO aluno(
             cd_usuario,
-            cd_escola,
             nome,
             ra,
             data_nascimento,
@@ -74,7 +73,6 @@ class Aluno extends Model
         $stmt = $this->pdo->query("
         SELECT  cd_aluno, 
                 cd_usuario, 
-                cd_escola, 
                 nome, 
                 ra, 
                 data_nascimento, 

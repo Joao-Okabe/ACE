@@ -12,6 +12,11 @@ $router->get(
     [AuthController::class, 'login']
 );
 
+$router->post(
+    '/login',
+    [AuthController::class, 'autenticar']
+);
+
 $router->get(
     '/logout',
     [AuthController::class, 'logout']
@@ -46,37 +51,37 @@ $router->get(
 );
 
 $router->get(
-    '/escolas/editar', [escolaController::class, 'edit']
+    '/escolas/editar', [EscolaController::class, 'edit']
 );
 
 $router->post(
-    '/escolas/atualizar', [escolaController::class, 'update']
+    '/escolas/atualizar', [EscolaController::class, 'update']
 );
 
 $router->get(
-    '/escolas/remover', [escolaController::class, 'destroy']
+    '/escolas/remover', [EscolaController::class, 'destroy']
 );
 
 $router->get(
-    '/alunos/cadastrar', [alunoController::class, 'create']
+    '/alunos/cadastrar', [AlunoController::class, 'create']
 );
 
 $router->post(
-    '/alunos', [alunoController::class, 'store']
+    '/alunos', [AlunoController::class, 'store']
 );
 
 $router->get(
-    '/alunos/listar', [alunoController::class, 'list']
+    '/alunos/listar', [AlunoController::class, 'list']
 );
 
 $router->get(
-    '/alunos/editar', [alunoController::class, 'edit']
+    '/alunos/editar', [AlunoController::class, 'edit']
 );
 
 $router->post(
-    '/alunos/atualizar', [alunoController::class, 'update']
+    '/alunos/atualizar', [AlunoController::class, 'update']
 );
 
 $router->get(
-    '/alunos/remover', [alunoController::class, 'destroy']
+    '/alunos/remover', [AlunoController::class, 'destroy']
 );

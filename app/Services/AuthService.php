@@ -4,9 +4,14 @@ class AuthService
 {
     private Usuario $usuarioModel;
 
+    private Papel $papel;
+
     public function __construct()
     {
         $this->usuarioModel = new Usuario();
+
+        $this->papel = new Papel();
+
     }
 
     public function autenticar(array $dados): array
@@ -32,7 +37,7 @@ class AuthService
         return [
             'id' => (int) $usuario['cd_usuario'],
             'email' => $usuario['email'],
-            'papeis' => $this->usuarioModel->listarPapeis((int) $usuario['cd_usuario'])
+            'papeis' => $this->papel->listarPapeis((int) $usuario['cd_usuario'])
         ];
     }
 }
