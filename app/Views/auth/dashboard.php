@@ -26,7 +26,6 @@ $usuario = $usuario ?? null;
 
             <div class="actions full">
                 <a href="/escolas/listar" class="button secondary">Listar escolas</a>
-                <a href="/alunos/cadastrar" class="button secondary">Cadastrar aluno</a>
                 <a href="/alunos/listar" class="button secondary">Listar alunos</a>
                 <a href="/logout" class="button">Sair</a>
             </div>

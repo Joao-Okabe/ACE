@@ -8,7 +8,7 @@ class Papel extends Model
         $stmt = $this->pdo->prepare("
             SELECT p.nome
             FROM papel p
-            INNER JOIN usuario_papel up
+            INNER JOIN vinculo_usuario_escola up
                 ON up.cd_papel = p.cd_papel
             WHERE up.cd_usuario = :usuario
             ORDER BY p.nome

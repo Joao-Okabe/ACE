@@ -26,4 +26,19 @@ class VinculoUsuarioEscola extends Model
             ':papel' => $idPapel
         ]);
     }
+
+    public function listarVinculo (int $idUsuario) {
+        $stmt = $this->pdo->prepare("
+            SELECT cd_escola, cd_papel FROM vinculo_usuario_escola
+            (
+                cd_escola,
+                cd_papel
+            )
+            WHERE cd_usuario = :cd_usuario
+        ");
+
+        $stmt->execute([
+            ':cd_usuario' => $idUsuario
+        ]);
+    }
 }
