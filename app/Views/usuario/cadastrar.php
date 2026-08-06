@@ -77,8 +77,8 @@ $valor = function ($campo) use ($dados) {
 
         <!--ESCOLA-->
                 <div class="field full">
-                    <label for="escola">Escola</label>
-                    <select name="escola" id="escola" required>
+                    <label for="escola" class="form-label">Escola</label>
+                    <select class="form-select form-input" name="escola" id="escola" required>
                     <option value="">Selecione uma escola</option>
 
                     <?php if (!empty($escolas)): ?>
@@ -91,6 +91,7 @@ $valor = function ($campo) use ($dados) {
                     </select>
                 </div>
 
+        <!--SENHA-->
                 <div class="field">
                     <label >Senha</label>
                     <div class="form-input-group mb-3">
@@ -120,7 +121,7 @@ $valor = function ($campo) use ($dados) {
                 
         <!--Link para login-->
                 <div class="text-center mt-2">
-                    <a href="../../Views/auth/login.php" class="auth-link">
+                    <a href="/login" class="auth-link">
                         Já possui conta? Login
                     </a>
                 </div>  
