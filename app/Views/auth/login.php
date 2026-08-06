@@ -41,7 +41,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
     <div class="col-lg-7 auth-right">
 
-        <div class="auth-card">
+        <div class="auth-card auth-card-login">
 
             <h1>Login</h1>
 

@@ -48,7 +48,7 @@
             </div>
     </nav>
 
-    <!--Sidebar-->
+<!--Sidebar-->
     <div class="sidebar">
         <div class="menu">
 
@@ -99,6 +99,19 @@
 
         </div>
     </div>
+
+<!-- Div de inicio -->    
+    <div class="content">  
+        <div class="d-flex justify-content-between align-items-center mb-4">
+        
+        <div>
+            <h2 class="form-title">Escolas</h2>
+            <p>Gerencie as escolas cadastradas.</p>
+        </div>
+            <a href="cadastro.php" class="btn btn-laranja">
+            + Adicionar escola
+            </a>
+        </div>
 
 <!-- Card da tabela-->
         <div class="card shadow">
@@ -177,6 +190,7 @@
             </div>
             </div>
         </div>
+    </div>
     <!--Js para o funcionamento da sidebar-->>
     <script src="../../js/script.js"></script>
 </body>
