@@ -60,24 +60,24 @@ class Aluno extends Model
         ]);
     }
 
-    //Pega a foto do aluno baseado no cd usuario, aluno = "a" e usuario = "u"
-    public function pegarFotoAluno(){
-        $stmt = $this->pdo->query("
-        SELECT 
-            u.foto_perfil
-        FROM aluno a INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario;
-        ");
-    }
-
     //Lista Alunos, a = aluno, u = usuario 
     // a.* = tudo da tabela aluno
+    // v = vinculo
     public function listar(): array
     {
         $stmt = $this->pdo->query("
         SELECT
             a.*,
             u.email,
-            u.foto_perfil
+            u.foto_perfil,
+            (
+                SELECT e.nome
+                FROM vinculo_usuario_escola up
+                INNER JOIN escola e ON e.cd_escola = up.cd_escola
+                WHERE up.cd_usuario = a.cd_usuario
+                    AND up.ativo = TRUE
+                LIMIT 1
+            ) AS escola
         FROM aluno a
         INNER JOIN usuario u
             ON u.cd_usuario = a.cd_usuario

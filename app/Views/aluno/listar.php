@@ -157,7 +157,7 @@ $usuario = $usuario ?? null;
                     <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
                     <td><?= htmlspecialchars($aluno['nome']) ?></td>
                     <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($aluno['cd_escola'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($aluno['escola'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
                     <td class="text-nowrap">
                         <a href="/alunos/visualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
