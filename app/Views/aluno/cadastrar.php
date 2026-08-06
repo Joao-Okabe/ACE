@@ -1,6 +1,7 @@
 <?php
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
+$escolas = $escolas ?? [];
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -75,8 +76,13 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </div>
 
                 <div class="field">
+                    <label for="foto_perfil">Foto de perfil</label>
+                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
+                </div>
+
+                <div class="field">
                     <label for="cep">CEP</label>
-                    <input type="text" id="cep" name="cep" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric">
+                    <input type="text" id="cepN" name="cep" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric">
                 </div>
 
                 <div class="actions full">

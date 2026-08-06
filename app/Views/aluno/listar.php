@@ -13,6 +13,7 @@
     <table>
         <tr>
             <th>Código</th>
+            <th>Foto</th>
             <th>Nome</th>
             <th>RA</th>
             <th>Escola</th>
@@ -23,11 +24,9 @@
             <tr>
                 <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
                 <td>
-                    <?php if (!empty($aluno['foto_perfil'])): ?>
-                        <img src="<?= htmlspecialchars($aluno['foto_perfil']) ?>" alt="Foto de <?= htmlspecialchars($aluno['nome']) ?>" width="50" height="50">
-                    <?php endif; ?>
-                    <?= htmlspecialchars($aluno['nome']) ?>
-                </td>
+                <td><img src="<?= htmlspecialchars($aluno['foto_perfil']) ?>" alt="Foto"></td>
+                <td><?= htmlspecialchars($aluno['nome']) ?></td>
+
                 <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
                 <td><?= htmlspecialchars($aluno['cd_escola'] ?? '') ?></td>
                 <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
