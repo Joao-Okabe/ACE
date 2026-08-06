@@ -44,8 +44,7 @@ class Aluno extends Model
             data_nascimento = :data_nascimento,
             sexo = :sexo,
             telefone = :telefone,                
-            cep = :cep,                
-            cd_escola = :cd_escola          
+            cep = :cep
         WHERE cd_aluno = :id");
 
         $stmt->execute([
@@ -55,7 +54,6 @@ class Aluno extends Model
             ':sexo' => $dados['sexo'] ?? null,
             ':telefone' => $dados['telefone'] ?? null,
             ':cep' => $dados['cep'] ?? null,
-            ':cd_escola' => $dados['cd_escola'] ?? $dados['escola'] ?? null,
             ':id' => $id
         ]);
     }
@@ -83,22 +81,22 @@ class Aluno extends Model
             ON u.cd_usuario = a.cd_usuario
         ";
 
-        $params = [];
-        $where = [];
+        $parametro = [];
+        $onde = [];
 
         if (!empty($filtros['nome'])) {
-            $where[] = 'a.nome ILIKE :nome';
-            $params[':nome'] = '%' . $filtros['nome'] . '%';
+            $onde[] = 'a.nome ILIKE :nome';
+            $parametro[':nome'] = '%' . $filtros['nome'] . '%';
         }
 
         if (!empty($filtros['escola'])) {
-            $where[] = 'a.cd_usuario IN (
+            $onde[] = 'a.cd_usuario IN (
                 SELECT up.cd_usuario
                 FROM vinculo_usuario_escola up
                 WHERE up.cd_escola = :cd_escola
                     AND up.ativo = TRUE
             )';
-            $params[':cd_escola'] = $filtros['escola'];
+            $parametro[':cd_escola'] = $filtros['escola'];
         }
 
         if (!empty($where)) {
@@ -110,7 +108,7 @@ class Aluno extends Model
         $sql .= " ORDER BY a.cd_aluno {$ordem}";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
+        $stmt->execute($parametro);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
