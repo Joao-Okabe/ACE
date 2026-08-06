@@ -49,7 +49,6 @@ $escolas = $escolas ?? [];
                         <p class="session-info">Sessão inválida.</p>
                     <?php endif; ?>
                 </div>
-                <i class="bi bi-chevron-down"></i>
             </div>
     </nav>
 
@@ -120,6 +119,9 @@ $escolas = $escolas ?? [];
                 <label for="img" class="foto-perfil" id="fotoPerfil">
                     <i class="bi bi-camera-fill"></i>
                 </label>
+                <div class="text-perfil">
+                    <p class="form-label">Adicionar foto de perfil</p>
+                </div>
                 <input type="file" id="img" accept="image/*" hidden>
             </div>
         </div>

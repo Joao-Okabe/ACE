@@ -85,9 +85,14 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
                 <div class="field full">
                     <label>Selecione a imagem:</label>
-                    <label for="img_logo" class="foto-perfil" id="fotoLogoEscola">
-                        <i class="bi bi-camera-fill"></i>
-                    </label>
+                    <div class="perfil-aluno">
+                        <label for="img_logo" class="foto-perfil" id="fotoLogoEscola">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
+                        <div class="text-perfil">
+                            <p class="form-label">Adicionar brasão/logo</p>
+                        </div>
+                    </div>
                     <input type="file" accept="image/*" name="img_logo" id="img_logo">
                 </div>
                 <div class="actions full">

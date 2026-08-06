@@ -49,8 +49,6 @@ $escolas = $escolas ?? [];
                     <p class="alert error">Sessão inválida.</p>
                 <?php endif; ?>
             </div>
-
-            <i class="bi bi-chevron-down"></i>
         </div>
     </nav>
 

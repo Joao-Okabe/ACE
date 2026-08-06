@@ -48,15 +48,13 @@ $usuario = $usuario ?? null;
                     <p class="alert error">Sessão inválida.</p>
                 <?php endif; ?>
             </div>
-
-            <i class="bi bi-chevron-down"></i>
         </div>
     </nav>
 <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="menu">
 
-            <a href="=/dashboard" class="menu-item active">
+            <a href="/dashboard" class="menu-item active">
                 <i class="bi bi-house-door-fill"></i>
                 <span>Painel</span>
             </a>

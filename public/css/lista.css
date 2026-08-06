@@ -32,7 +32,27 @@
 /*Card da tabela*/
 .card-list .table{
     --bs-table-striped-bg:#f7efe4;
+    --bs-table-color: var(--azul-principal);
 }
+
+
+
+.list-perfil{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.list-perfil img{
+    margin-left: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--azul-principal);
+}
+
 
 /*Botão de visualizar, editar e remover*/
 .btn-view,
