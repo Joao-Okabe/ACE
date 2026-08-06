@@ -69,6 +69,21 @@ class Usuario extends Model
         ]);
     }
 
+    //Atualiza foto de perfil
+    public function atualizarFotoPerfil(int $id, ?string $fotoPerfil): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE usuario
+            SET foto_perfil = :foto_perfil
+            WHERE cd_usuario = :id
+        ");
+
+        $stmt->execute([
+            ':foto_perfil' => $fotoPerfil,
+            ':id' => $id
+        ]);
+    }
+
     //Remove usuario
     public function remover(int $id): void
     {

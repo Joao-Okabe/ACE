@@ -172,7 +172,66 @@ class AlunoService
     //Atualiza Aluno
     public function atualizar(int $id, array $dados): void
     {
-        $this->alunoModel->atualizar($id, $dados);
+        $aluno = $this->alunoModel->buscar($id);
+
+        if ($aluno === null) {
+            throw new Exception('Aluno não encontrado.');
+        }
+
+        $this->pdo->beginTransaction();
+
+        try {
+            $arquivo = $_FILES['foto_perfil'] ?? null;
+            $caminhoPublicoFoto = null;
+
+            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
+                $nomeArquivo = $arquivo['name'];
+                $tamanhoArquivo = (int) $arquivo['size'];
+                $erroArquivo = (int) $arquivo['error'];
+                $tmpArquivo = $arquivo['tmp_name'];
+
+                $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+                $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+                if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
+                    throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
+                }
+
+                if ($erroArquivo !== 0) {
+                    throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
+                }
+
+                if ($tamanhoArquivo > 2 * 1024 * 1024) {
+                    throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+                }
+
+                $pastaUploads = __DIR__ . '/../../public/uploads';
+
+                if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
+                    throw new Exception('Não foi possível criar a pasta de uploads.');
+                }
+
+                $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
+                $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
+                $caminhoPublicoFoto = '/uploads/' . $novoNomeArquivo;
+
+                if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
+                    throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
+                }
+
+                $this->usuarioModel->atualizarFotoPerfil((int) $aluno['cd_usuario'], $caminhoPublicoFoto);
+            }
+
+            $this->alunoModel->atualizar($id, $dados);
+
+            $this->pdo->commit();
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+        }
     }
 
     //Remove Aluno
