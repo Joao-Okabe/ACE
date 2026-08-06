@@ -28,17 +28,17 @@ class VinculoUsuarioEscola extends Model
     }
 
     public function listarVinculo (int $idUsuario) {
-        $stmt = $this->pdo->prepare("
-            SELECT cd_escola, cd_papel FROM vinculo_usuario_escola
-            (
-                cd_escola,
-                cd_papel
-            )
-            WHERE cd_usuario = :cd_usuario
-        ");
+        $stmt = $this->pdo->prepare(
+            "SELECT cd_escola, cd_papel
+            FROM vinculo_usuario_escola
+            WHERE cd_usuario = :cd_usuario"
+        );
 
         $stmt->execute([
             ':cd_usuario' => $idUsuario
         ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
     }
-}

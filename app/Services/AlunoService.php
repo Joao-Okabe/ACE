@@ -61,46 +61,6 @@ class AlunoService
         try {
             $this->pdo->beginTransaction();
 
-            // tratar upload de foto_perfil (opcional)
-            $arquivo = $_FILES['foto_perfil'] ?? null;
-            $caminhoPublicoFoto = null;
-
-            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
-                $nomeArquivo = $arquivo['name'];
-                $tamanhoArquivo = (int) $arquivo['size'];
-                $erroArquivo = (int) $arquivo['error'];
-                $tmpArquivo = $arquivo['tmp_name'];
-
-                $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
-                $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-                if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
-                    throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
-                }
-
-                if ($erroArquivo !== 0) {
-                    throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
-                }
-
-                if ($tamanhoArquivo > 2 * 1024 * 1024) {
-                    throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
-                }
-
-                $pastaUploads = __DIR__ . '/../../public/uploads';
-
-                if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
-                    throw new Exception('Não foi possível criar a pasta de uploads.');
-                }
-
-                $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
-                $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
-                $caminhoPublicoFoto = '/uploads/' . $novoNomeArquivo;
-
-                if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
-                    throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
-                }
-            }
-
             // validações adicionais
             if (empty($dados['escola'])) {
                 throw new Exception('Selecione a escola do aluno.');
@@ -115,10 +75,11 @@ class AlunoService
                 'senha' => $senhaHash
             ]);
 
+            $papelAluno = 6; // código do papel de aluno :)
             $this->vinculoEscolaUsuarioModel->vincularPapel(
                 $idUsuario,
                 (int) $dados['cd_escola'], //Passa o id da escola para o vinculo
-                (int) $papelAluno['cd_papel']
+                (int) $papelAluno
             );
 
             $this->alunoModel->cadastrar([
@@ -130,7 +91,6 @@ class AlunoService
                 'sexo' => $dados['sexo'] ?? null,
                 'telefone' => $this->normalizarCampoOpcional($dados['telefone'] ?? null),
                 'cep' => $this->normalizarCampoOpcional($dados['cep'] ?? null),
-                'foto_perfil' => $caminhoPublicoFoto
             ]);
 
             $this->pdo->commit();
