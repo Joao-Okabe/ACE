@@ -1,0 +1,134 @@
+/*==== PAINEL ====*/
+
+/*--Conteúdo--*/
+
+/*Data*/
+.dashboard-date{
+    color: var(--azul-principal);
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/*Card menores*/
+.card-info{
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: .3s;
+}
+
+.card-info:hover{
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-info h6{
+    color: var(--azul-principal);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.card-info h2{
+    color: var(--azul-principal);
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.card-info small{
+    color: #6c757d;
+}
+
+/*Icon dentro dos cards menores 'sombra'*/
+.icon-square{
+    width: 70px;
+    height: 70px;
+
+    border-radius: 10px;
+
+    background: rgba(244,78,28,.08);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-square i{
+    font-size: 34px;
+    color: var(--laranja-principal);
+}
+
+/*--Cards grandes--*/
+.dashboard-box{
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow-sm);
+
+}
+
+.dashboard-box h5{
+    color: var(--azul-principal);
+    font-weight: 700;
+}
+
+/* Próximas partidas */
+.partida-item small{
+    color: var(--laranja-principal);
+    font-weight: 600;
+}
+
+.partida-item h5{
+    margin: 10px 0;
+    color: var(--azul-principal);
+}
+
+.partida-item h5 span{
+    color: var(--laranja-principal);
+    margin: 0 12px;
+}
+
+.infos{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.infos span{
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.infos i{
+    color: var(--laranja-principal);
+}
+
+/* Jogos ao vivo */
+.live-game{
+    text-align: center;
+}
+.bg-laranja{
+    background-color: var(--laranja-principal);
+}
+
+
+
+.dashboard-box {
+    margin-bottom: 30px;
+}
+
+.placar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.placar h2 {
+    margin: 0;
+}

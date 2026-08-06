@@ -1,0 +1,94 @@
+/*==== Login/Cadastro ====*/
+
+/*--Div esquerda--*/
+.auth-left{
+    background:var(--bege-principal);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.left-content{
+    width:100%;
+    text-align:center;
+}
+
+/*Logo*/
+.auth-logo{
+    width:320px;
+    margin-bottom:30px;
+}
+
+/*Título*/
+.titulo-esquerda{
+    color: var(--azul-principal);
+    font-weight:bold;
+    font-size:30px;
+    margin-bottom:20px;
+}
+
+
+
+
+/*--Div direita--*/
+
+.auth-right{
+    background: var(--azul-principal);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/*Card*/
+.auth-card{
+    width:520px;
+    background: var(--branco);
+    padding:60px;
+    border-radius:24px;
+    box-shadow: var(--shadow-md);
+}
+
+.auth-card h1{
+    color: var(--azul-principal);
+    text-align:center;
+    font-size:55px;
+    font-weight:700;
+}
+
+.auth-card p{
+    color: var(--azul-principal);
+    text-align:center;
+}
+
+.auth-card label{
+    color: var(--azul-principal);
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.auth-link{
+    color: var(--laranja-principal);
+    text-decoration:none;
+}
+
+.auth-link:hover{
+    text-decoration:underline;
+}
+
+
+
+
+/*--VARIÁVEIS--*/
+:root{
+    --azul-principal:#181847;
+    --laranja-principal:#F44E1C;
+    --bege-principal:#F1E4D1;
+    --branco:#FFF;
+    --preto:#212529;
+
+    --radius:12px;
+    --transition:.3s ease;
+
+    --shadow-sm:0 3px 8px rgba(0,0,0,.08);
+    --shadow-md:0 6px 20px rgba(0,0,0,.12);
+}

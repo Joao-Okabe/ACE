@@ -1,0 +1,92 @@
+/*==== Lista/Tabela ====*/
+
+/*--Lista--*/
+.list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/*--Card--*/
+.card-list{
+    width: 100%;
+    overflow: hidden;
+    border: none;
+    border-radius: 10px;
+    color: var(--azul-principal);
+    box-shadow: var(--shadow-md);
+}
+
+
+
+/*--Tabela--*/
+
+/*Cabeçalho da tabela*/
+.table-blue,
+.table-blue th{
+    background: var(--azul-principal);
+    color: var(--branco);
+    border-color: var(--azul-principal);
+}
+/*Card da tabela*/
+.card-list .table{
+    --bs-table-striped-bg:#f7efe4;
+}
+
+/*Botão de visualizar, editar e remover*/
+.btn-view,
+.btn-edit,
+.btn-delete{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    transition:var(--transition);
+}
+
+.btn-view{ 
+    background:#eef2ff;
+    color:#1f1f63;
+    border-color:#1f1f63;
+}
+.btn-view:hover{
+    background:#1f1f63;
+    color:#fff;
+}
+
+.btn-edit{
+    background:#fff3e8;
+    color:#ff5a1f;
+    border-color:#ff5a1f;
+}
+.btn-edit:hover{
+    background:#ff5a1f;
+    color:#fff;
+}
+
+.btn-delete{
+    background:#ffe8e8;
+    color:#dc3545;
+    border-color:#dc3545;
+}
+.btn-delete:hover{
+    background:#dc3545;
+    color:#fff;
+}
+
+
+
+/*--VARIÁVEIS--*/
+:root{
+    --azul-principal:#181847;
+    --laranja-principal:#F44E1C;
+    --bege-principal:#F1E4D1;
+    --branco:#FFF;
+    --preto:#212529;
+
+    --radius:12px;
+    --transition:.3s ease;
+
+    --shadow-sm:0 3px 8px rgba(0,0,0,.08);
+    --shadow-md:0 6px 20px rgba(0,0,0,.12);
+}

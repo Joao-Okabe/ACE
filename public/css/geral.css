@@ -1,0 +1,133 @@
+/*==== Geral ====*/
+
+/*corpo do site*/
+body{
+    font-family:"Poppins",sans-serif;
+    background:#faf8f5;
+    color:var(--preto);
+}
+
+/*Botão laranja*/
+.btn-laranja{
+    background:var(--azul-principal);
+    color:var(--branco);
+    padding: 12px 20px;
+    border:none;
+    border-radius:var(--radius);
+    font-weight:600;
+    transition:var(--transition);
+}
+
+.btn-laranja:hover{
+    background:var(--laranja-principal);
+    color:var(--branco);
+}
+
+.btn-outline-secondary{
+    border-radius: var(--radius);
+    padding: 12px 20px;
+}
+
+
+
+/*--Formulário--*/
+.form-card{
+    background: var(--branco);
+    border-radius: 20px;
+    padding: 40px;
+    border: none;
+}
+
+.form-title{
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--azul-principal);
+}
+
+.form-subtitle{
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.form-label{
+    font-weight: 600;
+    color: var(--azul-principal);
+}
+
+.form-label span{
+    color: var(--laranja-principal);
+}
+
+.form-input{
+    height: 55px;
+    border-radius: 14px;
+    border: 2px solid #E8E8E8;
+    transition: .3s;
+}
+
+.form-input:focus{
+    border-color: var(--laranja-principal);
+    box-shadow: 0 0 0 .15rem rgba(255,90,31,.2);
+}
+
+.form-input-group .input-group-text{
+    background: var(--branco);
+    border: 2px solid #E8E8E8;
+    border-radius: 14px 0 0 14px;
+}
+
+
+
+/*--Foto de perfil--*/
+.foto-perfil{
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    background-color: #f2f2f2;
+    border: 3px solid var(--azul-principal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: .3s;
+}
+
+.foto-perfil:hover,
+.foto-perfil i:hover{
+    border-color: var(--laranja-principal);
+    color: var(--laranja-principal);
+}
+
+.foto-perfil i{
+    font-size: 50px;
+    color: var(--azul-principal);
+}
+
+.foto-perfil img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+/*--VARIÁVEIS--*/
+:root{
+    --azul-principal:#181847;
+    --laranja-principal:#F44E1C;
+    --bege-principal:#F1E4D1;
+    --branco:#FFF;
+    --preto:#212529;
+
+    --radius:12px;
+    --transition:.3s ease;
+
+    --shadow-sm:0 3px 8px rgba(0,0,0,.08);
+    --shadow-md:0 6px 20px rgba(0,0,0,.12);
+}
