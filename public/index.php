@@ -6,6 +6,7 @@ session_start();
 
 require_once __DIR__ . '/../app/Core/Autoloader.php';
 Autoloader::register();
+require_once __DIR__ . '/../app/Core/View.php';
 
 require_once __DIR__ . '/../routes/web.php';
 $router->dispatch();

@@ -17,9 +17,8 @@ class AlunoController
     //Passa sessão do usuário e exibe tela de cadastro de aluno
     public function create(): void
     {
-        $usuario = $_SESSION['usuario'] ?? null;
         $escolas = (new EscolaService())->listar();
-        require __DIR__ . '/../Views/aluno/cadastrar.php';
+        renderView('aluno/cadastrar', ['escolas' => $escolas]);
     }
 
     //Salva um novo aluno
@@ -39,7 +38,7 @@ class AlunoController
 
             $escolas = (new EscolaService())->listar();
 
-            require __DIR__ . '/../Views/aluno/cadastrar.php';
+            renderView('aluno/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
 
         }
     }
@@ -48,7 +47,7 @@ class AlunoController
     public function list(): void
     {
         $alunos = $this->service()->listar();
-        require __DIR__ . '/../Views/aluno/listar.php';
+        renderView('aluno/listar', ['alunos' => $alunos]);
     }
 
     //Exibe formulário de edição do Aluno
@@ -63,7 +62,7 @@ class AlunoController
 
         $aluno = $this->service()->buscar($id);
         $escolas = (new EscolaService())->listar();
-        require __DIR__ . '/../Views/aluno/editar.php';
+        renderView('aluno/editar', ['aluno' => $aluno, 'escolas' => $escolas]);
     }
 
     //Remove Aluno

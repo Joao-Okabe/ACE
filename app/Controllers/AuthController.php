@@ -20,7 +20,7 @@ class AuthController
             exit;
         }
 
-        require __DIR__ . '/../Views/auth/login.php';
+        renderView('auth/login');
     }
 
     public function autenticar(): void
@@ -42,7 +42,7 @@ class AuthController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            require __DIR__ . '/../Views/auth/login.php';
+            renderView('auth/login', ['erro' => $erro, 'dados' => $dados]);
         }
     }
 

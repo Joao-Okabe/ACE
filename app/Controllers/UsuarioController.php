@@ -17,7 +17,7 @@ class UsuarioController
     {
         $escolaService = new EscolaService();
         $escolas = $escolaService->listar();
-        require __DIR__ . '/../Views/usuario/cadastrar.php';
+        renderView('usuario/cadastrar', ['escolas' => $escolas]);
     }
 
     public function store(): void
@@ -34,7 +34,7 @@ class UsuarioController
             $escolaService = new EscolaService();
             $escolas = $escolaService->listar();
 
-            require __DIR__ . '/../Views/usuario/cadastrar.php';
+            renderView('usuario/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
         }
     }
 }
