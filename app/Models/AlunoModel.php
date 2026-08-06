@@ -63,9 +63,9 @@ class Aluno extends Model
     //Lista Alunos, a = aluno, u = usuario 
     // a.* = tudo da tabela aluno
     // v = vinculo
-    public function listar(): array
+    public function listar(array $filtros = []): array
     {
-        $stmt = $this->pdo->query("
+        $sql = "
         SELECT
             a.*,
             u.email,
@@ -81,8 +81,36 @@ class Aluno extends Model
         FROM aluno a
         INNER JOIN usuario u
             ON u.cd_usuario = a.cd_usuario
-        ORDER BY a.nome
-        ");
+        ";
+
+        $params = [];
+        $where = [];
+
+        if (!empty($filtros['nome'])) {
+            $where[] = 'a.nome ILIKE :nome';
+            $params[':nome'] = '%' . $filtros['nome'] . '%';
+        }
+
+        if (!empty($filtros['escola'])) {
+            $where[] = 'a.cd_usuario IN (
+                SELECT up.cd_usuario
+                FROM vinculo_usuario_escola up
+                WHERE up.cd_escola = :cd_escola
+                    AND up.ativo = TRUE
+            )';
+            $params[':cd_escola'] = $filtros['escola'];
+        }
+
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+
+        $ordem = strtoupper($filtros['ordem'] ?? 'ASC');
+        $ordem = in_array($ordem, ['ASC', 'DESC'], true) ? $ordem : 'ASC';
+        $sql .= " ORDER BY a.cd_aluno {$ordem}";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

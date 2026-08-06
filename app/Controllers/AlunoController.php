@@ -46,8 +46,24 @@ class AlunoController
     //Lista todos os alunos
     public function list(): void
     {
-        $alunos = $this->service()->listar();
-        renderView('aluno/listar', ['alunos' => $alunos]);
+        $filtros = [
+            'nome' => trim($_GET['nome'] ?? ''),
+            'escola' => (int) ($_GET['escola'] ?? 0),
+            'ordem' => strtolower($_GET['ordem'] ?? 'asc'),
+        ];
+
+        if (!in_array($filtros['ordem'], ['asc', 'desc'], true)) {
+            $filtros['ordem'] = 'asc';
+        }
+
+        $alunos = $this->service()->listar($filtros);
+        $escolas = (new EscolaService())->listar();
+
+        renderView('aluno/listar', [
+            'alunos' => $alunos,
+            'escolas' => $escolas,
+            'filtros' => $filtros,
+        ]);
     }
 
     //Exibe formulário de edição do Aluno
