@@ -79,9 +79,15 @@ body{
 
 
 /*--Foto de perfil--*/
+.perfil-aluno{
+    display: flex;
+    align-items: center;
+    gap: 20px; /* espaço entre a foto e o texto */
+}
+
 .foto-perfil{
-    width: 125px;
-    height: 125px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     background-color: #f2f2f2;
     border: 3px solid var(--azul-principal);
@@ -109,12 +115,12 @@ body{
     height: 100%;
     object-fit: cover;
 }
-.cabecalho {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
+.text-perfil{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
 
 /*--VARIÁVEIS--*/

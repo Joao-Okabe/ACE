@@ -49,7 +49,6 @@ $usuario = $usuario ?? null;
                         <p class="alert error">Sessão inválida.</p>
                     <?php endif; ?>
                 </div>
-                <i class="bi bi-chevron-down"></i>
             </div>
     </nav>
 
@@ -173,6 +172,7 @@ $usuario = $usuario ?? null;
                 
             <thead class="table-blue">
               <tr>
+                <th scope="col">Perfil</th>
                 <th scope="col">Código</th>
                 <th scope="col">Nome</th>
                 <th scope="col">RA</th>
@@ -184,6 +184,11 @@ $usuario = $usuario ?? null;
                 <tbody class="table-group-divider">
                 <?php foreach ($alunos as $aluno): ?>
                 <tr>
+                    <td>
+                        <div class="tc list-perfil">
+                            <img src="<?= htmlspecialchars(upload_url($aluno['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                        </div>
+                    </td>
                     <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
                     <td><?= htmlspecialchars($aluno['nome']) ?></td>
                     <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>

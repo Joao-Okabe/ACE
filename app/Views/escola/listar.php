@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/lista.css">
 
-    <title>Alunos</title>
+    <title>Escolas</title>
 </head>
 <body>
 <!--Navbar-->
@@ -45,7 +45,6 @@
                     <p class="alert error">Sessão inválida.</p>
                 <?php endif; ?>
             </div>
-                <i class="bi bi-chevron-down"></i>
             </div>
     </nav>
 
@@ -100,26 +99,85 @@
 
         </div>
     </div>
-    <h2>Escolas cadastradas</h2>
-        <table>
-            <tr>
-                <th>Código da Escola</th>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>CEP</th>
-                <th>Estado</th>
-                <th>Categoria</th>
-            </tr>
-            <?php foreach ($escolas as $escola): ?>
-                <tr>
-                    <td><?= htmlspecialchars($escola['cd_escola']) ?></td>
-                    <td><?= htmlspecialchars($escola['nome']) ?></td>
-                    <td><?= htmlspecialchars($escola['telefone']) ?></td>
-                    <td><?= htmlspecialchars($escola['cep']) ?></td>
-                    <td><? if (($escola['ativa']) == 1 ) { echo "Ativa"; } else { echo "Inativa"; } ?></td>
-                    <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+
+<!-- Card da tabela-->
+        <div class="card shadow">
+            <div class="card-body">
+            <div class="d-flex justify-content-between mb-4">
+
+                <div class="input-group w-25">
+                    <div class="form-input-group">
+                        <input type="text" class="form-control form-input" placeholder="Pesquisar escola">
+                    </div>
+                </div>                      
+
+                <button class="btn btn-outline-secondary">
+                    <i class="bi bi-funnel"></i>
+                    Filtros
+                </button>
+
+            </div>
+
+<!-- Tabela -->
+            <div class="list mt-4">      
+                    <div class="card card-list">
+                    <table class="table table-striped table-borderless mb-0">
+                        
+                    <thead class="table-blue">
+                    <tr>
+                        <th scope="col">Brasão</th>
+                        <th scope="col">Código da Escola</th>
+                        <th scope="col">Nome</th>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                        <th scope="col">Telefone</th>
+                        <th scope="col">CEP</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                    </thead>
+                <tbody class="table-group-divider">
+                <?php foreach ($escolas as $escola): ?>
+                    <tr>
+                        <td>
+                            <div class="tc list-perfil">
+                                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasão">
+                            </div>
+                        </td>
+                        <td><?= htmlspecialchars($escola['cd_escola']) ?></td>
+                        <td><?= htmlspecialchars($escola['nome']) ?></td>
+                        <td><?= htmlspecialchars($escola['telefone']) ?></td>
+                        <td><?= htmlspecialchars($escola['cep']) ?></td>
+                        <td><?php if (($escola['ativa']) == 1 ) { echo "Ativa"; } else { echo "Inativa"; } ?></td>
+                        <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
+                        <td>
+                        <!--Btn Visualizar -->
+                        <button class="btn btn-view btn-sm" title="Visualizar">
+                            <a href="">
+                            <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </button>
+                        <!--Btn Editar -->
+                        <button class="btn btn-edit btn-sm" title="Editar">
+                            <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>"> 
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </button>
+                        <!--Btn Excluir -->
+                        <button class="btn btn-delete btn-sm" title="Excluir">
+                            <a href="">
+                            <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </button>
+                        </td>
+                <?php endforeach; ?>
+                    </tr>
+                </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    <!--Js para o funcionamento da sidebar-->>
+    <script src="../../js/script.js"></script>
 </body>
 </html>

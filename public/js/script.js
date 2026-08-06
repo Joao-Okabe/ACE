@@ -11,33 +11,14 @@ const btn = document.getElementById("menu-btn");
 });
 
 
-/*--Adicionar preview para inputs de arquivo com label de preview--*/
-document.querySelectorAll('input[type="file"]').forEach((fileInput) => {
-    fileInput.addEventListener('change', function () {
-        const arquivo = this.files && this.files[0];
-        if (!arquivo) return;
+/*--Adicionar foto de perfil--*/
+const input = document.getElementById("img");
+const fotoPerfil = document.getElementById("fotoPerfil");
 
-        // Procura por label[for="inputId"] que funciona como preview
-        const inputId = this.id;
-        let previewLabel = null;
+input.addEventListener("change", function () {
+    const arquivo = this.files[0];
 
-        if (inputId) {
-            previewLabel = document.querySelector('label[for="' + inputId + '"]');
-        }
-
-        // fallback para elemento com id fotoPerfil
-        if (!previewLabel) {
-            previewLabel = document.getElementById('fotoPerfil') || document.getElementById('fotoPerfilUsuario') || document.getElementById('fotoLogoEscola') || document.getElementById('fotoLogoEscolaEditar');
-        }
-
-        if (previewLabel) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(arquivo);
-            img.alt = 'Preview';
-            img.style.maxWidth = '160px';
-            img.style.objectFit = 'cover';
-            previewLabel.innerHTML = '';
-            previewLabel.appendChild(img);
-        }
-    });
+    if (arquivo) {
+        fotoPerfil.innerHTML = `<img src="${URL.createObjectURL(arquivo)}" alt="Foto">`;
+    }
 });
