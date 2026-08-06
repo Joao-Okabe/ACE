@@ -50,7 +50,6 @@ class Aluno extends Model
             sexo = :sexo,
             telefone = :telefone,                
             cep = :cep,                
-            foto_perfil = :foto_perfil,              
             cd_escola = :cd_escola          
         WHERE cd_aluno = :id");
 
@@ -61,7 +60,6 @@ class Aluno extends Model
             ':sexo' => $dados['sexo'] ?? null,
             ':telefone' => $dados['telefone'] ?? null,
             ':cep' => $dados['cep'] ?? null,
-            ':foto_perfil' => $dados['foto_perfil'] ?? null,
             ':cd_escola' => $dados['cd_escola'] ?? $dados['escola'] ?? null,
             ':id' => $id
         ]);

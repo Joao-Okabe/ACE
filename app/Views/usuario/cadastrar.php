@@ -28,7 +28,7 @@ $valor = function ($campo) use ($dados) {
                 <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
             <?php endif; ?>
 
-            <form action="/usuarios" method="post" class="form-grid">
+            <form action="/usuarios" method="post" enctype="multipart/form-data" class="form-grid">
                 <div class="field full">
                     <label for="email">E-mail</label>
                     <input type="email" id="email" name="email" value="<?= $valor('email') ?>" required>
@@ -45,7 +45,7 @@ $valor = function ($campo) use ($dados) {
                             <?= htmlspecialchars($escola['nome']) ?>
                         </option>
                     <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php endif; ?>
                 </select>
                 </div>
 
@@ -64,6 +64,11 @@ $valor = function ($campo) use ($dados) {
                         <option value="4" <?= $valor('papel') === '4' ? 'selected' : '' ?>>Coordenador Escolar</option>
                         <option value="5" <?= $valor('papel') === '5' ? 'selected' : '' ?>>Diretor</option>
                     </select>
+                </div>
+                
+                <div class="field full">
+                    <label>Foto de perfil</label>
+                    <input type="file" accept="image/*" name="foto_perfil">
                 </div>
 
                 <div class="actions full">

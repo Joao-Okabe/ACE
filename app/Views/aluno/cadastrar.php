@@ -79,10 +79,6 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                     <input type="text" id="cep" name="cep" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric">
                 </div>
 
-                <div class="field full">
-                    <label>Foto de perfil</label>
-                    <input type="file" accept="image/*" name="foto_perfil">
-                </div>
                 <div class="actions full">
                     <a href="/usuarios/cadastrar" class="button secondary">Cadastrar usuário</a>
                     <button type="submit">Cadastrar Aluno</button>

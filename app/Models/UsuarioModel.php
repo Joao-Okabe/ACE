@@ -9,22 +9,31 @@ class Usuario extends Model
             INSERT INTO usuario
             (
                 email,
-                senha
+                senha,
+                foto_perfil
             )
             VALUES
             (
                 :email,
-                :senha
+                :senha,
+                :foto_perfil
             )
             RETURNING cd_usuario
         ");
 
         $stmt->execute([
             ':email' => $dados['email'],
-            ':senha' => $dados['senha']
+            ':senha' => $dados['senha'],
+            ':foto_perfil' => $dados['foto_perfil'] ?? null,
         ]);
 
-        return (int) $stmt->fetchColumn();
+            $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($res === false || !isset($res['cd_usuario'])) {
+                throw new Exception('Não foi possível cadastrar o usuário.');
+            }
+
+            return (int) $res['cd_usuario'];
     }
 
     //Busca usuario pelo email
@@ -59,6 +68,8 @@ class Usuario extends Model
             ':id' => $id
         ]);
     }
+
+    
 
     //Remove usuario
     public function remover(int $id): void

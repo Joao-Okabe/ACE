@@ -31,6 +31,9 @@ class UsuarioController
             $erro = $e->getMessage();
             $dados = $_POST;
 
+            $escolaService = new EscolaService();
+            $escolas = $escolaService->listar();
+
             require __DIR__ . '/../Views/usuario/cadastrar.php';
         }
     }
