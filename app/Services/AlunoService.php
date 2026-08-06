@@ -153,9 +153,9 @@ class AlunoService
         }
     }
 
-    public function listar(): array
+    public function listar(array $filtros = []): array
     {
-        return $this->alunoModel->listar();
+        return $this->alunoModel->listar($filtros);
     }
 
     public function buscar(int $id): array

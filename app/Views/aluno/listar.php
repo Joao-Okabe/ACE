@@ -122,17 +122,47 @@ $usuario = $usuario ?? null;
             <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
 
-                <div class="form-input-group w-25">
-                    <div class="input-group">
-                        <input type="text" class="form-control form-input" placeholder="Pesquisar aluno">
+                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/alunos/listar">
+                    <div class="col-md-4">
+                        <div class="form-input-group">
+                            <div class="input-group">
+                                <input
+                                    type="text"
+                                    name="nome"
+                                    class="form-control form-input"
+                                    placeholder="Pesquisar aluno"
+                                    value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                >
+                            </div>
+                        </div>
                     </div>
-                </div>                      
 
-                <button class="btn btn-outline-secondary">
-                    <i class="bi bi-funnel"></i>
-                    Filtros
-                    <i class="bi bi-chevron-down"></i>
-                </button>
+                    <div class="col-md-3">
+                        <div class="form-input-group">
+                            <select name="escola" class="form-select form-input">
+                                <option value="">Todas as escolas</option>
+                                <?php foreach ($escolas as $escola): ?>
+                                    <option value="<?= htmlspecialchars($escola['cd_escola'], ENT_QUOTES, 'UTF-8') ?>" <?= isset($filtros['escola']) && $filtros['escola'] == $escola['cd_escola'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($escola['nome'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-input-group">
+                            <select name="ordem" class="form-select form-input">
+                                <option value="asc" <?= ($filtros['ordem'] ?? 'asc') === 'asc' ? 'selected' : '' ?>>Código crescente</option>
+                                <option value="desc" <?= ($filtros['ordem'] ?? 'asc') === 'desc' ? 'selected' : '' ?>>Código decrescente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-laranja">Buscar</button>
+                    </div>
+                </form>
 
             </div>
 
