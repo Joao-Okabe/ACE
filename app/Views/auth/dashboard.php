@@ -56,7 +56,7 @@ $usuario = $usuario ?? null;
     <div class="sidebar">
         <div class="menu">
 
-            <a href="./../auth/painel.html" class="menu-item active">
+            <a href="=/dashboard" class="menu-item active">
                 <i class="bi bi-house-door-fill"></i>
                 <span>Painel</span>
             </a>

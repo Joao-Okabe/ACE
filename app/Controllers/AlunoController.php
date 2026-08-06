@@ -65,6 +65,35 @@ class AlunoController
         renderView('aluno/editar', ['aluno' => $aluno, 'escolas' => $escolas]);
     }
 
+    //Atualiza Aluno
+    public function update(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->atualizar($id, $_POST);
+            header("Location: /alunos/listar");
+            exit;
+        } catch (Exception $e) {
+            $erro = $e->getMessage();
+            $aluno = $this->service()->buscar($id);
+            $escolas = (new EscolaService())->listar();
+            $dados = $_POST;
+
+            renderView('aluno/editar', [
+                'erro' => $erro,
+                'aluno' => $aluno,
+                'escolas' => $escolas,
+                'dados' => $dados
+            ]);
+        }
+    }
+
     //Remove Aluno
     public function destroy(): void
     {

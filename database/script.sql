@@ -70,3 +70,15 @@ CREATE TABLE aluno (
     CONSTRAINT chk_sexo
         CHECK (sexo IN ('M', 'F', 'O') OR sexo IS NULL)
 );
+
+CREATE TABLE documentos_aluno (
+    cd_documentos_aluno INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_aluno INTEGER NOT NULL,
+    rg text,
+    comprovante_escolar text,
+    atestado_aptidao_fisica text,
+    CONSTRAINT fk_cd_aluno
+        FOREIGN KEY (cd_aluno)
+        REFERENCES aluno(cd_aluno)
+        ON DELETE CASCADE,
+);
