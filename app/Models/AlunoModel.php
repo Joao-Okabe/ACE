@@ -12,30 +12,25 @@ class Aluno extends Model
             data_nascimento,
             sexo,
             telefone,
-            cep,
-            foto_perfil
+            cep
         ) VALUES (
             :usuario,
-            :escola,
             :nome,
             :ra,
             :data_nascimento,
             :sexo,
             :telefone,
-            :cep,
-            :foto_perfil
+            :cep
         )");
 
         $stmt->execute([
             ':usuario' => $dados['usuario'],
-            ':escola' => $dados['escola'],
             ':nome' => $dados['nome'],
             ':ra' => $dados['ra'] ?? null,
-            ':data_nascimento' => $dados['data_nascimento'],
+            ':data_nascimento' => $dados['data_nascimento'] ?? null,
             ':sexo' => $dados['sexo'] ?? null,
             ':telefone' => $dados['telefone'] ?? null,
             ':cep' => $dados['cep'] ?? null,
-            ':foto_perfil' => $dados['foto_perfil'] ?? null,
         ]);
     }
 
@@ -65,22 +60,29 @@ class Aluno extends Model
         ]);
     }
 
-    //Lista Alunos
+    //Pega a foto do aluno baseado no cd usuario, aluno = "a" e usuario = "u"
+    public function pegarFotoAluno(){
+        $stmt = $this->pdo->query("
+        SELECT 
+            u.foto_perfil
+        FROM aluno a INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario;
+        ");
+    }
+
+    //Lista Alunos, a = aluno, u = usuario 
+    // a.* = tudo da tabela aluno
     public function listar(): array
     {
         $stmt = $this->pdo->query("
-        SELECT  cd_aluno, 
-                cd_usuario, 
-                nome, 
-                ra, 
-                data_nascimento, 
-                sexo, 
-                telefone,
-                cep,
-                foto_perfil,
-                criado_em,
-                ativo 
-        FROM aluno ORDER BY cd_aluno");
+        SELECT
+            a.*,
+            u.email,
+            u.foto_perfil
+        FROM aluno a
+        INNER JOIN usuario u
+            ON u.cd_usuario = a.cd_usuario
+        ORDER BY a.nome
+        ");
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

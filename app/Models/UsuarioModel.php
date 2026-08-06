@@ -69,8 +69,6 @@ class Usuario extends Model
         ]);
     }
 
-    
-
     //Remove usuario
     public function remover(int $id): void
     {
