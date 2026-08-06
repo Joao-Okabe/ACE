@@ -68,7 +68,10 @@ $valor = function ($campo) use ($dados) {
                 
                 <div class="field full">
                     <label>Foto de perfil</label>
-                    <input type="file" accept="image/*" name="foto_perfil">
+                    <label for="foto_perfil" class="foto-perfil" id="fotoPerfilUsuario">
+                        <i class="bi bi-camera-fill"></i>
+                    </label>
+                    <input type="file" accept="image/*" name="foto_perfil" id="foto_perfil">
                 </div>
 
                 <div class="actions full">

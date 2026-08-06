@@ -33,6 +33,7 @@ class AuthController
             $_SESSION['usuario'] = [
                 'id' => $usuario['id'],
                 'email' => $usuario['email'],
+                'foto_perfil' => $usuario['foto_perfil'] ?? null,
                 'papeis' => $usuario['papeis']
             ];
 
