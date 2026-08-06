@@ -16,7 +16,7 @@ class EscolaController
     //Exibe o formulário de cadastro
     public function create(): void
     {
-        require __DIR__ . '/../Views/escola/cadastrar.php';
+        renderView('escola/cadastrar');
     }
 
     //Salva uma nova escola
@@ -37,7 +37,7 @@ class EscolaController
             $escolaService = new EscolaService();
             $escolas = $escolaService->listar();
 
-            require __DIR__ . '/../Views/usuario/cadastrar.php';
+            renderView('usuario/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
 
         }
     }
@@ -45,10 +45,9 @@ class EscolaController
     //Lista todas as escolas
     public function list(): void
     {
-        $usuario = $_SESSION['usuario'] ?? null;
         $escolas = $this->service()->listar();
 
-        require __DIR__ . '/../Views/escola/listar.php';
+        renderView('escola/listar', ['escolas' => $escolas]);
     }
 
     //Exibe formulário de edição de Escola
@@ -63,7 +62,7 @@ class EscolaController
 
         $escola = $this->service()->buscar($id);
 
-        require __DIR__ . '/../Views/escola/editar.php';
+        renderView('escola/editar', ['escola' => $escola]);
     }
 
     //Atualiza escola

@@ -11,6 +11,6 @@ class DashboardController
             exit;
         }
 
-        require __DIR__ . '/../Views/auth/dashboard.php';
+        renderView('auth/dashboard');
     }
 }
