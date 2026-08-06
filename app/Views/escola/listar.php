@@ -58,12 +58,12 @@
                 <span>Painel</span>
             </a>
 
-            <a href="/escolas/listar" class="menu-item">
+            <a href="/escolas/listar" class="menu-item active">
                 <i class="bi bi-bank2"></i>
                 <span>Escolas</span>
             </a>
 
-            <a href="/alunos/listar" class="menu-item active">
+            <a href="/alunos/listar" class="menu-item">
                 <i class="bi bi-person-fill"></i>
                 <span>Alunos</span>
             </a>
