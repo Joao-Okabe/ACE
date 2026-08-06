@@ -37,6 +37,7 @@ class AuthService
         return [
             'id' => (int) $usuario['cd_usuario'],
             'email' => $usuario['email'],
+            'foto_perfil' => $usuario['foto_perfil'] ?? null,
             'papeis' => $this->papel->listarPapeis((int) $usuario['cd_usuario'])
         ];
     }

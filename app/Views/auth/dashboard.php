@@ -33,7 +33,7 @@ $usuario = $usuario ?? null;
 
         <div class="perfil">
             <i class="bi bi-bell notificacao"></i>
-            <img src="img/perfil.jpg" alt="Perfil">
+            <img src="<?= htmlspecialchars(upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
 
             <div class="usuario">
                 <?php if ($usuario !== null): ?>

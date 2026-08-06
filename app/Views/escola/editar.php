@@ -51,7 +51,14 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
                 <div class="field full">
                     <label>Logo</label>
-                    <input type="file" accept="image/*" name="img_logo">
+                    <label for="img_logo" class="foto-perfil" id="fotoLogoEscolaEditar">
+                        <?php if (!empty($dados['img_logo'] ?? null)): ?>
+                            <img src="<?= htmlspecialchars($dados['img_logo']) ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
+                        <?php else: ?>
+                            <i class="bi bi-camera-fill"></i>
+                        <?php endif; ?>
+                    </label>
+                    <input type="file" accept="image/*" name="img_logo" id="img_logo">
                 </div>
 
                 <div class="actions full">

@@ -90,7 +90,7 @@ class Aluno extends Model
     //Busca Escola
     public function buscar(int $id): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM aluno WHERE cd_aluno = :id");
+        $stmt = $this->pdo->prepare("SELECT a.*, u.foto_perfil FROM aluno a INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario WHERE a.cd_aluno = :id");
 
         $stmt->execute([
             ':id' => $id
