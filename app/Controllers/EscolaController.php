@@ -112,4 +112,19 @@ class EscolaController
 
         }
     }
+
+    //Visualiza perfil da escola
+    public function visualizar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $escola = $this->service()->buscar($id);
+
+        renderView('escola/perfil', ['escola' => $escola]);
+    }
 }

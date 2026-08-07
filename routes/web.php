@@ -54,6 +54,10 @@ $router->get(
     '/escolas/editar', [EscolaController::class, 'edit']
 );
 
+$router->get(
+    '/escolas/visualizar', [EscolaController::class, 'visualizar']
+);
+
 $router->post(
     '/escolas/atualizar', [EscolaController::class, 'update']
 );
@@ -76,6 +80,10 @@ $router->get(
 
 $router->get(
     '/alunos/editar', [AlunoController::class, 'edit']
+);
+
+$router->get(
+    '/alunos/visualizar', [AlunoController::class, 'visualizar']
 );
 
 $router->post(

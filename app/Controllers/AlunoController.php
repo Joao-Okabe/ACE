@@ -129,4 +129,21 @@ class AlunoController
         }
     }
 
+    //Visualiza perfil do aluno
+    public function visualizar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $aluno = $this->service()->buscar($id);
+
+        $escolas = (new EscolaService())->listar();
+
+        renderView('aluno/perfil', ['aluno' => $aluno, 'escolas' => $escolas]);
+    }
+
 }

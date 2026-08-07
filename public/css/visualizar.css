@@ -1,0 +1,141 @@
+/*==== Visualizar ====*/
+
+/*Botão de voltar*/
+.btn-voltar {
+    color: var(--azul-principal);
+    font-size: 25px;
+    -webkit-text-stroke: 1px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 2px 4px;
+    transition: var(--transition);
+}
+.btn-voltar:hover{
+    background: rgba(165, 165, 165, 0.384);
+    transform: translateX(1px);
+}
+
+/*cabeçalho*/
+.header-visualizar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+/*Título*/
+.visu-title{
+    font-weight: bold;
+    font-size: 25px;
+    color: var(--azul-principal);
+}
+
+/*card*/
+.visu-box{
+    width: 100%;
+    background: var(--branco);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:var(--shadow-sm);
+}
+
+.visu-box h5{
+    color:var(--azul-principal);
+    font-weight:700;
+    margin-bottom:25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ececec ;
+}
+
+/*infos do card*/
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.info-item h6{
+    color: var(--laranja-principal);
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:6px;
+}
+.info-item p{
+    color:var(--azul-principal);
+    font-size:18px;
+    font-weight:600;
+    margin:0;
+}
+
+/*cor das infos do primeiro card*/
+.label-info{
+    color:var(--azul-principal);
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:6px;
+}
+
+.label-info i{
+    color:var(--laranja-principal);
+    margin-right:6px;
+}
+
+/*nome do aluno/escola*/
+.name{
+    color:var(--azul-principal);
+    font-size:30px;
+    font-weight:700;
+    margin:0;
+}
+
+/*status*/
+.badge-status{
+    background:#FFE7DE;
+    color:var(--laranja-principal);
+    font-weight:600;
+    padding:8px 18px;
+    border-radius:30px;
+}
+
+/*foto*/
+.foto{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.foto img{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--azul-principal);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*--VARIÁVEIS--*/
+:root{
+    --azul-principal:#181847;
+    --laranja-principal:#F44E1C;
+    --bege-principal:#F1E4D1;
+    --branco:#FFF;
+    --preto:#212529;
+
+    --radius:12px;
+    --transition:.3s ease;
+
+    --shadow-sm:0 3px 8px rgba(0,0,0,.08);
+    --shadow-md:0 6px 20px rgba(0,0,0,.12);
+}
