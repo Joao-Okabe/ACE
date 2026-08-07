@@ -164,11 +164,9 @@
                         <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
                         <td>
                         <!--Btn Visualizar -->
-                        <button class="btn btn-view btn-sm" title="Visualizar">
-                            <a href="">
+                        <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
-                            </a>
-                        </button>
+                        </a>
                         <!--Btn Editar -->
                         <button class="btn btn-edit btn-sm" title="Editar">
                             <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>"> 
@@ -176,11 +174,9 @@
                             </a>
                         </button>
                         <!--Btn Excluir -->
-                        <button class="btn btn-delete btn-sm" title="Excluir">
-                            <a href="">
+                        <a href="/escolas/remover?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-delete btn-sm" title="Excluir">
                             <i class="bi bi-trash-fill"></i>
-                            </a>
-                        </button>
+                        </a>
                         </td>
                 <?php endforeach; ?>
                     </tr>

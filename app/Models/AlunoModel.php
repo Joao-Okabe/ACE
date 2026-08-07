@@ -113,10 +113,25 @@ class Aluno extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    //Busca Escola
+    //Busca Aluno
     public function buscar(int $id): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT a.*, u.foto_perfil FROM aluno a INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario WHERE a.cd_aluno = :id");
+        $stmt = $this->pdo->prepare("SELECT
+            a.*,
+            u.email,
+            u.foto_perfil,
+            (
+                SELECT e.nome
+                FROM vinculo_usuario_escola up
+                INNER JOIN escola e ON e.cd_escola = up.cd_escola
+                WHERE up.cd_usuario = a.cd_usuario
+                    AND up.ativo = TRUE
+                ORDER BY up.criado_em DESC
+                LIMIT 1
+            ) AS escola
+        FROM aluno a
+        INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario
+        WHERE a.cd_aluno = :id");
 
         $stmt->execute([
             ':id' => $id
