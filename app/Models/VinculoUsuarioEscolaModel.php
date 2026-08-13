@@ -65,4 +65,33 @@ class VinculoUsuarioEscola extends Model
         return $res !== false && $res !== null;
     }
 
+    // Verifica se o usuário possui algum dos papéis informados na escola (vínculo ativo)
+    public function isUsuarioComPapeis(int $idUsuario, int $idEscola, array $papeis): bool
+    {
+        if (empty($papeis)) {
+            return false;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($papeis), '?'));
+
+        $sql = "SELECT 1
+            FROM vinculo_usuario_escola v
+            INNER JOIN papel p ON p.cd_papel = v.cd_papel
+            WHERE v.cd_usuario = ?
+              AND v.cd_escola = ?
+              AND p.nome IN ($placeholders)
+              AND v.ativo = TRUE
+            LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $params = array_merge([(int) $idUsuario, (int) $idEscola], $papeis);
+
+        $stmt->execute($params);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $res !== false && $res !== null;
+    }
+
     }

@@ -94,6 +94,6 @@ $router->post(
     '/alunos/atualizar', [AlunoController::class, 'update']
 );
 
-$router->get(
+$router->post(
     '/alunos/remover', [AlunoController::class, 'destroy']
 );
