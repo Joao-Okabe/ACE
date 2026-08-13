@@ -165,6 +165,12 @@ class EscolaService
         $this->escolaModel->remover($id);
     }
 
+    // Define o status ativo/inativo da escola
+    public function definirAtiva(int $id, bool $ativa): void
+    {
+        $this->escolaModel->setAtiva($id, $ativa);
+    }
+
     private function normalizarCampoOpcional(?string $valor): ?string
     {
         if ($valor === null) {

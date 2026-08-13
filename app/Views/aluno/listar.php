@@ -20,6 +20,7 @@ $usuario = $usuario ?? null;
     <link rel="stylesheet" href="../../css/lista.css">
 
     <title>Alunos</title>
+    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
     <!--Navbar-->
