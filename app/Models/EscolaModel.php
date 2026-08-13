@@ -114,4 +114,19 @@ class Escola extends Model
             ':id' => $id
         ]);
     }
+
+    // Define o status ativo/inativo da escola
+    public function setAtiva(int $id, bool $ativa): void
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE escola
+            SET ativa = :ativa
+            WHERE cd_escola = :id"
+        );
+
+        $stmt->execute([
+            ':ativa' => $ativa,
+            ':id' => $id
+        ]);
+    }
 }

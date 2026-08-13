@@ -20,6 +20,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <link rel="stylesheet" href="../../css/auth.css">
 
     <title>ACE - Login</title>
+    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
 

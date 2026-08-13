@@ -59,6 +59,10 @@ $router->get(
 );
 
 $router->post(
+    '/escolas/trancar', [EscolaController::class, 'trancar']
+);
+
+$router->post(
     '/escolas/atualizar', [EscolaController::class, 'update']
 );
 

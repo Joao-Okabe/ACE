@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../css/lista.css">
 
     <title>Escolas</title>
+    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
 <!--Navbar-->
@@ -92,7 +93,7 @@
                 <span>Configurações</span>
             </a>
 
-            <a href="..." class="menu-item">
+            <a href="/logout" class="menu-item">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sair da conta</span>
             </a>
@@ -108,7 +109,7 @@
             <h2 class="form-title">Escolas</h2>
             <p>Gerencie as escolas cadastradas.</p>
         </div>
-            <a href="cadastro.php" class="btn btn-laranja">
+            <a href="/escolas/cadastrar" class="btn btn-laranja">
             + Adicionar escola
             </a>
         </div>

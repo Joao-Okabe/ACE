@@ -127,4 +127,62 @@ class EscolaController
 
         renderView('escola/perfil', ['escola' => $escola]);
     }
+
+    // Tranca/Destranca escola (apenas Diretores vinculados podem executar)
+    public function trancar(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        // Verifica sessão
+        if (empty($_SESSION['usuario']['id'])) {
+            http_response_code(401);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        // CSRF
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
+            http_response_code(403);
+            echo 'Token inválido.';
+            return;
+        }
+
+        $idUsuario = (int) $_SESSION['usuario']['id'];
+
+        $vinculoModel = new VinculoUsuarioEscola();
+
+        if (!$vinculoModel->isUsuarioDiretor($idUsuario, $id)) {
+            http_response_code(403);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        try {
+            $escola = $this->service()->buscar($id);
+            $novaAtiva = !((bool) ($escola['ativa'] ?? false));
+
+            $this->service()->definirAtiva($id, $novaAtiva);
+            // flash
+            $_SESSION['flash'] = ['success' => $novaAtiva ? 'Escola ativada.' : 'Escola trancada.'];
+
+            header("Location: /escolas/visualizar?id={$id}");
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash'] = ['error' => $e->getMessage()];
+            header("Location: /escolas/visualizar?id={$id}");
+            exit;
+        }
+    }
 }

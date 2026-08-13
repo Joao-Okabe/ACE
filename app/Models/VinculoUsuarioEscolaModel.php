@@ -41,4 +41,28 @@ class VinculoUsuarioEscola extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+    // Verifica se o usuário é Diretor da escola (vínculo ativo)
+    public function isUsuarioDiretor(int $idUsuario, int $idEscola): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT 1
+            FROM vinculo_usuario_escola v
+            INNER JOIN papel p ON p.cd_papel = v.cd_papel
+            WHERE v.cd_usuario = :usuario
+              AND v.cd_escola = :escola
+              AND p.nome = 'DIRETOR'
+              AND v.ativo = TRUE
+            LIMIT 1"
+        );
+
+        $stmt->execute([
+            ':usuario' => $idUsuario,
+            ':escola' => $idEscola
+        ]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $res !== false && $res !== null;
+    }
+
     }

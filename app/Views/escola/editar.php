@@ -19,6 +19,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <link rel="stylesheet" href="../../css/layout.css">
 
     <title>Editar escola</title>
+    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
 
@@ -96,7 +97,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <span>Configurações</span>
             </a>
 
-            <a href="..." class="menu-item">
+            <a href="/logout" class="menu-item">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sair da conta</span>
             </a>
@@ -125,12 +126,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div class="perfil-aluno mb-4">
                 <label for="img_logo" class="foto-perfil" id="fotoLogoEscolaEditar">
                     <?php if (!empty($dados['img_logo'] ?? null)): ?>
-                    <img src="<?= htmlspecialchars($dados['img_logo']) ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
+                    <img src="<?= htmlspecialchars(upload_url($dados['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
                     <?php else: ?>
                     <i class="bi bi-camera-fill"></i>
                     <?php endif; ?>
                 </label>
-                <input type="file" accept="image/*" name="img_logo" id="img" hidden>
+                <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
                 <div class="text-perfil">
                     <p class="form-label">Editar brasão/logo</p>
                 </div>

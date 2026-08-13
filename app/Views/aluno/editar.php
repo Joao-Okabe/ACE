@@ -21,6 +21,7 @@ $escolas = $escolas ?? [];
     <link rel="stylesheet" href="../../css/layout.css">
 
     <title>Editar aluno</title>
+    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
     <!--Navbar-->
