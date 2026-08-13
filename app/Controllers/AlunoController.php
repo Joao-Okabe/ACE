@@ -113,19 +113,66 @@ class AlunoController
     //Remove Aluno
     public function destroy(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
             return;
         }
 
+        // Verifica sessão
+        if (empty($_SESSION['usuario']['id'])) {
+            http_response_code(401);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        // CSRF
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
+            http_response_code(403);
+            echo 'Token inválido.';
+            return;
+        }
+
         try {
+            // Obter a escola do aluno
+            $idEscola = $this->service()->obterEscolaDoAluno($id);
+
+            if ($idEscola === null) {
+                $_SESSION['flash'] = ['error' => 'Aluno sem vínculo com escola.'];
+                header("Location: /alunos/listar");
+                exit;
+            }
+
+            $idUsuario = (int) $_SESSION['usuario']['id'];
+
+            $vinculoModel = new VinculoUsuarioEscola();
+
+            // permitir apenas COORD ou DIRETOR
+            $permitido = $vinculoModel->isUsuarioComPapeis($idUsuario, $idEscola, ['COORD', 'DIRETOR']);
+
+            if (!$permitido) {
+                http_response_code(403);
+                $_SESSION['flash'] = ['error' => 'Acesso negado.'];
+                header("Location: /alunos/listar");
+                exit;
+            }
+
             $this->service()->remover($id);
+            $_SESSION['flash'] = ['success' => 'Aluno removido com sucesso.'];
             header("Location: /alunos/listar");
             exit;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            $_SESSION['flash'] = ['error' => $e->getMessage()];
+            header("Location: /alunos/listar");
+            exit;
         }
     }
 

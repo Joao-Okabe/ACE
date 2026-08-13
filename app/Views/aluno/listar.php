@@ -1,5 +1,15 @@
 <?php
 $usuario = $usuario ?? null;
+// Gera CSRF token se necessário
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(16));
+}
+
+// Flash messages
+$flash = $_SESSION['flash'] ?? null;
+if (!empty($_SESSION['flash'])) {
+    unset($_SESSION['flash']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -167,6 +177,14 @@ $usuario = $usuario ?? null;
             </div>
 
         <!-- tabela -->
+        <?php if (!empty($flash)): ?>
+            <?php if (!empty($flash['success'])): ?>
+                <div class="alert alert-success"><?= htmlspecialchars($flash['success'], ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+            <?php if (!empty($flash['error'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($flash['error'], ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+        <?php endif; ?>
         <div class="list mt-4">      
             <div class="card card-list">
             <table class="table table-striped table-borderless mb-0">
@@ -204,9 +222,13 @@ $usuario = $usuario ?? null;
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                        <a href="/alunos/remover?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-delete btn-sm" title="Excluir">
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
+                            <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este aluno?');">
+                                <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
                     </td>
                 </tr>
                 <?php endforeach; ?>

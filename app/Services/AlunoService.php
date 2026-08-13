@@ -240,6 +240,41 @@ class AlunoService
         $this->alunoModel->remover($id);
     }
 
+    // Retorna o id da escola em que o aluno está vinculado (vínculo ativo), ou null
+    public function obterEscolaDoAluno(int $idAluno): ?int
+    {
+        $aluno = $this->alunoModel->buscar($idAluno);
+
+        if ($aluno === null) {
+            return null;
+        }
+
+        $cdUsuario = (int) ($aluno['cd_usuario'] ?? 0);
+
+        if ($cdUsuario <= 0) {
+            return null;
+        }
+
+        $stmt = $this->pdo->prepare(
+            "SELECT up.cd_escola
+            FROM vinculo_usuario_escola up
+            WHERE up.cd_usuario = :cd_usuario
+              AND up.ativo = TRUE
+            ORDER BY up.criado_em DESC
+            LIMIT 1"
+        );
+
+        $stmt->execute([':cd_usuario' => $cdUsuario]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($res === false || $res === null) {
+            return null;
+        }
+
+        return (int) ($res['cd_escola'] ?? 0) ?: null;
+    }
+
     private function normalizarCampoOpcional(?string $valor): ?string
     {
         if ($valor === null) {
