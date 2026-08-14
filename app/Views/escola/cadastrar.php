@@ -117,12 +117,11 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </div>
         </div>
 
-            <?php if (!empty($_GET['sucesso'])): ?>
-                <p class="alert success">Escola cadastrada com sucesso.</p>
-            <?php endif; ?>
-
             <?php if (!empty($erro)): ?>
-                <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+                <div id="retorno-cadastro" class="alert alert-danger mb-4" role="alert" tabindex="-1">
+                    <strong>Não foi possível cadastrar a escola.</strong><br>
+                    <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                </div>
             <?php endif; ?>
 
         <form action="/escolas" method="post" class="form-grid" enctype="multipart/form-data">
@@ -132,7 +131,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <label for="img" class="foto-perfil" id="fotoPerfil">
                     <i class="bi bi-camera-fill"></i>
                 </label>
-                <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
+                <input type="file" accept="image/jpeg,image/png,image/webp" name="img_logo" id="img" hidden>
                 <div class="text-perfil">
                 <p class="form-label">Adicionar imagem do brasão</p>
                 </div>
@@ -147,8 +146,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="categoria_administrativa">Categoria</label>
                 <select class="form-select form-input" id="categoria_administrativa" name="categoria_administrativa" required>
-                    <option selected>Selecione</option>
-                    <option value="">Selecione</option>
+                    <option value="" <?= $valor('categoria_administrativa') === '' ? 'selected' : '' ?> disabled>Selecione</option>
                     <option value="PUBLICA" <?= $valor('categoria_administrativa') === 'PUBLICA' ? 'selected' : '' ?>>Pública</option>
                     <option value="PRIVADA" <?= $valor('categoria_administrativa') === 'PRIVADA' ? 'selected' : '' ?>>Privada</option>
                 </select>
@@ -196,16 +194,26 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="uf">UF</label>
-                <input type="text" id="uf" name="uf" value="<?= $valor('uf') ?>" maxlength="2" class="form-control form-input" maxlength="2">
+                <input type="text" id="uf" name="uf" value="<?= $valor('uf') ?>" maxlength="2" class="form-control form-input">
             </div>
 
-                <div class="actions full">
-                    <a href="/escolas/listar" class="btn btn-outline-secondary">Cancelar</a>
-                    <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
-                </div>
-            </form>
-        </section>
-    </main>
+            </div>
+
+            <div class="actions full">
+                <a href="/escolas/listar" class="btn btn-outline-secondary">Cancelar</a>
+                <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    <script src="/js/script.js"></script>
     <script src="/js/cep.api.js"></script>
+    <?php if (!empty($erro)): ?>
+    <script>
+        const retornoCadastro = document.getElementById('retorno-cadastro');
+        retornoCadastro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        retornoCadastro.focus({ preventScroll: true });
+    </script>
+    <?php endif; ?>
 </body>
 </html>

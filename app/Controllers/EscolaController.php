@@ -26,18 +26,17 @@ class EscolaController
 
             $this->service()->cadastrar($_POST);
 
-            header("Location: /escolas/cadastrar?sucesso=1");
+            $_SESSION['flash'] = ['success' => 'Escola cadastrada com sucesso.'];
+            header("Location: /escolas/listar");
             exit;
 
         } catch (Exception $e) {
 
             $erro = $e->getMessage();
             $dados = $_POST;
+            http_response_code(422);
 
-            $escolaService = new EscolaService();
-            $escolas = $escolaService->listar();
-
-            renderView('usuario/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
+            renderView('escola/cadastrar', ['erro' => $erro, 'dados' => $dados]);
 
         }
     }

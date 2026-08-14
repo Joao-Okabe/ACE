@@ -1,6 +1,31 @@
 <?php
 class Aluno extends Model
 {
+    // Conta os alunos ativos das escolas em que o usuário é diretor.
+    public function contarPorDiretor(int $idDiretor): int
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(DISTINCT a.cd_aluno)
+            FROM vinculo_usuario_escola vinculo_diretor
+            INNER JOIN papel papel_diretor
+                ON papel_diretor.cd_papel = vinculo_diretor.cd_papel
+            INNER JOIN vinculo_usuario_escola vinculo_aluno
+                ON vinculo_aluno.cd_escola = vinculo_diretor.cd_escola
+                AND vinculo_aluno.ativo = TRUE
+            INNER JOIN aluno a
+                ON a.cd_usuario = vinculo_aluno.cd_usuario
+                AND a.ativo = TRUE
+            WHERE vinculo_diretor.cd_usuario = :diretor
+                AND vinculo_diretor.ativo = TRUE
+                AND papel_diretor.nome = 'DIRETOR'
+        ");
+
+        $stmt->bindValue(':diretor', $idDiretor, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
     //Cadastra Aluno
     public function cadastrar(array $dados): void
     {
@@ -99,8 +124,8 @@ class Aluno extends Model
             $parametro[':cd_escola'] = $filtros['escola'];
         }
 
-        if (!empty($where)) {
-            $sql .= ' WHERE ' . implode(' AND ', $where);
+        if (!empty($onde)) {
+            $sql .= ' WHERE ' . implode(' AND ', $onde);
         }
 
         $ordem = strtoupper($filtros['ordem'] ?? 'ASC');

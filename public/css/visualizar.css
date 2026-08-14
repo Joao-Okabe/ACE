@@ -114,6 +114,88 @@
     border: 2px solid var(--azul-principal);
 }
 
+/* Confirmação para trancar/destrancar escola */
+.modal-confirmacao {
+    width: min(440px, calc(100% - 32px));
+    padding: 32px;
+    color: var(--azul-principal);
+    background: var(--branco);
+    border: 0;
+    border-top: 6px solid var(--laranja-principal);
+    border-radius: 18px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.modal-confirmacao::backdrop {
+    background: rgba(24, 24, 71, .65);
+    backdrop-filter: blur(3px);
+}
+
+.modal-confirmacao__icone {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    color: var(--laranja-principal);
+    background: var(--bege-principal);
+    border-radius: 50%;
+    font-size: 28px;
+}
+
+.modal-confirmacao h2 {
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.modal-confirmacao p {
+    margin-bottom: 26px;
+    color: #55556f;
+    line-height: 1.55;
+}
+
+.modal-confirmacao__acoes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.modal-confirmacao__acoes button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-cancelar {
+    color: var(--azul-principal);
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+}
+
+.btn-confirmar {
+    color: var(--branco);
+    background: var(--laranja-principal);
+    border: 1px solid var(--laranja-principal);
+}
+
+.modal-confirmacao__acoes button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 480px) {
+    .modal-confirmacao {
+        padding: 26px 20px;
+    }
+
+    .modal-confirmacao__acoes {
+        flex-direction: column-reverse;
+    }
+}
+
 
 
 

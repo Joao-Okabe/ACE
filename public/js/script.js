@@ -4,21 +4,25 @@ const btn = document.getElementById("menu-btn");
     const navbar = document.querySelector(".navbar");
     const content = document.querySelector(".content");
 
-    btn.addEventListener("click", () => {
-        sidebar.classList.toggle("close");
-        navbar.classList.toggle("close");
-        content.classList.toggle("close");
-});
+    if (btn && sidebar && navbar && content) {
+        btn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+            navbar.classList.toggle("close");
+            content.classList.toggle("close");
+        });
+    }
 
 
 /*--Adicionar foto de perfil--*/
 const input = document.getElementById("img");
 const fotoPerfil = document.getElementById("fotoPerfil");
 
-input.addEventListener("change", function () {
-    const arquivo = this.files[0];
+if (input && fotoPerfil) {
+    input.addEventListener("change", function () {
+        const arquivo = this.files[0];
 
-    if (arquivo) {
-        fotoPerfil.innerHTML = `<img src="${URL.createObjectURL(arquivo)}" alt="Foto">`;
-    }
-});
+        if (arquivo) {
+            fotoPerfil.innerHTML = `<img src="${URL.createObjectURL(arquivo)}" alt="Foto">`;
+        }
+    });
+}
