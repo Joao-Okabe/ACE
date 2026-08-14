@@ -27,7 +27,7 @@ if (!empty($_SESSION['flash'])) {
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/visualizar.css">
+    <link rel="stylesheet" href="/css/visualizar.css?v=<?= filemtime(dirname(__DIR__, 3) . '/public/css/visualizar.css') ?>">
 
     <title>Painel</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -170,16 +170,34 @@ if (!empty($_SESSION['flash'])) {
 
             <?php if ($mostrarBotaoTrancar): ?>
                 <div class="mb-3">
-                    <form method="post" action="/escolas/trancar" onsubmit="return confirm('Tem certeza?');">
+                    <form id="form-status-escola" method="post" action="/escolas/trancar">
                         <input type="hidden" name="id" value="<?= (int) ($escola['cd_escola'] ?? 0) ?>">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                         <?php if (($escola['ativa'] ?? false)): ?>
-                            <button type="submit" class="btn btn-danger">Trancar</button>
+                            <button type="button" class="btn btn-danger" data-abrir-confirmacao>Trancar</button>
                         <?php else: ?>
-                            <button type="submit" class="btn btn-success">Destrancar</button>
+                            <button type="button" class="btn btn-success" data-abrir-confirmacao>Destrancar</button>
                         <?php endif; ?>
                     </form>
                 </div>
+
+                <?php $acaoEscola = ($escola['ativa'] ?? false) ? 'trancar' : 'destrancar'; ?>
+                <dialog class="modal-confirmacao" id="modal-status-escola" aria-labelledby="titulo-confirmacao">
+                    <div class="modal-confirmacao__icone" aria-hidden="true">
+                        <i class="bi bi-exclamation-lg"></i>
+                    </div>
+                    <h2 id="titulo-confirmacao">Confirmar ação</h2>
+                    <p>
+                        Tem certeza de que deseja <?= $acaoEscola ?> a escola
+                        <strong><?= $valor('nome') ?></strong>?
+                    </p>
+                    <div class="modal-confirmacao__acoes">
+                        <button type="button" class="btn-cancelar" data-fechar-confirmacao>Cancelar</button>
+                        <button type="button" class="btn-confirmar" data-confirmar-status>
+                            Sim, <?= ucfirst($acaoEscola) ?>
+                        </button>
+                    </div>
+                </dialog>
             <?php endif; ?>
 
             <div class="row">
@@ -265,4 +283,22 @@ if (!empty($_SESSION['flash'])) {
 
 </div>
     <script src="../../js/script.js"></script>
+    <?php if ($mostrarBotaoTrancar): ?>
+    <script>
+        (() => {
+            const form = document.getElementById('form-status-escola');
+            const modal = document.getElementById('modal-status-escola');
+            const abrir = document.querySelector('[data-abrir-confirmacao]');
+            const fechar = modal.querySelector('[data-fechar-confirmacao]');
+            const confirmar = modal.querySelector('[data-confirmar-status]');
+
+            abrir.addEventListener('click', () => modal.showModal());
+            fechar.addEventListener('click', () => modal.close());
+            confirmar.addEventListener('click', () => form.submit());
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) modal.close();
+            });
+        })();
+    </script>
+    <?php endif; ?>
 </body>

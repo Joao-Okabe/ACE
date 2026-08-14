@@ -123,19 +123,18 @@ $escolas = $escolas ?? [];
                 <div class="text-perfil">
                     <p class="form-label">Adicionar foto de perfil</p>
                 </div>
-                <input type="file" id="img" accept="image/*" hidden>
+                <input type="file" id="img" name="foto_perfil" form="form-cadastro-aluno" accept="image/jpeg,image/png,image/webp" hidden>
             </div>
         </div>
 
-        <?php if (!empty($_GET['sucesso'])): ?>
-            <p class="alert success">Aluno(a) cadastrado(a) com sucesso.</p>
-        <?php endif; ?>
-
         <?php if (!empty($erro)): ?>
-            <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+            <div id="retorno-cadastro" class="alert alert-danger mb-4" role="alert" tabindex="-1">
+                <strong>Não foi possível cadastrar o aluno.</strong><br>
+                <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+            </div>
         <?php endif; ?>
 
-        <form action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
+        <form id="form-cadastro-aluno" action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
             <div class="row">
 
         <!-- NOME -->
@@ -147,13 +146,13 @@ $escolas = $escolas ?? [];
         <!-- RA -->
                 <div class="col-md-6 mb-4">
                     <label for="ra" class="form-label">RA</label>
-                    <input type="text" id="ra" name="ra" value="<?= $valor('ra') ?>" class="form-control form-input" placeholder="Digite o RA">
+                    <input type="text" id="ra" name="ra" value="<?= $valor('ra') ?>" required maxlength="20" class="form-control form-input" placeholder="Digite o RA">
                 </div>
 
         <!-- DT NASCIMENTO -->
                 <div class="col-md-6 mb-4">
                     <label for="data_nascimento" class="form-label">Data de nascimento</label>
-                    <input type="date" id="data_nascimento" name="data_nascimento" value="<?= $valor('data_nascimento') ?>" class="form-control form-input"> 
+                    <input type="date" id="data_nascimento" name="data_nascimento" value="<?= $valor('data_nascimento') ?>" required class="form-control form-input">
                 </div>
 
         <!-- SEXO -->
@@ -195,7 +194,7 @@ $escolas = $escolas ?? [];
         <!-- Telefone -->
                 <div class="col-md-6 mb-4">
                     <label for="telefone" class="form-label">Telefone</label>
-                    <input type="text" id="telefone" name="telefone" value="<?= $valor('telefone') ?>" class="form-control form-input" placeholder="(00) 00000-0000">
+                    <input type="text" id="telefone" name="telefone" value="<?= $valor('telefone') ?>" maxlength="20" class="form-control form-input" placeholder="(00) 00000-0000">
                 </div>
 
         <!-- CEP -->
@@ -217,6 +216,13 @@ $escolas = $escolas ?? [];
 </div>
 <!--Js para o funcionamento da sidebar-->
 <script src="../../js/script.js"></script>
+<?php if (!empty($erro)): ?>
+<script>
+    const retornoCadastro = document.getElementById('retorno-cadastro');
+    retornoCadastro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    retornoCadastro.focus({ preventScroll: true });
+</script>
+<?php endif; ?>
 
 </body>
 </html>

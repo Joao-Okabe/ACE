@@ -1,3 +1,7 @@
+<?php
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -114,6 +118,13 @@
             </a>
         </div>
 
+        <?php if (!empty($flash['success'])): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($flash['success'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+        <?php if (!empty($flash['error'])): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($flash['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+
 <!-- Card da tabela-->
         <div class="card shadow">
             <div class="card-body">
@@ -154,15 +165,15 @@
                     <tr>
                         <td>
                             <div class="tc list-perfil">
-                                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasão">
+                                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/logo-ace-laranja.png'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasão de <?= htmlspecialchars((string) ($escola['nome'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </td>
-                        <td><?= htmlspecialchars($escola['cd_escola']) ?></td>
-                        <td><?= htmlspecialchars($escola['nome']) ?></td>
-                        <td><?= htmlspecialchars($escola['telefone']) ?></td>
-                        <td><?= htmlspecialchars($escola['cep']) ?></td>
+                        <td><?= htmlspecialchars((string) ($escola['cd_escola'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars((string) ($escola['nome'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars((string) ($escola['telefone'] ?? 'Não informado'), ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars((string) ($escola['cep'] ?? 'Não informado'), ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?php if (($escola['ativa']) == 1 ) { echo "Ativa"; } else { echo "Inativa"; } ?></td>
-                        <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
+                        <td><?= htmlspecialchars((string) ($escola['categoria_administrativa'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                         <td>
                         <!--Btn Visualizar -->
                         <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar">

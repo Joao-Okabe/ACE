@@ -242,7 +242,7 @@ if (!empty($_SESSION['flash'])) {
         </div>   
     </div>
 
-    <!--Js para o funcionamento da sidebar-->>
+    <!--Js para o funcionamento da sidebar-->
     <script src="../../js/script.js"></script>
 </body>
 </html>

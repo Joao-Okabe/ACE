@@ -28,13 +28,16 @@ class AlunoController
 
             $this->service()->cadastrar($_POST);
 
-            header("Location: /alunos/cadastrar?sucesso=1");
+            $_SESSION['flash'] = ['success' => 'Aluno(a) cadastrado(a) com sucesso.'];
+            header("Location: /alunos/listar");
             exit;
 
         } catch (Exception $e) {
 
             $erro = $e->getMessage();
             $dados = $_POST;
+
+            http_response_code(422);
 
             $escolas = (new EscolaService())->listar();
 
