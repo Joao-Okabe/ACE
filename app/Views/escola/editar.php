@@ -174,5 +174,6 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </form>
         </section>
     </main>
+<script src="../../js/script.js"></script>
 </body>
 </html>

@@ -32,7 +32,7 @@ $valor = function ($campo) use ($dados) {
     
     <div class="col-lg-5 d-none d-lg-flex auth-left">
         <div class="left-content">
-            <img src="../../img/logo-ace-completa.png" class="auth-logo">
+            <img src="../../img/logo-ace-completa.png" class="auth-logo" alt="ACE — Competições Escolares">
 
             <h2 class="titulo-esquerda">
                 CONECTANDO A SUA ESCOLA<br>
@@ -128,5 +128,6 @@ $valor = function ($campo) use ($dados) {
             </form>
         </section>
     </main>
+<script src="../../js/script.js"></script>
 </body>
 </html>

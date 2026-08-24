@@ -22,7 +22,7 @@
     color: var(--laranja-principal);
     font-size: 24px;
     cursor: pointer;
-    padding: 6px 8px;
+    padding: 10px;
     margin-left: 3px;
     margin-right: 5px;
     border-radius: 10px;
@@ -82,7 +82,7 @@
 .notificacao{
     color: var(--laranja-principal);
     font-size: 24px;
-    padding: 6px 8px;
+    padding: 10px 12px;
     border-radius: 10px;
     cursor: pointer;
     transition: var(--transition);
@@ -157,7 +157,7 @@
 
 .menu-item.active{
     background: var(--laranja-principal);
-    color: var(--azul-principal);
+    color: var(--branco);
 }
 
 /*Icons do menu*/
@@ -170,7 +170,7 @@
 }
 
 .menu-item.active i{
-    color: var(--azul-principal);
+    color: var(--branco);
 }
 
 
@@ -193,7 +193,7 @@
 /*--VARIÁVEIS--*/
 :root{
     --azul-principal:#181847;
-    --laranja-principal:#F44E1C;
+    --laranja-principal:#C9340D;
     --bege-principal:#F1E4D1;
     --branco:#FFF;
     --preto:#212529;
@@ -203,4 +203,12 @@
 
     --shadow-sm:0 3px 8px rgba(0,0,0,.08);
     --shadow-md:0 6px 20px rgba(0,0,0,.12);
+}
+
+@media (max-width:768px){
+    .navbar{height:64px;padding:0 10px}
+    .usuario{display:none}
+    .sidebar{top:64px;height:calc(100vh - 64px);width:min(85vw,280px);z-index:1100}
+    .sidebar.close{width:0;padding-left:0;padding-right:0}
+    .content,.content.close{margin:64px 0 0;padding:18px 12px}
 }

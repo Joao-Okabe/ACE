@@ -138,7 +138,9 @@ if (!empty($_SESSION['flash'])) {
                             <div class="input-group">
                                 <input
                                     type="text"
+                                    id="filtro-nome"
                                     name="nome"
+                                    aria-label="Pesquisar aluno pelo nome"
                                     class="form-control form-input"
                                     placeholder="Pesquisar aluno"
                                     value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
@@ -149,7 +151,7 @@ if (!empty($_SESSION['flash'])) {
 
                     <div class="col-md-3">
                         <div class="form-input-group">
-                            <select name="escola" class="form-select form-input">
+                            <select name="escola" class="form-select form-input" aria-label="Filtrar por escola">
                                 <option value="">Todas as escolas</option>
                                 <?php foreach ($escolas as $escola): ?>
                                     <option value="<?= htmlspecialchars($escola['cd_escola'], ENT_QUOTES, 'UTF-8') ?>" <?= isset($filtros['escola']) && $filtros['escola'] == $escola['cd_escola'] ? 'selected' : '' ?>>
@@ -162,7 +164,7 @@ if (!empty($_SESSION['flash'])) {
 
                     <div class="col-md-3">
                         <div class="form-input-group">
-                            <select name="ordem" class="form-select form-input">
+                            <select name="ordem" class="form-select form-input" aria-label="Ordenar alunos">
                                 <option value="asc" <?= ($filtros['ordem'] ?? 'asc') === 'asc' ? 'selected' : '' ?>>Código crescente</option>
                                 <option value="desc" <?= ($filtros['ordem'] ?? 'asc') === 'desc' ? 'selected' : '' ?>>Código decrescente</option>
                             </select>
@@ -205,7 +207,7 @@ if (!empty($_SESSION['flash'])) {
                 <tr>
                     <td>
                         <div class="tc list-perfil">
-                            <img src="<?= htmlspecialchars(upload_url($aluno['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                            <img src="<?= htmlspecialchars(upload_url($aluno['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($aluno['nome'], ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                     </td>
                     <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
@@ -214,19 +216,19 @@ if (!empty($_SESSION['flash'])) {
                     <td><?= htmlspecialchars($aluno['escola'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
                     <td class="text-nowrap">
-                        <a href="/alunos/visualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
-                            <i class="bi bi-eye-fill"></i>
+                        <a href="/alunos/visualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar" aria-label="Visualizar <?= htmlspecialchars($aluno['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                            <i class="bi bi-eye-fill" aria-hidden="true"></i>
                         </a>
 
-                        <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
-                            <i class="bi bi-pencil-fill"></i>
+                        <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-edit btn-sm me-1" title="Editar" aria-label="Editar <?= htmlspecialchars($aluno['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
                         </a>
 
                             <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este aluno?');">
                                 <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-                                <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
-                                    <i class="bi bi-trash-fill"></i>
+                                <button type="submit" class="btn btn-delete btn-sm" title="Excluir" aria-label="Excluir <?= htmlspecialchars($aluno['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <i class="bi bi-trash-fill" aria-hidden="true"></i>
                                 </button>
                             </form>
                     </td>

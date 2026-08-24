@@ -132,12 +132,12 @@ unset($_SESSION['flash']);
 
                 <div class="input-group w-25">
                     <div class="form-input-group">
-                        <input type="text" class="form-control form-input" placeholder="Pesquisar escola">
+                        <input type="search" class="form-control form-input" placeholder="Pesquisar escola" aria-label="Pesquisar escola">
                     </div>
                 </div>                      
 
-                <button class="btn btn-outline-secondary">
-                    <i class="bi bi-funnel"></i>
+                <button type="button" class="btn btn-outline-secondary" aria-label="Abrir filtros de escolas">
+                    <i class="bi bi-funnel" aria-hidden="true"></i>
                     Filtros
                 </button>
 
@@ -176,18 +176,16 @@ unset($_SESSION['flash']);
                         <td><?= htmlspecialchars((string) ($escola['categoria_administrativa'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                         <td>
                         <!--Btn Visualizar -->
-                        <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar">
-                            <i class="bi bi-eye-fill"></i>
+                        <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar" aria-label="Visualizar <?= htmlspecialchars((string) $escola['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                            <i class="bi bi-eye-fill" aria-hidden="true"></i>
                         </a>
                         <!--Btn Editar -->
-                        <button class="btn btn-edit btn-sm" title="Editar">
-                            <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>"> 
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                        </button>
+                        <a class="btn btn-edit btn-sm" title="Editar" aria-label="Editar <?= htmlspecialchars((string) $escola['nome'], ENT_QUOTES, 'UTF-8') ?>" href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>">
+                            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+                        </a>
                         <!--Btn Excluir -->
-                        <a href="/escolas/remover?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-delete btn-sm" title="Excluir">
-                            <i class="bi bi-trash-fill"></i>
+                        <a href="/escolas/remover?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-delete btn-sm" title="Excluir" aria-label="Excluir <?= htmlspecialchars((string) $escola['nome'], ENT_QUOTES, 'UTF-8') ?>" onclick="return confirm('Excluir esta escola? Esta ação não poderá ser desfeita.');">
+                            <i class="bi bi-trash-fill" aria-hidden="true"></i>
                         </a>
                         </td>
                 <?php endforeach; ?>
