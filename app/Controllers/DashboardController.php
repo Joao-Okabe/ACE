@@ -11,6 +11,10 @@ class DashboardController
             exit;
         }
 
-        renderView('auth/dashboard');
+        $quantidadeAlunos = (new Aluno())->contarPorDiretor((int) $usuario['id']);
+
+        renderView('auth/dashboard', [
+            'quantidadeAlunos' => $quantidadeAlunos,
+        ]);
     }
 }

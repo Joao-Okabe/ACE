@@ -7,6 +7,21 @@ body{
     color:var(--preto);
 }
 
+/* Base de acessibilidade WCAG 2.1 AA */
+.skip-link{position:fixed;top:8px;left:8px;z-index:9999;padding:12px 18px;border-radius:8px;background:#fff;color:#181847;font-weight:700;transform:translateY(-160%)}
+.skip-link:focus{transform:translateY(0)}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #9f2707;outline-offset:3px;box-shadow:0 0 0 5px rgba(255,255,255,.9)}
+button,.btn,a.menu-item,input,select{min-height:44px}
+.btn-icon,.btn-view,.btn-edit,.btn-delete,#menu-btn{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center}
+.required-indicator{color:#9f2707;font-weight:800}
+.field-error,.invalid-feedback{color:#9c1c16;font-weight:600}
+.form-control:invalid:not(:placeholder-shown),.form-select:invalid{border-color:#9c1c16}
+.alert[role="alert"]{border-left:5px solid currentColor}
+[aria-disabled="true"]{opacity:.65;cursor:not-allowed}
+.visually-hidden-accessible{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media (max-width:768px){.form-card{padding:24px 16px}.form-title{font-size:clamp(1.75rem,8vw,2.5rem)}.table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 /*Botão laranja*/
 .btn-laranja{
     background:var(--azul-principal);
@@ -126,7 +141,7 @@ body{
 /*--VARIÁVEIS--*/
 :root{
     --azul-principal:#181847;
-    --laranja-principal:#F44E1C;
+    --laranja-principal:#C9340D;
     --bege-principal:#F1E4D1;
     --branco:#FFF;
     --preto:#212529;

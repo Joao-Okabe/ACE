@@ -90,6 +90,8 @@ class UsuarioService
                 if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
                     throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
                 }
+
+                ImagemService::otimizar($caminhoCompleto);
             }
 
             $idUsuario = $this->usuarioModel->cadastrar([

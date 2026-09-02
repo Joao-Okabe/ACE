@@ -124,9 +124,10 @@ class Escola extends Model
             WHERE cd_escola = :id"
         );
 
-        $stmt->execute([
-            ':ativa' => $ativa,
-            ':id' => $id
-        ]);
+        // O execute com array converte false em string vazia. No PostgreSQL,
+        // o parâmetro precisa ser vinculado explicitamente como booleano.
+        $stmt->bindValue(':ativa', $ativa, PDO::PARAM_BOOL);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }

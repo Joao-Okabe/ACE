@@ -56,13 +56,24 @@ class EscolaService
 
         $arquivo = $_FILES['img_logo'] ?? null;
 
-        if ($arquivo === null || !isset($arquivo['tmp_name']) || !is_uploaded_file($arquivo['tmp_name'])) {
+        if ($arquivo === null || (int) ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
             throw new Exception('Selecione uma imagem para o logo da escola.');
+        }
+
+        $erroArquivo = (int) ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE);
+        if ($erroArquivo !== UPLOAD_ERR_OK) {
+            $mensagem = in_array($erroArquivo, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)
+                ? 'A imagem é muito grande. O tamanho máximo permitido é 5MB.'
+                : 'Não foi possível enviar a imagem. Tente novamente.';
+            throw new Exception($mensagem);
+        }
+
+        if (empty($arquivo['tmp_name']) || !is_uploaded_file($arquivo['tmp_name'])) {
+            throw new Exception('O arquivo de imagem enviado é inválido.');
         }
 
         $nomeArquivo = $arquivo['name'];
         $tamanhoArquivo = (int) $arquivo['size'];
-        $erroArquivo = (int) $arquivo['error'];
         $tmpArquivo = $arquivo['tmp_name'];
 
         $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
@@ -72,12 +83,8 @@ class EscolaService
             throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
         }
 
-        if ($erroArquivo !== 0) {
-            throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
-        }
-
-        if ($tamanhoArquivo > 2 * 1024 * 1024) {
-            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        if ($tamanhoArquivo > 5 * 1024 * 1024) {
+            throw new Exception('A imagem é muito grande. O tamanho máximo permitido é 5MB.');
         }
 
         $pastaUploads = __DIR__ . '/../../public/uploads';
@@ -93,6 +100,8 @@ class EscolaService
         if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
             throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
         }
+
+        ImagemService::otimizar($caminhoCompleto);
 
         try {
 
