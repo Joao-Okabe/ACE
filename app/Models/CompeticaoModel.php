@@ -3,16 +3,18 @@
 class Competicao extends Model
 {
     //Cria uma COMPETIÇÃO nova
-    public function criar(array $dados):void
+    public function criar(array $dados, int $id):void
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO competicao(
                 nm_competicao,
+                cd_criador,
                 dt_inicio,
                 dt_encerramento
             )
             VALUES(
                 :nm_competicao,
+                :cd_criador,
                 :dt_inicio,
                 :dt_encerramento
             )
@@ -84,7 +86,7 @@ class Competicao extends Model
         return $competicao ?: null;
     }
 
-    public function listarParticipacao(int $id_user): array
+    public function listarParticipacao(int $id_user)
     {
         // Vai ter que chamar por partida que o usuário participou
     }
