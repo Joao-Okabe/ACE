@@ -83,11 +83,11 @@ CREATE TABLE documentos_aluno (
         ON DELETE CASCADE,
 );
 
-
 CREATE TABLE competicao (
     cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_competicao VARCHAR(150) NOT NULL, 
     criado em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    dt_inicio TIMESTAMP,
     dt_encerramento TIMESTAMP,
 )
 
