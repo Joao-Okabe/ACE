@@ -101,7 +101,6 @@ class Escola extends Model
         return $escola ?: null;
     }
 
-
     //Remove Escola
     public function remover(int $id): void
     {

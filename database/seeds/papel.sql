@@ -5,4 +5,5 @@ VALUES
 ('SECRETARIO', 'Secretaria'),
 ('COORD', 'Coordenador Escolar'),
 ('DIRETOR', 'Diretor'),
+('GREMISTA', 'Aluno do grêmio'),
 ('ALUNO', 'Aluno');
