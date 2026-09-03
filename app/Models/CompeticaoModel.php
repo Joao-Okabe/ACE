@@ -41,4 +41,68 @@ class Competicao extends Model
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    //FILTRAGENS respectivamente
+    /*
+        Por nome da competição
+        Por data de inicio da competição
+        Por usuário que participou da competição 
+        Por criador da competição
+    */
+
+    public function listarNome(string $nome): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM competicao
+            WHERE nm_competicao = :nome
+        ");
+
+        $stmt->execute([
+            ':nome' => $nome
+        ]);
+
+        $competicao = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $competicao ?: null;
+    }
+
+    public function listarDataInicio(string $dt_inicio): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM competicao
+            WHERE dt_inicio = :inicio
+        ");
+
+        $stmt->execute([
+            ':inicio' => $dt_inicio
+        ]);
+
+        $competicao = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $competicao ?: null;
+    }
+
+    public function listarParticipacao(int $id_user): array
+    {
+        // Vai ter que chamar por partida que o usuário participou
+    }
+
+    public function listarCriador(string $criador): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM competicao
+            WHERE cd_criador = :cd_criador
+        ");
+
+        $stmt->execute([
+            ':cd_criador' => $criador
+        ]);
+
+        $competicao = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $competicao ?: null;
+    }
 }

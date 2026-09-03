@@ -85,10 +85,15 @@ CREATE TABLE documentos_aluno (
 
 CREATE TABLE competicao (
     cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_criador INTEGER NOT NULL
     nm_competicao VARCHAR(150) NOT NULL, 
     criado em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dt_inicio TIMESTAMP,
     dt_encerramento TIMESTAMP,
+    CONSTRAINT fk_criador
+        FOREIGN KEY (cd_criador)
+        REFERENCES usuario(cd_usuario)
+        ON DELETE CASCADE
 )
 
 CREATE TABLE formato (

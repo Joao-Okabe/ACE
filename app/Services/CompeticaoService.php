@@ -51,4 +51,32 @@ class Competicao
     {
         return $this->competicaoModel->listar();
     }
+
+    //FILTRAGENS respectivamente
+    /*
+        Por nome da competição
+        Por data de inicio da competição
+        Por usuário que participou da competição 
+        Por criador da competição
+    */
+   
+    public function listarNome(): array
+    {
+        return $this->competicaoModel->listarNome();
+    }
+
+    public function listarDataInicio(): array
+    {
+        return $this->competicaoModel->listarDataInicio();
+    }
+
+    public function listarParticipacao(): array
+    {
+        return $this->competicaoModel->listarParticipacao();
+    }
+
+    public function listarCriador(): array
+    {
+        return $this->competicaoModel->listarCriador();
+    }
 }
