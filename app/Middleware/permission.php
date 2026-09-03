@@ -2,7 +2,7 @@
 
 class Permission
 {
-    public static function hasRole(string $role): bool
+    public static function temPapel(string $role): bool
     {
         return in_array($role, $_SESSION['usuario']['papeis'], true);
     }

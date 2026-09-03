@@ -8,6 +8,8 @@ class EscolaService
 
     private Escola $escolaModel;
 
+    private NormalizadorCampoOpcional $normalizador;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -15,6 +17,8 @@ class EscolaService
         $this->usuarioModel = new Usuario();
 
         $this->escolaModel = new Escola();
+
+        $this->normalizador = new NormalizadorCampoOpcional();
     }
 
     //Cadastro de escola
@@ -102,11 +106,11 @@ class EscolaService
 
                 'nome' => $dados['nome'],
 
-                'telefone' => $this->normalizarCampoOpcional($dados['telefone'] ?? null),
+                'telefone' => $this->normalizador->normalizarCampoNulo($dados['telefone'] ?? null),
 
-                'cep' => $this->normalizarCampoOpcional($dados['cep'] ?? null),
+                'cep' => $this->normalizador->normalizarCampoNulo($dados['cep'] ?? null),
 
-                'numero' => $this->normalizarCampoOpcional($dados['numero'] ?? null),
+                'numero' => $this->normalizador->normalizarCampoNulo($dados['numero'] ?? null),
 
                 'categoria_administrativa' => $dados['categoria_administrativa'],
 
@@ -171,14 +175,5 @@ class EscolaService
         $this->escolaModel->setAtiva($id, $ativa);
     }
 
-    private function normalizarCampoOpcional(?string $valor): ?string
-    {
-        if ($valor === null) {
-            return null;
-        }
-
-        $valor = trim($valor);
-
-        return $valor === '' ? null : $valor;
-    }
+    
 }
