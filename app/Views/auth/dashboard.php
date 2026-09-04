@@ -1,5 +1,6 @@
 <?php
 $usuario = $usuario ?? null;
+$qtAluno = $qtAluno ?? 0;
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -95,7 +96,7 @@ $usuario = $usuario ?? null;
                 <span>Configurações</span>
             </a>
 
-            <a href="..." class="menu-item">
+            <a href="/logout" class="menu-item">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sair da conta</span>
             </a>
@@ -176,7 +177,7 @@ $usuario = $usuario ?? null;
 
                 <div>
                     <h6>Alunos</h6>
-                    <h2>0</h2>
+                    <h2><?= htmlspecialchars((string) $qtAluno, ENT_QUOTES, 'UTF-8') ?></h2>
                 </div>
             </div>
         </div>

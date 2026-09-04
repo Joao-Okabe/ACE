@@ -2,9 +2,14 @@
 
 class Permission
 {
-    public static function temPapel(string $role): bool
+    public static function estaLogado(): bool
     {
-        return in_array($role, $_SESSION['usuario']['papeis'], true);
+        return true;
+    }
+
+    public static function temPapel(string $papel): bool
+    {
+        return in_array($papel, $_SESSION['usuario']['papeis'], true);
     }
 }
 

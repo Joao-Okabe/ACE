@@ -8,6 +8,7 @@ CREATE TABLE papel (
 
 CREATE TABLE usuario (
     cd_usuario INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nm_usuario VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     foto_perfil TEXT,

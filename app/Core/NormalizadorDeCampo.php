@@ -1,8 +1,7 @@
 <?php
 
-class NormalizadorCampoOpcional
+class NormalizadorCampo
 {
-
     public function normalizarCampoNulo(?string $valor): ?string
     {
         if ($valor === null) {

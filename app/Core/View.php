@@ -1,5 +1,11 @@
 <?php
 
+function estaLogado(): bool
+{
+    return session_status() === PHP_SESSION_ACTIVE
+        && !empty($_SESSION['usuario']['id']);
+}
+
 function asset(string $path): string
 {
     // If already absolute URL, return as-is
