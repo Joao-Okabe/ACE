@@ -1,9 +1,10 @@
 INSERT INTO papel (nome, descricao)
 VALUES
-('ADMIN', 'Administrador do sistema'),
-('PROF', 'Professor'),
-('SECRETARIO', 'Secretaria'),
-('COORD', 'Coordenador Escolar'),
-('DIRETOR', 'Diretor'),
-('GREMISTA', 'Aluno do grêmio'),
-('ALUNO', 'Aluno');
+('ADM', 'Administrador do sistema'),
+('DIR', 'Diretor'),
+('CRD', 'Coordenador Escolar'),
+('PRF', 'Professor'),
+('ARB', 'Árbitro');
+('AGR', 'Aluno do grêmio'),
+('ALU', 'Aluno'),
+('VIS', 'Visitantes'),

@@ -12,7 +12,6 @@ class Competicao
 
     public function __construct()
     {
-       $this->pdo = Database::connect();
 
        $this->usuarioModel = new Usuario();
 
@@ -31,8 +30,8 @@ class Competicao
 
             $this->competicaoModel->criar([
                 "nm_competicao" => $this->$dados['nm_competicao'],
-                "cd_criador" => $this->$dados['cd_criador'],
                 //Vai pegar código do usuário da sessão atual
+                "cd_criador" => $this->$dados['cd_criador'],
                 "dt_inicio" => $this->$dados['dt_inicio'] ?? null,
                 "dt_encerramento"  => $this->$dados['dt_encerramento'] ?? null
             ]);
