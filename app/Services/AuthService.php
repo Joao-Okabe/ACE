@@ -2,16 +2,19 @@
 
 class AuthService
 {
+    private Auth $authModel;
+
     private Usuario $usuarioModel;
 
     private Papel $papel;
 
     public function __construct()
     {
+        $this->authModel = new Auth();
+
         $this->usuarioModel = new Usuario();
 
         $this->papel = new Papel();
-
     }
 
     public function autenticar(array $dados): array
@@ -33,6 +36,8 @@ class AuthService
         if (isset($usuario['ativo']) && $usuario['ativo'] === false) {
             throw new Exception("Usuário inativo.");
         }
+
+        $this->authModel->verificaPapelUsuario($usuario['cd_usuario']);        
 
         return [
             'id' => (int) $usuario['cd_usuario'],

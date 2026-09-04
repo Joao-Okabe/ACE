@@ -38,7 +38,7 @@ class Aluno extends Model
     public function atualizar(int $id, array $dados): void
     {
         $stmt = $this->pdo->prepare("
-         UPDATE aluno SET 
+        UPDATE aluno SET 
             nome = :nome, 
             ra = :ra,
             data_nascimento = :data_nascimento,

@@ -8,7 +8,7 @@ class EscolaService
 
     private Escola $escolaModel;
 
-    private NormalizadorCampoOpcional $normalizador;
+    private NormalizadorCampo $normalizador;
 
     public function __construct()
     {
@@ -18,7 +18,7 @@ class EscolaService
 
         $this->escolaModel = new Escola();
 
-        $this->normalizador = new NormalizadorCampoOpcional();
+        $this->normalizador = new NormalizadorCampo();
     }
 
     //Cadastro de escola

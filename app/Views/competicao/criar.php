@@ -1,5 +1,6 @@
 <?php 
 $usuario = $usuario ?? null;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
