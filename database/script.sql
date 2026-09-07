@@ -17,6 +17,19 @@ CREATE TABLE usuario (
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE usuario_papel (
+    cd_usuario INTEGER NOT NULL,
+    cd_papel INTEGER NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (cd_usuario, cd_papel),
+    FOREIGN KEY (cd_usuario)
+        REFERENCES usuario(cd_usuario)
+        ON DELETE CASCADE,
+    FOREIGN KEY (cd_papel)
+        REFERENCES papel(cd_papel)
+        ON DELETE RESTRICT
+);
+
 CREATE TABLE escola (
     cd_escola INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,

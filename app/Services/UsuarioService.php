@@ -6,6 +6,8 @@ class UsuarioService
 
     private Usuario $usuarioModel;
 
+    private Papel $papelModel;
+
     private VinculoUsuarioEscola $vinculoUsuarioEscolaModel;
 
     public function __construct()
@@ -13,6 +15,8 @@ class UsuarioService
         $this->pdo = Database::connect();
 
         $this->usuarioModel = new Usuario();
+
+        $this->papelModel = new Papel();
 
         $this->vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
     }
@@ -27,16 +31,8 @@ class UsuarioService
             throw new Exception("Informe um e-mail válido.");
         }
 
-        if (empty($dados['escola'])) {
-            throw new Exception("Informe a escola do usuário.");
-        }
-
         if (empty($dados['senha'])) {
             throw new Exception("Informe uma senha.");
-        }
-
-        if (empty($dados['papel'])) {
-            throw new Exception("Informe o papel do usuário.");
         }
 
         if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
@@ -93,16 +89,30 @@ class UsuarioService
             }
 
             $idUsuario = $this->usuarioModel->cadastrar([
+                'nm_usuario' => $dados['nm_usuario'],
                 'email' => $dados['email'],
                 'senha' => $senhaHash,
                 'foto_perfil' => $caminhoPublicoFoto
             ]);
 
-            $this->vinculoUsuarioEscolaModel->vincularPapel(
-                $idUsuario,
-                (int) $dados['escola'],
-                (int) $dados['papel']
-            );
+            if (empty($dados['escola'])) {
+                $papel = $this->papelModel->buscarPapelPorNome('VIS');
+
+                if ($papel === null) {
+                    throw new Exception('O papel de visitante não está cadastrado.');
+                }
+
+                $this->papelModel->vincularPapel(
+                    $idUsuario,
+                    (int) $papel['cd_papel']
+                );
+            } else {
+                $this->vinculoUsuarioEscolaModel->vincularPapelEscola(
+                    $idUsuario,
+                    (int) $dados['escola'],
+                    (int) $dados['papel']
+                );
+            }
 
             $this->pdo->commit();
 

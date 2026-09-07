@@ -8,12 +8,14 @@ class Usuario extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO usuario
             (
+                nm_usuario,
                 email,
                 senha,
                 foto_perfil
             )
             VALUES
             (
+                :nm_usuario,
                 :email,
                 :senha,
                 :foto_perfil
@@ -22,6 +24,7 @@ class Usuario extends Model
         ");
 
         $stmt->execute([
+            ':nm_usuario' => $dados['nm_usuario'],
             ':email' => $dados['email'],
             ':senha' => $dados['senha'],
             ':foto_perfil' => $dados['foto_perfil'] ?? null,
