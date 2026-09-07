@@ -4,17 +4,17 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     ports:
-      - "${APP_PORT}:80"
+      - ${APP_PORT}:80
     volumes:
       - ./:/var/www/html:rw
     env_file:
       - .env
     environment:
-      DB_HOST: "${DB_HOST}"
-      DB_PORT: "${DB_PORT}"
-      DB_DATABASE: "${DB_DATABASE}"
-      DB_USERNAME: "${DB_USERNAME}"
-      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
@@ -22,9 +22,9 @@ services:
   db:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: "${DB_DATABASE}"
-      POSTGRES_USER: "${DB_USERNAME}"
-      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "{DB_DATABASE}"
+      POSTGRES_USER: "{DB_USERNAME}"
+      POSTGRES_PASSWORD: "{DB_PASSWORD}"
     ports:
       - "${DB_PORT}:5432"
     env_file:

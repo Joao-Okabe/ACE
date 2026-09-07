@@ -4,7 +4,7 @@ VALUES
 ('DIR', 'Diretor'),
 ('CRD', 'Coordenador Escolar'),
 ('PRF', 'Professor'),
-('ARB', 'Árbitro');
+('ARB', 'Árbitro'),
 ('AGR', 'Aluno do grêmio'),
 ('ALU', 'Aluno'),
-('VIS', 'Visitantes'),
+('VIS', 'Visitantes');

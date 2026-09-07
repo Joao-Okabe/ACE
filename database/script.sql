@@ -86,16 +86,16 @@ CREATE TABLE documentos_aluno (
 
 CREATE TABLE competicao (
     cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_criador INTEGER NOT NULL
+    cd_criador INTEGER NOT NULL,
     nm_competicao VARCHAR(150) NOT NULL, 
-    criado em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dt_inicio TIMESTAMP,
     dt_encerramento TIMESTAMP,
     CONSTRAINT fk_criador
         FOREIGN KEY (cd_criador)
         REFERENCES usuario(cd_usuario)
         ON DELETE CASCADE
-)
+),
 
 CREATE TABLE formato (
     cd_formato INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -130,13 +130,13 @@ CREATE TABLE tipo_etapa (
 CREATE TABLE time (
     cd_time INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_time VARCHAR(50) NOT NULL UNIQUE,
-    path brasão VARCHAR(255) NOT NULL,
+    path_brasão VARCHAR(255) NOT NULL,
     ativo BOOLEAN DEFAULT TRUE NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
-CREATE TABLE funcao_integrate (
+CREATE TABLE funcao_integrante (
     cd_funcao_integrante INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cd_esporte INTEGER NOT NULL,
     nm_funcao VARCHAR(150) NOT NULL,
