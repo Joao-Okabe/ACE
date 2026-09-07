@@ -123,7 +123,7 @@ class AlunoService
             ]);
 
             // Vincula usuário à escola com o papel ALUNO
-            $this->vinculoEscolaUsuarioModel->vincularPapel(
+            $this->vinculoEscolaUsuarioModel->vincularPapelEscola(
                 $idUsuario,
                 (int) ($dados['escola'] ?? $dados['cd_escola'] ?? 0), // campo do formulário é 'escola'
                 $papelAlunoId

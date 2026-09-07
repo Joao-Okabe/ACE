@@ -69,6 +69,12 @@ $valor = function ($campo) use ($dados) {
                     <p class="form-label">Adicionar foto de perfil</p>
                 </div>
 
+        <!-- NOME -->
+                <label for="nm_usuario">Nome</label>
+                <div class="form-input-group mb-3">
+                    <input type="nm_usuario" class="form-control form-input" placeholder="Digite seu nome" id="nm_usuario" name="nm_usuario" value="<?= $valor('nm_usuario') ?>" required>
+                </div>
+
         <!--EMAIL-->
                 <label for="email">E-mail</label>
                 <div class="form-input-group mb-3">
@@ -76,6 +82,7 @@ $valor = function ($campo) use ($dados) {
                 </div>
 
         <!--ESCOLA-->
+            <!-- 
                 <div class="field full">
                     <label for="escola" class="form-label">Escola</label>
                     <select class="form-select form-input" name="escola" id="escola" required>
@@ -90,7 +97,7 @@ $valor = function ($campo) use ($dados) {
                     <?php endif; ?>
                     </select>
                 </div>
-
+            -->
         <!--SENHA-->
                 <div class="field">
                     <label >Senha</label>
@@ -100,6 +107,7 @@ $valor = function ($campo) use ($dados) {
                 </div>
 
         <!-- Papel -->
+                <!-- 
                 <div class="field">
                     <label for="papel">Papel</label>
                     <div class="form-input-group mb-3">
@@ -113,7 +121,7 @@ $valor = function ($campo) use ($dados) {
                         </select>
                     </div>
                 </div>
-
+                 -->
         <!-- Botao cadastro -->
                 <div class="actions full">
                     <button type="submit" class="btn btn-laranja w-100">Cadastrar</button>
