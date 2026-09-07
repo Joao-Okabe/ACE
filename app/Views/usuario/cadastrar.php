@@ -136,5 +136,6 @@ $valor = function ($campo) use ($dados) {
             </form>
         </section>
     </main>
+            <script src="../../js/script.js"></script>
 </body>
 </html>
