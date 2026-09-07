@@ -109,7 +109,9 @@ $qtAluno = $qtAluno ?? 0;
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div>
-            <h1 class="form-title">Bem-vindo, Gestão!</h1>
+            <h1 class="form-title">Bem-vindo, 
+                <?= htmlspecialchars($usuario['nm_usuario'] ?? 'Usuário', ENT_QUOTES, 'UTF-8') ?>
+            </h1>
             <p class="form-subtitle">
                 Confira o resumo das competições.
             </p>
