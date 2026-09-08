@@ -101,6 +101,10 @@ uploads/
 
 - ViaCEP
 
+### Recomendações 
+
+- DDeaver Community para melhor edição no banco de dados
+- 
 ---
 
 ## 🗄 Banco de Dados
