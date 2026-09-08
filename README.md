@@ -103,7 +103,7 @@ uploads/
 
 ### Recomendações 
 
-- DDeaver Community para melhor edição no banco de dados
+- DBeaver Community para melhor edição no banco de dados
 
 ---
 
