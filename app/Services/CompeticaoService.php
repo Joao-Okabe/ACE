@@ -1,8 +1,10 @@
 <?php
 
-class Competicao
+class CompeticaoService
 {
     private PDO $pdo;
+
+    private Permissoes $permissoes;
 
     private usuario $usuarioModel;
 
@@ -12,39 +14,57 @@ class Competicao
 
     public function __construct()
     {
+        $this->pdo = Database::connect();
+        
+        $this->permissoes = new Permissoes();
 
-       $this->usuarioModel = new Usuario();
+        $this->usuarioModel = new Usuario();
 
-       $this->papelModel =  new Papel();
+        $this->papelModel =  new Papel();
 
-       $this->competicaoModel = new Competicao();
+        $this->competicaoModel = new Competicao();
     }
 
-    public function criar(array $dados):void {
-        
-        // Aqui vai chamar o MiddleWare para conferir a permissão
-        // Apenas administradores e professores poderão criar
-    
-        try {
+    public function criar(array $dados):void { 
+
+        if(
+            $this->permissoes->temPapel('ADM') || 
+            $this->permissoes->temPapel('DIR') || 
+            $this->permissoes->temPapel('PRF') === true
+        ){
+            try {
             $this->pdo->beginTransaction();
 
             $this->competicaoModel->criar([
-                "nm_competicao" => $this->$dados['nm_competicao'],
-                //Vai pegar código do usuário da sessão atual
-                "cd_criador" => $this->$dados['cd_criador'],
-                "dt_inicio" => $this->$dados['dt_inicio'] ?? null,
-                "dt_encerramento"  => $this->$dados['dt_encerramento'] ?? null
-            ]);
+                "nm_competicao" => $dados['nm_competicao'],
+                "dt_inicio" => $dados['dt_inicio'] ?? null,
+                "dt_encerramento"  => $dados['dt_encerramento'] ?? null
+            ],
+                (int) $_SESSION['cd_usuario'],
+            );
 
-        } catch (Exception $e) {
+            } catch (Exception $e) {
 
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
+                if ($this->pdo->inTransaction()) {
+                    $this->pdo->rollBack();
+                }
+
+                throw $e;
+
             }
-
-            throw $e;
-
         }
+    }
+
+    // Busca competições
+    public function buscar(int $id): array
+    {
+        $competicao = $this->competicaoModel->buscar($id);
+
+        if ($competicao === null) {
+            throw new Exception("Aluno não encontrada.");
+        }
+
+        return $competicao;
     }
 
     //lista Competições
@@ -61,23 +81,31 @@ class Competicao
         Por criador da competição
     */
    
-    public function listarNome(): array
+    public function listarNome(string $nome): array
     {
-        return $this->competicaoModel->listarNome();
+        return $this->competicaoModel->listarNome($nome);
     }
 
-    public function listarDataInicio(): array
+    public function listarDataInicio(string $dt_inicio): array
     {
-        return $this->competicaoModel->listarDataInicio();
+        return $this->competicaoModel->listarDataInicio($dt_inicio);
     }
 
-    public function listarParticipacao(): array
+    public function listarParticipacao(int $cd_usuario)
     {
-        return $this->competicaoModel->listarParticipacao();
+        return $this->competicaoModel->listarParticipacao($cd_usuario);
     }
 
-    public function listarCriador(): array
+    public function listarCriador(int $cd_usuario): array
     {
-        return $this->competicaoModel->listarCriador();
+        return $this->competicaoModel->listarCriador($cd_usuario);
+    }
+
+
+
+     //Remove Aluno
+    public function remover(int $id): void
+    {
+        $this->competicaoModel->remover($id);
     }
 }

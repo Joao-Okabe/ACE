@@ -7,70 +7,51 @@ class Permissoes
         return true;
     }
 
-    public static function temPapelNecessario(string $papel): bool
+    public static function temPapel(string $papel): bool
     {
-        return in_array($papel, $_SESSION['usuario']['papeis'], true);
+        $papeis = $_SESSION['usuario']['papeis'] ?? [];
 
-        // puxar o papel do usuario
-        
-        // conferir, caso ele possua, qual o seu papel na escola do usuario atual
-
-        // switch que puxa o nivelDeAcesso com o valor de temPapelNecessário
-
-        switch ($papel) {
-             
-            case "ADM":
-                
-                break;
-
-            case "DIR":
-                
-                break;
-
-            case "CRD":
-                
-                break;
-
-            case "PRF":
-                
-                break;
-
-            case "ARB":
-                
-                break;
-
-            case "AGR":
-                
-                break;
-
-            case "ALU":
-                
-                break;
-
-            case "VIS":
-                
-                break;
+        if (!is_array($papeis)) {
+            return false;
         }
 
+        return in_array($papel, $papeis, true);
+    }
+
+    public static function temPapelAdm(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelDiretor(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelCoordenador(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelProfessor(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelGremista(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelAluno(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelVisitante(string $papel): bool
+    {
+        return self::temPapel($papel);
     }
 
 
-}
-
-/*
-
-Verifica se tem permissão
-if (!Permission::hasRole('ADMIN')) {
-    exit('Acesso negado.');
-}
-
-Verifica se é dono do registro
-if (!Permission::hasRole('ADMIN')) {
-
-    if ($escola['usuario'] !== $_SESSION['usuario']['id']) {
-        exit;
-    }
-
-}
-
-*/
+} 

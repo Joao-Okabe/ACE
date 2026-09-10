@@ -11,6 +11,7 @@ class Autoloader
                 __DIR__ . '/../Controllers/',
                 __DIR__ . '/../Models/',
                 __DIR__ . '/../Services/',
+                __DIR__ . '/../Middleware/',
                 __DIR__ . '/',
             ];
 

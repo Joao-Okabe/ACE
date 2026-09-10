@@ -80,14 +80,14 @@ class Header extends HTMLElement {
                         <span>Alunos</span>
                     </a>
 
-                    <a href="#" class="menu-item">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Times</span>
+                    <a href="/competicoes/listar" class="menu-item">
+                        <i class="bi bi-trophy-fill"></i>
+                        <span>Competições</span>
                     </a>
 
                     <a href="#" class="menu-item">
-                        <i class="bi bi-trophy-fill"></i>
-                        <span>Competições</span>
+                        <i class="bi bi-people-fill"></i>
+                        <span>Times</span>
                     </a>
 
                     <a href="#" class="menu-item">
