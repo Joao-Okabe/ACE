@@ -2,10 +2,11 @@
 
 /*--Lista--*/
 .list{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    
 }
 
 /*--Card--*/
@@ -13,15 +14,67 @@
     width: 100%;
     overflow: hidden;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius);
     color: var(--azul-principal);
     box-shadow: var(--shadow-md);
 }
 
+.search-box {
+    position: relative;
+    width: 100%;
+}
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
 
+    color: var(--laranja-principal);
+    font-size: 18px;
+
+    z-index: 10;
+    pointer-events: none;
+}
+.search-box input {
+    padding: 0 15px 0 45px;
+}
+.search-box input,
+.form-input-group .form-select {
+    width: 100%;
+    height: 45px;
+    border-radius: var(--radius) !important;
+    border: 2px solid #dee2e6 !important;
+    outline: none !important;
+    box-shadow: none;
+    transition: var(--transition);
+}
+
+.search-box input:focus,
+.form-input-group .form-select:focus {
+    border: 2px solid var(--laranja-principal) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 .15rem rgba(244, 78, 28, .15) !important;
+}
+
+.btn-filtro{
+    width:100%;
+}
+.btn-buscar{
+    background-color: var(--azul-principal);
+    color: var(--branco);
+    font-weight: 600;
+    width: 100%;
+    height: 43px;
+    border-radius: var(--radius);
+    border: none;
+    transition: var(--transition);
+}
+.btn-buscar:hover{
+    background-color: var(--laranja-principal);
+    color: var(--branco);
+}
 
 /*--Tabela--*/
-
 /*Cabeçalho da tabela*/
 .table-blue,
 .table-blue th{
@@ -33,17 +86,14 @@
 .card-list .table{
     --bs-table-striped-bg:#f7efe4;
     --bs-table-color: var(--azul-principal);
+    
 }
-
-
-
 .list-perfil{
     display: flex;
     align-items: center;
     gap: 15px;
     margin-left: auto;
 }
-
 .list-perfil img{
     margin-left: 10px;
     width: 35px;
@@ -52,48 +102,129 @@
     object-fit: cover;
     border: 2px solid var(--azul-principal);
 }
+.card-list .table th,
+.card-list .table td{
+    vertical-align:middle;
+    text-align:left;
+    padding:10px 18px;
+}
 
 
 /*Botão de visualizar, editar e remover*/
 .btn-view,
 .btn-edit,
 .btn-delete{
-    width:40px;
-    height:40px;
+    width:38px;
+    height:38px;
+    padding:0;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     border-radius:10px;
-    transition:var(--transition);
 }
 
-.btn-view{ 
-    background:#eef2ff;
-    color:#1f1f63;
-    border-color:#1f1f63;
+.btn-edit {
+    background: #fcc89d;
+    color: var(--azul-principal);
+    border: 2px solid #ff6f01;
+    font-size: 20px;
+}
+
+.btn-edit i {
+    color: var(--azul-principal);
+}
+.btn-edit i.bi {
+    color: var(--azul-principal) !important;
+}
+
+.btn-edit:hover i.bi {
+    color: var(--branco) !important;
+}
+
+.btn-edit:hover {
+    background: #D95F00;
+    color: var(--branco);
+}
+
+.btn-edit:hover i {
+    color: var(--branco);
+}
+
+.btn-view{
+    background:#9dabfc;
+    color: var(--azul-principal);
+    border-color: var(--azul-principal);
+    border-width: 2px;
+    font-size: 20px;
 }
 .btn-view:hover{
-    background:#1f1f63;
+    background:#2b3386;
     color:#fff;
 }
 
-.btn-edit{
-    background:#fff3e8;
-    color:#ff5a1f;
-    border-color:#ff5a1f;
-}
-.btn-edit:hover{
-    background:#ff5a1f;
-    color:#fff;
-}
 
 .btn-delete{
-    background:#ffe8e8;
-    color:#dc3545;
-    border-color:#dc3545;
+    background:#fa9595;
+    color: var(--azul-principal);
+    border-color: #C92F2F;
+    border-width: 2px;
+    font-size: 20px;
 }
 .btn-delete:hover{
-    background:#dc3545;
+    background:#C92F2F;
     color:#fff;
 }
 
+/*Responsividade*/
+.pesquisa-escola {
+    width: 100%;
+}
+@media (max-width: 768px) {
+    .pesquisa-escola {
+        width: 100%;
+    }
+}
+@media (max-width: 768px) {
+
+    /* Card */
+    .card-list {
+        border-radius: var(--radius);
+    }
+
+    /* Pesquisa */
+    .pesquisa-escola {
+        width: 100%;
+    }
+
+    /* Tabela */
+    .card-list .table {
+        min-width: 800px;
+    }
+
+    .card-list .table th,
+    .card-list .table td {
+        white-space: nowrap;
+        padding: 10px 14px;
+    }
+
+    /* Perfil / brasão */
+    .list-perfil {
+        margin-left: 0;
+    }
+
+    /* Botões de ação */
+    .btn-view,
+    .btn-edit,
+    .btn-delete {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Botão adicionar */
+    .btn-laranja {
+        width: 100%;
+    }
+}
 
 
 /*--VARIÁVEIS--*/
@@ -103,10 +234,8 @@
     --bege-principal:#F1E4D1;
     --branco:#FFF;
     --preto:#212529;
-
     --radius:12px;
     --transition:.3s ease;
-
     --shadow-sm:0 3px 8px rgba(0,0,0,.08);
     --shadow-md:0 6px 20px rgba(0,0,0,.12);
 }
