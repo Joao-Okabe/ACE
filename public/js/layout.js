@@ -11,9 +11,9 @@ class Header extends HTMLElement {
 
         const usuario = window.usuarioLogado || {};
 
-        const nome = usuario.nome || 'Usuário';
+        const nome = usuario.nome || usuario.nm_usuario || 'Usuário';
         const email = usuario.email || '—';
-        const foto = usuario.foto || '/img/perfil.jpg';
+        const foto = usuario.foto || '/img/no-prof-pic.png';
 
         this.innerHTML = `
 
