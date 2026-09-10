@@ -12,7 +12,7 @@ body{
     background:var(--azul-principal);
     color:var(--branco);
     height: 60px;
-    padding: 12px 20px;
+    padding: 0px 20px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
