@@ -7,4 +7,16 @@ VALUES
 ('Arbitrelson Arbitraís', 'arbitrais@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Yasmin da Silva Santos', 'silva@aluno.cps.sp.gov.br', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('João Antonio Okabe Van Berghem', 'berghem@aluno.cps.sp.gov.br', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
-('Nádia Cristina Okabe', 'okabe@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC');
+('Renato Leandro', 'leandro@aluno.cps.sp.gov.br', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Gustavo Willians Trigo', 'trigo@aluno.cps.sp.gov.br', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Nádia Cristina Okabe', 'okabe@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 1', 'aluno1@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 2', 'aluno2@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 3', 'aluno3@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 4', 'aluno4@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 5', 'aluno5@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 6', 'aluno6@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 7', 'aluno7@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 8', 'aluno8@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 9', 'aluno9@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Aluno 10', 'aluno10@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC');

@@ -68,7 +68,6 @@ CREATE TABLE vinculo_usuario_escola (
 CREATE TABLE aluno (
     cd_aluno INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cd_usuario INTEGER NOT NULL UNIQUE,
-    nome VARCHAR(150) NOT NULL,
     ra VARCHAR(20) NOT NULL UNIQUE,
     data_nascimento DATE NOT NULL,
     sexo CHAR(1),
@@ -108,7 +107,7 @@ CREATE TABLE competicao (
         FOREIGN KEY (cd_criador)
         REFERENCES usuario(cd_usuario)
         ON DELETE CASCADE
-)´
+);
 
 CREATE TABLE formato (
     cd_formato INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
