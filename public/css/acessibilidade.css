@@ -1,0 +1,1099 @@
+/*==== ACESSIBILIDADE ====*/
+
+/*--Carregamento da página--*/
+body{
+    opacity:0;
+    transition:opacity .15s ease;
+}
+
+body.acessibilidade-pronta{
+    opacity:1;
+}
+
+
+/*--Botão de acessibilidade--*/
+.acessibilidade-btn{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:52px;
+    height:52px;
+    border:none;
+    border-radius:50%;
+    background-color:var(--azul-principal);
+    color:var(--laranja-principal);
+    font-size:26px;
+    cursor:pointer;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+    transition:var(--transition);
+}
+
+.acessibilidade-btn:hover,
+.acessibilidade-btn:focus-visible{
+    transform:scale(1.05);
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+}
+
+.acessibilidade-btn.ativo{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    transform:scale(1.05);
+}
+
+
+/*--Painel de acessibilidade--*/
+.acessibilidade-painel{
+    display:none;
+    position:fixed;
+    right:20px;
+    bottom:85px;
+    width:300px;
+    max-width:calc(100vw - 40px);
+    padding:20px;
+    background-color:var(--branco);
+    color:var(--preto);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-md);
+    z-index:9998;
+}
+
+.acessibilidade-painel.show{
+    display:block;
+}
+
+
+/*Título*/
+.acessibilidade-painel h2{
+    margin-top:0;
+    margin-bottom:15px;
+    font-size:22px;
+    font-weight:700;
+    color:var(--azul-principal);
+}
+
+
+/*Seções*/
+.acessibilidade-section{
+    margin-bottom:18px;
+}
+
+.acessibilidade-section h3{
+    margin-bottom:5px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--azul-principal);
+}
+
+.acessibilidade-section p{
+    margin:0;
+    color:var(--azul-principal);
+}
+
+
+/*--Tamanho da fonte--*/
+.tamanho-fonte{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    width:100%;
+}
+
+.tamanho-fonte button{
+    width:70px;
+    height:42px;
+    padding:8px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background-color:#f8f8f8;
+    color:var(--azul-principal);
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:var(--transition);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.tamanho-fonte button:hover,
+.tamanho-fonte button:focus{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    border-color:var(--laranja-principal);
+}
+
+
+/*Escalas*/
+body.fonte-pequena{
+    --escala-fonte:.9;
+}
+
+body.fonte-normal{
+    --escala-fonte:1;
+}
+
+body.fonte-grande{
+    --escala-fonte:1.15;
+}
+
+
+/*--Labels dos formulários--*/
+body.fonte-pequena .form-label{
+    font-size:14.4px;
+}
+
+body.fonte-normal .form-label{
+    font-size:16px;
+}
+
+body.fonte-grande .form-label{
+    font-size:18.4px;
+}
+
+
+/*--Campos dos formulários--*/
+body.fonte-pequena .form-input{
+    font-size:14.4px;
+}
+
+body.fonte-normal .form-input{
+    font-size:16px;
+}
+
+body.fonte-grande .form-input{
+    font-size:18.4px;
+}
+
+
+/*--Filtros de daltonismo--*/
+.daltonismo-opcoes{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.daltonismo-opcoes button{
+    width:100%;
+    height:42px;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:var(--radius);
+    background-color:#f8f8f8;
+    color:var(--azul-principal);
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    transition:var(--transition);
+}
+
+.daltonismo-opcoes button:hover,
+.daltonismo-opcoes button:focus{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    border-color:var(--laranja-principal);
+}
+
+/*Protanopia*/
+body.filtro-protanopia{
+    --azul-principal:#1B3A5F;
+    --laranja-principal:#D98E04;
+    --bege-principal:#F1E4D1;
+}
+
+
+/*Deuteranopia*/
+body.filtro-deuteranopia{
+    --azul-principal:#183B56;
+    --laranja-principal:#E69F00;
+    --bege-principal:#F1E4D1;
+}
+
+
+/*Tritanopia*/
+body.filtro-tritanopia{
+    --azul-principal:#5A2A82;
+    --laranja-principal:#D55E00;
+    --bege-principal:#F1E4D1;
+}
+
+
+/*--Tema--*/
+.tema-opcoes{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.tema-opcoes button{
+    width:100%;
+    height:42px;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:var(--radius);
+    background-color:#f8f8f8;
+    color:var(--azul-principal);
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    transition:var(--transition);
+}
+
+.tema-opcoes button:hover,
+.tema-opcoes button:focus{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    border-color:var(--laranja-principal);
+}
+
+
+/*--Tema escuro--*/
+body.tema-escuro{
+    background-color:#121212;
+    color:#f5f5f5;
+}
+
+
+/*Conteúdo*/
+body.tema-escuro .content{
+    background-color:#121212;
+}
+
+body.tema-escuro .dashboard-date{
+    color:var(--branco);
+}
+
+
+/*Cards*/
+body.tema-escuro .dashboard-box,
+body.tema-escuro .card-info{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .card{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .card-body{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+
+/*Títulos*/
+body.tema-escuro h1,
+body.tema-escuro h2,
+body.tema-escuro h3,
+body.tema-escuro h4,
+body.tema-escuro h5,
+body.tema-escuro h6{
+    color:#fff;
+}
+
+
+/*Textos*/
+body.tema-escuro p,
+body.tema-escuro small{
+    color:#ddd;
+}
+
+
+/*--Navbar tema escuro--*/
+body.tema-escuro .navbar{
+    background-color:#181818;
+    color:#fff;
+}
+
+body.tema-escuro .navbar a,
+body.tema-escuro .navbar span{
+    color:#fff;
+}
+
+
+/*--Sidebar tema escuro--*/
+body.tema-escuro .sidebar{
+    background-color:#181818 !important;
+}
+
+body.tema-escuro .sidebar a span{
+    color:#fff !important;
+}
+
+body.tema-escuro .sidebar a i{
+    color:var(--laranja-principal) !important;
+}
+
+body.tema-escuro .sidebar a.active,
+body.tema-escuro .sidebar .active a{
+    background-color:var(--laranja-principal) !important;
+}
+
+body.tema-escuro .sidebar a.active span,
+body.tema-escuro .sidebar .active a span{
+    color:var(--azul-principal) !important;
+}
+
+body.tema-escuro .sidebar a.active i,
+body.tema-escuro .sidebar .active a i{
+    color:var(--azul-principal) !important;
+}
+
+
+/*--Painel tema escuro--*/
+body.tema-escuro .acessibilidade-painel{
+    background-color:#1e1e1e;
+    color:#fff;
+}
+
+body.tema-escuro .acessibilidade-painel h2,
+body.tema-escuro .acessibilidade-painel h3,
+body.tema-escuro .acessibilidade-painel p{
+    color:#fff;
+}
+
+
+/*Botões do painel*/
+body.tema-escuro .tema-opcoes button,
+body.tema-escuro .daltonismo-opcoes button,
+body.tema-escuro .tamanho-fonte button{
+    background-color:#2b2b2b;
+    color:#fff;
+    border-color:#555;
+}
+
+body.tema-escuro .tema-opcoes button:hover,
+body.tema-escuro .tema-opcoes button:focus,
+body.tema-escuro .daltonismo-opcoes button:hover,
+body.tema-escuro .daltonismo-opcoes button:focus,
+body.tema-escuro .tamanho-fonte button:hover,
+body.tema-escuro .tamanho-fonte button:focus{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    border-color:var(--laranja-principal);
+}
+
+
+/*--Lista/Tabela tema escuro--*/
+body.tema-escuro .card-list .table{
+    --bs-table-bg:#1e1e1e;
+    --bs-table-striped-bg:#252525;
+    --bs-table-hover-bg:#2b2b2b;
+    --bs-table-color:#f5f5f5;
+    --bs-table-border-color:#444;
+
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .card-list .table td{
+    color:#f5f5f5;
+    border-color:#444;
+}
+
+body.tema-escuro .card-list .table th{
+    color:#fff;
+}
+
+body.tema-escuro .search-box input,
+body.tema-escuro .form-input-group .form-select{
+    background-color:#1e1e1e;
+    color:#fff;
+    border-color:#555;
+}
+
+body.tema-escuro .search-box input::placeholder{
+    color:#aaa;
+}
+
+
+/*--Formulário tema escuro--*/
+body.tema-escuro .form-card{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .form-input{
+    background-color:#2b2b2b;
+    color:#fff;
+    border-color:#555;
+}
+
+body.tema-escuro .form-input::placeholder{
+    color:#aaa;
+}
+
+body.tema-escuro .form-input:focus{
+    background-color:#2b2b2b;
+    color:#fff;
+    border-color:var(--laranja-principal);
+}
+
+body.tema-escuro .form-label{
+    color:#fff;
+}
+
+body.tema-escuro .form-subtitle{
+    color:#ddd;
+}
+
+
+/*--Perfil tema escuro--*/
+body.tema-escuro .foto-perfil{
+    background-color:#2b2b2b;
+    border-color:#fff;
+}
+
+body.tema-escuro .foto-perfil i{
+    color:#fff;
+}
+
+
+/*--Perfil com filtro de daltonismo--*/
+body.filtro-protanopia .foto-perfil{
+    border-color:#1B3A5F;
+    background-color:#F1E4D1;
+}
+
+body.filtro-protanopia .foto-perfil i{
+    color:#D98E04;
+}
+
+body.filtro-deuteranopia .foto-perfil{
+    border-color:#183B56;
+    background-color:#F1E4D1;
+}
+
+body.filtro-deuteranopia .foto-perfil i{
+    color:#E69F00;
+}
+
+body.filtro-tritanopia .foto-perfil{
+    border-color:#5A2A82;
+    background-color:#F1E4D1;
+}
+
+body.filtro-tritanopia .foto-perfil i{
+    color:#D55E00;
+}
+
+
+/*--Visualizar tema escuro--*/
+body.tema-escuro .visu-box{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .visu-box h5{
+    color:#fff;
+    border-color:#444;
+}
+
+body.tema-escuro .visu-box h5 i{
+    color:var(--laranja-principal);
+}
+
+body.tema-escuro .info-item h6{
+    color:var(--laranja-principal);
+}
+
+body.tema-escuro .info-item p,
+body.tema-escuro .value-info{
+    color:#f5f5f5;
+}
+
+body.tema-escuro .name{
+    color:#fff;
+}
+
+body.tema-escuro .label-info{
+    color:#fff;
+}
+
+body.tema-escuro .label-info i{
+    color:var(--laranja-principal);
+}
+
+body.tema-escuro .foto img{
+    border-color:#fff;
+}
+
+
+/*--Botão voltar - tema escuro--*/
+body.tema-escuro .btn-voltar,
+body.tema-escuro .btn-voltar i{
+    color:#fff !important;
+}
+
+
+/*--Botões da lista com filtro de daltonismo--*/
+
+/*Protanopia*/
+body.filtro-protanopia .btn-view{
+    background:#b6a800;
+    color:#1B3A5F;
+    border-color:#1B3A5F;
+}
+
+body.filtro-protanopia .btn-edit{
+    background:#D98E04;
+    color:#1B3A5F;
+    border-color:#8F6500;
+}
+
+body.filtro-protanopia .btn-delete{
+    background:#C76B5C;
+    color:#1B3A5F;
+    border-color:#8F4035;
+}
+
+
+/*Deuteranopia*/
+body.filtro-deuteranopia .btn-view{
+    background:#8FA8B8;
+    color:#183B56;
+    border-color:#183B56;
+}
+
+body.filtro-deuteranopia .btn-edit{
+    background:#E69F00;
+    color:#183B56;
+    border-color:#B87D00;
+}
+
+body.filtro-deuteranopia .btn-delete{
+    background:#C96F63;
+    color:#183B56;
+    border-color:#91463D;
+}
+
+
+/*Tritanopia*/
+body.filtro-tritanopia .btn-view{
+    background:#B39BD1;
+    color:#5A2A82;
+    border-color:#5A2A82;
+}
+
+body.filtro-tritanopia .btn-edit{
+    background:#D55E00;
+    color:#5A2A82;
+    border-color:#A94600;
+}
+
+body.filtro-tritanopia .btn-delete{
+    background:#C87575;
+    color:#5A2A82;
+    border-color:#944848;
+}
+
+
+/*Ícones dos botões*/
+.btn-view i,
+.btn-edit i,
+.btn-delete i{
+    color:inherit;
+}
+
+
+/*Hover dos botões*/
+body.filtro-protanopia .btn-view:hover,
+body.filtro-protanopia .btn-edit:hover,
+body.filtro-protanopia .btn-delete:hover,
+body.filtro-deuteranopia .btn-view:hover,
+body.filtro-deuteranopia .btn-edit:hover,
+body.filtro-deuteranopia .btn-delete:hover,
+body.filtro-tritanopia .btn-view:hover,
+body.filtro-tritanopia .btn-edit:hover,
+body.filtro-tritanopia .btn-delete:hover{
+    background:var(--laranja-principal);
+    color:var(--azul-principal);
+}
+
+
+/*--Botões selecionados--*/
+.tamanho-fonte button.selecionado,
+.daltonismo-opcoes button.selecionado,
+.tema-opcoes button.selecionado{
+    background-color:var(--laranja-principal) !important;
+    color:var(--azul-principal) !important;
+    border-color:var(--laranja-principal) !important;
+}
+
+
+/*--Tamanho da fonte--*/
+
+/*Formulários*/
+body.fonte-pequena .form-title{
+    font-size:28.8px;
+}
+
+body.fonte-grande .form-title{
+    font-size:46px;
+}
+
+body.fonte-pequena .form-subtitle{
+    font-size:14.4px;
+}
+
+body.fonte-grande .form-subtitle{
+    font-size:18.4px;
+}
+
+
+/*Data*/
+body.fonte-pequena .dashboard-date{
+    font-size:16.2px;
+}
+
+body.fonte-grande .dashboard-date{
+    font-size:20.7px;
+}
+
+
+/*Cards*/
+body.fonte-pequena .card-info h6{
+    font-size:12.6px;
+}
+
+body.fonte-grande .card-info h6{
+    font-size:16.1px;
+}
+
+body.fonte-pequena .card-info h2{
+    font-size:37.8px;
+}
+
+body.fonte-grande .card-info h2{
+    font-size:48.3px;
+}
+
+
+/*Títulos dos cards*/
+body.fonte-pequena .dashboard-box h5{
+    font-size:18px;
+}
+
+body.fonte-grande .dashboard-box h5{
+    font-size:23px;
+}
+
+
+/*Partidas*/
+body.fonte-pequena .partida-item small{
+    font-size:12.6px;
+}
+
+body.fonte-grande .partida-item small{
+    font-size:16.1px;
+}
+
+body.fonte-pequena .partida-item h5{
+    font-size:18px;
+}
+
+body.fonte-grande .partida-item h5{
+    font-size:23px;
+}
+
+body.fonte-pequena .infos span{
+    font-size:12.6px;
+}
+
+body.fonte-grande .infos span{
+    font-size:16.1px;
+}
+
+
+/*Jogos ao vivo*/
+body.fonte-pequena .live-game p{
+    font-size:14.4px;
+}
+
+body.fonte-grande .live-game p{
+    font-size:18.4px;
+}
+
+
+/*Placar*/
+body.fonte-pequena .placar h2{
+    font-size:28.8px;
+}
+
+body.fonte-grande .placar h2{
+    font-size:36.8px;
+}
+
+
+/*Links*/
+body.fonte-pequena .link-custom{
+    font-size:14.4px;
+}
+
+body.fonte-grande .link-custom{
+    font-size:18.4px;
+}
+
+
+/*--Sidebar tamanho da fonte--*/
+body.fonte-pequena .sidebar span,
+body.fonte-pequena .sidebar a{
+    font-size:14.4px;
+}
+
+body.fonte-grande .sidebar span,
+body.fonte-grande .sidebar a{
+    font-size:18.4px;
+}
+
+
+/*--Navbar tamanho da fonte--*/
+body.fonte-pequena .navbar span,
+body.fonte-pequena .navbar a{
+    font-size:14.4px;
+}
+
+body.fonte-grande .navbar span,
+body.fonte-grande .navbar a{
+    font-size:18.4px;
+}
+
+
+/*--Visualizar tamanho da fonte--*/
+body.fonte-pequena .name{
+    font-size:27px;
+}
+
+body.fonte-grande .name{
+    font-size:34.5px;
+}
+
+body.fonte-pequena .visu-box h5{
+    font-size:16.2px;
+}
+
+body.fonte-grande .visu-box h5{
+    font-size:20.7px;
+}
+
+body.fonte-pequena .info-item h6{
+    font-size:12.6px;
+}
+
+body.fonte-grande .info-item h6{
+    font-size:16.1px;
+}
+
+body.fonte-pequena .info-item p,
+body.fonte-pequena .value-info{
+    font-size:16.2px;
+}
+
+body.fonte-grande .info-item p,
+body.fonte-grande .value-info{
+    font-size:19.8px;
+}
+
+
+/*--Login/Cadastro tamanho da fonte--*/
+body.fonte-pequena .auth-card h1{
+    font-size:49.5px;
+}
+
+body.fonte-normal .auth-card h1{
+    font-size:55px;
+}
+
+body.fonte-grande .auth-card h1{
+    font-size:63.3px;
+}
+
+body.fonte-pequena .auth-card label{
+    font-size:14.4px;
+}
+
+body.fonte-normal .auth-card label{
+    font-size:16px;
+}
+
+body.fonte-grande .auth-card label{
+    font-size:18.4px;
+}
+
+body.fonte-pequena .auth-card .form-input{
+    font-size:14.4px;
+}
+
+body.fonte-normal .auth-card .form-input{
+    font-size:16px;
+}
+
+body.fonte-grande .auth-card .form-input{
+    font-size:18.4px;
+}
+
+body.fonte-pequena .auth-link{
+    font-size:14.4px;
+}
+
+body.fonte-normal .auth-link{
+    font-size:16px;
+}
+
+body.fonte-grande .auth-link{
+    font-size:18.4px;
+}
+
+body.fonte-pequena .titulo-esquerda{
+    font-size:27px;
+}
+
+body.fonte-grande .titulo-esquerda{
+    font-size:34.5px;
+}
+
+
+/*--Login/Cadastro tema escuro--*/
+body.tema-escuro .auth-left{
+    background-color:#181818;
+}
+
+body.tema-escuro .auth-right{
+    background-color:#121212;
+}
+
+body.tema-escuro .auth-card-login,
+body.tema-escuro .auth-card-cadastro{
+    background-color:#1e1e1e;
+    color:#f5f5f5;
+}
+
+body.tema-escuro .auth-card h1{
+    color:#fff;
+}
+
+body.tema-escuro .auth-card p{
+    color:#ddd;
+}
+
+body.tema-escuro .auth-card label{
+    color:#fff;
+}
+
+body.tema-escuro .auth-card .form-input{
+    background-color:#2b2b2b;
+    color:#fff;
+    border-color:#555;
+}
+
+body.tema-escuro .auth-card .form-input::placeholder{
+    color:#aaa;
+}
+
+body.tema-escuro .auth-card .form-input:focus{
+    background-color:#2b2b2b;
+    color:#fff;
+    border-color:var(--laranja-principal);
+}
+
+body.tema-escuro .auth-link{
+    color:var(--laranja-principal);
+}
+
+body.tema-escuro .titulo-esquerda{
+    color:#fff;
+}
+
+body.tema-escuro .btn-secondary{
+    background-color:#1e1e1e;
+    color:var(--laranja-principal);
+    border-color:var(--laranja-principal);
+}
+
+body.tema-escuro .btn-secondary:hover{
+    background-color:var(--laranja-principal);
+    color:var(--azul-principal);
+    border-color:var(--laranja-principal);
+}
+
+
+/*--Login/Cadastro filtros--*/
+
+/*Protanopia*/
+body.filtro-protanopia .auth-left{
+    background-color:#F1E4D1;
+}
+
+body.filtro-protanopia .auth-right{
+    background-color:#1B3A5F;
+}
+
+body.filtro-protanopia .auth-card h1,
+body.filtro-protanopia .auth-card label,
+body.filtro-protanopia .auth-card p{
+    color:#1B3A5F;
+}
+
+body.filtro-protanopia .auth-link{
+    color:#D98E04;
+}
+
+body.filtro-protanopia .titulo-esquerda{
+    color:#1B3A5F;
+}
+
+body.filtro-protanopia .btn-laranja{
+    background-color:#1B3A5F;
+    color:#fff;
+}
+
+body.filtro-protanopia .btn-laranja:hover{
+    background-color:#D98E04;
+    color:#1B3A5F;
+}
+
+
+/*Deuteranopia*/
+body.filtro-deuteranopia .auth-left{
+    background-color:#F1E4D1;
+}
+
+body.filtro-deuteranopia .auth-right{
+    background-color:#183B56;
+}
+
+body.filtro-deuteranopia .auth-card h1,
+body.filtro-deuteranopia .auth-card label,
+body.filtro-deuteranopia .auth-card p{
+    color:#183B56;
+}
+
+body.filtro-deuteranopia .auth-link{
+    color:#E69F00;
+}
+
+body.filtro-deuteranopia .titulo-esquerda{
+    color:#183B56;
+}
+
+body.filtro-deuteranopia .btn-laranja{
+    background-color:#183B56;
+    color:#fff;
+}
+
+body.filtro-deuteranopia .btn-laranja:hover{
+    background-color:#E69F00;
+    color:#183B56;
+}
+
+
+/*Tritanopia*/
+body.filtro-tritanopia .auth-left{
+    background-color:#F1E4D1;
+}
+
+body.filtro-tritanopia .auth-right{
+    background-color:#5A2A82;
+}
+
+body.filtro-tritanopia .auth-card h1,
+body.filtro-tritanopia .auth-card label,
+body.filtro-tritanopia .auth-card p{
+    color:#5A2A82;
+}
+
+body.filtro-tritanopia .auth-link{
+    color:#D55E00;
+}
+
+body.filtro-tritanopia .titulo-esquerda{
+    color:#5A2A82;
+}
+
+body.filtro-tritanopia .btn-laranja{
+    background-color:#5A2A82;
+    color:#fff;
+}
+
+body.filtro-tritanopia .btn-laranja:hover{
+    background-color:#D55E00;
+    color:#5A2A82;
+}
+
+
+/*--Tema escuro + filtros--*/
+
+/*Protanopia*/
+body.tema-escuro.filtro-protanopia .auth-right{
+    background-color:#1B3A5F;
+}
+
+body.tema-escuro.filtro-protanopia .auth-left{
+    background-color:#202020;
+}
+
+body.tema-escuro.filtro-protanopia .auth-card h1,
+body.tema-escuro.filtro-protanopia .auth-card label{
+    color:#fff;
+}
+
+
+/*Deuteranopia*/
+body.tema-escuro.filtro-deuteranopia .auth-right{
+    background-color:#183B56;
+}
+
+body.tema-escuro.filtro-deuteranopia .auth-left{
+    background-color:#202020;
+}
+
+body.tema-escuro.filtro-deuteranopia .auth-card h1,
+body.tema-escuro.filtro-deuteranopia .auth-card label{
+    color:#fff;
+}
+
+
+/*Tritanopia*/
+body.tema-escuro.filtro-tritanopia .auth-right{
+    background-color:#5A2A82;
+}
+
+body.tema-escuro.filtro-tritanopia .auth-left{
+    background-color:#202020;
+}
+
+body.tema-escuro.filtro-tritanopia .auth-card h1,
+body.tema-escuro.filtro-tritanopia .auth-card label{
+    color:#fff;
+}
+
+
+/*--Foco--*/
+.acessibilidade-btn:focus-visible,
+.acessibilidade-painel button:focus-visible{
+    outline:3px solid var(--laranja-principal);
+    outline-offset:3px;
+}
+
+
+/*--Responsividade--*/
+@media (max-width:768px){
+    .acessibilidade-btn{
+        right:15px;
+        bottom:15px;
+        width:50px;
+        height:50px;
+    }
+    .acessibilidade-painel{
+        right:15px;
+        bottom:75px;
+        width:290px;
+        max-width:calc(100vw - 30px);
+    }
+}
