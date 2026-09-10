@@ -28,127 +28,49 @@ if (!empty($_SESSION['flash'])) {
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/lista.css">
+    <link rel="stylesheet" href="../../css/acessibilidade.css">
 
     <title>Alunos</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
-    <!--Navbar-->
-    <nav class="navbar">
-            <button id="menu-btn">
-                <i class="bi bi-layout-sidebar"></i>
-            </button>
+    
+<!-- Navbar e Sidebar -->
+<app-header></app-header>
 
-            <div class="logo">
-                <img src="../../img/logo-ace-laranja.png" alt="logo ace">
-            </div>
-
-            <div class="perfil">
-                <i class="bi bi-bell notificacao"></i>
-                <img src="<?= htmlspecialchars(upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
-
-                <div class="usuario">
-                    <?php if ($usuario !== null): ?>
-                    <span class="session-info">
-                        <?= htmlspecialchars($usuario['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                    </span>
-
-                    <span class="session-info">
-                        Perfil: <?= htmlspecialchars(implode(', ', $usuario['papeis'] ?? []), ENT_QUOTES, 'UTF-8') ?>
-                    </span>
-                    <?php else: ?>
-                        <p class="alert error">Sessão inválida.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
-    </nav>
-
-    <!--Sidebar-->
-    <div class="sidebar">
-        <div class="menu">
-
-            <a href="/dashboard" class="menu-item">
-                <i class="bi bi-house-door-fill"></i>
-                <span>Painel</span>
-            </a>
-
-            <a href="/escolas/listar" class="menu-item">
-                <i class="bi bi-bank2"></i>
-                <span>Escolas</span>
-            </a>
-
-            <a href="/alunos/listar" class="menu-item active">
-                <i class="bi bi-person-fill"></i>
-                <span>Alunos</span>
-            </a>
-
-            <a href="..." class="menu-item ">
-                <i class="bi bi-people-fill"></i>
-                <span>Times</span>
-            </a>
-
-            <a href="..." class="menu-item ">
-                <i class="bi bi-trophy-fill"></i>
-                <span>Competições</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-dribbble"></i>
-                <span>Partidas</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-bar-chart-line-fill"></i>
-                <span>Rankings</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-gear-fill"></i>
-                <span>Configurações</span>
-            </a>
-
-            <a href="/logout" class="menu-item">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sair da conta</span>
-            </a>
-
-        </div>
-    </div>
-
-    <div class="content">  
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
+<!--Conteúdo-->
+<div class="content">  
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
         <div>
             <h2 class="form-title">Alunos</h2>
-            <p>Gerencie os alunos cadastrados.</p>
+            <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
         </div>
-            <a href="/alunos/cadastrar" class="btn btn-laranja">
+            <a href="/escolas/cadastrar" class="btn btn-laranja">
             + Adicionar aluno
             </a>
-        </div>
+    </div>
 
-        <!-- Card -->
-        <div class="card shadow">
-            <div class="card-body">
+    <!-- Card -->
+    <div class="card shadow">
+        <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-
                 <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/alunos/listar">
                     <div class="col-md-4">
-                        <div class="form-input-group">
-                            <div class="input-group">
+                        <div class="input-group pesquisa-escola">
+                            <div class="form-input-group search-box">
+                                <i class="bi bi-search"></i>
                                 <input
                                     type="text"
                                     name="nome"
                                     class="form-control form-input"
                                     placeholder="Pesquisar aluno"
-                                    value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                >
+                                    value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-input-group">
+                    <div class="col-md-4">
+                        <div class="form-input-group btn-filtro">
                             <select name="escola" class="form-select form-input">
                                 <option value="">Todas as escolas</option>
                                 <?php foreach ($escolas as $escola): ?>
@@ -160,8 +82,8 @@ if (!empty($_SESSION['flash'])) {
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-input-group">
+                    <div class="col-md-2">
+                        <div class="form-input-group btn-filtro">
                             <select name="ordem" class="form-select form-input">
                                 <option value="asc" <?= ($filtros['ordem'] ?? 'asc') === 'asc' ? 'selected' : '' ?>>Código crescente</option>
                                 <option value="desc" <?= ($filtros['ordem'] ?? 'asc') === 'desc' ? 'selected' : '' ?>>Código decrescente</option>
@@ -170,23 +92,24 @@ if (!empty($_SESSION['flash'])) {
                     </div>
 
                     <div class="col-md-2 d-grid">
-                        <button type="submit" class="btn btn-laranja">Buscar</button>
+                        <button type="submit" class="btn btn-buscar">Buscar</button>
                     </div>
                 </form>
-
             </div>
 
-        <!-- tabela -->
-        <?php if (!empty($flash)): ?>
-            <?php if (!empty($flash['success'])): ?>
-                <div class="alert alert-success"><?= htmlspecialchars($flash['success'], ENT_QUOTES, 'UTF-8') ?></div>
-            <?php endif; ?>
-            <?php if (!empty($flash['error'])): ?>
-                <div class="alert alert-danger"><?= htmlspecialchars($flash['error'], ENT_QUOTES, 'UTF-8') ?></div>
-            <?php endif; ?>
+    <!-- tabela -->
+    <?php if (!empty($flash)): ?>
+        <?php if (!empty($flash['success'])): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($flash['success'], ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
-        <div class="list mt-4">      
-            <div class="card card-list">
+        <?php if (!empty($flash['error'])): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($flash['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <div class="list mt-4">      
+        <div class="card card-list">
+            <div class="table-responsive">
             <table class="table table-striped table-borderless mb-0">
                 
             <thead class="table-blue">
@@ -200,8 +123,9 @@ if (!empty($_SESSION['flash'])) {
                 <th scope="col">Ações</th>
               </tr>
             </thead>
-                <tbody class="table-group-divider">
-                <?php foreach ($alunos as $aluno): ?>
+
+            <tbody class="table-group-divider">
+            <?php foreach ($alunos as $aluno): ?>
                 <tr>
                     <td>
                         <div class="tc list-perfil">
@@ -229,20 +153,28 @@ if (!empty($_SESSION['flash'])) {
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
+                        </td>
+                    </tr>
+            <?php endforeach; ?>
             </tbody>
-          </table>
-
+            </table>
+            </div>
         </div>
-        </div>
-
-        </div>
-        </div>   
     </div>
 
-    <!--Js para o funcionamento da sidebar-->>
+        </div>
+    </div>   
+</div>
+
+    <script>
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+    </script>
+
     <script src="../../js/script.js"></script>
+    <script src="../../js/layout.js"></script>
+    <script src="../../js/acessibilidade.js"></script>
+
 </body>
 </html>
