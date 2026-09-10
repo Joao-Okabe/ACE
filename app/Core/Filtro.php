@@ -1,6 +1,6 @@
 <?php
 
-class FiltroModel
+class Filtro
 {
 	public function filtrosAluno(array $filtros): array
 	{

@@ -2,12 +2,12 @@
 
 class Escola extends Model
 {
-    private FiltroModel $filtroModel;
+    private Filtro $filtro;
 
     public function __construct()
     {
         parent::__construct();
-        $this->filtroModel = new FiltroModel();
+        $this->filtro = new Filtro();
     }
 
     // Cadastro de escola
@@ -86,13 +86,13 @@ class Escola extends Model
                 e.ativa
             FROM escola e";
 
-        $filtrosSql = $this->filtroModel->filtrosEscola($filtros);
+        $filtrosSql = $this->filtro->filtrosEscola($filtros);
 
         if (!empty($filtrosSql['onde'])) {
             $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
         }
 
-        $ordem = $this->filtroModel->ordem($filtros);
+        $ordem = $this->filtro->ordem($filtros);
         $sql .= " ORDER BY e.cd_escola {$ordem}";
 
         $stmt = $this->pdo->prepare($sql);
