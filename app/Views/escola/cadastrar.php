@@ -17,98 +17,19 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/acessibilidade.css">
 
     <title>Cadastro escola</title>
 </head>
 <body>
 
-<!--Navbar-->
-    <nav class="navbar">
-            <button id="menu-btn">
-                <i class="bi bi-layout-sidebar"></i>
-            </button>
+<!-- Navbar e Sidebar -->
+<app-header></app-header>
 
-            <div class="logo">
-                <img src="../../img/logo-ace-laranja.png" alt="logo ace">
-            </div>
-
-            <div class="perfil">
-                <i class="bi bi-bell notificacao"></i>
-                <img src="<?= htmlspecialchars(upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
-
-            <div class="usuario">
-                <?php if ($usuario !== null): ?>
-                <span class="session-info">
-                    <?= htmlspecialchars($usuario['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                </span>
-
-                <span class="session-info">
-                    Perfil: <?= htmlspecialchars(implode(', ', $usuario['papeis'] ?? []), ENT_QUOTES, 'UTF-8') ?>
-                </span>
-                <?php else: ?>
-                    <p class="alert error">Sessão inválida.</p>
-                <?php endif; ?>
-            </div>
-            </div>
-    </nav>
-
-<!--Sidebar-->
-    <div class="sidebar">
-        <div class="menu">
-
-            <a href="/dashboard" class="menu-item">
-                <i class="bi bi-house-door-fill"></i>
-                <span>Painel</span>
-            </a>
-
-            <a href="/escolas/listar" class="menu-item active">
-                <i class="bi bi-bank2"></i>
-                <span>Escolas</span>
-            </a>
-
-            <a href="/alunos/listar" class="menu-item">
-                <i class="bi bi-person-fill"></i>
-                <span>Alunos</span>
-            </a>
-
-            <a href="..." class="menu-item ">
-                <i class="bi bi-people-fill"></i>
-                <span>Times</span>
-            </a>
-
-            <a href="..." class="menu-item ">
-                <i class="bi bi-trophy-fill"></i>
-                <span>Competições</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-dribbble"></i>
-                <span>Partidas</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-bar-chart-line-fill"></i>
-                <span>Rankings</span>
-            </a>
-
-            <a href="..." class="menu-item">
-                <i class="bi bi-gear-fill"></i>
-                <span>Configurações</span>
-            </a>
-
-            <a href="/logout" class="menu-item">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sair da conta</span>
-            </a>
-
-        </div>
-    </div>
-
-    <!--Conteúdo-->
-    <div class="content">
-        <div class="card form-card shadow-sm">
-
-            <div class="mb-2">
+<!--Conteúdo-->
+<div class="content">
+     <div class="card form-card shadow-sm">
+        <div class="mb-2">
             <div>
                 <h2 class="form-title">Cadastro da Escola</h2>
                 <p class="form-subtitle">
@@ -199,13 +120,24 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <input type="text" id="uf" name="uf" value="<?= $valor('uf') ?>" maxlength="2" class="form-control form-input" maxlength="2">
             </div>
 
-                <div class="actions full">
-                    <a href="/escolas/listar" class="btn btn-outline-secondary">Cancelar</a>
-                    <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
-                </div>
-            </form>
-        </section>
-    </main>
+            <div class="actions full d-flex justify-content-end gap-3 mt-4">
+                <a href="/escolas/listar" class="btn btn-secondary">Cancelar</a>
+                <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script>
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+    </script>
+    
     <script src="/js/cep.api.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../js/layout.js"></script>
+    <script src="../../js/acessibilidade.js"></script>
+
 </body>
 </html>

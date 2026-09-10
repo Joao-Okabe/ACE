@@ -21,6 +21,7 @@ $valor = function ($campo) use ($dados) {
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/auth.css">
+    <link rel="stylesheet" href="../../css/acessibilidade.css">
 
     <title>ACE - Cadastro</title>
 </head>
@@ -136,6 +137,9 @@ $valor = function ($campo) use ($dados) {
             </form>
         </section>
     </main>
-            <script src="../../js/script.js"></script>
+            
+    <script src="../../js/script.js"></script>
+    <script src="../../js/acessibilidade.js"></script>
+
 </body>
 </html>
