@@ -68,8 +68,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                     <label for="categoria_administrativa" class="form-label">Categoria</label>
                     <select id="categoria_administrativa" name="categoria_administrativa" required class="form-select form-input">
                         <option value="">Selecione</option>
-                        <option value="PUBLICA" <?= $valor('categoria_administrativa') === 'PUBLICA' ? 'selected' : '' ?>>Pública</option>
-                        <option value="PRIVADA" <?= $valor('categoria_administrativa') === 'PRIVADA' ? 'selected' : '' ?>>Privada</option>
+                        <option value="Escola Municipal" <?= $valor('categoria_administrativa') === 'Escola Municipal' ? 'selected' : '' ?>>Escola Municipal</option>
+                        <option value="Escola Estadual" <?= $valor('categoria_administrativa') === 'Escola Estadual' ? 'selected' : '' ?>>Escola Estadual</option>
+                        <option value="Privada" <?= $valor('categoria_administrativa') === 'Privada' ? 'selected' : '' ?>>Privada</option>
                     </select>
                 </div>
 

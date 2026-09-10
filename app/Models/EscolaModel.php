@@ -2,6 +2,14 @@
 
 class Escola extends Model
 {
+    private FiltroModel $filtroModel;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->filtroModel = new FiltroModel();
+    }
+
     // Cadastro de escola
     public function cadastrar(array $dados): void
     {
@@ -63,22 +71,32 @@ class Escola extends Model
     }
 
     //Lista Escolas
-    public function listar(): array
+    public function listar(array $filtros = []): array
     {
-        $stmt = $this->pdo->query("
+        $sql = "
             SELECT
-                cd_escola,
-                nome,
-                telefone,
-                cep,
-                numero,
-                categoria_administrativa,
-                img_logo,
-                criada_em,
-                ativa
-            FROM escola
-            ORDER BY nome
-        ");
+                e.cd_escola,
+                e.nome,
+                e.telefone,
+                e.cep,
+                e.numero,
+                e.categoria_administrativa,
+                e.img_logo,
+                e.criada_em,
+                e.ativa
+            FROM escola e";
+
+        $filtrosSql = $this->filtroModel->filtrosEscola($filtros);
+
+        if (!empty($filtrosSql['onde'])) {
+            $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
+        }
+
+        $ordem = $this->filtroModel->ordem($filtros);
+        $sql .= " ORDER BY e.cd_escola {$ordem}";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($filtrosSql['parametros']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

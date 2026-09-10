@@ -133,9 +133,9 @@ class EscolaService
     }
 
     //Lista Escola
-    public function listar(): array
+    public function listar(array $filtros = []): array
     {
-        return $this->escolaModel->listar();
+        return $this->escolaModel->listar($filtros);
     }
 
     //Busca escola

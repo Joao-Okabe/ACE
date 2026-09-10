@@ -1,3 +1,7 @@
+<?php
+$escolas = $escolas ?? [];
+
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -42,20 +46,57 @@
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <div class="input-group pesquisa-escola">
-                    <div class="form-input-group search-box">
-                        <i class="bi bi-search"></i>
-                        <input type="text" class="form-control form-input" placeholder="Pesquisar escola">
+                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/escolas/listar">
+                    <div class="col-md-4">
+                        <div class="input-group pesquisa-escola">
+                            <div class="form-input-group search-box">
+                                <i class="bi bi-search"></i>
+                                <input
+                                    type="text"
+                                    name="nome"
+                                    class="form-control form-input"
+                                    placeholder="Pesquisar Escola"
+                                    value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            </div>
+                        </div>
                     </div>
-                </div>                      
+
+                    <div class="col-md-4">
+                        <div class="form-input-group btn-filtro">
+                            <select name="categoria" class="form-select form-input">
+                                <option value="">Todas as categorias</option>
+                                <?php foreach (['Escola Municipal', 'Escola Estadual', 'Privada'] as $categoria): ?>
+                                    <option value="<?= htmlspecialchars($categoria, ENT_QUOTES, 'UTF-8') ?>"
+                                        <?= ($filtros['categoria'] ?? '') === $categoria ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($categoria, ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-input-group btn-filtro">
+                            <select name="ordem" class="form-select form-input">
+                                <option value="asc" <?= ($filtros['ordem'] ?? 'asc') === 'asc' ? 'selected' : '' ?>>Código crescente</option>
+                                <option value="desc" <?= ($filtros['ordem'] ?? 'asc') === 'desc' ? 'selected' : '' ?>>Código decrescente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-buscar">Buscar</button>
+                    </div>
+                </form>
             </div>
 
             <!-- Tabela -->
-            <div class="list mt-4">      
+            <div class="list mt-4">
                 <div class="card card-list">
+
                     <div class="table-responsive">
                     <table class="table table-striped table-borderless mb-0">
-                        
+
                     <thead class="table-blue">
                     <tr>
                         <th scope="col">Brasão</th>

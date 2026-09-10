@@ -1,5 +1,9 @@
 <?php
 $usuario = $usuario ?? null;
+
+$escolas = $escolas ?? [];
+$alunos = $alunos ?? [];
+
 // Gera CSRF token se necessário
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(16));

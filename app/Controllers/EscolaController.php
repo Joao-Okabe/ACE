@@ -45,9 +45,22 @@ class EscolaController
     //Lista todas as escolas
     public function list(): void
     {
-        $escolas = $this->service()->listar();
+        $filtros = [
+            'nome' => trim($_GET['nome'] ?? ''),
+            'categoria' => trim($_GET['categoria'] ?? ''),
+            'ordem' => strtolower($_GET['ordem'] ?? 'asc'),
+        ];
 
-        renderView('escola/listar', ['escolas' => $escolas]);
+        if (!in_array($filtros['ordem'], ['asc', 'desc'], true)) {
+            $filtros['ordem'] = 'asc';
+        }
+
+        $escolas = $this->service()->listar($filtros);
+
+        renderView('escola/listar', [
+            'escolas' => $escolas,
+            'filtros' => $filtros,
+        ]);
     }
 
     //Exibe formulário de edição de Escola
