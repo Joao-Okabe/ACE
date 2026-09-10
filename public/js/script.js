@@ -1,6 +1,6 @@
 /*--Adicionar foto de perfil--*/
-const input = document.getElementById("foto_perfil") || document.getElementById("img");
-const fotoPerfil = document.getElementById("fotoPerfil");
+const input = document.getElementById("foto_perfil") || document.getElementById("img") || document.getElementById("img_logo");
+const fotoPerfil = document.getElementById("fotoPerfil") || document.getElementById("fotoLogoEscolaEditar");
 
 if (input && fotoPerfil) {
     input.addEventListener("change", function () {

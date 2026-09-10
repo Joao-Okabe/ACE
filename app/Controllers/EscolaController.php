@@ -24,7 +24,10 @@ class EscolaController
     {
         try {
 
-            $this->service()->cadastrar($_POST);
+            $dados = $_POST;
+            $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
+
+            $this->service()->cadastrar($dados);
 
             header("Location: /escolas/cadastrar?sucesso=1");
             exit;
@@ -37,7 +40,7 @@ class EscolaController
             $escolaService = new EscolaService();
             $escolas = $escolaService->listar();
 
-            renderView('usuario/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
+            renderView('escola/cadastrar', ['erro' => $erro, 'dados' => $dados]);
 
         }
     }
@@ -90,7 +93,10 @@ class EscolaController
 
         try {
 
-            $this->service()->atualizar($id, $_POST);
+            $dados = $_POST;
+            $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
+
+            $this->service()->atualizar($id, $dados);
 
             header("Location: /escolas/listar");
             exit;
