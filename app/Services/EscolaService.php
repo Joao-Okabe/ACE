@@ -45,7 +45,7 @@ class EscolaService
             throw new Exception("Informe a categoria administrativa.");
         }
 
-        if (!in_array($dados['categoria_administrativa'], ['PUBLICA', 'PRIVADA'], true)) {
+        if (!in_array($dados['categoria_administrativa'], ['Escola Municipal', 'Escola Estadual', 'Privada'], true)) {
             throw new Exception("Categoria administrativa inválida.");
         }
 
@@ -58,45 +58,7 @@ class EscolaService
             PASSWORD_DEFAULT
         );
 
-        $arquivo = $_FILES['img_logo'] ?? null;
-
-        if ($arquivo === null || !isset($arquivo['tmp_name']) || !is_uploaded_file($arquivo['tmp_name'])) {
-            throw new Exception('Selecione uma imagem para o logo da escola.');
-        }
-
-        $nomeArquivo = $arquivo['name'];
-        $tamanhoArquivo = (int) $arquivo['size'];
-        $erroArquivo = (int) $arquivo['error'];
-        $tmpArquivo = $arquivo['tmp_name'];
-
-        $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
-        $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-        if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
-            throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
-        }
-
-        if ($erroArquivo !== 0) {
-            throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
-        }
-
-        if ($tamanhoArquivo > 2 * 1024 * 1024) {
-            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
-        }
-
-        $pastaUploads = __DIR__ . '/../../public/uploads';
-
-        if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
-            throw new Exception('Não foi possível criar a pasta de uploads.');
-        }
-
-        $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
-        $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
-        $caminhoPublico = '/uploads/' . $novoNomeArquivo;
-
-        if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
-            throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
-        }
+        $caminhoPublico = $this->salvarLogo($dados['img_logo_upload'] ?? null, true);
 
         try {
 
@@ -151,16 +113,73 @@ class EscolaService
     }
 
     //Atualiza Escola
-    public function atualizar(
-        int $id,
-        array $dados
-    ): void {
+    public function atualizar(int $id, array $dados): void 
+    {
+
+        $escola = $this->escolaModel->buscar($id);
+
+        if ($escola === null) {
+            throw new Exception('Escola não encontrada.');
+        }
+
+        $novoLogo = $this->salvarLogo($dados['img_logo_upload'] ?? null, false);
+        $dados['img_logo'] = $novoLogo ?? $escola['img_logo'];
 
         $this->escolaModel->atualizar(
             $id,
             $dados
         );
 
+    }
+
+    private function salvarLogo(?array $arquivo, bool $obrigatorio): ?string
+    {
+        if ($arquivo === null || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            if ($obrigatorio) {
+                throw new Exception('Selecione uma imagem para o logo da escola.');
+            }
+
+            return null;
+        }
+
+        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            throw new Exception('Erro durante a transferência da imagem.');
+        }
+
+        $tmpArquivo = $arquivo['tmp_name'] ?? '';
+
+        if (!is_uploaded_file($tmpArquivo)) {
+            throw new Exception('O arquivo enviado não é válido.');
+        }
+
+        $extensaoArquivo = strtolower(pathinfo($arquivo['name'] ?? '', PATHINFO_EXTENSION));
+
+        if (!in_array($extensaoArquivo, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
+        }
+
+        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $pastaUploads = __DIR__ . '/../../public/uploads';
+
+        if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        if (!is_writable($pastaUploads)) {
+            throw new Exception('A pasta de uploads não possui permissão de escrita.');
+        }
+
+        $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
+        $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
+
+        if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
+            throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
+        }
+
+        return '/uploads/' . $novoNomeArquivo;
     }
 
     //Remove escola

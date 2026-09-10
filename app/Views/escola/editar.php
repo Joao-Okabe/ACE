@@ -1,4 +1,5 @@
 <?php
+$escola = $escola ?? [];
 $dados = $escola ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 ?>

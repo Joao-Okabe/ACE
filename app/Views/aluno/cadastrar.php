@@ -98,7 +98,7 @@ $escolas = $escolas ?? [];
                     </div>
                 </div>
 
-        <!-- senha -->
+        <!-- SENHA -->
                 <div class="col-md-6 mb-4">
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" id="senha" name="senha" required class="form-control form-input" placeholder="Digite uma senha">

@@ -50,14 +50,16 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
             <!-- Foto de perfil -->
             <div class="perfil-aluno mb-4">
-                <label for="img" class="foto-perfil" id="fotoPerfil">
+                <label for="img_logo" class="foto-perfil" id="fotoPerfil">
                     <i class="bi bi-camera-fill"></i>
                 </label>
-                <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
                 <div class="text-perfil">
-                <p class="form-label">Adicionar imagem do brasão</p>
+                    <p class="form-label">Adicionar imagem do brasão</p>
                 </div>
+                <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
             </div>
+
+
 
             <div class="row">      
             <div class="col-md-6 mb-3">
@@ -70,8 +72,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <select class="form-select form-input" id="categoria_administrativa" name="categoria_administrativa" required>
                     <option selected>Selecione</option>
                     <option value="">Selecione</option>
-                    <option value="PUBLICA" <?= $valor('categoria_administrativa') === 'PUBLICA' ? 'selected' : '' ?>>Pública</option>
-                    <option value="PRIVADA" <?= $valor('categoria_administrativa') === 'PRIVADA' ? 'selected' : '' ?>>Privada</option>
+                    <option value="Escola Municipal" <?= $valor('categoria_administrativa') === 'Escola Municipal' ? 'selected' : '' ?>>Escola Municipal</option>
+                    <option value="Escola Estadual" <?= $valor('categoria_administrativa') === 'Escola Estadual' ? 'selected' : '' ?>>Escola Estadual</option>
+                    <option value="Privada" <?= $valor('categoria_administrativa') === 'Privada' ? 'selected' : '' ?>>Privada</option>
                 </select>
             </div> 
 
