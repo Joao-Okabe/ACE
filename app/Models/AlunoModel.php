@@ -75,6 +75,7 @@ class Aluno extends Model
         SELECT
             a.*,
             u.email,
+            u.nm_usuario,
             u.foto_perfil,
             (
                 SELECT e.nome
@@ -110,6 +111,7 @@ class Aluno extends Model
         $stmt = $this->pdo->prepare("SELECT
             a.*,
             u.email,
+            u.nm_usuario,
             u.foto_perfil,
             (
                 SELECT e.nome

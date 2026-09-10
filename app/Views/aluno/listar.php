@@ -137,7 +137,7 @@ if (!empty($_SESSION['flash'])) {
                         </div>
                     </td>
                     <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
-                    <td><?= htmlspecialchars($aluno['nome']) ?></td>
+                    <td><?= htmlspecialchars($aluno['nm_usuario']) ?></td>
                     <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['escola'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
