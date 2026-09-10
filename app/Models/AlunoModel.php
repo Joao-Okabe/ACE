@@ -1,6 +1,14 @@
 <?php
 class Aluno extends Model
 {
+    private FiltroModel $filtroModel;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->filtroModel = new FiltroModel();
+    }
+
     //Cadastra Aluno
     public function cadastrar(array $dados): void
     {
@@ -81,34 +89,17 @@ class Aluno extends Model
             ON u.cd_usuario = a.cd_usuario
         ";
 
-        $parametro = [];
-        $onde = [];
+        $filtrosSql = $this->filtroModel->filtrosAluno($filtros);
 
-        if (!empty($filtros['nome'])) {
-            $onde[] = 'a.nome ILIKE :nome';
-            $parametro[':nome'] = '%' . $filtros['nome'] . '%';
+        if (!empty($filtrosSql['onde'])) {
+            $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
         }
 
-        if (!empty($filtros['escola'])) {
-            $onde[] = 'a.cd_usuario IN (
-                SELECT up.cd_usuario
-                FROM vinculo_usuario_escola up
-                WHERE up.cd_escola = :cd_escola
-                    AND up.ativo = TRUE
-            )';
-            $parametro[':cd_escola'] = $filtros['escola'];
-        }
-
-        if (!empty($where)) {
-            $sql .= ' WHERE ' . implode(' AND ', $where);
-        }
-
-        $ordem = strtoupper($filtros['ordem'] ?? 'ASC');
-        $ordem = in_array($ordem, ['ASC', 'DESC'], true) ? $ordem : 'ASC';
+        $ordem = $this->filtroModel->ordem($filtros);
         $sql .= " ORDER BY a.cd_aluno {$ordem}";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($parametro);
+        $stmt->execute($filtrosSql['parametros']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
