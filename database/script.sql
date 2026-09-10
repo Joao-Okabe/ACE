@@ -41,7 +41,7 @@ CREATE TABLE escola (
     criada_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ativa BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT chk_categoria
-        CHECK (categoria_administrativa IN ('PUBLICA', 'PRIVADA'))
+        CHECK (categoria_administrativa IN ('Escola Municipal', 'Escola Estadual', 'Privada'))
 );
 
 CREATE TABLE vinculo_usuario_escola (
@@ -108,7 +108,7 @@ CREATE TABLE competicao (
         FOREIGN KEY (cd_criador)
         REFERENCES usuario(cd_usuario)
         ON DELETE CASCADE
-),
+)´
 
 CREATE TABLE formato (
     cd_formato INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -105,7 +105,7 @@ class Header extends HTMLElement {
                         <span>Configurações</span>
                     </a>
 
-                    <a href="#" class="menu-item">
+                    <a href="/logout" class="menu-item">
                         <i class="bi bi-box-arrow-right"></i>
                         <span>Sair da conta</span>
                     </a>
