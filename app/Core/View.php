@@ -28,8 +28,8 @@ function asset(string $path): string
 
 function upload_url(?string $storedPath): string
 {
-    if (empty($storedPath)) {
-        return '/img/perfil.jpg';
+    if (empty($storedPath) || $storedPath === '/img/perfil.jpg') {
+        return '/img/no-prof-pic.png';
     }
 
     // If it's an absolute URL, return
