@@ -97,3 +97,11 @@ $router->post(
 $router->post(
     '/alunos/remover', [AlunoController::class, 'destroy']
 );
+
+$router->get(
+    '/competicoes/listar', [CompeticaoController::class, 'listar']
+);
+
+$router->post(
+    '/competicoes/criar', [CompeticaoController::class, 'criar']
+);

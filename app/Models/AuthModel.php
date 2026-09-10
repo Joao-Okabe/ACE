@@ -27,7 +27,20 @@ class Auth extends Model
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($usuario === false) {
-            throw new Exception("Usuário sem papel.");
+            echo("Usuário sem papel, você realizara login como visitante!");
+            $stmt = $this->pdo->prepare("
+                INSERT INTO usuario_papel(
+                    cd_usuario,
+                    cd_papel
+                ) VALUES (
+                    :cd_usuario_global,
+                    :cd_papel,
+            ");
+
+            $stmt->execute([
+                ':cd_usuario_global' => $id,
+                ':cd_papel' => 8
+            ]);
         }
     }
 }

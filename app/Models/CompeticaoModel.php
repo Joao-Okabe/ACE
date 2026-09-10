@@ -22,9 +22,28 @@ class Competicao extends Model
 
         $stmt->execute([
             ":nm_competicao" => $dados["nm_competicao"],
+            ":cd_criador" => $_SESSION["cd_criador"],
             ":dt_inicio" => $dados["dt_inicio"],
             ":dt_encerramento" => $dados["dt_encerramento"]
         ]);
+    }
+
+    // Busca competições
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM competicao
+            WHERE cd_competicao = :id
+        ");
+
+        $stmt->execute([
+            ':id' => $id
+        ]);
+
+        $escola = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $escola ?: null;
     }
 
     //Lista COMPETIÇÕES
@@ -36,7 +55,7 @@ class Competicao extends Model
                 nm_competicao,
                 criado_em,
                 dt_inicio,
-                dt_encerramento,
+                dt_encerramento
             FROM competicao
             ORDER BY cd_competicao
         ");
@@ -106,5 +125,17 @@ class Competicao extends Model
         $competicao = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $competicao ?: null;
+    }
+
+    public function remover(int $id): void
+    {
+        $stmt = $this->pdo->prepare("
+        DELETE FROM competicao 
+        WHERE cd_competicao = :id
+        ");
+
+        $stmt->execute([
+            ':id' => $id
+        ]);
     }
 }
