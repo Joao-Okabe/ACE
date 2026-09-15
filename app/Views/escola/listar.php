@@ -128,6 +128,14 @@ $escolas = $escolas ?? [];
                         <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
+
+                    <?php 
+                        $mostrarBotaoEditarExcluir = false;
+                        if (!empty($usuario['id'])) {
+                            $vinculoModel = new VinculoUsuarioEscola();
+                            $mostrarBotaoEditarExcluir = $vinculoModel->isUsuarioDiretor((int) $usuario['id'], (int) ($escola['cd_escola'] ?? 0));
+                        }
+                        if ($mostrarBotaoEditarExcluir): ?>
                         <!--Btn Editar -->
                         <button class="btn btn-edit btn-sm" title="Editar">
                             <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>"> 
@@ -138,6 +146,7 @@ $escolas = $escolas ?? [];
                         <a href="/escolas/remover?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-delete btn-sm" title="Excluir">
                             <i class="bi bi-trash-fill"></i>
                         </a>
+                    <?php endif ?>
                         </td>
                 <?php endforeach; ?>
                     </tr>

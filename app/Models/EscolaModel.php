@@ -146,4 +146,6 @@ class Escola extends Model
             ':id' => $id
         ]);
     }
+
+    
 }

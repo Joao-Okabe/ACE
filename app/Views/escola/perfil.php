@@ -88,7 +88,10 @@ if (!empty($_SESSION['flash'])) {
             $mostrarBotaoTrancar = false;
             if (!empty($usuario['id'])) {
                 $vinculoModel = new VinculoUsuarioEscola();
-                $mostrarBotaoTrancar = $vinculoModel->isUsuarioDiretor((int) $usuario['id'], (int) ($escola['cd_escola'] ?? 0));
+                $mostrarBotaoTrancar = $vinculoModel->isUsuarioDiretor(
+                    (int) $usuario['id'], 
+                    (int) ($escola['cd_escola'] ?? 0)
+                );
             }
             ?>
 
