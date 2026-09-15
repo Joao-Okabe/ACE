@@ -49,9 +49,9 @@ if (!empty($_SESSION['flash'])) {
             <h2 class="form-title">Alunos</h2>
             <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
         </div>
-            <a href="/alunos/cadastrar" class="btn btn-laranja">
+        <a href="/alunos/cadastrar" class="btn btn-laranja">
             + Adicionar aluno
-            </a>
+        </a>
     </div>
 
     <!-- Card -->
