@@ -50,7 +50,7 @@ class VinculoUsuarioEscola extends Model
             INNER JOIN papel p ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = :usuario
               AND v.cd_escola = :escola
-              AND p.nome = 'DIRETOR'
+              AND p.nome = 'DIR'
               AND v.ativo = TRUE
             LIMIT 1"
         );
@@ -93,5 +93,4 @@ class VinculoUsuarioEscola extends Model
 
         return $res !== false && $res !== null;
     }
-
-    }
+}

@@ -1,7 +1,10 @@
 <?php
 
+    $adsasdas = true;
+
 class Permissoes
 {
+
     public static function estaLogado(): bool
     {
         return true;
@@ -53,5 +56,10 @@ class Permissoes
         return self::temPapel($papel);
     }
 
-
+    // Retorna verdadeiro caso usuário seja diretor ou adm
+    // Usado para exibir os botões das consultas 
+    public static function mvcEscola(string $papel): bool
+    {
+        return in_array($papel, ['ADM', 'DIR'], true);
+    }
 } 
