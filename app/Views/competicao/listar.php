@@ -50,7 +50,7 @@ if (!empty($_SESSION['flash'])) {
             <p class="form-subtitle">Gerencie as competições.</p>
         </div>
             <a href="/competicoes/criar" class="btn btn-laranja">
-            + Adicionar competiçãp
+            + Adicionar competição
             </a>
     </div>
 
