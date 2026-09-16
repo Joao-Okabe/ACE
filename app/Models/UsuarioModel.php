@@ -30,13 +30,13 @@ class Usuario extends Model
             ':foto_perfil' => $dados['foto_perfil'] ?? null,
         ]);
 
-            $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($res === false || !isset($res['cd_usuario'])) {
-                throw new Exception('Não foi possível cadastrar o usuário.');
-            }
+        if ($res === false || !isset($res['cd_usuario'])) {
+            throw new Exception('Não foi possível cadastrar o usuário.');
+        }
 
-            return (int) $res['cd_usuario'];
+        return (int) $res['cd_usuario'];
     }
 
     //Busca usuario pelo email

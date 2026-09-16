@@ -193,6 +193,5 @@ class EscolaService
     {
         $this->escolaModel->setAtiva($id, $ativa);
     }
-
     
 }

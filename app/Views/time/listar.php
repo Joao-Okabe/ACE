@@ -1,19 +1,11 @@
 <?php
-$usuario = $usuario ?? null;
 
-$escolas = $escolas ?? [];
-$alunos = $alunos ?? [];
+$times = $time ?? []; 
+$escolas = $escola ?? []; 
 
-// Gera CSRF token se necessário
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(16));
-}
+$dados = $dados ?? [];
+$valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 
-// Flash messages
-$flash = $_SESSION['flash'] ?? null;
-if (!empty($_SESSION['flash'])) {
-    unset($_SESSION['flash']);
-}
 ?>
 
 <!DOCTYPE html>
@@ -34,24 +26,26 @@ if (!empty($_SESSION['flash'])) {
     <link rel="stylesheet" href="../../css/lista.css">
     <link rel="stylesheet" href="../../css/acessibilidade.css">
 
-    <title>Alunos</title>
+    <title>Escolas</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
-    
+
 <!-- Navbar e Sidebar -->
 <app-header></app-header>
 
-<!--Conteúdo-->
+<!--Conteúdo-->  
 <div class="content">  
-    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between  mb-4">
         <div>
-            <h2 class="form-title">Alunos</h2>
-            <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
+            <h2 class="form-title">Times</h2>
+            <p class="form-subtitle">Gerencie os times da sua escola.</p>
         </div>
-        <a href="/alunos/cadastrar" class="btn btn-laranja">
-            + Adicionar aluno
-        </a>
+        <div class="d-flex flex-column flex-md-row justify-content-between  mb-4">
+            <a href="/times/criar" class="btn btn-laranja">
+            + Adicionar time
+            </a>
+        </div>
     </div>
 
     <!-- Card -->
@@ -129,29 +123,27 @@ if (!empty($_SESSION['flash'])) {
             </thead>
 
             <tbody class="table-group-divider">
-            <?php foreach ($alunos as $aluno): ?>
+            <?php foreach ($times as $time): ?>
                 <tr>
                     <td>
                         <div class="tc list-perfil">
-                            <img src="<?= htmlspecialchars(upload_url($aluno['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                            <img src="<?= htmlspecialchars(upload_url($time['path_brasao'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
                         </div>
                     </td>
-                    <td><?= htmlspecialchars($aluno['cd_aluno']) ?></td>
-                    <td><?= htmlspecialchars($aluno['nm_usuario']) ?></td>
-                    <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($aluno['escola'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($time['cd_time']) ?></td>
+                    <td><?= htmlspecialchars($time['nm_time']) ?></td>
+                    <td><?= htmlspecialchars($time['principal'] ?? '') ?></td>
                     <td class="text-nowrap">
-                        <a href="/alunos/visualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
+                        <a href="/alunos/visualizar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                        <a href="/alunos/editar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                        <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este aluno?');">
-                            <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
+                        <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este time?');">
+                            <input type="hidden" name="id" value="<?= (int) $time['cd_time'] ?>">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
                                 <i class="bi bi-trash-fill"></i>
@@ -165,9 +157,6 @@ if (!empty($_SESSION['flash'])) {
             </div>
         </div>
     </div>
-
-        </div>
-    </div>   
 </div>
 
     <script>
@@ -175,7 +164,7 @@ if (!empty($_SESSION['flash'])) {
         email: <?= json_encode($usuario['email'] ?? '—') ?>, 
         foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
     </script>
-
+    
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
     <script src="../../js/acessibilidade.js"></script>

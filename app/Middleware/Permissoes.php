@@ -1,7 +1,10 @@
 <?php
 
+    $adsasdas = true;
+
 class Permissoes
 {
+
     public static function estaLogado(): bool
     {
         return true;
@@ -52,6 +55,5 @@ class Permissoes
     {
         return self::temPapel($papel);
     }
-
 
 } 
