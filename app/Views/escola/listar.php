@@ -46,7 +46,7 @@ $escolas = $escolas ?? [];
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <form class="row g-3 align-items-center w-100" method="get" action="/escolas/listar">
+                <form class="row g-3 align-items-end w-100" method="get" action="/escolas/listar">
 
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">

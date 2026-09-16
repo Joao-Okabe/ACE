@@ -8,30 +8,67 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--Bootstrap css-->
+    <link rel="stylesheet" href="../../bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+    <!--Bootstrap icons-->
+    <link rel="stylesheet" href="../../bootstrap-icons-1.13.1/bootstrap-icons.css">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="../../css/geral.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
     <title>Criar Competição</title>
 </head>
 <body>
+
+<!-- Navbar e Sidebar -->
+<app-header></app-header>
+<!--Conteúdo-->
+<div class="content">
+     <div class="card form-card shadow-sm">
+        <div class="mb-2">
+            <div>
+                <h2 class="form-title">Cadastrar Competição</h2>
+                <p class="form-subtitle">
+                Preencha os dados da competição para realizar o cadastro.
+                </p>
+            </div>
+        </div>
     
-<?php if (!empty($_GET['sucesso'])): ?>
-    <p class="alert success">Competição cadastrada com sucesso.</p>
-<?php endif; ?>
+        <?php if (!empty($_GET['sucesso'])): ?>
+            <p class="alert success">Competição cadastrada com sucesso.</p>
+        <?php endif; ?>
 
-<?php if (!empty($erro)): ?>
-    <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
-<?php endif; ?>
+        <?php if (!empty($erro)): ?>
+            <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+        <?php endif; ?>
 
-<form action="/competicoes" method="POST" enctype="multipart/form-data">
-    <label for="nm_competicao">Nome da competição</label>
-    <input type="text" id="nm_competicao" value="<?= $valor('nm_competicao') ?>" name="nm_competicao" required>
+    <form action="/competicoes" method="POST" enctype="multipart/form-data">
+        <label for="nm_competicao">Nome da competição</label>
+        <input type="text" id="nm_competicao" value="<?= $valor('nm_competicao') ?>" name="nm_competicao" required>
 
-    <label for="dt_inicio">Data de início</label>
-    <input type="date" id="dt_inicio" value="<?= $valor('dt_inicio') ?>" name="dt_inicio">
+        <label for="dt_inicio">Data de início</label>
+        <input type="date" id="dt_inicio" value="<?= $valor('dt_inicio') ?>" name="dt_inicio">
 
-    <label for="dt_encerramento">Data de encerramento</label>
-    <input type="date" id="dt_encerramento" value="<?= $valor('dt_encerramento') ?>" name="dt_encerramento">
+        <label for="dt_encerramento">Data de encerramento</label>
+        <input type="date" id="dt_encerramento" value="<?= $valor('dt_encerramento') ?>" name="dt_encerramento">
 
-    <button type="submit">Cadastrar competição</button>
-</form>
+        <button type="submit">Cadastrar competição</button>
+    </form>
+
+
+    <script>
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+    </script>
+
+    <script src="../../js/script.js"></script>
+    <script src="../../js/layout.js"></script>
+    <script src="../../js/acessibilidade.js"></script>
 
 </body>
 </html>
