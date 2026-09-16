@@ -75,7 +75,7 @@
 
 .btn-filtro,
 .btn-buscar {
-    width: 250px;
+    width: 100%;
     height: 43px;
     border-radius: var(--radius);
 }

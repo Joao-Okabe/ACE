@@ -2,11 +2,10 @@
 /*==== TRANSIÇÃO ENTRE PÁGINAS ====*/
 
 .content {
-    animation: entrada-conteudo .35s ease;
+    animation: entrada-conteudo .50s ease;
 }
 
 @keyframes entrada-conteudo {
-
     from {
         opacity: .7;
         transform: translateY(5px);
@@ -16,8 +15,8 @@
         opacity: 1;
         transform: translateY(0);
     }
-
 }
+
 /* Corpo do site */
 html {
     background: #faf8f5;
