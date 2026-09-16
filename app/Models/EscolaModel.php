@@ -73,7 +73,7 @@ class Escola extends Model
     //Lista Escolas
     public function listar(array $filtros = []): array
     {
-        $sql = "
+        $stmt = "
             SELECT
                 e.cd_escola,
                 e.nome,
@@ -89,13 +89,13 @@ class Escola extends Model
         $filtrosSql = $this->filtro->filtrosEscola($filtros);
 
         if (!empty($filtrosSql['onde'])) {
-            $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
+            $stmt .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
         }
 
         $ordem = $this->filtro->ordem($filtros);
-        $sql .= " ORDER BY e.cd_escola {$ordem}";
+        $stmt .= " ORDER BY e.cd_escola {$ordem}";
 
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($stmt);
         $stmt->execute($filtrosSql['parametros']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
