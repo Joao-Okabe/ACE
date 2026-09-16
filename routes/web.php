@@ -109,3 +109,16 @@ $router->get(
 $router->post(
     '/competicoes', [CompeticaoController::class, 'store']
 );
+
+$router->get(
+    '/times/criar', [TimeController::class, 'create']
+);
+
+$router->post(
+    '/times', [TimeController::class, 'store']
+);
+
+
+$router->get(
+    '/times/listar', [TimeController::class, 'list']
+);
