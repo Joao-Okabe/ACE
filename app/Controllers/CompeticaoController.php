@@ -57,7 +57,7 @@ class CompeticaoController
         $escolas = (new EscolaService())->listar();
 
         renderView('competicao/listar', [
-            'competicao' => $competicao,
+            'competicoes' => $competicao,
             'escolas' => $escolas,
             'filtros' => $filtros,
         ]);

@@ -58,7 +58,7 @@ if (!empty($_SESSION['flash'])) {
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <form class="row gx-2 gy-2 align-items-center w-100" method="GET" action="/alunos/listar">
+                <form class="row gx-2 gy-2 align-items-center w-100" method="GET" action="/competicoes/listar">
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">
                             <div class="form-input-group search-box">
@@ -118,12 +118,11 @@ if (!empty($_SESSION['flash'])) {
                 
             <thead class="table-blue">
               <tr>
-                <th scope="col">Perfil</th>
                 <th scope="col">Código</th>
                 <th scope="col">Nome</th>
-                <th scope="col">RA</th>
-                <th scope="col">Escola</th>
-                <th scope="col">Telefone</th>
+                <th scope="col">Criador</th>
+                <th scope="col">Data de Ínicio</th>
+                <th scope="col">Data de Encerramento</th>
                 <th scope="col">Ações</th>
               </tr>
             </thead>
@@ -131,26 +130,21 @@ if (!empty($_SESSION['flash'])) {
             <tbody class="table-group-divider">
             <?php foreach ($competicoes as $competicao): ?>
                 <tr>
-                    <td>
-                        <div class="tc list-perfil">
-                            <img src="<?= htmlspecialchars(upload_url($aluno['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
-                        </div>
-                    </td>
                     <td><?= htmlspecialchars($competicao['cd_competicao']) ?></td>
                     <td><?= htmlspecialchars($competicao['nm_competicao']) ?></td>
                     <td><?= htmlspecialchars($competicao['cd_criador'] ?? '') ?></td>
                     <td><?= htmlspecialchars($competicao['dt_inicio'] ?? '') ?></td>
                     <td><?= htmlspecialchars($competicao['dt_encerramento'] ?? '') ?></td>
                     <td class="text-nowrap">
-                        <a href="/alunos/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
+                        <a href="/competicao/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/alunos/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                        <a href="/competicao/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                            <form method="post" action="/competicoes/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir esta competição?');">
+                            <form method="post" action="/competicao/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir esta competição?');">
                                 <input type="hidden" name="id" value="<?= (int) $competicao['cd_competicao'] ?>">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                                 <button type="submit" class="btn btn-delete btn-sm" title="Excluir">

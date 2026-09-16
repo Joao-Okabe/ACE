@@ -2,6 +2,15 @@
 
 class Competicao extends Model
 {
+
+    private Filtro $filtro;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->filtro = new Filtro();
+    }
+
     //Cria uma COMPETIÇÃO nova
     public function criar(array $dados, int $id):void
     {
@@ -47,18 +56,29 @@ class Competicao extends Model
     }
 
     //Lista COMPETIÇÕES
-    public function listar(): array
+    public function listar(array $filtros): array
     {
-        $stmt = $this->pdo->query("
+        $stmt = "
             SELECT
-                cd_competicao,
-                nm_competicao,
-                criado_em,
-                dt_inicio,
-                dt_encerramento
-            FROM competicao
-            ORDER BY cd_competicao
-        ");
+                c.cd_competicao,
+                c.cd_criador,
+                c.nm_competicao,
+                c.criado_em,
+                c.dt_inicio,
+                c.dt_encerramento
+            FROM competicao c";
+
+        $filtrosSql = $this->filtro->filtrosCompeticao($filtros);
+
+        if (!empty($filtrosSql['onde'])) {
+            $stmt .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
+        }
+
+        $ordem = $this->filtro->ordem($filtros);
+        $stmt .= " ORDER BY c.cd_competicao {$ordem}";
+
+        $stmt = $this->pdo->prepare($stmt);
+        $stmt->execute($filtrosSql['parametros']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
