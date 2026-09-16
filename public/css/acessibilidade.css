@@ -1,13 +1,9 @@
 /*==== ACESSIBILIDADE ====*/
 
 /*--Carregamento da página--*/
-body{
-    opacity:0;
-    transition:opacity .15s ease;
-}
 
-body.acessibilidade-pronta{
-    opacity:1;
+body {
+    opacity: 1;
 }
 
 
