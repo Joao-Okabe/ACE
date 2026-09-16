@@ -60,6 +60,17 @@ class Filtro
 		];
 	}
 
+	public function filtrosTime(array $filtros): array
+	{
+		$onde = [];
+		$parametros = [];
+
+		return [
+			'onde' => $onde,
+			'parametros' => $parametros,
+		];
+	}
+
 	public function ordem(array $filtros): string
 	{
 		$ordem = strtoupper($filtros['ordem'] ?? 'ASC');

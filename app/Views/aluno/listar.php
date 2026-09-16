@@ -49,9 +49,9 @@ if (!empty($_SESSION['flash'])) {
             <h2 class="form-title">Alunos</h2>
             <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
         </div>
-            <a href="/alunos/cadastrar" class="btn btn-laranja">
+        <a href="/alunos/cadastrar" class="btn btn-laranja">
             + Adicionar aluno
-            </a>
+        </a>
     </div>
 
     <!-- Card -->
@@ -150,15 +150,15 @@ if (!empty($_SESSION['flash'])) {
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                            <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este aluno?');">
-                                <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-                                <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                        <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este aluno?');">
+                            <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                            <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
             <?php endforeach; ?>
             </tbody>
             </table>
