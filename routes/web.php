@@ -102,6 +102,10 @@ $router->get(
     '/competicoes/listar', [CompeticaoController::class, 'listar']
 );
 
-$router->post(
+$router->get(
     '/competicoes/criar', [CompeticaoController::class, 'criar']
+);
+
+$router->post(
+    '/competicoes', [CompeticaoController::class, 'store']
 );

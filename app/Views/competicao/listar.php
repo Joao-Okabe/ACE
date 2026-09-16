@@ -58,7 +58,7 @@ if (!empty($_SESSION['flash'])) {
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/alunos/listar">
+                <form class="row gx-2 gy-2 align-items-center w-100" method="GET" action="/alunos/listar">
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">
                             <div class="form-input-group search-box">

@@ -22,7 +22,7 @@ class Competicao extends Model
 
         $stmt->execute([
             ":nm_competicao" => $dados["nm_competicao"],
-            ":cd_criador" => $_SESSION["cd_criador"],
+            ":cd_criador" => $id,
             ":dt_inicio" => $dados["dt_inicio"],
             ":dt_encerramento" => $dados["dt_encerramento"]
         ]);

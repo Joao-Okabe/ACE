@@ -17,8 +17,7 @@ class CompeticaoController
     //Passa sessão do usuário e exibe tela de criação de competição
     public function criar(): void
     {
-        $competicoes = (new CompeticaoService())->listar();
-        renderView('competicao/criar', ['competicoes' => $competicoes]);
+        renderView('competicao/criar');
     }
 
     //Salva um nova competição
@@ -28,7 +27,7 @@ class CompeticaoController
 
             $this->service()->criar($_POST);
 
-            header("Location: /competicao/criar?sucesso=1");
+            header("Location: /competicoes/criar?sucesso=1");
             exit;
 
         } catch (Exception $e) {
@@ -37,7 +36,7 @@ class CompeticaoController
             $dados = $_POST;
 
             $competicoes = (new CompeticaoService())->listar();
-            renderView('competicoes/criar', ['competicoes' => $competicoes]);
+            renderView('competicao/criar', ['erro' => $erro, 'dados' => $dados]);
         }
     }
 
