@@ -1,78 +1,150 @@
-/*==== LOGIN/CADASTRO ====*/
+/* ==== LOGIN/CADASTRO ==== */
 
-/*--Div esquerda--*/
-.auth-left{
-    background:var(--bege-principal);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-.left-content{
-    width:100%;
-    text-align:center;
+.cor {
+    background-color: var(--azul-principal);
 }
 
-/*Logo*/
-.auth-logo{
-    width:320px;
-    margin-bottom:30px;
+/* Logo */
+.auth-logo {
+    width: 270px;
+    margin-bottom: 25px;
 }
 
-/*Título*/
-.titulo-esquerda{
-    color:var(--azul-principal);
-    font-weight:bold;
-    font-size:30px;
-    margin-bottom:20px;
+/* Cards */
+.auth-card-login {
+    width: 855px;
+    height: 495px;
+    margin: 0;
+    background: var(--branco);
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.253);
+    padding: 0;
+    display: flex;
+    overflow: hidden;
 }
 
-/*--Div direita--*/
-.auth-right{
-    background:var(--azul-principal);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.auth-card-cadastro {
+    width: 945px;
+    height: 585px;
+    margin: 0;
+    background: var(--branco);
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.253);
+    padding: 0;
+    display: flex;
+    overflow: hidden;
 }
 
-/*Card*/
-.auth-card-login{
-    width:500px;
-    height:65%;
-    margin:20px;
-    background:var(--branco);
-    padding:60px;
-    border-radius:24px;
-    box-shadow:var(--shadow-md);
+.auth-card h1 {
+    color: var(--azul-principal);
+    text-align: center;
+    font-size: 50px;
+    font-weight: 700;
 }
-.auth-card-cadastro{
-    width:500px;
-    height:90%;
-    margin:20px;
-    background:var(--branco);
-    padding:60px;
-    border-radius:24px;
-    box-shadow:var(--shadow-md);
+
+.auth-card p {
+    color: var(--azul-principal);
+    text-align: center;
 }
-.auth-card h1{
-    color:var(--azul-principal);
-    text-align:center;
-    font-size:55px;
-    font-weight:700;
+
+.auth-card label {
+    display: block;
+    color: var(--azul-principal);
+    font-weight: 600;
+    margin-bottom: 8px;
 }
-.auth-card p{
-    color:var(--azul-principal);
-    text-align:center;
+
+.auth-link {
+    color: var(--laranja-principal);
+    text-decoration: none;
 }
-.auth-card label{
-    display:block;
-    color:var(--azul-principal);
-    font-weight:600;
-    margin-bottom:10px;
+
+.auth-link:hover {
+    text-decoration: underline;
 }
-.auth-link{
-    color:var(--laranja-principal);
-    text-decoration:none;
+
+/* Lado esquerdo */
+.auth-card-left {
+    width: 50%;
+    background: var(--bege-principal);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 45px;
+    text-align: center;
 }
-.auth-link:hover{
-    text-decoration:underline;
+
+.auth-card-left img {
+    width: 270px;
+    margin-bottom: 25px;
+}
+
+.auth-card-left h5 {
+    color: var(--azul-principal);
+    font-weight: 700;
+}
+
+/* Lado direito */
+.auth-card-right {
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--branco);
+}
+
+.container-auth {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            rgba(24, 24, 71, 0.65),
+            rgba(24, 24, 71, 0.65)
+        ),
+        url("../../img/fundo.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Mostrar senha */
+.btn-toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #656565;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-toggle-password:hover i {
+    color: var(--laranja-principal);
+}
+
+.btn-toggle-password:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+
+.form-input-group {
+    position: relative;
+}
+
+.auth-error {
+    font-size: 14px;
 }

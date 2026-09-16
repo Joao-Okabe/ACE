@@ -25,62 +25,53 @@ $valor = function ($campo) use ($dados) {
 
     <title>ACE - Cadastro</title>
 </head>
-<body>
+<body class="cor"> 
 
-<div class="container-fluid p-0">
-    <div class="row g-0 vh-100">
+<div class="container-auth">
+    <div class="auth-card auth-card-cadastro">
     
-    
-    <div class="col-lg-5 d-none d-lg-flex auth-left">
-        <div class="left-content">
-            <img src="../../img/logo-ace-completa.png" class="auth-logo">
-
-            <h2 class="titulo-esquerda">
+        <div class="auth-card-left">
+            <img src="../../img/logo-ace-completa.png" class="auth-logo" alt="ACE!">
+            <h5>
                 CONECTANDO A SUA ESCOLA<br>
                 AO ESPORTE!
-            </h2>
+            </h5>
         </div>
 
-    </div>
-
-    <div class="col-lg-7 auth-right">
-
-        <div class="auth-card auth-card-cadastro"> 
-
+    <div class="auth-card-right">
+        <div class="mb-4">
             <h1>Cadastro</h1>
+        </div>
 
             <?php if (!empty($_GET['sucesso'])): ?>
                 <p class="alert success">Usuário cadastrado com sucesso.</p>
             <?php endif; ?>
 
             <?php if (!empty($erro)): ?>
-                <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+                <div class="alert alert-danger auth-error" role="alert" aria-live="assertive" > 
+                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true" ></i> 
+                    <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span> 
+                </div> 
             <?php endif; ?>
 
-            <form action="/usuarios" method="post" enctype="multipart/form-data" class="form-grid">
+            <form action="/usuarios" method="post" enctype="multipart/form-data">
 
-        <!--Foto de perfil-->
-                <div class="d-flex justify-content-center mb-2">
-                    <label for="foto_perfil" class="foto-perfil" id="fotoPerfil">
-                        <i class="bi bi-camera-fill"></i>
-                    </label>
-                <input type="file" accept="image/*" name="foto_perfil" id="foto_perfil" hidden>
-                </div>
-                <div>
-                    <p class="form-label">Adicionar foto de perfil</p>
-                </div>
 
         <!-- NOME -->
+            <div class="mb-3">
                 <label for="nm_usuario">Nome</label>
-                <div class="form-input-group mb-3">
-                    <input type="nm_usuario" class="form-control form-input" placeholder="Digite seu nome" id="nm_usuario" name="nm_usuario" value="<?= $valor('nm_usuario') ?>" required>
+                <div class="form-input-group">
+                    <input type="text" class="form-control form-input" placeholder="Digite seu nome" id="nm_usuario" name="nm_usuario" value="<?= $valor('nm_usuario') ?>" required>
                 </div>
+            </div>
 
         <!--EMAIL-->
+            <div class="mb-3">
                 <label for="email">E-mail</label>
-                <div class="form-input-group mb-3">
+                <div class="form-input-group">
                     <input type="email" class="form-control form-input" placeholder="Digite seu e-mail" id="email" name="email" value="<?= $valor('email') ?>" required>
                 </div>
+            </div>
 
         <!--ESCOLA-->
             <!-- 
@@ -100,12 +91,15 @@ $valor = function ($campo) use ($dados) {
                 </div>
             -->
         <!--SENHA-->
-                <div class="field">
-                    <label >Senha</label>
-                    <div class="form-input-group mb-3">
+            <div class="mb-3">
+                    <label for="senha">Senha</label>
+                    <div class="form-input-group">
                         <input type="password" class="form-control form-input" placeholder="Digite sua senha" id="senha" name="senha" required>
+                        <button type="button" id="toggle-senha" class="btn-toggle-password" title="Mostrar senha">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
                     </div>
-                </div>
+            </div>
 
         <!-- Papel -->
                 <!-- 
@@ -124,7 +118,7 @@ $valor = function ($campo) use ($dados) {
                 </div>
                  -->
         <!-- Botao cadastro -->
-                <div class="actions full">
+                <div class="mt-4 mb-3">
                     <button type="submit" class="btn btn-laranja w-100">Cadastrar</button>
                 </div>
                 
@@ -135,11 +129,39 @@ $valor = function ($campo) use ($dados) {
                     </a>
                 </div>  
             </form>
-        </section>
-    </main>
+        </div>
+</div>
             
-    <script src="../../js/script.js"></script>
-    <script src="../../js/acessibilidade.js"></script>
+<script src="../../js/script.js"></script>
+<script src="../../js/acessibilidade.js"></script>
+
+    <!--Mostrar senha-->
+<script>
+    const senha = document.getElementById('senha');
+    const toggleSenha = document.getElementById('toggle-senha');
+
+    toggleSenha.addEventListener('click', function () {
+        const senhaVisivel = senha.type === 'text';
+
+        senha.type = senhaVisivel ? 'password' : 'text';
+
+        this.setAttribute(
+            'aria-label',
+            senhaVisivel ? 'Mostrar senha' : 'Ocultar senha'
+        );
+
+        this.setAttribute(
+            'title',
+            senhaVisivel ? 'Mostrar senha' : 'Ocultar senha'
+        );
+
+        const icone = this.querySelector('i');
+
+        icone.classList.toggle('bi-eye', senhaVisivel);
+        icone.classList.toggle('bi-eye-slash', !senhaVisivel);
+    });
+</script>
+
 
 </body>
 </html>

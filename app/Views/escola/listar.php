@@ -46,7 +46,8 @@ $escolas = $escolas ?? [];
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/escolas/listar">
+                <form class="row g-3 align-items-center w-100" method="get" action="/escolas/listar">
+
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">
                             <div class="form-input-group search-box">
@@ -61,7 +62,7 @@ $escolas = $escolas ?? [];
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-input-group btn-filtro">
                             <select name="categoria" class="form-select form-input">
                                 <option value="">Todas as categorias</option>
@@ -75,7 +76,7 @@ $escolas = $escolas ?? [];
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-input-group btn-filtro">
                             <select name="ordem" class="form-select form-input">
                                 <option value="asc" <?= ($filtros['ordem'] ?? 'asc') === 'asc' ? 'selected' : '' ?>>Código crescente</option>
@@ -100,7 +101,7 @@ $escolas = $escolas ?? [];
                     <thead class="table-blue">
                     <tr>
                         <th scope="col">Brasão</th>
-                        <th scope="col">Código da Escola</th>
+                        <th scope="col">Código</th>
                         <th scope="col">Nome</th>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
                         <th scope="col">Telefone</th>
                         <th scope="col">CEP</th>

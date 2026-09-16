@@ -1,16 +1,15 @@
-/*==== Lista/Tabela ====*/
+/*==== LISTA / TABELA ====*/
 
-/*--Lista--*/
-.list{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    justify-content:center;
-    
+/*==== LISTA ====*/
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
 }
 
-/*--Card--*/
-.card-list{
+/*==== CARD ====*/
+.card-list {
     width: 100%;
     overflow: hidden;
     border: none;
@@ -19,36 +18,35 @@
     box-shadow: var(--shadow-md);
 }
 
+/*==== PESQUISA ====*/
 .search-box {
     position: relative;
     width: 100%;
 }
 .search-box i {
     position: absolute;
-    left: 15px;
+    left: 13px;
     top: 50%;
     transform: translateY(-50%);
-
     color: var(--laranja-principal);
-    font-size: 18px;
-
+    font-size: 17px;
     z-index: 10;
     pointer-events: none;
 }
 .search-box input {
-    padding: 0 15px 0 45px;
+    padding: 0 15px 0 42px;
 }
 .search-box input,
-.form-input-group .form-select {
+.form-input-group .form-select,
+.btn-buscar {
     width: 100%;
-    height: 45px;
+    height: 43px;
     border-radius: var(--radius) !important;
     border: 2px solid #dee2e6 !important;
     outline: none !important;
     box-shadow: none;
     transition: var(--transition);
 }
-
 .search-box input:focus,
 .form-input-group .form-select:focus {
     border: 2px solid var(--laranja-principal) !important;
@@ -56,133 +54,127 @@
     box-shadow: 0 0 0 .15rem rgba(244, 78, 28, .15) !important;
 }
 
-.btn-filtro{
-    width:100%;
+/* Botão de filtro */
+.btn-filtro {
+    width: 100%;
 }
-.btn-buscar{
+
+/* Botão buscar */
+.btn-buscar {
     background-color: var(--azul-principal);
     color: var(--branco);
     font-weight: 600;
-    width: 100%;
-    height: 43px;
     border-radius: var(--radius);
     border: none;
     transition: var(--transition);
 }
-.btn-buscar:hover{
+.btn-buscar:hover {
     background-color: var(--laranja-principal);
     color: var(--branco);
 }
 
-/*--Tabela--*/
-/*Cabeçalho da tabela*/
+.btn-filtro,
+.btn-buscar {
+    width: 250px;
+    height: 43px;
+    border-radius: var(--radius);
+}
+
+/*==== TABELA ====*/
+
+/* Cabeçalho da tabela */
 .table-blue,
-.table-blue th{
+.table-blue th {
     background: var(--azul-principal);
     color: var(--branco);
     border-color: var(--azul-principal);
 }
-/*Card da tabela*/
-.card-list .table{
-    --bs-table-striped-bg:#f7efe4;
+
+/* Card da tabela */
+.card-list .table {
+    --bs-table-striped-bg: #f7efe4;
     --bs-table-color: var(--azul-principal);
-    
 }
-.list-perfil{
+
+/* Perfil / brasão */
+.list-perfil {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 13px;
     margin-left: auto;
 }
-.list-perfil img{
-    margin-left: 10px;
-    width: 35px;
-    height: 35px;
+.list-perfil img {
+    margin-left: 8px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--azul-principal);
 }
+
+/* Células da tabela */
 .card-list .table th,
-.card-list .table td{
-    vertical-align:middle;
-    text-align:left;
-    padding:10px 18px;
+.card-list .table td {
+    vertical-align: middle;
+    text-align: left;
+    padding: 9px 16px;
 }
 
-
-/*Botão de visualizar, editar e remover*/
+/*==== BOTÕES DE AÇÃO ====*/
 .btn-view,
 .btn-edit,
-.btn-delete{
-    width:38px;
-    height:38px;
-    padding:0;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:10px;
+.btn-delete {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
 }
 
+/* Editar */
 .btn-edit {
-    background: #fcc89d;
-    color: var(--azul-principal);
-    border: 2px solid #ff6f01;
-    font-size: 20px;
-}
-
-.btn-edit i {
-    color: var(--azul-principal);
+    color: var(--branco);
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
 }
 .btn-edit i.bi {
     color: var(--azul-principal) !important;
 }
-
 .btn-edit:hover i.bi {
-    color: var(--branco) !important;
+    color: var(--azul-principal) !important;
 }
-
 .btn-edit:hover {
-    background: #D95F00;
-    color: var(--branco);
-}
-
-.btn-edit:hover i {
-    color: var(--branco);
-}
-
-.btn-view{
-    background:#9dabfc;
     color: var(--azul-principal);
-    border-color: var(--azul-principal);
-    border-width: 2px;
-    font-size: 20px;
-}
-.btn-view:hover{
-    background:#2b3386;
-    color:#fff;
+    background-color: var(--laranja-principal);
 }
 
-
-.btn-delete{
-    background:#fa9595;
+/* Visualizar */
+.btn-view {
     color: var(--azul-principal);
-    border-color: #C92F2F;
-    border-width: 2px;
-    font-size: 20px;
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
 }
-.btn-delete:hover{
-    background:#C92F2F;
-    color:#fff;
+.btn-view:hover {
+    color: var(--azul-principal);
+    background-color: var(--laranja-principal);
 }
 
-/*Responsividade*/
+/* Excluir */
+.btn-delete {
+    color: var(--azul-principal);
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
+}
+.btn-delete:hover {
+    color: var(--azul-principal);
+    background-color: var(--laranja-principal);
+}
+
+/*==== RESPONSIVIDADE ====*/
 .pesquisa-escola {
     width: 100%;
-}
-@media (max-width: 768px) {
-    .pesquisa-escola {
-        width: 100%;
-    }
 }
 @media (max-width: 768px) {
 
@@ -200,13 +192,11 @@
     .card-list .table {
         min-width: 800px;
     }
-
     .card-list .table th,
     .card-list .table td {
         white-space: nowrap;
-        padding: 10px 14px;
+        padding: 9px 13px;
     }
-
     /* Perfil / brasão */
     .list-perfil {
         margin-left: 0;
@@ -226,16 +216,17 @@
     }
 }
 
+/*==== VARIÁVEIS ====*/
+:root {
+    --azul-principal: #181847;
+    --laranja-principal: #F44E1C;
+    --bege-principal: #F1E4D1;
+    --branco: #FFF;
+    --preto: #212529;
 
-/*--VARIÁVEIS--*/
-:root{
-    --azul-principal:#181847;
-    --laranja-principal:#F44E1C;
-    --bege-principal:#F1E4D1;
-    --branco:#FFF;
-    --preto:#212529;
-    --radius:12px;
-    --transition:.3s ease;
-    --shadow-sm:0 3px 8px rgba(0,0,0,.08);
-    --shadow-md:0 6px 20px rgba(0,0,0,.12);
+    --radius: 12px;
+    --transition: .3s ease;
+
+    --shadow-sm: 0 3px 8px rgba(0, 0, 0, .08);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, .12);
 }

@@ -7,6 +7,8 @@ $qtAluno = $qtAluno ?? 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>html,body {background: #faf8f5;}</style>
 
     <!--Bootstrap css-->
     <link rel="stylesheet" href="../../bootstrap-5.3.8-dist/css/bootstrap.min.css">

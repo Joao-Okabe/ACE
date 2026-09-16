@@ -20,35 +20,32 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <link rel="stylesheet" href="../../css/auth.css">
     <link rel="stylesheet" href="../../css/acessibilidade.css">
 
-    <title>ACE - Login</title>
+    <title>Login</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
-<body>
+<body class="cor">
 
-<div class="container-fluid p-0">
-    <div class="row g-0 vh-100">
-        <div class="col-lg-5 d-none d-lg-flex auth-left">
+<div class="container-auth">
+    <div class="auth-card auth-card-login">
 
-        <div class="left-content">
-
-            <img src="../../img/logo-ace-completa.png" class="auth-logo">
-
-            <h2 class="titulo-esquerda ">
+        <div class="auth-card-left">
+            <img src="../../img/logo-ace-completa.png" class="auth-logo" alt="ACE!">
+            <h5>
                 CONECTANDO A SUA ESCOLA<br>
                 AO ESPORTE!
-            </h2>
-
+            </h5>
         </div>
-    </div>
 
-    <div class="col-lg-7 auth-right">
-
-        <div class="auth-card auth-card-login">
-
+    <div class="auth-card-right">
+        <div class="mb-4">
             <h1>Login</h1>
+        </div>
 
             <?php if (!empty($erro)): ?>
-                <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+                <div class="alert alert-danger auth-error" role="alert" aria-live="assertive" > 
+                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true" ></i> 
+                    <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span> 
+                </div> 
             <?php endif; ?>
 
             <form action="/login" method="post">
@@ -59,7 +56,10 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
                 <label for="senha">Senha</label>
                 <div class="form-input-group">
-                    <input type="password" id="senha" name="senha" class="form-control form-input" placeholder="Digite sua senha" autocomplete="current-password">
+                    <input type="password" id="senha" name="senha" class="form-control form-input" placeholder="Digite sua senha" autocomplete="current-password" required>
+                    <button type="button" id="toggle-senha" class="btn-toggle-password" title="Mostrar senha">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
 
                 <div class="mt-3 mb-3">
@@ -78,6 +78,33 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
 <script src="../../js/script.js"></script>
 <script src="../../js/acessibilidade.js"></script>
+
+<!--Mostrar senha-->
+<script>
+    const senha = document.getElementById('senha');
+    const toggleSenha = document.getElementById('toggle-senha');
+
+    toggleSenha.addEventListener('click', function () {
+        const senhaVisivel = senha.type === 'text';
+
+        senha.type = senhaVisivel ? 'password' : 'text';
+
+        this.setAttribute(
+            'aria-label',
+            senhaVisivel ? 'Mostrar senha' : 'Ocultar senha'
+        );
+
+        this.setAttribute(
+            'title',
+            senhaVisivel ? 'Mostrar senha' : 'Ocultar senha'
+        );
+
+        const icone = this.querySelector('i');
+
+        icone.classList.toggle('bi-eye', senhaVisivel);
+        icone.classList.toggle('bi-eye-slash', !senhaVisivel);
+    });
+</script>
 
 </body>
 </html>
