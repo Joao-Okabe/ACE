@@ -25,7 +25,6 @@
 
 <!-- Conteúdo -->
 
-
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
         email: <?= json_encode($usuario['email'] ?? '—') ?>, 
