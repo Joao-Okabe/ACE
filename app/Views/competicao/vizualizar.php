@@ -1,110 +1,47 @@
 <?php
-$time = $time ?? [];
-$valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
+$usuario = $usuario ?? null;
+$dados = $competicao ?? [];
+$valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 ?>
-<!doctype html>
-<html lang="pt-BR">
+
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../bootstrap-icons-1.13.1/bootstrap-icons.css">
-    
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/visualizar.css">
     <link rel="stylesheet" href="../../css/acessibilidade.css">
-
-    <title>Visualizar competições</title>
+    <title>Visualizar competição</title>
 </head>
 <body>
-
+    
 <app-header></app-header>
-
 <div class="content">
-    <div class="mb-2">
-        <div class="header-visualizar mb-4">
-            <a href="/competicao/listar" class="btn-voltar"><i class="bi bi-arrow-left"></i></a>
-            <h2 class="form-title">Visualizar competições</h2>
-        </div>
-
-    <div class="visu-box mb-4">
-        <div class="row align-items-center">
-            <div class="col-lg-3">
-                <div class="foto">
-                    <img src="<?= htmlspecialchars(upload_url($time['path_brasao'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
-                </div>
-            </div>
-
-            <div class="col-lg-9">
-                <div class="d-flex align-items-center mb-4">
-                    <h2 class="name me-3"><?= $valor('nm_time') ?></h2>
-
-                     <span class="badge-status">
-                        <?= ($time['ativo'] ?? false) ? 'Ativo' : 'Inativo' ?>
-                    </span>
-                </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p class="label-info">Código:</p>
-                            <span class="value-info"><?= $valor('cd_time') ?></span>
-                        </div>
-
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-partida">
-                                <i class="bi bi-dribbble"></i> 
-                                Partidas
-                            </button>
-                        </div>
-
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-tecnico">
-                                <i class="bi bi-person"></i>     
-                                Técnico
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-end mb-4">
-            <a href="..." class="btn btn-laranja">
-            + Adicionar partidas
-            </a>
-        </div>
-
-    <div class="integrante-section">
-        <h3 class="section-title">Partidas</h3>
-        <div class="row g-4">
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="integrante-card">
-
-                  <div class="integrante-info">
-                        <h4>
-                        <i class="bi bi-person-fill"></i>
-                        Nome
-                        </h4>
-
-                        <div class="info-grid">
-                        <p>info </p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            
-        </div>
+    <div class="header-visualizar mb-4">
+        <a href="/competicoes/listar" class="btn-voltar"><i class="bi bi-arrow-left"></i></a>
+        <h2 class="form-title">Visualizar Competição</h2>
     </div>
 
+    <div class="visu-box">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h2 class="name mb-4"><?= $valor('nm_competicao') ?></h2>
+                <p>Codigo</p>
+                <p><?= $valor('cd_competicao') ?></p>
+                <p>Data de início</p>
+                <p><?= $valor('dt_inicio') ?></p>
+                <p>Data de encerramento</p>
+                <p><?= $valor('dt_encerramento') ?></p>
+            </div>
+        </div>
     </div>
 </div>
-
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>
 <script src="../../js/acessibilidade.js"></script>
-
 </body>
 </html>

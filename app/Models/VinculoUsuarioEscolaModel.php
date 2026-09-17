@@ -41,6 +41,43 @@ class VinculoUsuarioEscola extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+    public function escolaAtualPorPapeis(int $idUsuario, array $papeis): ?int
+    {
+        if (empty($papeis)) {
+            return null;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($papeis), '?'));
+        $stmt = $this->pdo->prepare("
+            SELECT v.cd_escola
+            FROM vinculo_usuario_escola v
+            INNER JOIN papel p ON p.cd_papel = v.cd_papel
+            WHERE v.cd_usuario = ?
+              AND p.nome IN ($placeholders)
+              AND v.ativo = TRUE
+            ORDER BY v.criado_em DESC
+            LIMIT 1
+        ");
+
+        $stmt->execute(array_merge([$idUsuario], $papeis));
+        $escola = $stmt->fetchColumn();
+
+        return $escola === false ? null : (int) $escola;
+    }
+
+    public function vincularTimeEscola(int $idTime, int $idEscola): void
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO vinculo_time_escola (cd_time, cd_escola)
+            VALUES (:time, :escola)
+        ");
+
+        $stmt->execute([
+            ':time' => $idTime,
+            ':escola' => $idEscola,
+        ]);
+    }
+
     // Verifica se o usuário é Diretor da escola (vínculo ativo)
     public function isUsuarioDiretor(int $idUsuario, int $idEscola): bool
     {

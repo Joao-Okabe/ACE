@@ -18,7 +18,11 @@ class AlunoController
     public function create(): void
     {
         $escolas = (new EscolaService())->listar();
-        renderView('aluno/cadastrar', ['escolas' => $escolas]);
+        renderView('aluno/cadastrar', [
+            'escolas' => $escolas,
+            'ehAdministrador' => $this->ehAdministrador(),
+            'escolaVinculada' => $this->escolaVinculada(),
+        ]);
     }
 
     //Salva um novo aluno
@@ -38,7 +42,13 @@ class AlunoController
 
             $escolas = (new EscolaService())->listar();
 
-            renderView('aluno/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
+            renderView('aluno/cadastrar', [
+                'erro' => $erro,
+                'dados' => $dados,
+                'escolas' => $escolas,
+                'ehAdministrador' => $this->ehAdministrador(),
+                'escolaVinculada' => $this->escolaVinculada(),
+            ]);
 
         }
     }
@@ -66,13 +76,25 @@ class AlunoController
         ]);
     }
 
+    private function ehAdministrador(): bool
+    {
+        return in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true);
+    }
+
+    private function escolaVinculada(): ?int
+    {
+        return (new VinculoUsuarioEscola())->escolaAtualPorPapeis(
+            (int) ($_SESSION['usuario']['id'] ?? 0),
+            ['DIR', 'CRD']
+        );
+    }
+
     //Exibe formulário de edição do Aluno
     public function edit(): void
     {
         $id = (int) ($_GET['id'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
-            echo 'ID inválido';
             return;
         }
 
