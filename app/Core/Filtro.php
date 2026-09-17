@@ -59,6 +59,16 @@ class Filtro
 			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
 		}
 
+		if (!empty($filtros['escola'])) {
+			$onde[] = 'c.cd_criador IN (
+				SELECT v.cd_usuario
+				FROM vinculo_usuario_escola v
+				WHERE v.cd_escola = :cd_escola_competicao
+					AND v.ativo = TRUE
+			)';
+			$parametros[':cd_escola_competicao'] = (int) $filtros['escola'];
+		}
+
 		return [
 			'onde' => $onde,
 			'parametros' => $parametros,

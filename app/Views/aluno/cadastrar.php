@@ -2,6 +2,8 @@
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 $escolas = $escolas ?? [];
+$ehAdministrador = $ehAdministrador ?? false;
+$escolaVinculada = $escolaVinculada ?? null;
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -62,7 +64,7 @@ $escolas = $escolas ?? [];
             <div class="row">
 
         <!-- NOME -->
-                <div class="col-md-6 mb-4">
+            <div class="col-md-6 mb-4">
                     <label for="nome" class="form-label"> Nome do(a) aluno(a) </label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required class="form-control form-input" placeholder="Digite o nome completo">
                 </div>
@@ -105,6 +107,7 @@ $escolas = $escolas ?? [];
                 </div>
 
         <!-- Escola -->
+            <?php if ($ehAdministrador): ?>
                 <div class="col-md-6 mb-4">
                     <label for="escola" class="form-label">Escola</label>
                     <select id="escola" name="escola" required class="form-select form-input">
@@ -114,6 +117,7 @@ $escolas = $escolas ?? [];
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <?php endif; ?>
 
         <!-- Telefone -->
                 <div class="col-md-6 mb-4">
@@ -135,7 +139,6 @@ $escolas = $escolas ?? [];
         </form>
     </div>
 </div>
-
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
         email: <?= json_encode($usuario['email'] ?? '—') ?>, 

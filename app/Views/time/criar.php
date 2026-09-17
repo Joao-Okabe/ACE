@@ -3,6 +3,8 @@
 $usuario = $usuario ?? null;
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
+$escolas = $escolas ?? [];
+$ehAdministrador = $ehAdministrador ?? false;
 
 ?>
 <!DOCTYPE html>
@@ -62,6 +64,18 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
         <label for="nm_time">Nome do time</label>
         <input type="text" id="nm_time" value="<?= $valor('nm_time') ?>" name="nm_time" required>
+
+        <?php if ($ehAdministrador): ?>
+            <label for="escola">Escola</label>
+            <select id="escola" name="escola" required>
+                <option value="">Selecione</option>
+                <?php foreach ($escolas as $escola): ?>
+                    <option value="<?= (int) $escola['cd_escola'] ?>" <?= ((int) ($dados['escola'] ?? 0) === (int) $escola['cd_escola']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($escola['nome'], ENT_QUOTES, 'UTF-8') ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        <?php endif; ?>
 
         <button type="submit">Cadastrar time</button>
     </form>

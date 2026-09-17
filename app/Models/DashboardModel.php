@@ -24,4 +24,26 @@ class Dashboard extends Model
 
         return (int) $stmt->fetchColumn();
     }
+
+    public function qtTime(int $idUsuario): int
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(DISTINCT t.cd_time) AS total
+            FROM time t
+            INNER JOIN vinculo_time_escola vt
+                ON vt.cd_time = t.cd_time
+                AND vt.ativo = TRUE
+            INNER JOIN vinculo_usuario_escola vu
+                ON vu.cd_escola = vt.cd_escola
+                AND vu.cd_usuario = :usuario
+                AND vu.ativo = TRUE
+            WHERE t.ativo = TRUE
+        ");
+
+        $stmt->execute([
+            ':usuario' => $idUsuario
+        ]);
+
+        return (int) $stmt->fetchColumn();
+    }
 }

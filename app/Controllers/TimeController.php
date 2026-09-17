@@ -15,7 +15,11 @@ class TimeController
 
     public function create(): void
     {
-        renderView('time/criar');
+        renderView('time/criar', [
+            'escolas' => (new EscolaService())->listar(),
+            'ehAdministrador' => $this->ehAdministrador(),
+            'escolaVinculada' => $this->escolaVinculada(),
+        ]);
     }
 
     public function store(): void
@@ -35,10 +39,27 @@ class TimeController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            $this->service()->listar();
-
-            renderView('time/criar', ['erro' => $erro, 'dados' => $dados]);
+            renderView('time/criar', [
+                'erro' => $erro,
+                'dados' => $dados,
+                'escolas' => (new EscolaService())->listar(),
+                'ehAdministrador' => $this->ehAdministrador(),
+                'escolaVinculada' => $this->escolaVinculada(),
+            ]);
         }
+    }
+
+    private function ehAdministrador(): bool
+    {
+        return in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true);
+    }
+
+    private function escolaVinculada(): ?int
+    {
+        return (new VinculoUsuarioEscola())->escolaAtualPorPapeis(
+            (int) ($_SESSION['usuario']['id'] ?? 0),
+            ['DIR', 'CRD']
+        );
     }
 
     public function list(): void{
