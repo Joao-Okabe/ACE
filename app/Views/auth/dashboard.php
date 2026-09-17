@@ -1,6 +1,8 @@
 <?php
 $usuario = $usuario ?? null;
 $qtAluno = $qtAluno ?? 0;
+$qtTime = $qtTime ?? 0;
+$qtCompeticao = $qtCompeticao ?? 0;
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -91,7 +93,7 @@ $qtAluno = $qtAluno ?? 0;
 
                 <div>
                     <h6>Times</h6>
-                    <h2>0</h2>
+                    <h2><?= htmlspecialchars((string) $qtTime, ENT_QUOTES, 'UTF-8') ?></h2>
                 </div>
             </div>
         </div>

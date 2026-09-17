@@ -23,9 +23,11 @@ class DashboardController
         }
 
         $qtAluno = $this->dashboard()->qtAluno((int) $usuario['id']);
+        $qtTime = $this->dashboard()->qtTime((int) $usuario['id']);
 
         renderView('auth/dashboard', [
-            'qtAluno' => $qtAluno
+            'qtAluno' => $qtAluno,
+            'qtTime' => $qtTime
         ]);
     }
 }

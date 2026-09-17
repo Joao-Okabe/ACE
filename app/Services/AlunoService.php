@@ -67,8 +67,8 @@ class AlunoService
         try {
             $this->pdo->beginTransaction();
 
-            // validações adicionais
-            if (empty($dados['escola'])) {
+            $idEscola = $this->resolverEscolaCadastro($dados);
+            if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do aluno.');
             }
 
@@ -123,11 +123,7 @@ class AlunoService
             ]);
 
             // Vincula usuário à escola com o papel ALUNO
-            $this->vinculoEscolaUsuarioModel->vincularPapelEscola(
-                $idUsuario,
-                (int) ($dados['escola'] ?? $dados['cd_escola'] ?? 0), // campo do formulário é 'escola'
-                $papelAlunoId
-            );
+            $this->vinculoEscolaUsuarioModel->vincularPapelEscola($idUsuario, $idEscola, $papelAlunoId);
 
             $this->alunoModel->cadastrar([
                 'usuario' => $idUsuario,
@@ -273,6 +269,17 @@ class AlunoService
         }
 
         return (int) ($res['cd_escola'] ?? 0) ?: null;
+    }
+
+    private function resolverEscolaCadastro(array $dados): int
+    {
+        $papeis = $_SESSION['usuario']['papeis'] ?? [];
+        if (in_array('ADM', $papeis, true)) {
+            return (int) ($dados['escola'] ?? 0);
+        }
+
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        return (int) ($this->vinculoEscolaUsuarioModel->escolaAtualPorPapeis($idUsuario, ['DIR', 'CRD']) ?? 0);
     }
 
     private function normalizarCampoOpcional(?string $valor): ?string
