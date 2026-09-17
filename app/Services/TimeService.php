@@ -6,11 +6,14 @@ class TimeService
 
     private Time $timeModel;
 
+    private VinculoUsuarioEscola $vinculoModel;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
 
         $this->timeModel = new Time();
+        $this->vinculoModel = new VinculoUsuarioEscola();
     }
 
     public function cadastrar(array $dados): void
@@ -18,6 +21,11 @@ class TimeService
 
         try {
             $this->pdo->beginTransaction();
+
+            $idEscola = $this->resolverEscolaCadastro($dados);
+            if ($idEscola <= 0) {
+                throw new Exception('Selecione a escola do time.');
+            }
 
             // tratar upload de foto_perfil (opcional)
             $arquivo = $_FILES['path_brasao'] ?? null;
@@ -59,10 +67,11 @@ class TimeService
                 }
             }
 
-            $this->timeModel->criar([
+            $idTime = $this->timeModel->criar([
                 'nm_time' => $dados['nm_time'],
                 'path_brasao' => $caminhoPublicoFoto
             ]);
+            $this->vinculoModel->vincularTimeEscola($idTime, $idEscola);
 
             $this->pdo->commit();
 
@@ -75,6 +84,17 @@ class TimeService
             throw $e;
 
         }
+    }
+
+    private function resolverEscolaCadastro(array $dados): int
+    {
+        $papeis = $_SESSION['usuario']['papeis'] ?? [];
+        if (in_array('ADM', $papeis, true)) {
+            return (int) ($dados['escola'] ?? 0);
+        }
+
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        return (int) ($this->vinculoModel->escolaAtualPorPapeis($idUsuario, ['DIR', 'CRD']) ?? 0);
     }
 
     public function listar(array $filtros = []): array

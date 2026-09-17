@@ -10,7 +10,7 @@ class Time extends Model
         $this->filtro = new Filtro();
     }
 
-    public function criar(array $dados): void
+    public function criar(array $dados): int
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO time(
@@ -20,12 +20,15 @@ class Time extends Model
                 :nm_time,
                 :path_brasao
             )
+            RETURNING cd_time
         ");
 
         $stmt->execute([
             ':nm_time' => $dados['nm_time'],
             ':path_brasao' => $dados['path_brasao']
         ]);
+
+        return (int) $stmt->fetchColumn();
     }
 
     public function listar(array $filtros = []): array
@@ -97,5 +100,7 @@ class Time extends Model
             ':id' => $id
         ]);
     }
+
+    
 
 }

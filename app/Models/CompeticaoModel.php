@@ -83,6 +83,24 @@ class Competicao extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function atualizar(int $id, array $dados): void
+    {
+        $stmt = $this->pdo->prepare('
+            UPDATE competicao
+            SET nm_competicao = :nm_competicao,
+                dt_inicio = :dt_inicio,
+                dt_encerramento = :dt_encerramento
+            WHERE cd_competicao = :id
+        ');
+
+        $stmt->execute([
+            ':id' => $id,
+            ':nm_competicao' => $dados['nm_competicao'],
+            ':dt_inicio' => $dados['dt_inicio'],
+            ':dt_encerramento' => $dados['dt_encerramento'],
+        ]);
+    }
+
     //FILTRAGENS respectivamente
     /*
         Por nome da competição
@@ -147,7 +165,7 @@ class Competicao extends Model
         return $competicao ?: null;
     }
 
-    public function remover(int $id): void
+    public function remover(int $id)
     {
         $stmt = $this->pdo->prepare("
         DELETE FROM competicao 

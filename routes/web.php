@@ -103,6 +103,22 @@ $router->get(
 );
 
 $router->get(
+    '/competicoes/visualizar', [CompeticaoController::class, 'visualizar']
+);
+
+$router->get(
+    '/competicoes/editar', [CompeticaoController::class, 'edit']
+);
+
+$router->post(
+    '/competicoes/atualizar', [CompeticaoController::class, 'update']
+);
+
+$router->post(
+    '/competicoes/remover', [CompeticaoController::class, 'remover']
+);
+
+$router->get(
     '/competicoes/criar', [CompeticaoController::class, 'criar']
 );
 

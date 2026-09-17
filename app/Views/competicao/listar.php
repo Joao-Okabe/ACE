@@ -144,7 +144,7 @@ if (!empty($_SESSION['flash'])) {
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                            <form method="post" action="/competicao/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir esta competição?');">
+                            <form method="post" action="/competicoes/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir esta competição?');">
                                 <input type="hidden" name="id" value="<?= (int) $competicao['cd_competicao'] ?>">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                                 <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
