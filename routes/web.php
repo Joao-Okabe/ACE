@@ -118,7 +118,10 @@ $router->post(
     '/times', [TimeController::class, 'store']
 );
 
-
 $router->get(
     '/times/listar', [TimeController::class, 'list']
+);
+
+$router->post(
+    '/times/remover', [TimeController::class, 'destroy']
 );

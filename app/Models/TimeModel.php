@@ -15,7 +15,7 @@ class Time extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO time(
                 nm_time,
-                path_brasao,
+                path_brasao
             ) VALUES (
                 :nm_time,
                 :path_brasao
@@ -53,6 +53,18 @@ class Time extends Model
         $stmt->execute($filtrosSql['parametros']);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function remover(int $id)
+    {
+        $stmt = $this->pdo->prepare("
+            DELETE FROM time
+            WHERE cd_time = :id
+        ");
+
+        $stmt->execute([
+            ':id' => $id
+        ]);
     }
 
 }

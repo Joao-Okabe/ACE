@@ -54,6 +54,11 @@ class Filtro
 		$onde = [];
 		$parametros = [];
 
+		if (!empty($filtros['nome'])) {
+			$onde[] = 'c.nm_competicao ILIKE :nome';
+			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
+		}
+
 		return [
 			'onde' => $onde,
 			'parametros' => $parametros,
@@ -64,6 +69,11 @@ class Filtro
 	{
 		$onde = [];
 		$parametros = [];
+
+		if (!empty($filtros['nome'])) {
+			$onde[] = 't.nm_time ILIKE :nome';
+			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
+		}
 
 		return [
 			'onde' => $onde,
