@@ -132,11 +132,11 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                     <td><?= htmlspecialchars($time['nm_time']) ?></td>
                     <td><?= htmlspecialchars($time['principal'] ?? '') ?></td>
                     <td class="text-nowrap">
-                        <a href="/alunos/visualizar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
+                        <a href="/times/visualizar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/alunos/editar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                        <a href="/times/editar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 

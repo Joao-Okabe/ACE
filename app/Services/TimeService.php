@@ -82,6 +82,31 @@ class TimeService
         return $this->timeModel->listar($filtros);
     }
 
+    public function buscar(int $id): array
+    {
+        $time = $this->timeModel->buscar($id);
+
+        if ($time === null) {
+            throw new Exception('Time não encontrado.');
+        }
+
+        return $time;
+    }
+
+    public function atualizar(int $id, array $dados): void
+    {
+        $nome = trim((string) ($dados['nm_time'] ?? ''));
+        if ($nome === '') {
+            throw new Exception('Informe o nome do time.');
+        }
+
+        $time = $this->buscar($id);
+        $this->timeModel->atualizar($id, [
+            'nm_time' => $nome,
+            'path_brasao' => $dados['path_brasao'] ?? $time['path_brasao'],
+        ]);
+    }
+
     public function remover(int $id)
     {
         return $this->timeModel->remover($id);

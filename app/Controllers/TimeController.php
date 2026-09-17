@@ -60,6 +60,51 @@ class TimeController
         ]);
     }
 
+    public function visualizar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        renderView('time/visualizar', ['time' => $this->service()->buscar($id)]);
+    }
+
+    public function edit(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        renderView('time/editar', ['time' => $this->service()->buscar($id)]);
+    }
+
+    public function update(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->atualizar($id, $_POST);
+            header('Location: /times/visualizar?id=' . $id);
+            exit;
+        } catch (Exception $e) {
+            renderView('time/editar', [
+                'erro' => $e->getMessage(),
+                'time' => array_merge($this->service()->buscar($id), $_POST),
+            ]);
+        }
+    }
+
     //Remove escola
     public function destroy(): void
     {
