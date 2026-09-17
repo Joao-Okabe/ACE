@@ -59,8 +59,6 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
             </div>
 
-
-
             <div class="row">      
             <div class="col-md-6 mb-3">
                 <label class="form-label">Nome da escola</label>

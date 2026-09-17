@@ -50,9 +50,9 @@ class Competicao extends Model
             ':id' => $id
         ]);
 
-        $escola = $stmt->fetch(PDO::FETCH_ASSOC);
+        $competicao = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $escola ?: null;
+        return $competicao ?: null;
     }
 
     //Lista COMPETIÇÕES

@@ -82,5 +82,10 @@ class TimeService
         return $this->timeModel->listar($filtros);
     }
 
+    public function remover(int $id)
+    {
+        return $this->timeModel->remover($id);
+    }
+
 
 }

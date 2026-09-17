@@ -27,7 +27,7 @@ class TimeController
 
             $this->service()->cadastrar($dados);
 
-            header("Location: /time/criar?sucesso=1");
+            header("Location: /times/criar?sucesso=1");
             exit;
 
         } catch (Exception $e) {
@@ -52,12 +52,36 @@ class TimeController
             $filtros['ordem'] = 'asc';
         }
 
-        $escolas = $this->service()->listar($filtros);
+        $times = $this->service()->listar($filtros);
 
         renderView('time/listar', [
-            'escolas' => $escolas,
+            'times' => $times,
             'filtros' => $filtros,
         ]);
+    }
+
+    //Remove escola
+    public function destroy(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+
+            $this->service()->remover($id);
+
+            header("Location: /times/listar");
+            exit;
+
+        } catch (Exception $e) {
+
+            echo $e->getMessage();
+
+        }
     }
 
 }

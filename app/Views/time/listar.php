@@ -1,6 +1,6 @@
 <?php
 
-$times = $time ?? []; 
+$times = $times ?? [];
 $escolas = $escola ?? []; 
 
 $dados = $dados ?? [];
@@ -52,7 +52,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <div class="card shadow">
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
-                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/alunos/listar">
+                <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/times/listar">
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">
                             <div class="form-input-group search-box">
@@ -61,7 +61,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                                     type="text"
                                     name="nome"
                                     class="form-control form-input"
-                                    placeholder="Pesquisar aluno"
+                                    placeholder="Pesquisar times"
                                     value="<?= htmlspecialchars($filtros['nome'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </div>
@@ -112,12 +112,10 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 
             <thead class="table-blue">
               <tr>
-                <th scope="col">Perfil</th>
+                <th scope="col">Brasão</th>
                 <th scope="col">Código</th>
                 <th scope="col">Nome</th>
-                <th scope="col">RA</th>
-                <th scope="col">Escola</th>
-                <th scope="col">Telefone</th>
+                <th scope="col">Oficial</th>
                 <th scope="col">Ações</th>
               </tr>
             </thead>
@@ -142,7 +140,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                        <form method="post" action="/alunos/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este time?');">
+                        <form method="post" action="/times/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este time?');">
                             <input type="hidden" name="id" value="<?= (int) $time['cd_time'] ?>">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
