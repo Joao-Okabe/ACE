@@ -57,15 +57,25 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div class="text-perfil">
                 <p class="form-label">Adicionar imagem do brasão</p>
             </div>
-            <input type="file" accept="image/*" name="path_brasao" id="path_brasao">
+            <input type="file" accept="image/*" name="path_brasao" id="path_brasao" hidden>
         </div>
 
-        <label for="nm_time">Nome do time</label>
-        <input type="text" id="nm_time" value="<?= $valor('nm_time') ?>" name="nm_time" required>
+        <div class="row">      
+            <div class="col-12 mb-3">
+                <label class="form-label" for="nm_time">Nome do time</label>
+                <input type="text" class="form-control form-input" id="nm_time" value="<?= $valor('nm_time') ?>" name="nm_time" required placeholder="Digite o nome do time">
+            </div>
 
-        <button type="submit">Cadastrar time</button>
+            <div class="actions full d-flex justify-content-end gap-3 mt-4">
+                <a href="/times/listar" class="btn btn-secondary">Cancelar</a>
+                <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
+            </div>
+
+        </div>
+  
     </form>
-
+    </div>
+</div>
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
         email: <?= json_encode($usuario['email'] ?? '—') ?>, 

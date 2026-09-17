@@ -136,11 +136,11 @@ if (!empty($_SESSION['flash'])) {
                     <td><?= htmlspecialchars($competicao['dt_inicio'] ?? '') ?></td>
                     <td><?= htmlspecialchars($competicao['dt_encerramento'] ?? '') ?></td>
                     <td class="text-nowrap">
-                        <a href="/competicao/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
+                        <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/competicao/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                        <a href="/competicoes/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
