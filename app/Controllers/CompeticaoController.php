@@ -96,4 +96,19 @@ class CompeticaoController
         renderView('competicao/vizualizar', ['competicao' => $competicao, 'escolas' => $escolas]);
     }
 
+    public function remover(int $id): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $this->service()->remover($id);
+        
+        $competicoes = (new CompeticaoService())->listar();
+        renderView('competicao/listar', ['competicoes' => $competicoes]);
+    }
+
 }

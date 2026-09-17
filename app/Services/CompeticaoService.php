@@ -57,4 +57,9 @@ class CompeticaoService
     {
         return $this->competicaoModel->buscar($id);
     }
+
+    public function remover(int $id)
+    {
+        return $this->competicaoModel->remover($id);
+    }
 }
