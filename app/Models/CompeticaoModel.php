@@ -147,7 +147,7 @@ class Competicao extends Model
         return $competicao ?: null;
     }
 
-    public function remover(int $id): void
+    public function remover(int $id)
     {
         $stmt = $this->pdo->prepare("
         DELETE FROM competicao 
