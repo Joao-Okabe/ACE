@@ -35,7 +35,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div>
                 <h2 class="form-title">Cadastrar Time</h2>
                 <p class="form-subtitle">
-                Preencha os dados da competição para realizar o cadastro.
+                Preencha os dados do time para realizar o cadastro.
                 </p>
             </div>
         </div>

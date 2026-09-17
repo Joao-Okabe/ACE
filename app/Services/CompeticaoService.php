@@ -52,4 +52,9 @@ class CompeticaoService
     {
         return $this->competicaoModel->listar($filtros);
     }
+
+    public function buscar(int $id)
+    {
+        return $this->competicaoModel->buscar($id);
+    }
 }

@@ -55,6 +55,37 @@ class Time extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT cd_time, nm_time, path_brasao, principal, ativo, criado_em, atualizado
+            FROM time
+            WHERE cd_time = :id
+        ');
+
+        $stmt->execute([':id' => $id]);
+        $time = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $time ?: null;
+    }
+
+    public function atualizar(int $id, array $dados): void
+    {
+        $stmt = $this->pdo->prepare('
+            UPDATE time
+            SET nm_time = :nm_time,
+                path_brasao = :path_brasao,
+                atualizado = CURRENT_TIMESTAMP
+            WHERE cd_time = :id
+        ');
+
+        $stmt->execute([
+            ':id' => $id,
+            ':nm_time' => $dados['nm_time'],
+            ':path_brasao' => $dados['path_brasao'],
+        ]);
+    }
+
     public function remover(int $id)
     {
         $stmt = $this->pdo->prepare("

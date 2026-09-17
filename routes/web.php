@@ -122,6 +122,18 @@ $router->get(
     '/times/listar', [TimeController::class, 'list']
 );
 
+$router->get(
+    '/times/visualizar', [TimeController::class, 'visualizar']
+);
+
+$router->get(
+    '/times/editar', [TimeController::class, 'edit']
+);
+
+$router->post(
+    '/times/atualizar', [TimeController::class, 'update']
+);
+
 $router->post(
     '/times/remover', [TimeController::class, 'destroy']
 );
