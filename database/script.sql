@@ -37,7 +37,7 @@ CREATE TABLE escola (
     cep VARCHAR(9),
     numero VARCHAR(20),
     categoria_administrativa VARCHAR(20) NOT NULL,
-    img_logo TEXT,
+    path_brasao TEXT,
     criada_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ativa BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT chk_categoria
@@ -142,7 +142,7 @@ CREATE TABLE tipo_etapa (
 CREATE TABLE time (
     cd_time INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_time VARCHAR(50) NOT NULL UNIQUE,
-    path_brasao VARCHAR(255) NOT NULL,
+    path_escudo VARCHAR(255) NOT NULL,
     principal BOOLEAN DEFAULT FALSE NOT NULL,
     ativo BOOLEAN DEFAULT TRUE NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
