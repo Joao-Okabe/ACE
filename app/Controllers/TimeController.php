@@ -108,7 +108,7 @@ class TimeController
     //Remove escola
     public function destroy(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) ($_POST['id'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
