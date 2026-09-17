@@ -53,13 +53,34 @@ class CompeticaoService
         return $this->competicaoModel->listar($filtros);
     }
 
-    public function buscar(int $id)
+    public function buscar(int $id): array
     {
-        return $this->competicaoModel->buscar($id);
+        $competicao = $this->competicaoModel->buscar($id);
+
+        if ($competicao === null) {
+            throw new Exception('Competição não encontrada.');
+        }
+
+        return $competicao;
     }
 
-    public function remover(int $id)
+    public function atualizar(int $id, array $dados): void
     {
-        return $this->competicaoModel->remover($id);
+        $nome = trim((string) ($dados['nm_competicao'] ?? ''));
+        if ($nome === '') {
+            throw new Exception('Informe o nome da competição.');
+        }
+
+        $this->buscar($id);
+        $this->competicaoModel->atualizar($id, [
+            'nm_competicao' => $nome,
+            'dt_inicio' => $dados['dt_inicio'] ?? null,
+            'dt_encerramento' => $dados['dt_encerramento'] ?? null,
+        ]);
+    }
+
+    public function remover(int $id): void
+    {
+        $this->competicaoModel->remover($id);
     }
 }

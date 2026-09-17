@@ -73,10 +73,30 @@ class CompeticaoController
             return;
         }
 
-        $competicoes = $this->service()->buscar($id);
-        
-        $competicoes = (new CompeticaoService())->listar();
-        renderView('competicao/editar', ['competicoes' => $competicoes]);
+        $competicao = $this->service()->buscar($id);
+
+        renderView('competicao/editar', ['competicao' => $competicao]);
+    }
+
+    public function update(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->atualizar($id, $_POST);
+            header('Location: /competicoes/visualizar?id=' . $id);
+            exit;
+        } catch (Exception $e) {
+            renderView('competicao/editar', [
+                'erro' => $e->getMessage(),
+                'competicao' => array_merge($this->service()->buscar($id) ?? [], $_POST),
+            ]);
+        }
     }
 
     //Visualiza competicao
@@ -96,9 +116,9 @@ class CompeticaoController
         renderView('competicao/vizualizar', ['competicao' => $competicao, 'escolas' => $escolas]);
     }
 
-    public function remover(int $id): void
+    public function remover(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) ($_POST['id'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
@@ -106,9 +126,9 @@ class CompeticaoController
         }
 
         $this->service()->remover($id);
-        
-        $competicoes = (new CompeticaoService())->listar();
-        renderView('competicao/listar', ['competicoes' => $competicoes]);
+
+        header('Location: /competicoes/listar');
+        exit;
     }
 
 }
