@@ -26,6 +26,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
 <!-- Navbar e Sidebar -->
 <app-header></app-header>
+
 <!--Conteúdo-->
 <div class="content">
      <div class="card form-card shadow-sm">
@@ -47,18 +48,32 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
     <form action="/competicoes" method="POST" enctype="multipart/form-data">
-        <label for="nm_competicao">Nome da competição</label>
-        <input type="text" id="nm_competicao" value="<?= $valor('nm_competicao') ?>" name="nm_competicao" required>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <label class="form-label" for="nm_competicao">Nome da competição</label>
+                <input type="text" class="form-control form-input" id="nm_competicao" value="<?= $valor('nm_competicao') ?>" name="nm_competicao" required placeholder="Digite o nome da competição">
+            </div>
+        </div>
 
-        <label for="dt_inicio">Data de início</label>
-        <input type="date" id="dt_inicio" value="<?= $valor('dt_inicio') ?>" name="dt_inicio">
+        <div class=row>
+            <div class="col-md-6 mb-3">
+                <label class="form-label" for="dt_inicio">Data de início</label>
+                <input type="date" class="form-control form-input" id="dt_inicio" value="<?= $valor('dt_inicio') ?>" name="dt_inicio">
+            </div>
 
-        <label for="dt_encerramento">Data de encerramento</label>
-        <input type="date" id="dt_encerramento" value="<?= $valor('dt_encerramento') ?>" name="dt_encerramento">
+            <div class="col-md-6 mb-3">
+                <label class="form-label" for="dt_encerramento">Data de encerramento</label>
+                <input type="date" class="form-control form-input" id="dt_encerramento" value="<?= $valor('dt_encerramento') ?>" name="dt_encerramento">
+            </div>
 
-        <button type="submit">Cadastrar competição</button>
+            <div class="actions full d-flex justify-content-end gap-3 mt-4">
+                <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
+                <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
+            </div>
+        </div>
     </form>
-
+    </div>
+</div>
 
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 

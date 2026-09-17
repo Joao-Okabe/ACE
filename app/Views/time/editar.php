@@ -20,16 +20,27 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 <div class="content">
     <div class="card form-card shadow-sm">
         <h2 class="form-title">Editar time</h2>
+        <p class="form-subtitle">
+            Altualize o nome do time.
+        </p>
+
         <?php if (!empty($erro)): ?>
             <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
         <?php endif; ?>
+
         <form action="/times/atualizar?id=<?= urlencode($time['cd_time']) ?>" method="post" class="form-grid">
-            <label for="nm_time">Nome do time</label>
-            <input type="text" id="nm_time" name="nm_time" value="<?= $valor('nm_time') ?>" required>
+
+        <div class="row">    
+            <div class="col-12 mb-3">
+            <label class="form-label" for="nm_time">Nome do time</label>
+            <input type="text" class="form-control form-input" id="nm_time" name="nm_time" value="<?= $valor('nm_time') ?>" required placeholder="Digite o nome do time">
+        </div>
+
             <div class="actions full d-flex justify-content-end gap-3 mt-4">
                 <a href="/times/listar" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-laranja">Salvar alteracoes</button>
+                <button type="submit" class="btn btn-laranja">Salvar alterações</button>
             </div>
+
         </form>
     </div>
 </div>
