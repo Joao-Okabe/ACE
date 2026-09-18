@@ -24,8 +24,18 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
             Altualize o nome do time.
         </p>
 
+        <?php if (!empty($_GET['sucesso'])): ?>
+            <div class="alert alert-success auth-success" role="alert" aria-live="polite">
+                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                <span>Time editado com sucesso.</span>
+            </div>
+        <?php endif; ?>
+
         <?php if (!empty($erro)): ?>
-            <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+            <div class="alert alert-danger auth-error" role="alert" aria-live="assertive">
+                <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
         <?php endif; ?>
 
         <form action="/times/atualizar?id=<?= urlencode($time['cd_time']) ?>" method="post" class="form-grid">

@@ -316,8 +316,9 @@
     font-size: 22px;
     font-weight: 700;
     border-bottom: 2px solid #ececec;
-    margin-bottom: 20px;
-    margin: 0 0 10px;
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+    margin: 0 0 20px;
 
 }
 
@@ -337,6 +338,7 @@
     display: flex;
     align-items: center;
     padding: 16px;
+    cursor: pointer;
 }
 
 .partida-card:hover {
@@ -374,9 +376,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ececec;
+
 }
 
 .partidas-header h3 {
