@@ -174,9 +174,9 @@ if (!empty($_SESSION['flash'])) {
             </div>
 
             <div class="modal-body text-center">
-                <h3 id="modalExcluirTitulo">Excluir aluno?</h3>
+                <h3 id="modalExcluirTitulo">Excluir competição?</h3>
                 <p>
-                    Tem certeza de que deseja excluir este aluno? <br>
+                    Tem certeza de que deseja excluir está competição? <br>
                     Essa ação não poderá ser desfeita.
                 </p>
             </div>

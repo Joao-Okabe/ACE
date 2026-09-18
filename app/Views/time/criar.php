@@ -90,7 +90,7 @@ $ehAdministrador = $ehAdministrador ?? false;
 
             <div class="actions full d-flex justify-content-end gap-3 mt-4">
                 <a href="/times/listar" class="btn btn-secondary">Cancelar</a>
-                <button class="btn btn-laranja" type="submit">Cadastrar escola</button>
+                <button class="btn btn-laranja" type="submit">Cadastrar time</button>
             </div>
 
         </div>
