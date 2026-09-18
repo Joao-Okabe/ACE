@@ -26,20 +26,167 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <h2 class="form-title">Visualizar Competição</h2>
     </div>
 
-    <div class="visu-box">
-        <div class="row align-items-center">
+<div class="visu-box">
+    <div class="row align-items-center">
             <div class="col-lg-9">
                 <h2 class="name mb-4"><?= $valor('nm_competicao') ?></h2>
-                <p>Codigo</p>
-                <p><?= $valor('cd_competicao') ?></p>
-                <p>Data de início</p>
-                <p><?= $valor('dt_inicio') ?></p>
-                <p>Data de encerramento</p>
-                <p><?= $valor('dt_encerramento') ?></p>
             </div>
         </div>
+
+    <!-- Botões -->
+    <div class="competicao-tabs" role="tablist">
+
+        <button type="button" class="competicao-tab active" data-tab="local">
+            <i class="bi bi-geo-alt-fill"></i>
+            Local
+        </button>
+
+        <button type="button" class="competicao-tab" data-tab="data">
+            <i class="bi bi-calendar-event"></i>
+            Data
+        </button>
+
+        <button type="button" class="competicao-tab" data-tab="times">
+            <i class="bi bi-people-fill"></i>
+            Times
+        </button>
+
+        <button type="button" class="competicao-tab" data-tab="arbitros">
+            <i class="bi bi-person-badge"></i>
+            Árbitros
+        </button>
+
+        <button type="button" class="competicao-tab" data-tab="partidas">
+            <i class="bi bi-dribbble"></i>
+            Partidas
+        </button>
+
+        <button
+            type="button" class="competicao-tab" data-tab="chaveamento">
+            <i class="bi bi-diagram-3"></i>
+            Chaveamento
+        </button>
     </div>
+
+
+    <!-- Conteúdo -->
+    <div class="competicao-conteudo">
+
+        <!-- Local -->
+        <div class="competicao-painel active" id="local">
+            <h3>Local da competição</h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h6>Local</h6>
+                    <p><?= $valor('local') ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data -->
+        <div class="competicao-painel" id="data">
+            <h3>Datas da competição</h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h6>Data de início</h6>
+                    <p><?= $valor('dt_inicio') ?></p>
+                </div>
+
+                <div class="info-item">
+                    <h6>Data de encerramento</h6>
+                    <p><?= $valor('dt_encerramento') ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Times -->
+        <div class="competicao-painel" id="times">
+            <h3>Times participantes</h3>
+            <p>Informações dos times aparecerão aqui.</p>
+        </div>
+
+
+        <!-- Árbitros -->
+        <div class="competicao-painel" id="arbitros">
+            <h3>Árbitros</h3>
+            <p>Informações dos árbitros aparecerão aqui.</p>
+        </div>
+
+        <!-- Partidas -->
+        <div class="competicao-painel" id="partidas">
+            <div class="partidas">
+            <h3>Partidas</h3>
+            <a href="/times/criar" class="btn btn-laranja">
+            + Adicionar partidas
+            </a>
+        </div>
+
+        
+        <div class="row g-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="partida-card">
+
+                    <div class="partida-info">
+                        <h4>Time A × Time B</h4>
+                        <p>
+                        <i class="bi bi-calendar-event"></i>
+                        20/09/2026
+                        </p>
+                        <p>
+                        <i class="bi bi-clock"></i>
+                        14:00
+                        </p>
+                    </div>
+
+                </div>
+            </div>  
+        </div>
+
+            
+        </div>
+
+        <!-- Chaveamento -->
+        <div class="competicao-painel" id="chaveamento">
+            <h3>Chaveamento</h3>
+            <p>O chaveamento da competição aparecerá aqui.</p>
+        </div>
+
+    </div>
+
 </div>
+
+
+</div>
+
+<script>
+document.querySelectorAll('.competicao-tab').forEach(botao => {
+
+    botao.addEventListener('click', () => {
+
+        const tab = botao.dataset.tab;
+
+        // Remove ativo dos botões
+        document.querySelectorAll('.competicao-tab').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Remove ativo dos conteúdos
+        document.querySelectorAll('.competicao-painel').forEach(painel => {
+            painel.classList.remove('active');
+        });
+
+        // Ativa botão clicado
+        botao.classList.add('active');
+
+        // Mostra conteúdo correspondente
+        document.getElementById(tab).classList.add('active');
+    });
+
+});
+</script>
+
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>
 <script src="../../js/acessibilidade.js"></script>

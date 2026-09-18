@@ -36,69 +36,73 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
                 </div>
             </div>
 
-            <div class="col-lg-9">
-                <div class="d-flex align-items-center mb-4">
-                    <h2 class="name me-3"><?= $valor('nm_time') ?></h2>
+            <div class="col-lg-9 d-flex align-items-center">
+                <div class="d-flex justify-content-between align-items-center w-100">
+
+                    <div class="d-flex flex-column justify-content-center">
+                    <div class="d-flex align-items-center">
+                    <h2 class="name me-3 mt-0"><?= $valor('nm_time') ?></h2>
 
                      <span class="badge-status">
                         <?= ($time['ativo'] ?? false) ? 'Ativo' : 'Inativo' ?>
                     </span>
-                </div>
+                    </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p class="label-info">Código:</p>
-                            <span class="value-info"><?= $valor('cd_time') ?></span>
-                        </div>
+                    <div class=" mt-3">
+                    <span class="label-info">
+                        Principal
+                    </span>
+                    </div>
+                    </div>
 
-                        <div class="col-md-4">
+                    <div class="col-md-4 ms-auto">
+                        <div class="d-flex flex-column align-items-end gap-2">
+                            
                             <button type="button" class="btn btn-partida">
                                 <i class="bi bi-dribbble"></i> 
                                 Partidas
                             </button>
-                        </div>
-
-                        <div class="col-md-4">
+                            
                             <button type="button" class="btn btn-tecnico">
                                 <i class="bi bi-person"></i>     
                                 Técnico
                             </button>
                         </div>
-
                     </div>
+
                 </div>
             </div>
-        </div>
 
-        <div class="d-flex justify-content-end mb-4">
+        </div>
+    </div>
+
+    <div class="integrante-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="section-title">Integrantes</h3>
             <a href="/times/criar" class="btn btn-laranja">
             + Adicionar integrantes
             </a>
         </div>
-
-    <div class="integrante-section">
-        <h3 class="section-title">Integrantes</h3>
+        
         <div class="row g-4">
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="integrante-card">
 
-                  <div class="integrante-info">
-                        <h4>
-                        <i class="bi bi-person-fill"></i>
-                        Nome
-                        </h4>
+                    <div class="integrante-foto">
+                        <img src="../../img/no-prof-pic.png" alt="Foto do integrante">
+                    </div>
 
-                        <div class="info-grid">
-                        <p>info </p>
-                        </div>
+                    <div class="integrante-info">
+                        <h4>Nome</h4>
+                        <p class="label-info">Cargo</p>
                     </div>
 
                 </div>
-            </div>
+            </div>  
             
         </div>
-    </div>
 
+    </div>
     </div>
 </div>
 

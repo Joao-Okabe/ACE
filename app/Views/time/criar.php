@@ -63,10 +63,24 @@ $ehAdministrador = $ehAdministrador ?? false;
         </div>
 
         <div class="row">      
-            <div class="col-12 mb-3">
+            <div class="col-md-6 mb-3">
                 <label class="form-label" for="nm_time">Nome do time</label>
                 <input type="text" class="form-control form-input" id="nm_time" value="<?= $valor('nm_time') ?>" name="nm_time" required placeholder="Digite o nome do time">
             </div>
+
+        <?php if ($ehAdministrador): ?>
+            <div class="col-md-6 mb-3">
+            <label class="form-label" for="escola">Escola</label>
+            <select class="form-select form-input" id="escola" name="escola" required> 
+                <option value="">Selecione</option>
+                <?php foreach ($escolas as $escola): ?>
+                    <option value="<?= (int) $escola['cd_escola'] ?>" <?= ((int) ($dados['escola'] ?? 0) === (int) $escola['cd_escola']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($escola['nome'], ENT_QUOTES, 'UTF-8') ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            </div>
+        <?php endif; ?>
 
             <div class="actions full d-flex justify-content-end gap-3 mt-4">
                 <a href="/times/listar" class="btn btn-secondary">Cancelar</a>
@@ -75,22 +89,10 @@ $ehAdministrador = $ehAdministrador ?? false;
 
         </div>
 
-        <?php if ($ehAdministrador): ?>
-            <label for="escola">Escola</label>
-            <select id="escola" name="escola" required>
-                <option value="">Selecione</option>
-                <?php foreach ($escolas as $escola): ?>
-                    <option value="<?= (int) $escola['cd_escola'] ?>" <?= ((int) ($dados['escola'] ?? 0) === (int) $escola['cd_escola']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($escola['nome'], ENT_QUOTES, 'UTF-8') ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        <?php endif; ?>
-
-        <button type="submit">Cadastrar time</button>
     </form>
     </div>
 </div>
+
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
         email: <?= json_encode($usuario['email'] ?? '—') ?>, 
