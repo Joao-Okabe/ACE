@@ -62,14 +62,14 @@
 }
 .info-item h6 {
     color: var(--laranja-principal);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 5px;
 }
 .info-item p {
     color: var(--azul-principal);
-    font-size: 17px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 500;
     margin: 0;
 }
 
@@ -95,7 +95,7 @@
 /*==== NOME DO ALUNO / ESCOLA ====*/
 .name {
     color: var(--azul-principal);
-    font-size: 27px;
+    font-size: 30px;
     font-weight: 700;
     margin: 0;
 }
@@ -114,16 +114,16 @@
 .foto {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 20px;
     padding-left: 80px;
 }
 
 .foto img {
-    width: 150px;
-    height: 150px;
+    width: 125px;
+    height: 125px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--azul-principal);
+    border: 4px solid var(--azul-principal);
 }
 
 
@@ -195,17 +195,22 @@
 .section-title {
     margin-bottom: 20px;
     color: var(--azul-principal);
-    font-size: 22px;
+
     font-weight: 600;
 }
 
 .integrante-card {
     width: 100%;
+    min-height: 140px;
     background: var(--branco);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    
 }
 
 .integrante-card:hover {
@@ -214,14 +219,15 @@
 }
 
 .integrante-info {
-    width: 100%;
-    padding: 16px;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
 
 }
 
 .integrante-info h4 {
-    margin: 0 0 22px;
-    padding-bottom: 13px;
+    margin: 0 0 10px;
+    padding-bottom: 8px;
     color: var(--azul-principal);
     font-size: 18px;
     font-weight: 600;
@@ -229,7 +235,155 @@
 }
 
 .integrante-info p{
+    margin: 0;
     color: var(--azul-principal);
     font-size: 18px;
     font-weight: 600;
+}
+
+.integrante-foto {
+    flex: 0 0 70px;
+    height: 70px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 22px;
+}
+
+.integrante-foto img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid var(--azul-principal);
+    object-fit: cover;
+    display: block;
+}
+
+
+/* ==== ABAS DA COMPETIÇÃO ==== */
+
+.competicao-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.competicao-tab {
+    border: none;
+    background: var(--branco);
+    color: var(--azul-principal);
+    width: 223px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--azul-principal);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.competicao-tab i {
+    margin-right: 6px;
+}
+
+.competicao-tab:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.competicao-tab.active {
+    background: var(--azul-principal);
+    color: var(--branco);
+}
+
+
+/* ==== CONTEÚDO DAS ABAS ==== */
+
+.competicao-painel {
+    display: none;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+}
+
+.competicao-painel.active {
+    display: block;
+}
+
+.competicao-painel h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    border-bottom: 2px solid #ececec;
+    margin-bottom: 20px;
+    margin: 0 0 10px;
+
+}
+
+.competicao-painel p {
+    color: var(--azul-principal);
+}
+
+.partida-card{
+    width: 100%;
+    min-height: 140px;
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    padding: 16px;
+}
+
+.partida-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.partida-info {
+    width: 100%;
+}
+
+.partida-info h4 {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    color: var(--azul-principal);
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 2px solid #ececec;
+}
+
+.partida-info p {
+    margin: 5px 0;
+    color: var(--azul-principal);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.partida-info i {
+    color: var(--laranja-principal);
+    margin-right: 6px;
+}
+
+.partidas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ececec;
+}
+
+.partidas-header h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    border: none;
+    padding: 0;
 }

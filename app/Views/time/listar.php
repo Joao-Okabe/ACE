@@ -142,7 +142,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
                         <form method="post" action="/times/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este time?');">
                             <input type="hidden" name="id" value="<?= (int) $time['cd_time'] ?>">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string) ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
                                 <i class="bi bi-trash-fill"></i>
                             </button>
