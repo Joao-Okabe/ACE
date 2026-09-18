@@ -131,18 +131,19 @@ $escolas = $escolas ?? [];
                         </a>
 
                     <?php 
-                        $mostrarBotaoEditarExcluir = false;
-                        if (!empty($usuario['id'])) {
+                        $usuarioAtual = $_SESSION['usuario'] ?? [];
+                        $ehAdministrador = in_array('ADM', $usuarioAtual['papeis'] ?? [], true);
+
+                        $mostrarBotaoEditarExcluir = $ehAdministrador;
+                        if (!$mostrarBotaoEditarExcluir && !empty($usuarioAtual['id'])) {
                             $vinculoModel = new VinculoUsuarioEscola();
-                            $mostrarBotaoEditarExcluir = $vinculoModel->isUsuarioDiretor((int) $usuario['id'], (int) ($escola['cd_escola'] ?? 0));
+                            $mostrarBotaoEditarExcluir = $vinculoModel->isUsuarioDiretor((int) $usuarioAtual['id'], (int) ($escola['cd_escola'] ?? 0));
                         }
                         if ($mostrarBotaoEditarExcluir): ?>
                         <!--Btn Editar -->
-                        <button class="btn btn-edit btn-sm" title="Editar">
-                            <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>"> 
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                        </button>
+                        <a href="/escolas/editar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-edit btn-sm" title="Editar">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
                         <!--Btn Excluir -->
                         <a href="/escolas/remover?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-delete btn-sm" title="Excluir">
                             <i class="bi bi-trash-fill"></i>
