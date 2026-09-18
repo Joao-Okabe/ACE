@@ -159,7 +159,7 @@ $router->get(
 );
 
 $router->post(
-    '/partidas', [PartidaController::class, 'store']
+    '/partidas', [PartidaController::class, 'storeBase']
 );
 
 $router->get(

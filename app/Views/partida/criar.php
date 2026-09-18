@@ -2,10 +2,14 @@
 
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
-
+// 1 parte
 $formatos = $formatos ?? [];
 $esportes = $esportes ?? [];
 $modalidades = $modalidades ?? [];
+// 2 parte
+$times = $times ?? [];
+
+$idPartida = $idPartida ?? [];
 
 ?>
 <!doctype html>
@@ -99,7 +103,11 @@ $modalidades = $modalidades ?? [];
 
                         <select id="timeCasa" name="time_casa" class="form-select form-input" required>
                             <option value="">Selecione o time</option>
+                            <?php foreach ($times as $time): ?>
+                                <option value="<?= htmlspecialchars($time['cd_time']) ?>" <?= ($valor('time') == $time['cd_time']) ? 'selected' : '' ?>><?= htmlspecialchars($time['nm_time']) ?></option>
+                            <?php endforeach; ?>
                         </select>
+                        
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -107,7 +115,11 @@ $modalidades = $modalidades ?? [];
 
                         <select id="timeFora" name="time_fora" class="form-select form-input" required>
                             <option value="">Selecione o time</option>
+                            <?php foreach ($times as $time): ?>
+                                <option value="<?= htmlspecialchars($time['cd_time']) ?>" <?= ($valor('time') == $time['cd_time']) ? 'selected' : '' ?>><?= htmlspecialchars($time['nm_time']) ?></option>
+                            <?php endforeach; ?>
                         </select>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -174,12 +186,11 @@ $modalidades = $modalidades ?? [];
         btnProximo.focus();
 
     });
-</script>
 
-    <script>
-        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
-        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
-        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+    window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+    email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+    foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+
     </script>
 
     <script src="../../js/script.js"></script>

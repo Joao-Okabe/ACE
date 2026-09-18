@@ -10,7 +10,8 @@ class Partida extends Model
         $this->filtro = new Filtro();
     }
 
-    public function criarBase(array $dados, int $idCompeticao){
+    public function criarBase(array $dados, int $idCompeticao): array
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO partida 
             (
@@ -34,6 +35,34 @@ class Partida extends Model
             ':cd_esporte' => $dados['cd_esporte'],
             ':cd_modalidade' => $dados['cd_modalidade'],
             ':cd_formato' => $dados['cd_formato'],
+        ]);
+
+        $idPartida = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $idPartida;
+    }
+
+    public function criarInfo(array $dados, int $idPartida)
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO info_partida 
+            (
+                cd_partida,
+                dt_partida,
+                local_partida
+            )
+            VALUES
+            (
+                :cd_partida,
+                :dt_partida,
+                :local_partida
+            )
+        ");
+
+        $stmt->execute([
+            ':cd_partida' => $idPartida,
+            ':dt_partida' => $dados['dt_partida'],
+            ':local_partida' => $dados['local_partida']
         ]);
     }
 

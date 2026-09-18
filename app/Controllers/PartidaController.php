@@ -22,16 +22,20 @@ class PartidaController
         $esportes = $this->service()->listarEsporte();
         $modalidades = $this->service()->listarModalidade();
 
+        $timeService = new TimeService();
+        $times = $timeService->listar();
+
         renderView('partida/criar', [
             'idCompeticao' => $idCompeticao,
             'formatos' => $formatos,
             'esportes' => $esportes,
             'modalidades' => $modalidades,
+            'times' => $times
         ]);
     }
 
     //Salva uma nova partida
-    public function store(): void
+    public function storeBase(): void
     {
         try {
 
@@ -42,8 +46,6 @@ class PartidaController
                 throw new Exception('Competição inválida.');
             }
 
-            $this->service()->criar($dados, $idCompeticao);
-
             header("Location: /competicoes/visualizar?id={$idCompeticao}&sucesso=1");
             exit;
 
@@ -52,8 +54,13 @@ class PartidaController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            renderView('partida/criar', ['erro' => $erro, 'dados' => $dados]);
-
+            renderView(
+                'partida/criar', 
+                [
+                    'erro' => $erro,
+                    'dados' => $dados
+                ]
+            );
         }
     }
 

@@ -14,7 +14,8 @@ class PartidaService
         $this->partidaModel = new Partida();
     }
 
-    public function criar(array $dados, int $idCompeticao){
+    public function criarBase(array $dados, int $idCompeticao)
+    {
 
         if (empty($idCompeticao)) {
             throw new Exception("Informe a competição da partida.");
@@ -36,7 +37,44 @@ class PartidaService
 
             $this->pdo->beginTransaction();
 
-            $this->partidaModel->criarBase($dados, $idCompeticao);
+            $idPartida = $this->partidaModel->criarBase($dados, $idCompeticao);
+
+            $this->pdo->commit();
+
+            return $idPartida;
+
+        } catch (Exception $e) {
+
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            $this->pdo->commit();
+
+            throw $e;
+
+        }
+    }
+
+    // Puxa $idPartida, e usa para criar info_partida
+    public function criarInfo(array $dados, int $idPartida)
+    {
+        if (empty($idPartida)) {
+            throw new Exception("Informe a partida.");
+        }
+
+        if (empty($dados['dt_partida'])) {
+            throw new Exception("Informe a data da partida.");
+        }
+
+        if (empty($dados['local_partida'])) {
+            throw new Exception("Informe o local da partida.");
+        }
+
+        try {
+
+            $this->pdo->beginTransaction();
+
+            $this->partidaModel->criarBase($dados, $idPartida);
 
             $this->pdo->commit();
 
