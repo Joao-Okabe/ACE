@@ -116,10 +116,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
         <!-- Partidas -->
         <div class="competicao-painel" id="partidas">
+            <div class="partidas">
             <h3>Partidas</h3>
-            <div class="partidas-header">
-                <p>Confira as partidas programadas para esta competição ou adicione uma nova partida.</p>
-            <a href="/partidas/criar" class="btn btn-laranja">
+            <a href="/partidas/criar?id_competicao=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
             + Adicionar partidas
             </a>
         </div>
@@ -140,11 +139,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                         14:00
                         </p>
                     </div>
-
                 </div>
             </div>  
         </div>
-
             
         </div>
 
@@ -162,6 +159,11 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 </div>
 
 <script>
+
+window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+
 document.querySelectorAll('.competicao-tab').forEach(botao => {
 
     botao.addEventListener('click', () => {
