@@ -18,16 +18,25 @@ class PartidaController
     {
         $idCompeticao = (int) ($_GET['id_competicao'] ?? 0);
 
-        renderView('partidas/criar', ['idCompeticao' => $idCompeticao]);
+        $formatos = $this->service()->listarFormato();
+        $esportes = $this->service()->listarEsporte();
+        $modalidades = $this->service()->listarModalidade();
+
+        renderView('partida/criar', [
+            'idCompeticao' => $idCompeticao,
+            'formatos' => $formatos,
+            'esportes' => $esportes,
+            'modalidades' => $modalidades,
+        ]);
     }
 
-    //Salva uma nova escola
+    //Salva uma nova partida
     public function store(): void
     {
         try {
 
             $dados = $_POST;
-            $idCompeticao = (int) ($dados['id_competicao'] ?? $_GET['id_competicao'] ?? 0);
+            $idCompeticao = (int) ($dados['id_competicao'] ?? 0);
 
             if ($idCompeticao <= 0) {
                 throw new Exception('Competição inválida.');
@@ -35,7 +44,7 @@ class PartidaController
 
             $this->service()->criar($dados, $idCompeticao);
 
-            header("Location: /partidas/criar?id_competicao={$idCompeticao}&sucesso=1");
+            header("Location: /competicoes/visualizar?id={$idCompeticao}&sucesso=1");
             exit;
 
         } catch (Exception $e) {
@@ -43,10 +52,7 @@ class PartidaController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            $partidaService = new partidaService();
-            $partidas = $partidaService->listar();
-
-            renderView('partidas/listar', ['erro' => $erro, 'dados' => $dados]);
+            renderView('partida/criar', ['erro' => $erro, 'dados' => $dados]);
 
         }
     }

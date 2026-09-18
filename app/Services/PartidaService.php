@@ -56,4 +56,19 @@ class PartidaService
     {
         return $this->partidaModel->listar($filtros);
     }
+
+    public function listarFormato()
+    {
+        return $this->partidaModel->listarFormato();
+    }
+
+    public function listarEsporte()
+    {
+        return $this->partidaModel->listarEsporte();
+    }
+
+    public function listarModalidade()
+    {
+        return $this->partidaModel->listarModalidade();
+    }
 }
