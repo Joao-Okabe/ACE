@@ -101,6 +101,13 @@ class Time extends Model
         ]);
     }
 
-    
+    public function listarTime()
+    {
+        $stmt = $this->pdo->query("
+            SELECT * FROM time
+        "); 
 
+        $time = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $time?: null;
+    }
 }
