@@ -25,13 +25,16 @@ class PartidaController
         $timeService = new TimeService();
         $times = $timeService->listar();
 
-        renderView('partida/criar', [
-            'idCompeticao' => $idCompeticao,
-            'formatos' => $formatos,
-            'esportes' => $esportes,
-            'modalidades' => $modalidades,
-            'times' => $times
-        ]);
+        renderView(
+            'partida/criar', 
+            [
+                'idCompeticao' => $idCompeticao,
+                'formatos' => $formatos,
+                'esportes' => $esportes,
+                'modalidades' => $modalidades,
+                'times' => $times
+            ]
+        );
     }
 
     //Salva uma nova partida
