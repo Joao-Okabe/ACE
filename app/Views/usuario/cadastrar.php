@@ -44,14 +44,17 @@ $valor = function ($campo) use ($dados) {
         </div>
 
             <?php if (!empty($_GET['sucesso'])): ?>
-                <p class="alert success">Usuário cadastrado com sucesso.</p>
+                <div class="alert alert-success auth-success" role="alert" aria-live="polite">
+                    <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                    <span>Usuário cadastrado com sucesso.</span>
+                </div>
             <?php endif; ?>
 
             <?php if (!empty($erro)): ?>
-                <div class="alert alert-danger auth-error" role="alert" aria-live="assertive" > 
-                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true" ></i> 
-                    <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span> 
-                </div> 
+                <div class="alert alert-danger auth-error" role="alert" aria-live="assertive">
+                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                    <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
             <?php endif; ?>
 
             <form action="/usuarios" method="post" enctype="multipart/form-data">

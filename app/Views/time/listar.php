@@ -26,7 +26,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <link rel="stylesheet" href="../../css/lista.css">
     <link rel="stylesheet" href="../../css/acessibilidade.css">
 
-    <title>Escolas</title>
+    <title>Times</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
 </head>
 <body>
@@ -131,7 +131,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                     <td><?= htmlspecialchars($time['cd_time']) ?></td>
                     <td><?= htmlspecialchars($time['nm_time']) ?></td>
                     <td><?= htmlspecialchars($time['principal'] ?? '') ?></td>
-                    <td class="text-nowrap">
+                    <td class="acoes">
                         <a href="/times/visualizar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
@@ -140,7 +140,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                             <i class="bi bi-pencil-fill"></i>
                         </a>
 
-                        <form method="post" action="/times/remover" style="display:inline-block;" onsubmit="return confirm('Deseja realmente excluir este time?');">
+                        <form method="post" action="/times/remover" class="form-excluir">
                             <input type="hidden" name="id" value="<?= (int) $time['cd_time'] ?>">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string) ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
@@ -156,6 +156,59 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmação de exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-excluir">
+
+            <div class="modal-header">
+
+            </div>
+
+            <div class="modal-body text-center">
+                <h3 id="modalExcluirTitulo">Excluir aluno?</h3>
+                <p>
+                    Tem certeza de que deseja excluir este aluno? <br>
+                    Essa ação não poderá ser desfeita.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-confirmar-exclusao" id="confirmarExclusao">
+                    <i class="bi bi-trash-fill"></i>
+                    Excluir
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let formularioExcluir = null;
+
+    const modalExcluirElement = document.getElementById('modalExcluir');
+    const modalExcluir = new bootstrap.Modal(modalExcluirElement);
+    const confirmarExclusao = document.getElementById('confirmarExclusao');
+
+    document.querySelectorAll('.form-excluir').forEach(formulario => {
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            formularioExcluir = this;
+            modalExcluir.show();
+        });
+    });
+
+    confirmarExclusao.addEventListener('click', function () {
+        if (formularioExcluir) {
+            formularioExcluir.submit();
+        }
+    });
+</script>
 
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 

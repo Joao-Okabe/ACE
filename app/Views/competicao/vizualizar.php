@@ -116,9 +116,10 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
         <!-- Partidas -->
         <div class="competicao-painel" id="partidas">
-            <div class="partidas">
             <h3>Partidas</h3>
-            <a href="/times/criar" class="btn btn-laranja">
+            <div class="partidas-header">
+                <p>Confira as partidas programadas para esta competição ou adicione uma nova partida.</p>
+            <a href="/partidas/criar" class="btn btn-laranja">
             + Adicionar partidas
             </a>
         </div>

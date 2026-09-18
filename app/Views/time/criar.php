@@ -43,11 +43,17 @@ $ehAdministrador = $ehAdministrador ?? false;
         </div>
     
         <?php if (!empty($_GET['sucesso'])): ?>
-            <p class="alert success">Time cadastrado com sucesso.</p>
+            <div class="alert alert-success auth-success" role="alert" aria-live="polite">
+                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                <span>Time cadastrado com sucesso.</span>
+            </div>
         <?php endif; ?>
 
         <?php if (!empty($erro)): ?>
-            <p class="alert error"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+            <div class="alert alert-danger auth-error" role="alert" aria-live="assertive">
+                <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
         <?php endif; ?>
 
     <form action="/times" method="POST" enctype="multipart/form-data">

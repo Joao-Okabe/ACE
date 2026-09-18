@@ -41,12 +41,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <h1>Login</h1>
         </div>
 
-            <?php if (!empty($erro)): ?>
-                <div class="alert alert-danger auth-error" role="alert" aria-live="assertive" > 
-                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true" ></i> 
-                    <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span> 
-                </div> 
-            <?php endif; ?>
+        <?php if (!empty($erro)): ?>
+            <div class="alert alert-danger auth-error" role="alert" aria-live="assertive">
+                <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+        <?php endif; ?>
 
             <form action="/login" method="post">
                 <label for="email">E-mail</label>

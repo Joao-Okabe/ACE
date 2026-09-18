@@ -127,6 +127,10 @@ $router->post(
 );
 
 $router->get(
+    '/partidas/criar', [PartidaController::class, 'criar']
+);
+
+$router->get(
     '/times/criar', [TimeController::class, 'create']
 );
 

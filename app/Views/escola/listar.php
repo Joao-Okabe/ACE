@@ -124,7 +124,7 @@ $escolas = $escolas ?? [];
                         <td><?= htmlspecialchars($escola['cep']) ?></td>
                         <td><?php if (($escola['ativa']) == 1 ) { echo "Ativa"; } else { echo "Inativa"; } ?></td>
                         <td><?= htmlspecialchars($escola['categoria_administrativa']) ?></td>
-                        <td>
+                        <td class="acoes">
                         <!--Btn Visualizar -->
                         <a href="/escolas/visualizar?id=<?= urlencode($escola['cd_escola']) ?>" class="btn btn-view btn-sm" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
@@ -159,6 +159,59 @@ $escolas = $escolas ?? [];
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmação de exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" aria-labelledby="modalExcluirTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-excluir">
+
+            <div class="modal-header">
+
+            </div>
+
+            <div class="modal-body text-center">
+                <h3 id="modalExcluirTitulo">Excluir aluno?</h3>
+                <p>
+                    Tem certeza de que deseja excluir este aluno? <br>
+                    Essa ação não poderá ser desfeita.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-confirmar-exclusao" id="confirmarExclusao">
+                    <i class="bi bi-trash-fill"></i>
+                    Excluir
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let formularioExcluir = null;
+
+    const modalExcluirElement = document.getElementById('modalExcluir');
+    const modalExcluir = new bootstrap.Modal(modalExcluirElement);
+    const confirmarExclusao = document.getElementById('confirmarExclusao');
+
+    document.querySelectorAll('.form-excluir').forEach(formulario => {
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            formularioExcluir = this;
+            modalExcluir.show();
+        });
+    });
+
+    confirmarExclusao.addEventListener('click', function () {
+        if (formularioExcluir) {
+            formularioExcluir.submit();
+        }
+    });
+</script>
 
     <script>
         window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
