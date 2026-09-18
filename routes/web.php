@@ -153,3 +153,27 @@ $router->post(
 $router->post(
     '/times/remover', [TimeController::class, 'destroy']
 );
+
+$router->get(
+    '/partidas/criar', [PartidaController::class, 'create']
+);
+
+$router->post(
+    '/partidas', [PartidaController::class, 'store']
+);
+
+$router->get(
+    '/partidas/listar', [PartidaController::class, 'list']
+);
+
+$router->get(
+    '/partidas/editar', [PartidaController::class, 'edit']
+);
+
+$router->post(
+    '/partidas/atualizar', [PartidaController::class, 'update']
+);
+
+$router->post(
+    '/partidas/remover', [PartidaController::class, 'destroy']
+);

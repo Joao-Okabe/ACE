@@ -1,3 +1,13 @@
+<?php
+
+$dados = $dados ?? [];
+$valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
+
+$formatos = $formatos ?? [];
+$esportes = $esportes ?? [];
+$modalidades = $modalidades ?? [];
+
+?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -27,7 +37,8 @@
 <div class="content">
     <div class="card form-card shadow-sm">
 
-        <form action="/competicoes" method="POST" enctype="multipart/form-data">
+        <form action="/partidas" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id_competicao" value="<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>">
             <div id="etapa1">
                 <h4 class="form-title">Adicionar partida</h4>
                 <p class="form-subtitle">
@@ -40,8 +51,9 @@
 
                         <select id="formato" name="formato" class="form-select form-input" required>
                             <option value="">Selecione</option>
-                            <option value="eliminatoria">Eliminatória</option>
-                            <option value="pontos_corridos">Pontos corridos</option>
+                            <?php foreach ($formatos as $formato): ?>
+                                <option value="<?= htmlspecialchars($formato['cd_formato']) ?>" <?= ($valor('formato') == $formato['cd_formato']) ? 'selected' : '' ?>><?= htmlspecialchars($formato['nm_formato']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -50,10 +62,9 @@
 
                         <select id="esporte" name="esporte" class="form-select form-input" required>
                             <option value="">Selecione</option>
-                            <option value="futebol">Futebol</option>
-                            <option value="futsal">Futsal</option>
-                            <option value="volei">Vôlei</option>
-                            <option value="basquete">Basquete</option>
+                            <?php foreach ($esportes as $esporte): ?>
+                                <option value="<?= htmlspecialchars($esporte['cd_esporte']) ?>" <?= ($valor('esporte') == $esporte['cd_esporte']) ? 'selected' : '' ?>><?= htmlspecialchars($esporte['nm_esporte']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -61,15 +72,15 @@
                         <label for="modalidade" class="form-label">Modalidade</label>
                         <select id="modalidade" name="modalidade" class="form-select form-input" required>
                             <option value="">Selecione</option>
-                            <option value="masculino">Masculino</option>
-                            <option value="feminino">Feminino</option>
-                            <option value="misto">Misto</option>
+                            <?php foreach ($modalidades as $modalidade): ?>
+                                <option value="<?= htmlspecialchars($modalidade['cd_modalidade']) ?>" <?= ($valor('modalidade') == $modalidade['cd_modalidade']) ? 'selected' : '' ?>><?= htmlspecialchars(($modalidade['ds_restr_genero'] ?? '') . ' / ' . ($modalidade['ds_restr_idade'] ?? '')) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
 
                 <div class="actions full d-flex justify-content-end gap-3 mt-4">
-                    <a href="/competicoes" class="btn btn-secondary">Cancelar</a>
+                    <a href="/competicoes/visualizar?id=<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary">Cancelar</a>
                     <button class="btn btn-laranja" type="button" id="btnProximo">Próximo</button>
                 </div>
 
