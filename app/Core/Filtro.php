@@ -91,6 +91,22 @@ class Filtro
 		];
 	}
 
+	public function filtrosPartidas(array $filtros): array
+	{
+		$onde = [];
+		$parametros = [];
+
+		if (!empty($filtros['nome'])) {
+			$onde[] = 't.nm_time ILIKE :nome';
+			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
+		}
+
+		return [
+			'onde' => $onde,
+			'parametros' => $parametros,
+		];
+	}
+
 	public function ordem(array $filtros): string
 	{
 		$ordem = strtoupper($filtros['ordem'] ?? 'ASC');
