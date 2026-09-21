@@ -15,17 +15,20 @@ class Time extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO time(
                 nm_time,
-                path_brasao
+                cd_esporte,
+                path_escudo
             ) VALUES (
                 :nm_time,
-                :path_brasao
+                :cd_esporte,
+                :path_escudo
             )
             RETURNING cd_time
         ");
 
         $stmt->execute([
             ':nm_time' => $dados['nm_time'],
-            ':path_brasao' => $dados['path_brasao']
+            ':cd_esporte' => $dados['cd_esporte'],
+            ':path_escudo' => $dados['path_escudo']
         ]);
 
         return (int) $stmt->fetchColumn();
@@ -37,7 +40,7 @@ class Time extends Model
             SELECT
                 t.cd_time,
                 t.nm_time,
-                t.path_brasao,
+                t.path_escudo,
                 t.ativo,
                 t.criado_em,
                 t.atualizado
@@ -61,7 +64,7 @@ class Time extends Model
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare('
-            SELECT cd_time, nm_time, path_brasao, principal, ativo, criado_em, atualizado
+            SELECT cd_time, nm_time, path_escudo, principal, ativo, criado_em, atualizado
             FROM time
             WHERE cd_time = :id
         ');
@@ -77,7 +80,7 @@ class Time extends Model
         $stmt = $this->pdo->prepare('
             UPDATE time
             SET nm_time = :nm_time,
-                path_brasao = :path_brasao,
+                path_escudo = :path_escudo,
                 atualizado = CURRENT_TIMESTAMP
             WHERE cd_time = :id
         ');
@@ -85,7 +88,7 @@ class Time extends Model
         $stmt->execute([
             ':id' => $id,
             ':nm_time' => $dados['nm_time'],
-            ':path_brasao' => $dados['path_brasao'],
+            ':path_escudo' => $dados['path_escudo'],
         ]);
     }
 

@@ -1,5 +1,6 @@
 class Header extends HTMLElement {
     connectedCallback() {
+        
         // Recupera o estado da sidebar antes de renderizar
         const sidebarFechada =
             localStorage.getItem('sidebarFechada') === 'true';

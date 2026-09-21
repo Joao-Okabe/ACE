@@ -22,13 +22,16 @@ class TimeService
         try {
             $this->pdo->beginTransaction();
 
+            if (empty($dados['cd_esporte'])) {
+                throw new Exception('Selecione o esporte do time.');
+            }
+
             $idEscola = $this->resolverEscolaCadastro($dados);
             if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do time.');
             }
 
-            // tratar upload de foto_perfil (opcional)
-            $arquivo = $_FILES['path_brasao'] ?? null;
+            $arquivo = $dados['path_escudo'] ?? null;
             $caminhoPublicoFoto = null;
 
             if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
@@ -69,7 +72,8 @@ class TimeService
 
             $idTime = $this->timeModel->criar([
                 'nm_time' => $dados['nm_time'],
-                'path_brasao' => $caminhoPublicoFoto
+                'cd_esporte' => $dados['cd_esporte'],
+                'path_escudo' => $caminhoPublicoFoto,
             ]);
             $this->vinculoModel->vincularTimeEscola($idTime, $idEscola);
 
@@ -123,7 +127,7 @@ class TimeService
         $time = $this->buscar($id);
         $this->timeModel->atualizar($id, [
             'nm_time' => $nome,
-            'path_brasao' => $dados['path_brasao'] ?? $time['path_brasao'],
+                'path_escudo' => $dados['path_escudo'] ?? $time['path_escudo'],
         ]);
     }
 

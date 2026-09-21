@@ -82,8 +82,7 @@ class PartidaController
 
         $escolas = $this->service()->listar($filtros);
 
-        renderView('escola/listar', [
-            'escolas' => $escolas,
+        renderView('partida/listar', [
             'filtros' => $filtros,
         ]);
     }

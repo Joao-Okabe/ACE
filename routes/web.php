@@ -154,6 +154,14 @@ $router->post(
     '/times/remover', [TimeController::class, 'destroy']
 );
 
+$router->post(
+    '/times/adicionar-integrante', [VinculoTimeIntegranteController::class, 'adicionarIntegrante']
+);
+
+$router->get(
+    '/times/adicionar-integrante', [VinculoTimeIntegranteController::class, 'adicionarIntegrante']
+);
+
 $router->get(
     '/partidas/criar', [PartidaController::class, 'create']
 );
