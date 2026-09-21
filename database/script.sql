@@ -142,18 +142,23 @@ CREATE TABLE tipo_etapa (
 CREATE TABLE time (
     cd_time INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_time VARCHAR(50) NOT NULL UNIQUE,
+    cd_esporte VARCHAR(50) NOT NULL UNIQUE,
     path_escudo VARCHAR(255) NOT NULL,
     principal BOOLEAN DEFAULT FALSE NOT NULL,
     ativo BOOLEAN DEFAULT TRUE NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    atualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+    atualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_esporte
+        FOREIGN KEY (cd_esporte)
+        REFERENCES esporte(cd_esporte)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE funcao_integrante (
     cd_funcao_integrante INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cd_esporte INTEGER NOT NULL,
     nm_funcao VARCHAR(150) NOT NULL,
-    ds_funcao VARCHAR(1024) NOT NULL,
+    ds_funcao VARCHAR(8192) NOT NULL,
     CONSTRAINT fk_esporte
         FOREIGN KEY (cd_esporte)
         REFERENCES esporte(cd_esporte)
@@ -161,13 +166,17 @@ CREATE TABLE funcao_integrante (
 );
 
 CREATE TABLE vinculo_time_escola (
-    cd_escola INTEGER NOT NULL,
     cd_time INTEGER NOT NULL,
+    cd_escola INTEGER NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_escola
         FOREIGN KEY (cd_escola)
         REFERENCES escola(cd_escola)
+        ON DELETE CASCADE 
+    CONSTRAINT fk_time
+        FOREIGN KEY (cd_time)
+        REFERENCES time(cd_time)
         ON DELETE CASCADE 
 );
 

@@ -1,6 +1,8 @@
 <?php
-$time = $time ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
+
+$usuario = $usuario ?? [];
+$time = $time ?? [];
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -32,7 +34,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
         <div class="row align-items-center">
             <div class="col-lg-3">
                 <div class="foto">
-                    <img src="<?= htmlspecialchars(upload_url($time['path_brasao'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
+                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
                 </div>
             </div>
 
@@ -40,19 +42,19 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
                 <div class="d-flex justify-content-between align-items-center w-100">
 
                     <div class="d-flex flex-column justify-content-center">
-                    <div class="d-flex align-items-center">
-                    <h2 class="name me-3 mt-0"><?= $valor('nm_time') ?></h2>
+                        <div class="d-flex align-items-center">
+                            <h2 class="name me-3 mt-0"><?= $valor('nm_time') ?></h2>
 
-                     <span class="badge-status">
-                        <?= ($time['ativo'] ?? false) ? 'Ativo' : 'Inativo' ?>
-                    </span>
-                    </div>
+                            <span class="badge-status">
+                                <?= ($time['ativo'] ?? false) ? 'Ativo' : 'Inativo' ?>
+                            </span>
+                        </div>
 
-                    <div class=" mt-3">
-                    <span class="label-info">
-                        Principal
-                    </span>
-                    </div>
+                        <div class=" mt-3">
+                            <span class="label-info">
+                                Principal
+                            </span>
+                        </div>
                     </div>
 
                     <div class="col-md-4 ms-auto">
@@ -79,7 +81,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
     <div class="integrante-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Integrantes</h3>
-            <a href="/times/criar" class="btn btn-laranja">
+            <a href="/times/adicionar-integrante?id=<?= urlencode((string) ($time['cd_time'] ?? 0)) ?>" class="btn btn-laranja">
             + Adicionar integrantes
             </a>
         </div>
@@ -105,10 +107,15 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
     </div>
     </div>
 </div>
+    <script>
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };    
+    </script>
 
-<script src="../../js/script.js"></script>
-<script src="../../js/layout.js"></script>
-<script src="../../js/acessibilidade.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../js/layout.js"></script>
+    <script src="../../js/acessibilidade.js"></script>
 
 </body>
 </html>

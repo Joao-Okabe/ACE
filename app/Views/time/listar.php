@@ -125,7 +125,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <tr>
                     <td>
                         <div class="tc list-perfil">
-                            <img src="<?= htmlspecialchars(upload_url($time['path_brasao'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                            <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
                         </div>
                     </td>
                     <td><?= htmlspecialchars($time['cd_time']) ?></td>

@@ -15,10 +15,13 @@ class TimeController
 
     public function create(): void
     {
+        $esportes = (new PartidaService())->listarEsporte();
+        
         renderView('time/criar', [
             'escolas' => (new EscolaService())->listar(),
             'ehAdministrador' => $this->ehAdministrador(),
             'escolaVinculada' => $this->escolaVinculada(),
+            'esportes' => $esportes,
         ]);
     }
 
@@ -27,7 +30,7 @@ class TimeController
         try {
 
             $dados = $_POST;
-            $dados['path_brasao'] = $_FILES['path_brasao'] ?? null;
+            $dados['path_escudo'] = $_FILES['path_escudo'] ?? null;
 
             $this->service()->cadastrar($dados);
 
@@ -38,6 +41,7 @@ class TimeController
 
             $erro = $e->getMessage();
             $dados = $_POST;
+            $esportes = (new PartidaService())->listarEsporte();
 
             renderView('time/criar', [
                 'erro' => $erro,
@@ -45,6 +49,7 @@ class TimeController
                 'escolas' => (new EscolaService())->listar(),
                 'ehAdministrador' => $this->ehAdministrador(),
                 'escolaVinculada' => $this->escolaVinculada(),
+                'esportes' => $esportes,
             ]);
         }
     }
