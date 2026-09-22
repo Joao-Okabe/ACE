@@ -1,7 +1,5 @@
 <?php
 
-    $adsasdas = true;
-
 class Permissoes
 {
 
@@ -21,9 +19,15 @@ class Permissoes
         return in_array($papel, $papeis, true);
     }
 
-    public static function temPapelAdm(string $papel): bool
+    public static function temPapelAdm(int $idUsuario): bool
     {
-        return self::temPapel($papel);
+        $idUsuarioSessao = (int) ($_SESSION['usuario']['id'] ?? 0);
+
+        if ($idUsuario <= 0 || $idUsuario !== $idUsuarioSessao) {
+            return false;
+        }
+
+        return self::temPapel('ADM');
     }
 
     public static function temPapelDiretor(string $papel): bool

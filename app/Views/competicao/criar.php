@@ -1,4 +1,5 @@
 <?php
+
 $usuario = $usuario ?? null;
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');

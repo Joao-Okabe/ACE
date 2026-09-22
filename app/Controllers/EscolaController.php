@@ -16,7 +16,10 @@ class EscolaController
     //Exibe o formulário de cadastro
     public function create(): void
     {
-        renderView('escola/cadastrar');
+        $permissoes = new Permissoes();
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $possuiADM = $permissoes->temPapelAdm($idUsuario);
+        renderView('escola/cadastrar',['possuiADM' => $possuiADM]);
     }
 
     //Salva uma nova escola
