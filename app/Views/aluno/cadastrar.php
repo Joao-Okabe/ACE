@@ -40,16 +40,6 @@ $escolaVinculada = $escolaVinculada ?? null;
                 Preencha os dados do aluno para realizar o cadastro.
                 </p>
             </div>
-            <!-- Foto de perfil -->
-            <div class="perfil-aluno">
-                <label for="img" class="foto-perfil" id="fotoPerfil">
-                    <i class="bi bi-camera-fill"></i>
-                </label>
-                <div class="text-perfil">
-                    <p class="form-label">Adicionar foto de perfil</p>
-                </div>
-                <input type="file" id="img" accept="image/*" hidden>
-            </div>
         </div>
 
         <?php if (!empty($_GET['sucesso'])): ?>
@@ -67,27 +57,47 @@ $escolaVinculada = $escolaVinculada ?? null;
         <?php endif; ?>
 
         <form action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
-            <div class="row">
 
-        <!-- NOME -->
-            <div class="col-md-6 mb-4">
+            <div class="form-section">
+
+            <div class="aluno-dados-iniciais">
+
+            <!-- FOTO -->
+             <div class="perfil-aluno"> 
+                <label for="img" class="foto-perfil" id="fotoPerfil"> 
+                    <i class="bi bi-camera-fill"></i> </label> 
+                <label for="img" class="btn-adicionar-foto">Adicionar foto</label> 
+                 <input type="file" id="img" name="img" accept="image/*" hidden> 
+            </div>
+
+            
+            <div class="dados-primeiros">
+                <!-- NOME -->
+                <div class="campo-inicial">
                     <label for="nome" class="form-label"> Nome do(a) aluno(a) </label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required class="form-control form-input" placeholder="Digite o nome completo">
                 </div>
 
-        <!-- RA -->
-                <div class="col-md-6 mb-4">
+                <!-- RA -->
+                <div class="campo-inicial campo-ra">
                     <label for="ra" class="form-label">RA</label>
                     <input type="text" id="ra" name="ra" value="<?= $valor('ra') ?>" class="form-control form-input" placeholder="Digite o RA">
                 </div>
+            </div>
 
-        <!-- DT NASCIMENTO -->
+        </div>
+        </div>
+
+        <div class="form-section">
+
+            <div class="row">
+                <!-- DT NASCIMENTO -->
                 <div class="col-md-6 mb-4">
                     <label for="data_nascimento" class="form-label">Data de nascimento</label>
                     <input type="date" id="data_nascimento" name="data_nascimento" value="<?= $valor('data_nascimento') ?>" class="form-control form-input"> 
                 </div>
 
-        <!-- SEXO -->
+                <!-- SEXO -->
                 <div class="col-md-6 mb-4">
                     <label for="sexo" class="form-label">Sexo</label>
                     <select id="sexo" name="sexo" class="form-select form-input">
@@ -98,7 +108,7 @@ $escolaVinculada = $escolaVinculada ?? null;
                     </select>
                 </div>
 
-        <!-- EMAIL -->
+                <!-- EMAIL -->
                 <div class="col-md-6 mb-4">
                     <label for="email" class="form-label">E-mail de acesso</label>
                     <div class="form-input-group">
@@ -106,13 +116,20 @@ $escolaVinculada = $escolaVinculada ?? null;
                     </div>
                 </div>
 
-        <!-- SENHA -->
+                <!-- SENHA -->
                 <div class="col-md-6 mb-4">
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" id="senha" name="senha" required class="form-control form-input" placeholder="Digite uma senha">
                 </div>
 
-        <!-- Escola -->
+            </div>
+        </div>
+
+        <div class="form-section">
+
+            <div class="row">
+
+            <!-- Escola -->
             <?php if ($ehAdministrador): ?>
                 <div class="col-md-6 mb-4">
                     <label for="escola" class="form-label">Escola</label>
@@ -125,17 +142,20 @@ $escolaVinculada = $escolaVinculada ?? null;
                 </div>
                 <?php endif; ?>
 
-        <!-- Telefone -->
+                <!-- Telefone -->
                 <div class="col-md-6 mb-4">
                     <label for="telefone" class="form-label">Telefone</label>
                     <input type="text" id="telefone" name="telefone" value="<?= $valor('telefone') ?>" class="form-control form-input" placeholder="(00) 00000-0000">
                 </div>
 
-        <!-- CEP -->
+                <!-- CEP -->
                 <div class="col-md-6 mb-4">
                     <label for="cep" class="form-label">CEP</label>
                     <input type="text" id="cepN" name="cep" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric" class="form-control form-input" placeholder="00000-000">
                 </div>
+            
+            </div>
+        </div>
 
         <!-- Confirmar -->        
             <div class="d-flex justify-content-end gap-3 mt-4">
