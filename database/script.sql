@@ -96,19 +96,6 @@ CREATE TABLE documentos_aluno (
         ON DELETE CASCADE
 );
 
-CREATE TABLE competicao (
-    cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_criador INTEGER NOT NULL,
-    nm_competicao VARCHAR(150) NOT NULL, 
-    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dt_inicio TIMESTAMP,
-    dt_encerramento TIMESTAMP,
-    CONSTRAINT fk_criador
-        FOREIGN KEY (cd_criador)
-        REFERENCES usuario(cd_usuario)
-        ON DELETE CASCADE
-);
-
 CREATE TABLE formato (
     cd_formato INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_formato VARCHAR(30) NOT NULL,
@@ -136,6 +123,24 @@ CREATE TABLE tipo_etapa (
     CONSTRAINT fk_esporte
         FOREIGN KEY (cd_esporte)
         REFERENCES esporte(cd_esporte)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE competicao (
+    cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_criador INTEGER NOT NULL,
+    cd_formato INTEGER NOT NULL, 
+    nm_competicao VARCHAR(150) NOT NULL, 
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    dt_inicio TIMESTAMP,
+    dt_encerramento TIMESTAMP,
+    CONSTRAINT fk_criador
+        FOREIGN KEY (cd_criador)
+        REFERENCES usuario(cd_usuario)
+        ON DELETE CASCADE
+    CONSTRAINT fk_formato
+        FOREIGN KEY (cd_formato)
+        REFERENCES formato(cd_formato)
         ON DELETE CASCADE
 );
 
