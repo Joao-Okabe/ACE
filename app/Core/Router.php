@@ -38,6 +38,9 @@ class Router
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
+        if (!$this->rotaPublica($method, $uri) && empty($_SESSION['usuario']['id'])) {
+            (new AuthController())->logout();
+        }
 
         if(isset($this->routes[$method][$uri])) {
 
@@ -51,6 +54,12 @@ class Router
         }
 
         http_response_code(404);
-        echo "Página não encontrada";
+        require __DIR__ . '/../Views/error/404.php';
+    }
+
+    private function rotaPublica(string $method, string $uri): bool
+    {
+        return $method === 'GET' && in_array($uri, ['/', '/login', '/logout'], true)
+            || $method === 'POST' && $uri === '/login';
     }
 }
