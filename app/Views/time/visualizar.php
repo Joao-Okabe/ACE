@@ -3,6 +3,8 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($time[$
 
 $usuario = $usuario ?? [];
 $time = $time ?? [];
+$integrantes = $integrantes ?? [];
+$responsaveis = $responsaveis ?? [];
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -87,21 +89,19 @@ $time = $time ?? [];
         </div>
         
         <div class="row g-4 mb-5">
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="integrante-card">
-
-                    <div class="integrante-foto">
-                        <img src="../../img/no-prof-pic.png" alt="Foto do integrante">
+            <?php foreach ($integrantes as $integrante): ?>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="integrante-card">
+                        <div class="integrante-foto">
+                            <img src="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do integrante">
+                        </div>
+                        <div class="integrante-info">
+                            <h4><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
+                            <p class="label-info"><?= htmlspecialchars($integrante['nm_funcao_integrante'], ENT_QUOTES, 'UTF-8') ?></p>
+                        </div>
                     </div>
-
-                    <div class="integrante-info">
-                        <h4>Nome</h4>
-                        <p class="label-info">Cargo</p>
-                    </div>
-
                 </div>
-            </div>  
-            
+            <?php endforeach; ?>
         </div>
 
 
@@ -113,20 +113,21 @@ $time = $time ?? [];
             </a>
         </div>
         
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="integrante-card">
-
-                    <div class="integrante-foto">
-                        <img src="../../img/no-prof-pic.png" alt="Foto do integrante">
+        <div class="row g-4">
+            <?php foreach ($responsaveis as $responsavel): ?>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="integrante-card">
+                        <div class="integrante-foto">
+                            <img src="<?= htmlspecialchars(upload_url($responsavel['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do responsável">
+                        </div>
+                        <div class="integrante-info">
+                            <h4><?= htmlspecialchars($responsavel['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
+                            <p class="label-info">Responsável</p>
+                        </div>
                     </div>
-
-                    <div class="integrante-info">
-                        <h4>Nome</h4>
-                        <p class="label-info">Cargo</p>
-                    </div>
-
                 </div>
-            </div>  
+            <?php endforeach; ?>
+        </div>
             
         </div>
 

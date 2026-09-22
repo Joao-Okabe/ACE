@@ -95,7 +95,16 @@ class TimeController
             return;
         }
 
-        renderView('time/visualizar', ['time' => $this->service()->buscar($id)]);
+        $time = $this->service()->buscar($id);
+        $vinculoTimeService = new VinculoTimeService();
+        $integrantes = $vinculoTimeService->listarIntegrantesTime($id);
+        $responsaveis = $vinculoTimeService->listarResponsaveisTime($id);
+
+        renderView('time/visualizar', [
+            'time' => $time,
+            'integrantes' => $integrantes,
+            'responsaveis' => $responsaveis,
+        ]);
     }
 
     public function edit(): void

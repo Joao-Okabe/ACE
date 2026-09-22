@@ -64,4 +64,101 @@ class VinculoTime extends Model{
         ]);
     }
 
+    public function listarResponsaveisTime(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT
+                r.cd_responsavel,
+                r.cd_usuario,
+                u.nm_usuario,
+                u.foto_perfil
+            FROM responsavel r
+            INNER JOIN usuario u
+                ON u.cd_usuario = r.cd_usuario
+            INNER JOIN vinculo_time_responsavel vtr
+                ON vtr.cd_responsavel = r.cd_responsavel
+            WHERE r.ativo = TRUE
+                AND vtr.ativo = TRUE
+                AND vtr.cd_time = :cd_time
+            ORDER BY u.nm_usuario"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listarIntegrantesTime(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT
+                vti.cd_usuario,
+                vti.cd_time,
+                vti.cd_funcao_integrante,
+                u.nm_usuario,
+                u.foto_perfil,
+                fi.nm_funcao AS nm_funcao_integrante
+            FROM vinculo_time_integrante vti
+            INNER JOIN usuario u
+                ON u.cd_usuario = vti.cd_usuario
+            INNER JOIN funcao_integrante fi
+                ON fi.cd_funcao_integrante = vti.cd_funcao_integrante
+            WHERE vti.ativo = TRUE
+                AND vti.cd_time = :cd_time
+            ORDER BY u.nm_usuario"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listarAlunosTime(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT DISTINCT
+                a.cd_aluno,
+                a.cd_usuario,
+                a.ra,
+                u.nm_usuario,
+                u.foto_perfil
+            FROM aluno a
+            INNER JOIN usuario u
+                ON u.cd_usuario = a.cd_usuario
+            INNER JOIN vinculo_usuario_escola vue
+                ON vue.cd_usuario = a.cd_usuario
+            INNER JOIN vinculo_time_escola vte
+                ON vte.cd_escola = vue.cd_escola
+            WHERE vte.cd_time = :cd_time
+                AND vte.ativo = TRUE
+                AND vue.ativo = TRUE
+                AND a.ativo = TRUE
+                AND u.ativo = TRUE
+            ORDER BY u.nm_usuario"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listarFuncoesIntegranteTime(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT
+                fi.cd_funcao_integrante,
+                fi.nm_funcao,
+                fi.ds_funcao
+            FROM time t
+            INNER JOIN funcao_integrante fi
+                ON fi.cd_esporte = t.cd_esporte
+            WHERE t.cd_time = :cd_time
+            ORDER BY fi.nm_funcao"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

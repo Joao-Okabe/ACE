@@ -67,7 +67,13 @@ class VinculoTimeController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
             $idFuncaoIntegrante = (int) ($_POST['cd_funcao_integrante'] ?? 0);
+            if ($idUsuario <= 0) {
+                http_response_code(400);
+                echo 'Selecione um aluno';
+                return;
+            }
             if ($idFuncaoIntegrante <= 0) {
                 http_response_code(400);
                 echo 'Função do integrante inválida';
@@ -75,7 +81,7 @@ class VinculoTimeController
             }
 
             try {
-                $this->service()->VincularTimeIntegrante($id, $idFuncaoIntegrante);
+                $this->service()->VincularTimeIntegrante($idUsuario, $id, $idFuncaoIntegrante);
                 header('Location: /times/visualizar?id=' . $id);
                 exit;
             } catch (Exception $e) {
@@ -86,10 +92,16 @@ class VinculoTimeController
         }
 
         $times = (new TimeService())->buscar($id);
+        $alunos = $this->service()->listarAlunosTime($id);
+        $funcoes = $this->service()->listarFuncoesIntegranteTime($id);
 
         renderView(
             'time/adicionar-integrante', 
-            ['times' => $times]
+            [
+                'times' => $times,
+                'alunos' => $alunos,
+                'funcoes' => $funcoes,
+            ]
         );
     }
 }

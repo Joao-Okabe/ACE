@@ -64,7 +64,7 @@ class Time extends Model
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare('
-            SELECT cd_time, nm_time, path_escudo, principal, ativo, criado_em, atualizado
+            SELECT cd_time, nm_time, cd_esporte, path_escudo, principal, ativo, criado_em, atualizado
             FROM time
             WHERE cd_time = :id
         ');

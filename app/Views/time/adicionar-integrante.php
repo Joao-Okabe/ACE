@@ -5,6 +5,8 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
 $usuarios = $usuarios?? [];
 $times = $times ?? [];
+$alunos = $alunos ?? [];
+$funcoes = $funcoes ?? [];
 
 ?>
 <!DOCTYPE html>
@@ -55,13 +57,28 @@ $times = $times ?? [];
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Usuário atual</label>
-                        <input type="text" class="form-control form-input" value="<?= htmlspecialchars($usuario['nome'] ?? 'Usuário da sessão', ENT_QUOTES, 'UTF-8') ?>" readonly>
+                        <label for="cd_usuario" class="form-label">Aluno</label>
+                        <select id="cd_usuario" name="cd_usuario" class="form-select form-input" required>
+                            <option value="">Selecione</option>
+                            <?php foreach ($alunos as $aluno): ?>
+                                <option value="<?= (int) $aluno['cd_usuario'] ?>">
+                                    <?= htmlspecialchars($aluno['nm_usuario'], ENT_QUOTES, 'UTF-8') ?>
+                                    (RA: <?= htmlspecialchars($aluno['ra'], ENT_QUOTES, 'UTF-8') ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <label for="cd_funcao_integrante" class="form-label">Função no time</label>
-                        <input id="cd_funcao_integrante" name="cd_funcao_integrante" type="number" min="1" class="form-control form-input" required>
+                        <select id="cd_funcao_integrante" name="cd_funcao_integrante" class="form-select form-input" required>
+                            <option value="">Selecione</option>
+                            <?php foreach ($funcoes as $funcao): ?>
+                                <option value="<?= (int) $funcao['cd_funcao_integrante'] ?>">
+                                    <?= htmlspecialchars($funcao['nm_funcao'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 

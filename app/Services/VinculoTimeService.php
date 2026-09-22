@@ -46,15 +46,20 @@ class VinculoTimeService
         return $this->vinculoTimeModel->listarResponsaveis();
     }
 
+    public function listarResponsaveisTime(int $idTime): array
+    {
+        return $this->vinculoTimeModel->listarResponsaveisTime($idTime);
+    }
+
     public function VincularTimeIntegrante
     (
+        int $idUsuario,
         int $idTime,
         int $idFuncaoIntegrante
     )
     {
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
         if ($idUsuario <= 0) {
-            throw new Exception('Usuário não autenticado.');
+            throw new Exception('Aluno inválido.');
         }
 
         try {
@@ -76,6 +81,21 @@ class VinculoTimeService
 
             throw $e;
         }
+    }
+
+    public function listarIntegrantesTime (int $idTime)
+    {
+        return $this->vinculoTimeModel->listarIntegrantesTime($idTime);
+    }
+
+    public function listarAlunosTime(int $idTime): array
+    {
+        return $this->vinculoTimeModel->listarAlunosTime($idTime);
+    }
+
+    public function listarFuncoesIntegranteTime(int $idTime): array
+    {
+        return $this->vinculoTimeModel->listarFuncoesIntegranteTime($idTime);
     }
 
 }
