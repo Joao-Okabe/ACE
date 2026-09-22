@@ -53,7 +53,7 @@ function upload_url(?string $storedPath): string
 
 function renderView(string $view, array $data = []): void
 {
-    $usuario = $_SESSION['usuario'] ?? null;
+    $usuario = $_SESSION['usuario'] ?? [];
     extract($data, EXTR_SKIP);
     require __DIR__ . '/../Views/' . $view . '.php';
 }
