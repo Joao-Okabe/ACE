@@ -92,34 +92,4 @@ class Partida extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function listarFormato ()
-    {
-        $stmt = $this->pdo->query("
-            SELECT * FROM formato
-        "); 
-
-        $formato = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $formato?: null;
-    }
-
-    public function listarEsporte ()
-    {
-        $stmt = $this->pdo->query("
-            SELECT * FROM esporte
-        "); 
-
-        $esporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $esporte?: null;
-    }
-    
-    public function listarModalidade ()
-    {
-        $stmt = $this->pdo->query("
-            SELECT * FROM modalidade
-        "); 
-
-        $modalidade = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $modalidade?: null;
-    }
-
 }
