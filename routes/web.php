@@ -155,11 +155,19 @@ $router->post(
 );
 
 $router->post(
-    '/times/adicionar-integrante', [VinculoTimeIntegranteController::class, 'adicionarIntegrante']
+    '/times/adicionar-integrante', [VinculoTimeController::class, 'adicionarIntegrante']
 );
 
 $router->get(
-    '/times/adicionar-integrante', [VinculoTimeIntegranteController::class, 'adicionarIntegrante']
+    '/times/adicionar-integrante', [VinculoTimeController::class, 'adicionarIntegrante']
+);
+
+$router->get(
+    '/times/adicionar-responsavel', [VinculoTimeController::class, 'adicionarResponsavel']
+);
+
+$router->post(
+    '/times/adicionar-responsavel', [VinculoTimeController::class, 'adicionarResponsavel']
 );
 
 $router->get(

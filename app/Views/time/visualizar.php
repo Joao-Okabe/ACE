@@ -108,7 +108,7 @@ $time = $time ?? [];
    
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Responsáveis</h3>
-            <a href="/times/criar" class="btn btn-laranja">
+            <a href="/times/adicionar-responsavel?id=<?= urlencode((string) ($time['cd_time'] ?? 0)) ?>" class="btn btn-laranja">
             + Adicionar responsáveis
             </a>
         </div>
