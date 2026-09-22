@@ -86,7 +86,33 @@ $time = $time ?? [];
             </a>
         </div>
         
-        <div class="row g-4">
+        <div class="row g-4 mb-5">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="integrante-card">
+
+                    <div class="integrante-foto">
+                        <img src="../../img/no-prof-pic.png" alt="Foto do integrante">
+                    </div>
+
+                    <div class="integrante-info">
+                        <h4>Nome</h4>
+                        <p class="label-info">Cargo</p>
+                    </div>
+
+                </div>
+            </div>  
+            
+        </div>
+
+
+   
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="section-title">Responsáveis</h3>
+            <a href="/times/criar" class="btn btn-laranja">
+            + Adicionar responsáveis
+            </a>
+        </div>
+        
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="integrante-card">
 
