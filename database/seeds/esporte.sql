@@ -3,7 +3,7 @@ INSERT INTO esporte (
     ds_esporte
 ) VALUES 
 ('Xadrez', 'Jogo de tabuleiro de estratégia disputado entre dois jogadores, cujo objetivo é capturar o rei adversário.'),
-('Futsal', 'utebol adaptado para quadras cobertas com 5 jogadores de cada lado e dinâmica de jogo acelerada.'),
+('Futsal', 'Futebol adaptado para quadras cobertas com 5 jogadores de cada lado e dinâmica de jogo acelerada.'),
 ('Basquete', 'Esporte dinâmico jogado em quadra onde duas equipes buscam marcar pontos passando a bola por uma cesta elevada a 3,05m do chão.'),
 ('Tênis de Mesa', 'Esporte de raquete disputado sobre uma mesa dividida por uma rede, exigindo reflexos rápidos e efeito na bolinha.'),
 ('Handebol', 'Jogo coletivo e de contato intenso em que os jogadores usam as mãos para passar a bola e arremessá-la ao gol adversário.'),
