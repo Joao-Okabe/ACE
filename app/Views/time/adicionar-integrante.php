@@ -1,4 +1,5 @@
 <?php
+$dados = $dados ?? [];
 
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 
@@ -35,8 +36,8 @@ $times = $times ?? [];
 <div class="content">
     <div class="card form-card shadow-sm">
 
-        <form action="/partidas" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id_competicao" value="<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>">
+        <form action="/times/adicionar-integrante?id=<?= htmlspecialchars($times['cd_time'] ?? 0, ENT_QUOTES, 'UTF-8') ?>" method="POST">
+            <input type="hidden" name="id_time" value="<?= htmlspecialchars($times['cd_time'] ?? 0, ENT_QUOTES, 'UTF-8') ?>">
             <div id="etapa1">
                 <h4 class="form-title">Adicionar Integrante do Time</h4>
                 <p class="form-subtitle">
@@ -54,34 +55,19 @@ $times = $times ?? [];
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="esporte" class="form-label">Usuário</label>
-                        <input list="usuarios" id="usuario_input" type="text" placeholder="Digite o nome do Usuário">
-
-                        <datalist>
-                            <?php foreach ($usuarios as $usuario): ?>
-                                <option value="<?= htmlspecialchars($usuario['cd_usuario']) ?>" 
-                                    <?= ($valor('usuario') == $usuario['cd_usuario']) ? 'selected' : '' ?>
-                                >
-                                    <?= htmlspecialchars($usuario['nm_usuario']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </datalist>
+                        <label class="form-label">Usuário atual</label>
+                        <input type="text" class="form-control form-input" value="<?= htmlspecialchars($usuario['nome'] ?? 'Usuário da sessão', ENT_QUOTES, 'UTF-8') ?>" readonly>
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="modalidade" class="form-label">Modalidade</label>
-                        <select id="modalidade" name="modalidade" class="form-select form-input" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($modalidades as $modalidade): ?>
-                                <option value="<?= htmlspecialchars($modalidade['cd_modalidade']) ?>" <?= ($valor('modalidade') == $modalidade['cd_modalidade']) ? 'selected' : '' ?>><?= htmlspecialchars(($modalidade['ds_restr_genero'] ?? '') . ' / ' . ($modalidade['ds_restr_idade'] ?? '')) ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label for="cd_funcao_integrante" class="form-label">Função no time</label>
+                        <input id="cd_funcao_integrante" name="cd_funcao_integrante" type="number" min="1" class="form-control form-input" required>
                     </div>
                 </div>
 
                 <div class="actions full d-flex justify-content-end gap-3 mt-4">
-                    <a href="/competicoes/visualizar?id=<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary">Cancelar</a>
-                    <button class="btn btn-laranja" type="button" id="btnProximo">Próximo</button>
+                    <a href="/times/visualizar?id=<?= htmlspecialchars($times['cd_time'] ?? 0, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary">Cancelar</a>
+                    <button class="btn btn-laranja" type="submit">Vincular integrante</button>
                 </div>
 
             </div>

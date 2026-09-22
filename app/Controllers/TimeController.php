@@ -15,7 +15,7 @@ class TimeController
 
     public function create(): void
     {
-        $esportes = (new PartidaService())->listarEsporte();
+        $esportes = (new EsporteService())->listar();
         
         renderView('time/criar', [
             'escolas' => (new EscolaService())->listar(),
@@ -41,7 +41,7 @@ class TimeController
 
             $erro = $e->getMessage();
             $dados = $_POST;
-            $esportes = (new PartidaService())->listarEsporte();
+            $esportes = (new EsporteService())->listar();
 
             renderView('time/criar', [
                 'erro' => $erro,
