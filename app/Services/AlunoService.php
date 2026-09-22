@@ -14,8 +14,6 @@ class AlunoService
 
     public function __construct()
     {
-        $this->pdo = Database::connect();
-
         $this->usuarioModel = new Usuario();
 
         $this->alunoModel = new Aluno();
