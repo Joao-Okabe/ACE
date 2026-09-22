@@ -1,4 +1,6 @@
 <?php
+
+$possuiADM = $possuiADM ?? [];
 $escolas = $escolas ?? [];
 
 ?>
@@ -35,11 +37,13 @@ $escolas = $escolas ?? [];
             <h2 class="form-title">Escolas</h2>
             <p class="form-subtitle">Gerencie as escolas cadastradas.</p>
         </div>
+        <?php if ($possuiADM): ?>
         <div class="d-flex flex-column flex-md-row justify-content-between  mb-4">
             <a href="/escolas/cadastrar" class="btn btn-laranja">
             + Adicionar escola
             </a>
         </div>
+        <?php endif ?>
     </div>
 
     <!-- Card da tabela-->
