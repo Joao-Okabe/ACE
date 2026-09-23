@@ -239,20 +239,20 @@ class Competicao extends Model
         $stmt = $this->pdo->prepare("
             SELECT
                 t.cd_time,
-                t.nm_time,
-                t.path_escudo,
-                vit.inscrito_em
+                t.nm_time
             FROM inscricao_competicao ic
-            INNER JOIN vinculo_inscricao_time vit
-                ON vit.cd_inscricao_competicao = ic.cd_inscricao_competicao
-                AND vit.ativo = TRUE
+            INNER JOIN vinculo_inscricao_time vic
+                ON vic.cd_inscricao_competicao = ic.cd_inscricao_competicao
             INNER JOIN time t
-                ON t.cd_time = vit.cd_time
-            WHERE ic.cd_competicao = :competicao
-            ORDER BY t.nm_time ASC
+                ON t.cd_time = vic.cd_time
+            WHERE ic.cd_competicao = :cd_competicao
+            AND vic.ativo = TRUE
+            ORDER BY t.cd_time
         ");
 
-        $stmt->execute([':competicao' => $idCompeticao]);
+        $stmt->execute([
+            ':cd_competicao' => $idCompeticao
+        ]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
