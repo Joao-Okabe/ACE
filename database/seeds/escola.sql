@@ -1,4 +1,4 @@
-INSERT INTO escola (nome, telefone, cep, numero, categoria_administrativa)
+INSERT INTO escola (nm_escola, telefone, cep, numero, categoria_administrativa)
 VALUES
 ('Etec de Itanhaém', '(13) 3426-4926', '11740-976', '1431', 'Escola Estadual'),
 ('Profª Silvia R. S. Marasca', '(13) 3426-5826', '11740-004', '241', 'Escola Municipal'),
