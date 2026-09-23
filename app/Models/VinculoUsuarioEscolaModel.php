@@ -53,7 +53,7 @@ class VinculoUsuarioEscola extends Model
             FROM vinculo_usuario_escola v
             INNER JOIN papel p ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = ?
-              AND p.nome IN ($placeholders)
+              AND p.nm_papel IN ($placeholders)
               AND v.ativo = TRUE
             ORDER BY v.criado_em DESC
             LIMIT 1
@@ -87,7 +87,7 @@ class VinculoUsuarioEscola extends Model
             INNER JOIN papel p ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = :usuario
               AND v.cd_escola = :escola
-              AND p.nome = 'DIR'
+              AND p.nm_papel = 'DIR'
               AND v.ativo = TRUE
             LIMIT 1"
         );
@@ -116,7 +116,7 @@ class VinculoUsuarioEscola extends Model
             INNER JOIN papel p ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = ?
               AND v.cd_escola = ?
-              AND p.nome IN ($placeholders)
+              AND p.nm_papel IN ($placeholders)
               AND v.ativo = TRUE
             LIMIT 1";
 

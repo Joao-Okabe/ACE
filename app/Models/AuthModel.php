@@ -34,7 +34,8 @@ class Auth extends Model
                     cd_papel
                 ) VALUES (
                     :cd_usuario_global,
-                    :cd_papel,
+                    :cd_papel
+                )
             ");
 
             $stmt->execute([

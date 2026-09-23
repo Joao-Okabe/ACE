@@ -27,7 +27,7 @@ class Papel extends Model
     public function listarPapeis(int $idUsuario): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT p.nome
+            SELECT p.nm_papel AS nome
             FROM papel p
             INNER JOIN vinculo_usuario_escola v
                 ON v.cd_papel = p.cd_papel
@@ -36,7 +36,7 @@ class Papel extends Model
 
             UNION
 
-            SELECT p.nome
+            SELECT p.nm_papel AS nome
             FROM papel p
             INNER JOIN usuario_papel up
                 ON up.cd_papel = p.cd_papel
@@ -62,7 +62,7 @@ class Papel extends Model
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM papel
-            WHERE nome = :nome
+            WHERE nm_papel = :nome
         ");
 
         $stmt->execute([

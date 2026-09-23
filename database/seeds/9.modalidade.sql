@@ -1,6 +1,6 @@
 INSERT INTO modalidade (
-    ds_restr_genero,
-    ds_restr_idade
+    sexo,
+    categoria
 ) VALUES 
 ('M', 'Sub14'),
 ('F', 'Sub14'),

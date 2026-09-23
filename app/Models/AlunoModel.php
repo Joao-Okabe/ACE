@@ -15,7 +15,6 @@ class Aluno extends Model
         $stmt = $this->pdo->prepare("
         INSERT INTO aluno(
             cd_usuario,
-            nome,
             ra,
             data_nascimento,
             sexo,
@@ -23,7 +22,6 @@ class Aluno extends Model
             cep
         ) VALUES (
             :usuario,
-            :nome,
             :ra,
             :data_nascimento,
             :sexo,
@@ -33,7 +31,6 @@ class Aluno extends Model
 
         $stmt->execute([
             ':usuario' => $dados['usuario'],
-            ':nome' => $dados['nome'],
             ':ra' => $dados['ra'] ?? null,
             ':data_nascimento' => $dados['data_nascimento'] ?? null,
             ':sexo' => $dados['sexo'] ?? null,
@@ -47,7 +44,6 @@ class Aluno extends Model
     {
         $stmt = $this->pdo->prepare("
         UPDATE aluno SET 
-            nome = :nome, 
             ra = :ra,
             data_nascimento = :data_nascimento,
             sexo = :sexo,
@@ -56,7 +52,6 @@ class Aluno extends Model
         WHERE cd_aluno = :id");
 
         $stmt->execute([
-            ':nome' => $dados['nome'],
             ':ra' => $dados['ra'] ?? null,
             ':data_nascimento' => $dados['data_nascimento'] ?? null,
             ':sexo' => $dados['sexo'] ?? null,
@@ -75,7 +70,7 @@ class Aluno extends Model
         SELECT
             a.*,
             u.email,
-            u.nm_usuario,
+            u.nm_usuario AS nome,
             u.foto_perfil,
             (
                 SELECT e.nome
@@ -111,7 +106,7 @@ class Aluno extends Model
         $stmt = $this->pdo->prepare("SELECT
             a.*,
             u.email,
-            u.nm_usuario,
+            u.nm_usuario AS nome,
             u.foto_perfil,
             (
                 SELECT e.nome

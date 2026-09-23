@@ -16,12 +16,12 @@ class Escola extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO escola
             (
-                nome,
+                nm_escola,
                 telefone,
                 cep,
                 numero,
                 categoria_administrativa,
-                img_logo
+                path_brasao
             )
             VALUES
             (
@@ -50,12 +50,12 @@ class Escola extends Model
         $stmt = $this->pdo->prepare("
             UPDATE escola
             SET
-                nome = :nome,
+                nm_escola = :nome,
                 telefone = :telefone,
                 cep = :cep,
                 numero = :numero,
                 categoria_administrativa = :categoria,
-                img_logo = :img_logo
+                path_brasao = :img_logo
             WHERE cd_escola = :id
         ");
 
@@ -76,12 +76,12 @@ class Escola extends Model
         $stmt = "
             SELECT
                 e.cd_escola,
-                e.nome,
+                e.nm_escola AS nome,
                 e.telefone,
                 e.cep,
                 e.numero,
                 e.categoria_administrativa,
-                e.img_logo,
+                e.path_brasao AS img_logo,
                 e.criada_em,
                 e.ativa
             FROM escola e";
@@ -105,9 +105,12 @@ class Escola extends Model
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT *
-            FROM escola
-            WHERE cd_escola = :id
+            SELECT
+                e.*,
+                e.nm_escola AS nome,
+                e.path_brasao AS img_logo
+            FROM escola e
+            WHERE e.cd_escola = :id
         ");
 
         $stmt->execute([

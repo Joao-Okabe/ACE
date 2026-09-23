@@ -14,6 +14,8 @@ class AlunoService
 
     public function __construct()
     {
+        $this->pdo = Database::connect();
+
         $this->usuarioModel = new Usuario();
 
         $this->alunoModel = new Aluno();
@@ -115,6 +117,7 @@ class AlunoService
             }
 
             $idUsuario = $this->usuarioModel->cadastrar([
+                'nm_usuario' => $dados['nome'],
                 'email' => $dados['email'],
                 'senha' => $senhaHash,
                 'foto_perfil' => $caminhoPublicoFoto
@@ -216,6 +219,7 @@ class AlunoService
                 $this->usuarioModel->atualizarFotoPerfil((int) $aluno['cd_usuario'], $caminhoPublicoFoto);
             }
 
+            $this->usuarioModel->atualizarNome((int) $aluno['cd_usuario'], (string) $dados['nome']);
             $this->alunoModel->atualizar($id, $dados);
 
             $this->pdo->commit();
