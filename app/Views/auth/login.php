@@ -18,7 +18,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/auth.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+  
 
     <title>Login</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">

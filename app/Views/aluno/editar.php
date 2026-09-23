@@ -19,7 +19,7 @@ $escolas = $escolas ?? [];
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Editar aluno</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -32,19 +32,11 @@ $escolas = $escolas ?? [];
 <!--Conteúdo-->
 <div class="content">
     <div class="card form-card shadow-sm">
+
         <div class="cabecalho mb-5">
             <div>
                 <h2 class="form-title">Editar Aluno</h2>
                 <p class="form-subtitle">Atualize os dados do aluno.</p>
-            </div>
-            <div class="perfil-aluno">
-                <label for="foto_perfil" class="foto-perfil" id="fotoPerfil">
-                    <?php if (!empty($dados['foto_perfil'])): ?>
-                        <img src="<?= htmlspecialchars(upload_url($dados['foto_perfil'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do aluno" class="img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
-                    <?php else: ?>
-                        <i class="bi bi-camera-fill"></i>
-                    <?php endif; ?>
-                </label>
             </div>
         </div>
 
@@ -63,17 +55,42 @@ $escolas = $escolas ?? [];
         <?php endif; ?>
 
         <form action="/alunos/atualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
-            <div class="row">
+            <div class="form-section">
+                <div class="dados-iniciais">
 
-                <div class="col-md-6 mb-4">
+                <!-- FOTO -->
+                <div class="perfil-aluno">
+                    <label for="foto_perfil" class="foto-perfil" id="fotoPerfil">
+                        <?php if (!empty($dados['foto_perfil'])): ?>
+                            <img src="<?= htmlspecialchars(upload_url($dados['foto_perfil'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do aluno" class="img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                        <?php else: ?>
+                            <i class="bi bi-camera-fill"></i>
+                        <?php endif; ?>
+                    </label>
+                    <div class="text-perfil">
+                    <p class="form-label">Editar foto</p>
+                </div> 
+                </div>
+
+                <div class="dados-primeiros">
+
+                <div class="campo-inicial">
                     <label for="nome" class="form-label">Nome do(a) aluno(a)</label>
                     <input type="text" id="nome" name="nome" class="form-control form-input" value="<?= $valor('nome') ?>" required placeholder="Digite o nome completo">
                 </div>
 
-                <div class="col-md-6 mb-4">
+                <div class="campo-inicial campo-ra">
                     <label for="ra" class="form-label">RA</label>
                     <input type="text" id="ra" name="ra" class="form-control form-input" value="<?= $valor('ra') ?>" placeholder="Digite o RA">
                 </div>
+            </div>
+
+        </div>
+        </div>
+
+        <div class="form-section">
+
+            <div class="row">
 
                 <div class="col-md-6 mb-4">
                     <label for="data_nascimento" class="form-label">Data de nascimento</label>
@@ -89,6 +106,13 @@ $escolas = $escolas ?? [];
                         <option value="O" <?= $valor('sexo') === 'O' ? 'selected' : '' ?>>Outro</option>
                     </select>
                 </div>
+            
+            </div>
+        </div>
+
+        <div class="form-section">
+
+            <div class="row">
 
                 <div class="col-md-6 mb-4">
                     <label for="cd_escola" class="form-label">Escola</label>
@@ -109,6 +133,9 @@ $escolas = $escolas ?? [];
                     <label for="cep" class="form-label">CEP</label>
                     <input type="text" id="cep" name="cep" class="form-control form-input" value="<?= $valor('cep') ?>" maxlength="9" inputmode="numeric" placeholder="00000-000">
                 </div>
+            
+            </div>
+        </div>
 
                 <div class="col-md-12 mb-4">
                     <label for="foto_perfil" class="form-label">Foto de perfil</label>

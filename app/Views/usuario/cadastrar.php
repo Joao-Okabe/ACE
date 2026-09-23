@@ -21,7 +21,7 @@ $valor = function ($campo) use ($dados) {
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/auth.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>ACE - Cadastro</title>
 </head>

@@ -14,24 +14,22 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/visualizar.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
     <title>Visualizar competição</title>
 </head>
 <body>
     
 <app-header></app-header>
 <div class="content">
-    <div class="header-visualizar mb-4">
-        <a href="/competicoes/listar" class="btn-voltar"><i class="bi bi-arrow-left"></i></a>
-        <h2 class="form-title">Visualizar Competição</h2>
-    </div>
 
 <div class="visu-box">
-    <div class="row align-items-center">
-            <div class="col-lg-9">
-                <h2 class="name mb-4"><?= $valor('nm_competicao') ?></h2>
+            <div class="competicao-titulo">
+                <a href="/competicoes/listar" class="btn-voltar"><i class="bi bi-arrow-left"></i></a>
+                <div class="competicao-info">
+                    <h2 class="name-competicao"><?= $valor('nm_competicao') ?></h2>
+                    <p>Competição escolar</p>
+                </div>
             </div>
-        </div>
 
     <!-- Botões -->
     <div class="competicao-tabs" role="tablist">

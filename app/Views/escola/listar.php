@@ -20,7 +20,7 @@ $escolas = $escolas ?? [];
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/lista.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Escolas</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -196,26 +196,26 @@ $escolas = $escolas ?? [];
 
 <script src="../../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let formularioExcluir = null;
+    let linkExcluir = null;
 
-    const modalExcluirElement = document.getElementById('modalExcluir');
-    const modalExcluir = new bootstrap.Modal(modalExcluirElement);
-    const confirmarExclusao = document.getElementById('confirmarExclusao');
+const modalExcluirElement = document.getElementById('modalExcluir');
+const modalExcluir = new bootstrap.Modal(modalExcluirElement);
+const confirmarExclusao = document.getElementById('confirmarExclusao');
 
-    document.querySelectorAll('.form-excluir').forEach(formulario => {
-        formulario.addEventListener('submit', function (event) {
-            event.preventDefault();
+document.querySelectorAll('.btn-delete').forEach(botao => {
+    botao.addEventListener('click', function (event) {
+        event.preventDefault();
 
-            formularioExcluir = this;
-            modalExcluir.show();
-        });
+        linkExcluir = this;
+        modalExcluir.show();
     });
+});
 
-    confirmarExclusao.addEventListener('click', function () {
-        if (formularioExcluir) {
-            formularioExcluir.submit();
-        }
-    });
+confirmarExclusao.addEventListener('click', function () {
+    if (linkExcluir) {
+        window.location.href = linkExcluir.href;
+    }
+});
 </script>
 
     <script>

@@ -5,35 +5,50 @@
 /* Transição entre páginas */
 
 .content {
-    animation: entrada-conteudo .50s ease;
+    animation: entrada-conteudo .18s ease-out;
 }
 
 @keyframes entrada-conteudo {
     from {
-        opacity: .7;
-        transform: translateY(5px);
+        opacity: 0;
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
 
 /* Corpo do site */
 
+* {
+    box-sizing: border-box;
+}
+
 html {
-    background: #faf8f5;
+    background-color: #faf8f5;
+    min-height: 100%;
 }
 
 body {
-    font-family: "Poppins", sans-serif;
-    background: #faf8f5;
+    margin: 0;
+    min-height: 100vh;
+    background-color: #faf8f5;
     color: var(--preto);
+    font-family: "Poppins", sans-serif;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .content {
+        animation: none;
+    }
 
+    * {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
 /* ==========================================
    VARIÁVEIS
    ========================================== */
@@ -215,7 +230,7 @@ body {
     margin-bottom: 24px;
 }
 
-.aluno-dados-iniciais {
+.dados-iniciais {
     display: flex;
     align-items: center;
     gap: 40px;
@@ -235,7 +250,6 @@ body {
     width: 125px;
     height: 125px;
     border-radius: 50%;
-    background: var(--branco);
     border: 3px solid var(--azul-principal);
     display: flex;
     align-items: center;
@@ -253,7 +267,7 @@ body {
 
 .foto-perfil:hover {
     background: #f8dcca;
-    transform: scale(1.03);
+    transform: scale(1.00);
 }
 
 .foto-perfil img {
