@@ -10,8 +10,6 @@ $qtCompeticao = $qtCompeticao ?? 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <style>html,body {background: #faf8f5;}</style>
-
     <!--Bootstrap css-->
     <link rel="stylesheet" href="../../bootstrap-5.3.8-dist/css/bootstrap.min.css">
 
@@ -79,7 +77,7 @@ $qtCompeticao = $qtCompeticao ?? 0;
 
                 <div>
                     <h6>Competições</h6>
-                    <h2>0</h2>
+                    <h2><?= htmlspecialchars((string) $qtCompeticao, ENT_QUOTES, 'UTF-8') ?></h2>
                 </div>
             </div>
         </div>
