@@ -133,8 +133,8 @@ if (!empty($_SESSION['flash'])) {
                     <td><?= htmlspecialchars($competicao['cd_competicao']) ?></td>
                     <td><?= htmlspecialchars($competicao['nm_competicao']) ?></td>
                     <td><?= htmlspecialchars($competicao['cd_criador'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($competicao['dt_inicio'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($competicao['dt_encerramento'] ?? '') ?></td>
+                    <td><?= htmlspecialchars(substr((string) ($competicao['inicio_em'] ?? ''), 0, 10)) ?></td>
+                    <td><?= htmlspecialchars(substr((string) ($competicao['fim_em'] ?? ''), 0, 10)) ?></td>
                     <td class="acoes">
                         <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>

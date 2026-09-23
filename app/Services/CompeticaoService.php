@@ -20,6 +20,18 @@ class CompeticaoService
             throw new Exception('Informe o nome da competição.');
         }
 
+        $idsObrigatorios = [
+            'cd_formato' => 'formato',
+            'cd_esporte' => 'esporte',
+            'cd_modalidade' => 'modalidade',
+        ];
+
+        foreach ($idsObrigatorios as $campo => $descricao) {
+            if ((int) ($dados[$campo] ?? 0) <= 0) {
+                throw new Exception("Selecione o {$descricao} da competição.");
+            }
+        }
+
         $idCriador = (int) ($_SESSION['usuario']['id'] ?? 0);
         if ($idCriador <= 0) {
             throw new Exception('Usuário não autenticado.');
@@ -30,8 +42,11 @@ class CompeticaoService
 
             $this->competicaoModel->criar([
                 'nm_competicao' => $nome,
-                'dt_inicio' => $dados['dt_inicio'] ?? null,
-                'dt_encerramento' => $dados['dt_encerramento'] ?? null,
+                'cd_formato' => $dados['cd_formato'] ?? null,
+                'cd_esporte' => $dados['cd_esporte'] ?? null,
+                'cd_modalidade' => $dados['cd_modalidade'] ?? null,
+                'inicio_em' => $dados['dt_inicio'] ?? null,
+                'fim_em' => $dados['dt_encerramento'] ?? null,
             ], 
                 $idCriador
             );
@@ -74,8 +89,8 @@ class CompeticaoService
         $this->buscar($id);
         $this->competicaoModel->atualizar($id, [
             'nm_competicao' => $nome,
-            'dt_inicio' => $dados['dt_inicio'] ?? null,
-            'dt_encerramento' => $dados['dt_encerramento'] ?? null,
+            'inicio_em' => $dados['dt_inicio'] ?? null,
+            'fim_em' => $dados['dt_encerramento'] ?? null,
         ]);
     }
 

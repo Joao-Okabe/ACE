@@ -18,22 +18,31 @@ class Competicao extends Model
             INSERT INTO competicao(
                 nm_competicao,
                 cd_criador,
-                dt_inicio,
-                dt_encerramento
+                cd_formato,
+                cd_esporte,
+                cd_modalidade,
+                inicio_em,
+                fim_em
             )
             VALUES(
                 :nm_competicao,
                 :cd_criador,
-                :dt_inicio,
-                :dt_encerramento
+                :cd_formato,
+                :cd_esporte,
+                :cd_modalidade,
+                :inicio_em,
+                :fim_em
             )
         ");
 
         $stmt->execute([
             ":nm_competicao" => $dados["nm_competicao"],
             ":cd_criador" => $id,
-            ":dt_inicio" => $dados["dt_inicio"],
-            ":dt_encerramento" => $dados["dt_encerramento"]
+            ":cd_formato" => $dados["cd_formato"],
+            ":cd_esporte" => $dados["cd_esporte"],
+            ":cd_modalidade" => $dados["cd_modalidade"],
+            ":inicio_em" => $dados["inicio_em"] ?? null,
+            ":fim_em" => $dados["fim_em"] ?? null
         ]);
     }
 
@@ -64,8 +73,10 @@ class Competicao extends Model
                 c.cd_criador,
                 c.nm_competicao,
                 c.criado_em,
-                c.dt_inicio,
-                c.dt_encerramento
+                c.inicio_em,
+                c.fim_em,
+                c.inicio_em AS dt_inicio,
+                c.fim_em AS dt_encerramento
             FROM competicao c";
 
         $filtrosSql = $this->filtro->filtrosCompeticao($filtros);
@@ -88,16 +99,16 @@ class Competicao extends Model
         $stmt = $this->pdo->prepare('
             UPDATE competicao
             SET nm_competicao = :nm_competicao,
-                dt_inicio = :dt_inicio,
-                dt_encerramento = :dt_encerramento
+                inicio_em = :inicio_em,
+                fim_em = :fim_em
             WHERE cd_competicao = :id
         ');
 
         $stmt->execute([
             ':id' => $id,
             ':nm_competicao' => $dados['nm_competicao'],
-            ':dt_inicio' => $dados['dt_inicio'],
-            ':dt_encerramento' => $dados['dt_encerramento'],
+            ':inicio_em' => $dados['inicio_em'] ?? null,
+            ':fim_em' => $dados['fim_em'] ?? null,
         ]);
     }
 
@@ -131,7 +142,7 @@ class Competicao extends Model
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM competicao
-            WHERE dt_inicio = :inicio
+            WHERE inicio_em = :inicio
         ");
 
         $stmt->execute([
