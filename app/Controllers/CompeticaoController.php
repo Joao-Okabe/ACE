@@ -17,7 +17,23 @@ class CompeticaoController
     //Passa sessão do usuário e exibe tela de criação de competição
     public function criar(): void
     {
-        renderView('competicao/criar');
+
+        $formatoService = new FormatoService();
+        $formatos = $formatoService->listar();
+
+        $esporteService = new EsporteService();
+        $esportes = $esporteService->listar();
+
+        $modalidadeService = new ModalidadeService();
+        $modalidades = $modalidadeService->listar();
+
+        renderView('competicao/criar',
+            [
+                'formatos' => $formatos,
+                'esportes' => $esportes,
+                'modalidades' => $modalidades
+            ] 
+        );
     }
 
     //Salva um nova competição
@@ -35,8 +51,13 @@ class CompeticaoController
             $erro = $e->getMessage();
             $dados = $_POST;
 
-            $competicoes = (new CompeticaoService())->listar();
-            renderView('competicao/criar', ['erro' => $erro, 'dados' => $dados]);
+            renderView('competicao/criar', [
+                'erro' => $erro,
+                'dados' => $dados,
+                'formatos' => (new FormatoService())->listar(),
+                'esportes' => (new EsporteService())->listar(),
+                'modalidades' => (new ModalidadeService())->listar(),
+            ]);
         }
     }
 

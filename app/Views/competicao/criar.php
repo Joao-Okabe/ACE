@@ -2,7 +2,13 @@
 
 $usuario = $usuario ?? null;
 $dados = $dados ?? [];
+
+$formatos = $formatos ?? [];
+$esportes = $esportes ?? [];
+$modalidades = $modalidades ?? [];
+
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -62,7 +68,44 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </div>
         </div>
 
-        <div class=row>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="formato" class="form-label">Formato</label>
+
+                <select id="cd_formato" name="cd_formato" class="form-select form-input" required>
+                    <option value="">Selecione</option>
+                    <?php foreach ($formatos as $formato): ?>
+                        <option value="<?= htmlspecialchars($formato['cd_formato']) ?>" <?= ($valor('cd_formato') == $formato['cd_formato']) ? 'selected' : '' ?>><?= htmlspecialchars($formato['nm_formato']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="esporte" class="form-label">Esporte</label>
+
+                <select id="cd_esporte" name="cd_esporte" class="form-select form-input" required>
+                    <option value="">Selecione</option>
+                    <?php foreach ($esportes as $esporte): ?>
+                        <option value="<?= htmlspecialchars($esporte['cd_esporte']) ?>" <?= ($valor('cd_esporte') == $esporte['cd_esporte']) ? 'selected' : '' ?>><?= htmlspecialchars($esporte['nm_esporte']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="modalidade" class="form-label">Modalidade</label>
+                <select id="cd_modalidade" name="cd_modalidade" class="form-select form-input" required>
+                    <option value="">Selecione</option>
+                    <?php foreach ($modalidades as $modalidade): ?>
+                        <option value="<?= htmlspecialchars($modalidade['cd_modalidade']) ?>" 
+                        <?= ($valor('cd_modalidade') == $modalidade['cd_modalidade']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars(($modalidade['sexo'] ?? '') . ' / ' . ($modalidade['categoria'] ?? '')) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="dt_inicio">Data de início</label>
                 <input type="date" class="form-control form-input" id="dt_inicio" value="<?= $valor('dt_inicio') ?>" name="dt_inicio">

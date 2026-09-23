@@ -91,12 +91,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div class="info-grid">
                 <div class="info-item">
                     <h6>Data de início</h6>
-                    <p><?= $valor('dt_inicio') ?></p>
+                    <p><?= htmlspecialchars(substr((string) ($competicao['inicio_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
                 </div>
 
                 <div class="info-item">
                     <h6>Data de encerramento</h6>
-                    <p><?= $valor('dt_encerramento') ?></p>
+                    <p><?= htmlspecialchars(substr((string) ($competicao['fim_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
                 </div>
             </div>
         </div>

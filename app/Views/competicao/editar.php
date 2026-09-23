@@ -48,13 +48,13 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label for="dt_inicio">Data de início</label>
-                    <input class="form-control form-input" type="date" id="dt_inicio" name="dt_inicio" value="<?= $data('dt_inicio') ?>">
+                    <label class="form-label" for="dt_inicio">Data de início</label>
+                    <input class="form-control form-input" type="date" id="dt_inicio" name="dt_inicio" value="<?= $data('inicio_em') ?>">
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="dt_encerramento">Data de encerramento</label>
-                    <input class="form-control form-input" type="date" id="dt_encerramento" name="dt_encerramento" value="<?= $data('dt_encerramento') ?>">
+                    <input class="form-control form-input" type="date" id="dt_encerramento" name="dt_encerramento" value="<?= $data('fim_em') ?>">
                 </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-4">

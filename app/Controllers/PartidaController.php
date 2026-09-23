@@ -33,12 +33,12 @@ class PartidaController
         renderView(
             'partida/criar', 
             [
-                'idCompeticao' => $idCompeticao,
+               'idCompeticao' => $idCompeticao,
                 'formatos' => $formatos,
                 'esportes' => $esportes,
                 'modalidades' => $modalidades,
                 'times' => $times
-            ]
+            ] 
         );
     }
 
