@@ -185,6 +185,14 @@ $router->post(
 );
 
 $router->get(
+    '/times/adicionar-tecnico', [VinculoTimeController::class, 'adicionarTecnico']
+);
+
+$router->post(
+    '/times/adicionar-tecnico', [VinculoTimeController::class, 'adicionarTecnico']
+);
+
+$router->get(
     '/partidas/criar', [PartidaController::class, 'create']
 );
 

@@ -285,8 +285,24 @@ CREATE TABLE vinculo_time_integrante (
 CREATE TABLE escalacao_integrante (
     cd_vinculo_time_integrante INTEGER NOT NULL,
     titular BOOLEAN DEFAULT FALSE,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (cd_vinculo_time_integrante)
         REFERENCES vinculo_time_integrante(cd_vinculo_time_integrante)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE vinculo_tecnico_time (
+    cd_usuario INTEGER NOT NULL,
+    cd_time INTEGER NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (
+        cd_usuario, cd_time
+    ),
+    FOREIGN KEY (cd_usuario)
+        REFERENCES usuario(cd_usuario)
+        ON DELETE CASCADE,
+    FOREIGN KEY (cd_time)
+        REFERENCES time(cd_time)
         ON DELETE CASCADE
 );
 

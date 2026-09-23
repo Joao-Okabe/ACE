@@ -19,8 +19,6 @@ class VinculoTimeService
         int $idTime
     )
     {
-        
-
         try {
             $this->pdo->beginTransaction();
 
@@ -46,12 +44,35 @@ class VinculoTimeService
         return $this->vinculoTimeModel->listarResponsaveis();
     }
 
+    public function listarUsuarios(): array
+    {
+        return $this->vinculoTimeModel->listarUsuarios();
+    }
+
+    public function usuarioPodeGerenciarTime(int $idTime, ?int $idUsuario = null): bool
+    {
+        $idUsuario ??= (int) ($_SESSION['usuario']['id'] ?? 0);
+
+        if ($idUsuario <= 0 || $idTime <= 0) {
+            return false;
+        }
+
+        return $this->vinculoTimeModel->usuarioPodeGerenciarTime($idUsuario, $idTime);
+    }
+
+    public function exigirPermissaoGerenciarTime(int $idTime): void
+    {
+        if (!$this->usuarioPodeGerenciarTime($idTime)) {
+            throw new Exception('Acesso negado para este time.');
+        }
+    }
+
     public function listarResponsaveisTime(int $idTime): array
     {
         return $this->vinculoTimeModel->listarResponsaveisTime($idTime);
     }
 
-    public function VincularTimeIntegrante
+    public function vincularTimeIntegrante
     (
         int $idUsuario,
         int $idTime,
@@ -87,6 +108,7 @@ class VinculoTimeService
         }
     }
 
+
     public function listarIntegrantesTime (int $idTime)
     {
         return $this->vinculoTimeModel->listarIntegrantesTime($idTime);
@@ -121,4 +143,54 @@ class VinculoTimeService
         return $this->vinculoTimeModel->listarFuncoesIntegranteTime($idTime);
     }
 
+    public function vincularTecnicoTime (int $idUsuario, int $idTime) 
+    {
+        if ($idUsuario <= 0) {
+            throw new Exception('Usuário inválido.');
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $this->vinculoTimeModel->vincularTecnicoTime(
+                $idUsuario,
+                $idTime
+            );
+
+            $this->pdo->commit();
+
+        } catch (Exception $e) {
+
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+        }
+    }
+
+    public function tornarTitular (int $idIntegrante) 
+    {
+        if ($idIntegrante <= 0) {
+            throw new Exception('Integrante inválido.');
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $this->vinculoTimeModel->tornarTitular(
+                $idIntegrante
+            );
+
+            $this->pdo->commit();
+
+        } catch (Exception $e) {
+
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+        }
+    }
 }

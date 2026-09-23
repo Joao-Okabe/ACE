@@ -27,7 +27,6 @@ class Auth extends Model
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($usuario === false) {
-            echo("Usuário sem papel, você realizara login como visitante!");
             $stmt = $this->pdo->prepare("
                 INSERT INTO usuario_papel(
                     cd_usuario,

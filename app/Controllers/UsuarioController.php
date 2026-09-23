@@ -17,7 +17,15 @@ class UsuarioController
     {
         $escolaService = new EscolaService();
         $escolas = $escolaService->listar();
-        renderView('usuario/cadastrar', ['escolas' => $escolas]);
+        $papeis = $this->papeisVinculaveis();
+        $escolaDiretor = $this->escolaDoDiretor();
+
+        renderView('usuario/cadastrar', [
+            'escolas' => $escolas,
+            'papeis' => $papeis,
+            'escolaDiretor' => $escolaDiretor,
+            'podeVincular' => !empty($papeis),
+        ]);
     }
 
     public function store(): void
@@ -34,8 +42,42 @@ class UsuarioController
             $escolaService = new EscolaService();
             $escolas = $escolaService->listar();
 
-            renderView('usuario/cadastrar', ['erro' => $erro, 'dados' => $dados, 'escolas' => $escolas]);
+            renderView('usuario/cadastrar', [
+                'erro' => $erro,
+                'dados' => $dados,
+                'escolas' => $escolas,
+                'papeis' => $this->papeisVinculaveis(),
+                'escolaDiretor' => $this->escolaDoDiretor(),
+                'podeVincular' => !empty($this->papeisVinculaveis()),
+            ]);
         }
+    }
+
+    private function papeisVinculaveis(): array
+    {
+        $papeisUsuario = $_SESSION['usuario']['papeis'] ?? [];
+        if (!is_array($papeisUsuario) || (!in_array('ADM', $papeisUsuario, true) && !in_array('DIR', $papeisUsuario, true))) {
+            return [];
+        }
+
+        return [
+            ['codigo' => 'ALU', 'nome' => 'Aluno'],
+            ['codigo' => 'PRF', 'nome' => 'Professor'],
+            ['codigo' => 'AGR', 'nome' => 'Gremista'],
+        ];
+    }
+
+    private function escolaDoDiretor(): ?int
+    {
+        $papeisUsuario = $_SESSION['usuario']['papeis'] ?? [];
+        if (!in_array('DIR', $papeisUsuario, true) || in_array('ADM', $papeisUsuario, true)) {
+            return null;
+        }
+
+        return (new VinculoUsuarioEscola())->escolaAtualPorPapeis(
+            (int) ($_SESSION['usuario']['id'] ?? 0),
+            ['DIR']
+        );
     }
 
     public function edit(): void

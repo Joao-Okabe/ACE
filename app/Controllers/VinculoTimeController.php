@@ -22,6 +22,14 @@ class VinculoTimeController
             return;
         }
 
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idResponsavel = (int) ($_POST['cd_responsavel'] ?? 0);
             if ($idResponsavel <= 0) {
@@ -63,6 +71,14 @@ class VinculoTimeController
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($id);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
             return;
         }
 
@@ -131,6 +147,7 @@ class VinculoTimeController
         }
 
         try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
             $this->service()->removerTimeIntegrante($idUsuario, $idTime);
             header('Location: /times/visualizar?id=' . $idTime);
             exit;
@@ -138,5 +155,57 @@ class VinculoTimeController
             http_response_code(400);
             echo $e->getMessage();
         }
+    }
+
+    public function adicionarTecnico(): void
+    {
+        $idTime = (int) ($_GET['id'] ?? $_POST['id_time'] ?? 0);
+        if ($idTime <= 0) {
+            http_response_code(400);
+            echo 'ID do time inválido';
+            return;
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
+            if ($idUsuario <= 0) {
+                http_response_code(400);
+                echo 'Selecione um Técnico';
+                return;
+            }
+
+            try {
+                $this->service()->vincularTecnicoTime(
+                    $idUsuario,
+                    $idTime
+                );
+
+                header('Location: /times/visualizar?id=' . $idTime);
+                exit;
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo $e->getMessage();
+                return;
+            }
+        }
+
+        $time = (new TimeService())->buscar($idTime);
+        $usuarios = $this->service()->listarUsuarios();
+
+        renderView(
+            'time/adicionar-tecnico',
+            [
+                'times' => $time,
+                'usuarios' => $usuarios,
+            ]
+        );
     }
 }
