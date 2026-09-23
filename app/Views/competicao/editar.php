@@ -13,7 +13,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
     <link rel="stylesheet" href="../../bootstrap-icons-1.13.1/bootstrap-icons.css">
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
     <title>Editar competição</title>
 </head>
 <body>

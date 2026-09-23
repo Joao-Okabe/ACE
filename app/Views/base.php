@@ -13,7 +13,7 @@
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Painel</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">

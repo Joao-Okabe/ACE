@@ -24,7 +24,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Criar Time</title>
 </head>

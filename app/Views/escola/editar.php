@@ -18,7 +18,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Editar escola</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -54,9 +54,13 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </div>
         <?php endif; ?>
 
-            <form action="/escolas/atualizar?id=<?= urlencode($escola['cd_escola']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
+        <form action="/escolas/atualizar?id=<?= urlencode($escola['cd_escola']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
+
+            <div class="form-section">
+
+            <div class="dados-iniciais">
             <!-- Foto de perfil -->
-            <div class="perfil-aluno mb-4">
+            <div class="perfil-aluno">
                 <label for="img_logo" class="foto-perfil" id="fotoLogoEscolaEditar">
                     <?php if (!empty($dados['img_logo'] ?? null)): ?>
                     <img src="<?= htmlspecialchars(upload_url($dados['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
@@ -66,17 +70,18 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 </label>
                 <input type="file" accept="image/*" name="img_logo" id="img_logo" hidden>
                 <div class="text-perfil">
-                    <p class="form-label">Editar brasão/logo</p>
+                    <p class="form-label">Editar brasão</p>
                 </div>
-            </div>    
+            </div>  
+              
             
-            <div class="row">    
-            <div class="col-md-6 mb-3">
+            <div class="dados-primeiros">    
+                <div class="campo-inicial">
                     <label for="nome" class="form-label">Nome da escola</label>
                     <input type="text" id="nome" name="nome" value="<?= $valor('nome') ?>" required class="form-control form-input">
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="campo-inicial">
                     <label for="categoria_administrativa" class="form-label">Categoria</label>
                     <select id="categoria_administrativa" name="categoria_administrativa" required class="form-select form-input">
                         <option value="">Selecione</option>
@@ -85,6 +90,12 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                         <option value="Privada" <?= $valor('categoria_administrativa') === 'Privada' ? 'selected' : '' ?>>Privada</option>
                     </select>
                 </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="form-section">
+            <div class="row">
 
                 <div class="col-md-6 mb-3">
                     <label for="telefone" class="form-label">Telefone</label>
@@ -100,6 +111,8 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                     <label for="numero" class="form-label">Número</label>
                     <input type="text" id="numero" name="numero" value="<?= $valor('numero') ?>" class="form-control form-input">
                 </div>
+            </div>
+        </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-4">
                     <a href="/escolas/listar" class="btn btn-secondary">Cancelar</a>

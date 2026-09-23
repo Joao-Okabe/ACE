@@ -4,9 +4,6 @@ class Header extends HTMLElement {
         // Recupera o estado da sidebar antes de renderizar
         const sidebarFechada =
             localStorage.getItem('sidebarFechada') === 'true';
-        if (sidebarFechada) {
-            this.classList.add('sidebar-fechada-inicial');
-        }
 
         const usuario = window.usuarioLogado || {};
         const nome = usuario.nome || usuario.nm_usuario || 'Usuário';
@@ -14,9 +11,10 @@ class Header extends HTMLElement {
         const foto = usuario.foto || '/img/no-prof-pic.png';
 
         this.innerHTML = `
-            <nav class="navbar">
-                <button type="button" id="menu-btn" aria-label="Abrir ou fechar menu" aria-expanded="true">
-                    <i class="bi bi-layout-sidebar"></i>
+        
+            <nav class="navbar ${sidebarFechada ? 'close' : ''}">
+                <button type="button" id="menu-btn" aria-label="${sidebarFechada ? 'Abrir menu' : 'Fechar menu'}" aria-expanded="${!sidebarFechada}">
+                <i class="bi bi-layout-sidebar"></i>
                 </button>
 
                 <div class="logo">
@@ -35,7 +33,7 @@ class Header extends HTMLElement {
             </nav>
 
             <!-- Sidebar -->
-            <div class="sidebar">
+            <div class="sidebar ${sidebarFechada ? 'close' : ''}">
                 <div class="menu">
                     <a href="/dashboard" class="menu-item">
                         <i class="bi bi-house-door-fill"></i>
@@ -84,10 +82,13 @@ class Header extends HTMLElement {
                 </div>
             </div>
         `;
+        const content = document.querySelector('.content');
+        if (sidebarFechada && content) {
+        content.classList.add('close');
+        }
 
         this.configurarMenu();
         this.configurarPaginaAtual();
-        this.classList.remove('sidebar-fechada-inicial');
     }
 
 
@@ -101,18 +102,7 @@ class Header extends HTMLElement {
             return;
         }
         // Recupera o estado salvo da sidebar
-        const sidebarFechada =
-            localStorage.getItem('sidebarFechada') === 'true';
-        if (sidebarFechada) {
-            sidebar.classList.add('close');
-            if (content) {
-                content.classList.add('close');
-            }
 
-            if (navbar) {
-                navbar.classList.add('close');
-            }
-        }
         // Estado inicial do botão
         const menuAberto =
             !sidebar.classList.contains('close');

@@ -20,7 +20,7 @@ $escolaVinculada = $escolaVinculada ?? null;
     <!--CSS-->
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Cadastro aluno</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -60,13 +60,15 @@ $escolaVinculada = $escolaVinculada ?? null;
 
             <div class="form-section">
 
-            <div class="aluno-dados-iniciais">
+            <div class="dados-iniciais">
 
             <!-- FOTO -->
              <div class="perfil-aluno"> 
                 <label for="img" class="foto-perfil" id="fotoPerfil"> 
                     <i class="bi bi-camera-fill"></i> </label> 
-                <label for="img" class="btn-adicionar-foto">Adicionar foto</label> 
+                <div class="text-perfil">
+                    <p class="form-label">Adicionar foto</p>
+                </div> 
                  <input type="file" id="img" name="img" accept="image/*" hidden> 
             </div>
 

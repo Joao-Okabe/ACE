@@ -260,6 +260,42 @@
     display: block;
 }
 
+.name-competicao{
+    color: var(--azul-principal);
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.competicao-titulo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.competicao-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.competicao-info .name-competicao {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.competicao-info p {
+    color: var(--cinza);
+    margin: 4px 0 0;
+}
+
+.competicao-titulo .btn-voltar {
+    position: static !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 7px 0 0 !important;
+}
 
 /* ==== ABAS DA COMPETIÇÃO ==== */
 
@@ -274,7 +310,7 @@
     border: none;
     background: var(--branco);
     color: var(--azul-principal);
-    width: 223px;
+    width: 218px;
     padding: 10px 18px;
     border-radius: var(--radius);
     border: 1px solid var(--azul-principal);
