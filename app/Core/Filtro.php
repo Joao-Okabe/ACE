@@ -8,7 +8,7 @@ class Filtro
 		$parametros = [];
 
 		if (!empty($filtros['nome'])) {
-			$onde[] = 'a.nome ILIKE :nome';
+			$onde[] = 'u.nm_usuario ILIKE :nome';
 			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
 		}
 

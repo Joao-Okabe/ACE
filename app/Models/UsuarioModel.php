@@ -11,7 +11,7 @@ class Usuario extends Model
                 nm_usuario,
                 email,
                 senha,
-                foto_perfil
+                path_ft_usuario
             )
             VALUES
             (
@@ -43,9 +43,11 @@ class Usuario extends Model
     public function buscarPorEmail(string $email): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT *
-            FROM usuario
-            WHERE email = :email
+            SELECT
+                u.*,
+                u.path_ft_usuario AS foto_perfil
+            FROM usuario u
+            WHERE u.email = :email
         ");
 
         $stmt->execute([
@@ -77,12 +79,26 @@ class Usuario extends Model
     {
         $stmt = $this->pdo->prepare("
             UPDATE usuario
-            SET foto_perfil = :foto_perfil
+            SET path_ft_usuario = :foto_perfil
             WHERE cd_usuario = :id
         ");
 
         $stmt->execute([
             ':foto_perfil' => $fotoPerfil,
+            ':id' => $id
+        ]);
+    }
+
+    public function atualizarNome(int $id, string $nome): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE usuario
+            SET nm_usuario = :nome
+            WHERE cd_usuario = :id
+        ");
+
+        $stmt->execute([
+            ':nome' => $nome,
             ':id' => $id
         ]);
     }

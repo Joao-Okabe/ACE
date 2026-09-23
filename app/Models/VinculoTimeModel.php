@@ -71,7 +71,7 @@ class VinculoTime extends Model{
                 r.cd_responsavel,
                 r.cd_usuario,
                 u.nm_usuario,
-                u.foto_perfil
+                u.path_ft_usuario AS foto_perfil
             FROM responsavel r
             INNER JOIN usuario u
                 ON u.cd_usuario = r.cd_usuario
@@ -96,7 +96,7 @@ class VinculoTime extends Model{
                 vti.cd_time,
                 vti.cd_funcao_integrante,
                 u.nm_usuario,
-                u.foto_perfil,
+                u.path_ft_usuario AS foto_perfil,
                 fi.nm_funcao AS nm_funcao_integrante
             FROM vinculo_time_integrante vti
             INNER JOIN usuario u
@@ -121,7 +121,7 @@ class VinculoTime extends Model{
                 a.cd_usuario,
                 a.ra,
                 u.nm_usuario,
-                u.foto_perfil
+                u.path_ft_usuario AS foto_perfil
             FROM aluno a
             INNER JOIN usuario u
                 ON u.cd_usuario = a.cd_usuario
