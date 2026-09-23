@@ -190,4 +190,142 @@ class Competicao extends Model
             ':id' => $id
         ]);
     }
+
+    public function criarInscricao(int $idCompeticao, array $dados): int
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO inscricao_competicao(
+                cd_inscricao_competicao,
+                cd_competicao,
+                dt_inicio_inscricao,
+                dt_encerramento_inscricao
+            )
+            VALUES(
+                (SELECT COALESCE(MAX(ic.cd_inscricao_competicao), 0) + 1 FROM inscricao_competicao ic),
+                :cd_competicao,
+                :dt_inicio_inscricao,
+                :dt_encerramento_inscricao
+            )
+            RETURNING cd_inscricao_competicao
+        ");
+
+        $stmt->execute([
+            ":cd_competicao" => $idCompeticao,
+            ":dt_inicio_inscricao" => $dados["dt_inicio_inscricao"],
+            ":dt_encerramento_inscricao" => $dados["dt_encerramento_inscricao"],
+        ]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function buscarPeriodoInscricao(int $idCompeticao): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM inscricao_competicao
+            WHERE cd_competicao = :competicao
+            ORDER BY cd_inscricao_competicao DESC
+            LIMIT 1
+        ");
+
+        $stmt->execute([':competicao' => $idCompeticao]);
+        $inscricao = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $inscricao ?: null;
+    }
+
+    public function listarTimesInscritos(int $idCompeticao): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                t.cd_time,
+                t.nm_time,
+                t.path_escudo,
+                vit.inscrito_em
+            FROM inscricao_competicao ic
+            INNER JOIN vinculo_inscricao_time vit
+                ON vit.cd_inscricao_competicao = ic.cd_inscricao_competicao
+                AND vit.ativo = TRUE
+            INNER JOIN time t
+                ON t.cd_time = vit.cd_time
+            WHERE ic.cd_competicao = :competicao
+            ORDER BY t.nm_time ASC
+        ");
+
+        $stmt->execute([':competicao' => $idCompeticao]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listarTimesDisponiveisInscricao(int $idCompeticao): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT
+                t.cd_time,
+                t.nm_time
+            FROM competicao c
+            INNER JOIN time t
+                ON t.cd_esporte = c.cd_esporte
+                AND t.ativo = TRUE
+            LEFT JOIN vinculo_time_escola vte
+                ON vte.cd_time = t.cd_time
+                AND vte.ativo = TRUE
+            WHERE c.cd_competicao = :competicao
+              AND (c.cd_escola IS NULL OR vte.cd_escola = c.cd_escola)
+              AND NOT EXISTS (
+                    SELECT 1
+                    FROM inscricao_competicao ic
+                    INNER JOIN vinculo_inscricao_time vit
+                        ON vit.cd_inscricao_competicao = ic.cd_inscricao_competicao
+                        AND vit.cd_time = t.cd_time
+                        AND vit.ativo = TRUE
+                    WHERE ic.cd_competicao = c.cd_competicao
+              )
+            ORDER BY t.nm_time ASC
+        ");
+
+        $stmt->execute([':competicao' => $idCompeticao]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function inscreverTime(int $idInscricao, int $idTime): void
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO vinculo_inscricao_time(
+                cd_inscricao_competicao,
+                cd_time
+            )
+            VALUES(
+                :inscricao,
+                :time
+            )
+            ON CONFLICT (cd_inscricao_competicao, cd_time)
+            DO UPDATE SET
+                ativo = TRUE,
+                inscrito_em = CURRENT_TIMESTAMP
+        ");
+
+        $stmt->execute([
+            ':inscricao' => $idInscricao,
+            ':time' => $idTime,
+        ]);
+    }
+
+    public function removerTimeInscrito(int $idCompeticao, int $idTime): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE vinculo_inscricao_time vit
+            SET ativo = FALSE
+            FROM inscricao_competicao ic
+            WHERE ic.cd_inscricao_competicao = vit.cd_inscricao_competicao
+              AND ic.cd_competicao = :competicao
+              AND vit.cd_time = :time
+        ");
+
+        $stmt->execute([
+            ':competicao' => $idCompeticao,
+            ':time' => $idTime,
+        ]);
+    }
 }

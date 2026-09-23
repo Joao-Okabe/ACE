@@ -73,6 +73,11 @@ $podeGerenciar = $podeGerenciar ?? false;
                                 <i class="bi bi-person"></i>     
                                 Técnico
                             </a>
+
+                            <a href="/times/?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
+                                <i class="bi bi-person"></i>     
+                                Escalação
+                            </a>
                             <?php endif; ?>
                         </div>
                     </div>

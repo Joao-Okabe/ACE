@@ -111,6 +111,11 @@ class CompeticaoService
     {
         $idEscola = (int) ($competicao['cd_escola'] ?? 0);
         $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idCriador = (int) ($competicao['cd_criador'] ?? 0);
+
+        if ($idCriador === $idUsuario || $this->usuarioEhAdm($idUsuario)) {
+            return;
+        }
 
         if ($idEscola <= 0 || !$this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
             throw new Exception('Você não tem permissão para gerenciar esta competição.');
@@ -131,5 +136,78 @@ class CompeticaoService
         }
 
         return $idEscola;
+    }
+
+    public function criarInscricao(int $idCompeticao, array $dados): void
+    {
+        $competicao = $this->buscar($idCompeticao);
+        $this->exigirPermissao($competicao);
+
+        $inicio = trim((string) ($dados['dt_inicio_inscricao'] ?? $dados['dt_inicio'] ?? ''));
+        $encerramento = trim((string) ($dados['dt_encerramento_inscricao'] ?? $dados['dt_encerramento'] ?? ''));
+
+        if ($inicio === '') {
+            throw new Exception('Informe a data de início das inscrições.');
+        }
+
+        if ($encerramento !== '' && $encerramento < $inicio) {
+            throw new Exception('A data de encerramento deve ser maior ou igual à data de início.');
+        }
+
+        $this->competicaoModel->criarInscricao($idCompeticao, [
+            'dt_inicio_inscricao' => $inicio,
+            'dt_encerramento_inscricao' => $encerramento !== '' ? $encerramento : null,
+        ]);
+    }
+
+    public function buscarPeriodoInscricao(int $idCompeticao): ?array
+    {
+        return $this->competicaoModel->buscarPeriodoInscricao($idCompeticao);
+    }
+
+    public function listarTimesInscritos(int $idCompeticao): array
+    {
+        return $this->competicaoModel->listarTimesInscritos($idCompeticao);
+    }
+
+    public function listarTimesDisponiveisInscricao(int $idCompeticao): array
+    {
+        return $this->competicaoModel->listarTimesDisponiveisInscricao($idCompeticao);
+    }
+
+    public function inscreverTime(int $idCompeticao, int $idTime): void
+    {
+        if ($idTime <= 0) {
+            throw new Exception('Selecione um time para inscrever.');
+        }
+
+        $competicao = $this->buscar($idCompeticao);
+        $this->exigirPermissao($competicao);
+
+        $periodo = $this->competicaoModel->buscarPeriodoInscricao($idCompeticao);
+        if ($periodo === null) {
+            throw new Exception('Cadastre o período de inscrição antes de inscrever times.');
+        }
+
+        $this->competicaoModel->inscreverTime((int) $periodo['cd_inscricao_competicao'], $idTime);
+    }
+
+    public function removerTimeInscrito(int $idCompeticao, int $idTime): void
+    {
+        if ($idTime <= 0) {
+            throw new Exception('Time inválido.');
+        }
+
+        $competicao = $this->buscar($idCompeticao);
+        $this->exigirPermissao($competicao);
+
+        $this->competicaoModel->removerTimeInscrito($idCompeticao, $idTime);
+    }
+
+    private function usuarioEhAdm(int $idUsuario): bool
+    {
+        $papeis = $_SESSION['usuario']['papeis'] ?? [];
+
+        return in_array('ADM', $papeis, true);
     }
 }

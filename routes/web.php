@@ -136,6 +136,18 @@ $router->post(
     '/competicoes', [CompeticaoController::class, 'store']
 );
 
+$router->post(
+    '/competicoes/inscricao', [CompeticaoController::class, 'criarInscricao']
+);
+
+$router->post(
+    '/competicoes/inscrever-time', [CompeticaoController::class, 'inscreverTime']
+);
+
+$router->post(
+    '/competicoes/remover-time-inscrito', [CompeticaoController::class, 'removerTimeInscrito']
+);
+
 $router->get(
     '/times/criar', [TimeController::class, 'create']
 );
@@ -190,6 +202,10 @@ $router->get(
 
 $router->post(
     '/times/adicionar-tecnico', [VinculoTimeController::class, 'adicionarTecnico']
+);
+
+$router->get(
+    '/times/escalacao', [VinculoTimeController::class, 'create']
 );
 
 $router->get(

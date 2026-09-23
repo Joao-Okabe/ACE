@@ -117,7 +117,7 @@ class Aluno extends Model
             a.*,
             u.email,
             u.nm_usuario AS nome,
-            u.path_ft_usuario AS foto_perfil,
+            u.path_ft_usuario,
             (
                 SELECT e.nm_escola
                 FROM vinculo_usuario_escola up
