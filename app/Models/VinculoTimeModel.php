@@ -39,6 +39,65 @@ class VinculoTime extends Model{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function listarUsuarios(): array
+    {
+        $stmt = $this->pdo->query(
+            "SELECT cd_usuario, nm_usuario, email
+            FROM usuario
+            WHERE ativo = TRUE
+            ORDER BY nm_usuario"
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function usuarioPodeGerenciarTime(int $idUsuario, int $idTime): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT EXISTS (
+                SELECT 1
+                FROM vinculo_tecnico_time vt
+                WHERE vt.cd_usuario = :usuario_tecnico
+                  AND vt.cd_time = :time_tecnico
+                  AND vt.ativo = TRUE
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM vinculo_time_responsavel vtr
+                INNER JOIN responsavel r
+                    ON r.cd_responsavel = vtr.cd_responsavel
+                WHERE r.cd_usuario = :usuario_responsavel
+                  AND vtr.cd_time = :time_responsavel
+                  AND r.ativo = TRUE
+                  AND vtr.ativo = TRUE
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM vinculo_time_escola vte
+                INNER JOIN vinculo_usuario_escola vue
+                    ON vue.cd_escola = vte.cd_escola
+                INNER JOIN papel p
+                    ON p.cd_papel = vue.cd_papel
+                WHERE vte.cd_time = :time_diretor
+                  AND vue.cd_usuario = :usuario_diretor
+                  AND p.nm_papel = 'DIR'
+                  AND vte.ativo = TRUE
+                  AND vue.ativo = TRUE
+            ) AS permitido"
+        );
+
+        $stmt->execute([
+            ':usuario_tecnico' => $idUsuario,
+            ':time_tecnico' => $idTime,
+            ':usuario_responsavel' => $idUsuario,
+            ':time_responsavel' => $idTime,
+            ':time_diretor' => $idTime,
+            ':usuario_diretor' => $idUsuario,
+        ]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
     public function vincularTimeIntegrante(
         int $idUsuario,
         int $idTime,
@@ -183,6 +242,42 @@ class VinculoTime extends Model{
         $stmt->execute([':cd_time' => $idTime]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function tornarTitular (int $idIntegrante) 
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO escalacao_time (
+                cd_vinculo_time_integrante,
+                titular
+            ) VALUES (
+                :cd_vinculo_time_integrante,
+                :titular
+            )"
+        );
+
+        ($stmt->execute([
+            ':cd_vinculo_time_integrante' => $idIntegrante,
+            ':titular' => true
+        ]));
+    }
+
+    public function vincularTecnicoTime (int $idUsuario, int $idTime ) 
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO vinculo_tecnico_time (
+                cd_usuario,
+                cd_time
+            ) VALUES (
+                :cd_usuario,
+                :cd_time
+            )"
+        );
+
+        ($stmt->execute([
+            ':cd_usuario' => $idUsuario,
+            ':cd_time' => $idTime
+        ]));
     }
 
 }

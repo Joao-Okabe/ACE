@@ -99,11 +99,13 @@ class TimeController
         $vinculoTimeService = new VinculoTimeService();
         $integrantes = $vinculoTimeService->listarIntegrantesTime($id);
         $responsaveis = $vinculoTimeService->listarResponsaveisTime($id);
+        $podeGerenciar = $vinculoTimeService->usuarioPodeGerenciarTime($id);
 
         renderView('time/visualizar', [
             'time' => $time,
             'integrantes' => $integrantes,
             'responsaveis' => $responsaveis,
+            'podeGerenciar' => $podeGerenciar,
         ]);
     }
 
@@ -113,6 +115,14 @@ class TimeController
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
+            return;
+        }
+
+        try {
+            (new VinculoTimeService())->exigirPermissaoGerenciarTime($id);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
             return;
         }
 
@@ -129,6 +139,7 @@ class TimeController
         }
 
         try {
+            (new VinculoTimeService())->exigirPermissaoGerenciarTime($id);
             $this->service()->atualizar($id, $_POST);
             header('Location: /times/visualizar?id=' . $id);
             exit;
@@ -151,7 +162,7 @@ class TimeController
         }
 
         try {
-
+            (new VinculoTimeService())->exigirPermissaoGerenciarTime($id);
             $this->service()->remover($id);
 
             header("Location: /times/listar");
@@ -162,6 +173,27 @@ class TimeController
             echo $e->getMessage();
 
         }
+    }
+
+    public function tecnico(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $time = $this->service()->buscar($id);
+        $vinculoTimeService = new VinculoTimeService();
+        $integrantes = $vinculoTimeService->listarIntegrantesTime($id);
+        $tecnicos = $vinculoTimeService->listarTecnicosTime($id);
+
+        renderView('time/tecnico', [
+            'time' => $time,
+            'integrantes' => $integrantes,
+            'tecnicos' => $tecnicos,
+        ]);
     }
 
 }

@@ -1,6 +1,10 @@
 <?php
 
 $dados = $dados ?? [];
+$escolas = $escolas ?? [];
+$papeis = $papeis ?? [];
+$escolaDiretor = $escolaDiretor ?? null;
+$podeVincular = $podeVincular ?? false;
 $valor = function ($campo) use ($dados) {
     return htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 };
@@ -60,39 +64,44 @@ $valor = function ($campo) use ($dados) {
             <form action="/usuarios" method="post" enctype="multipart/form-data">
 
 
-        <!-- NOME -->
-            <div class="mb-3">
-                <label for="nm_usuario">Nome</label>
-                <div class="form-input-group">
-                    <input type="text" class="form-control form-input" placeholder="Digite seu nome" id="nm_usuario" name="nm_usuario" value="<?= $valor('nm_usuario') ?>" required>
-                </div>
-            </div>
-
-        <!--EMAIL-->
-            <div class="mb-3">
-                <label for="email">E-mail</label>
-                <div class="form-input-group">
-                    <input type="email" class="form-control form-input" placeholder="Digite seu e-mail" id="email" name="email" value="<?= $valor('email') ?>" required>
-                </div>
-            </div>
-
-        <!--ESCOLA-->
-            <!-- 
+        <?php if ($podeVincular): ?>
+        <!-- ESCOLA -->
                 <div class="field full">
                     <label for="escola" class="form-label">Escola</label>
+                    <?php if ($escolaDiretor !== null): ?>
+                        <input type="hidden" name="escola" value="<?= (int) $escolaDiretor ?>">
+                        <select class="form-select form-input" id="escola" disabled>
+                            <?php foreach ($escolas as $escola): ?>
+                                <?php if ((int) $escola['cd_escola'] === (int) $escolaDiretor): ?>
+                                    <option selected><?= htmlspecialchars($escola['nome'] ?? $escola['nm_escola'] ?? '', ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php else: ?>
                     <select class="form-select form-input" name="escola" id="escola" required>
                     <option value="">Selecione uma escola</option>
 
-                    <?php if (!empty($escolas)): ?>
                     <?php foreach ($escolas as $escola): ?>
-                        <option value="<?= $escola['cd_escola'] ?>">
-                            <?= htmlspecialchars($escola['nome']) ?>
+                        <option value="<?= (int) $escola['cd_escola'] ?>" <?= ((int) ($dados['escola'] ?? 0) === (int) $escola['cd_escola']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($escola['nome'] ?? $escola['nm_escola'] ?? '', ENT_QUOTES, 'UTF-8') ?>
                         </option>
                     <?php endforeach; ?>
+                    </select>
                     <?php endif; ?>
+                </div>
+
+                <div class="field full">
+                    <label for="papel" class="form-label">Papel</label>
+                    <select class="form-select form-input" id="papel" name="papel" required>
+                        <option value="">Selecione</option>
+                        <?php foreach ($papeis as $papel): ?>
+                            <option value="<?= htmlspecialchars($papel['codigo'], ENT_QUOTES, 'UTF-8') ?>" <?= ($dados['papel'] ?? '') === $papel['codigo'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($papel['nome'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-            -->
+        <?php endif; ?>
         <!--SENHA-->
             <div class="mb-3">
                     <label for="senha">Senha</label>
@@ -104,22 +113,6 @@ $valor = function ($campo) use ($dados) {
                     </div>
             </div>
 
-        <!-- Papel -->
-                <!-- 
-                <div class="field">
-                    <label for="papel">Papel</label>
-                    <div class="form-input-group mb-3">
-                        <select class="form-select form-input" id="papel" name="papel" required>
-                            <option selected disabled value="">Selecione</option>
-                            <option value="1" <?= $valor('papel') === '1' ? 'selected' : '' ?>>Administrador</option>
-                            <option value="2" <?= $valor('papel') === '2' ? 'selected' : '' ?>>Professor</option>
-                            <option value="3" <?= $valor('papel') === '3' ? 'selected' : '' ?>>Secretaria</option>
-                            <option value="4" <?= $valor('papel') === '4' ? 'selected' : '' ?>>Coordenador Escolar</option>
-                            <option value="5" <?= $valor('papel') === '5' ? 'selected' : '' ?>>Diretor</option>
-                        </select>
-                    </div>
-                </div>
-                 -->
         <!-- Botao cadastro -->
                 <div class="mt-4 mb-3">
                     <button type="submit" class="btn btn-laranja w-100">Cadastrar</button>

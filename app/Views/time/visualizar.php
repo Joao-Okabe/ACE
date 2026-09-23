@@ -5,6 +5,7 @@ $usuario = $usuario ?? [];
 $time = $time ?? [];
 $integrantes = $integrantes ?? [];
 $responsaveis = $responsaveis ?? [];
+$podeGerenciar = $podeGerenciar ?? false;
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -67,10 +68,12 @@ $responsaveis = $responsaveis ?? [];
                                 Partidas
                             </button>
                             
-                            <button type="button" class="btn btn-tecnico">
+                            <?php if ($podeGerenciar): ?>
+                            <a href="/times/adicionar-tecnico?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
                                 <i class="bi bi-person"></i>     
                                 Técnico
-                            </button>
+                            </a>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -83,9 +86,11 @@ $responsaveis = $responsaveis ?? [];
     <div class="integrante-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Integrantes</h3>
+            <?php if ($podeGerenciar): ?>
             <a href="/times/adicionar-integrante?id=<?= urlencode((string) ($time['cd_time'] ?? 0)) ?>" class="btn btn-laranja">
             + Adicionar integrantes
             </a>
+            <?php endif; ?>
         </div>
         
         <div class="row g-4 mb-5">
@@ -115,6 +120,7 @@ $responsaveis = $responsaveis ?? [];
                                     <?php endif; ?>
                                 </p>
                             <?php endif; ?>
+                            <?php if ($podeGerenciar): ?>
                             <form method="post" action="/times/remover-integrante" class="mt-2" onsubmit="return confirm('Remover este integrante do time?');">
                                 <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                 <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
@@ -122,6 +128,7 @@ $responsaveis = $responsaveis ?? [];
                                     <i class="bi bi-trash-fill"></i> Remover
                                 </button>
                             </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -132,9 +139,11 @@ $responsaveis = $responsaveis ?? [];
    
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Responsáveis</h3>
+            <?php if ($podeGerenciar): ?>
             <a href="/times/adicionar-responsavel?id=<?= urlencode((string) ($time['cd_time'] ?? 0)) ?>" class="btn btn-laranja">
             + Adicionar responsáveis
             </a>
+            <?php endif; ?>
         </div>
         
         <div class="row g-4">
