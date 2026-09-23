@@ -208,6 +208,35 @@ Inscrição
             </div>
         </div>
 
+
+        <!-- Time -->
+        <div class="competicao-painel" id="times">
+            <h3>Times Inscritos</h3>
+            <div class="partidas-header">
+                <p>Confira os times inscritos desta competição.</p>
+            </div>
+                <?php foreach ($timesInscritos as $time): ?>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="partida-card">
+                            <div class="partida-info">
+                                <div class="tc list-perfil">
+                                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Escudo do time">
+                                </div>
+                                <h4><?= htmlspecialchars($time['nm_time'], ENT_QUOTES, 'UTF-8') ?></h4>
+                                <p>
+                                    <i class="bi bi-calendar-check"></i>
+                                    <?= $data($time['inscrito_em'] ?? null) ?>
+                                </p>
+                                <form action="/competicoes/remover-time-inscrito" method="post" class="mt-3">
+                                    <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
+                                    <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
+                                    <button type="submit" class="btn btn-secondary btn-sm">Remover</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+        </div>
     </div>
 
 </div>
