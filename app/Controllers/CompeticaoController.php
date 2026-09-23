@@ -31,7 +31,9 @@ class CompeticaoController
             [
                 'formatos' => $formatos,
                 'esportes' => $esportes,
-                'modalidades' => $modalidades
+                'modalidades' => $modalidades,
+                'escolas' => (new EscolaService())->listar(),
+                'ehAdministrador' => in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true),
             ] 
         );
     }
@@ -57,6 +59,8 @@ class CompeticaoController
                 'formatos' => (new FormatoService())->listar(),
                 'esportes' => (new EsporteService())->listar(),
                 'modalidades' => (new ModalidadeService())->listar(),
+                'escolas' => (new EscolaService())->listar(),
+                'ehAdministrador' => in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true),
             ]);
         }
     }
@@ -94,7 +98,14 @@ class CompeticaoController
             return;
         }
 
-        $competicao = $this->service()->buscar($id);
+        try {
+            $competicao = $this->service()->buscar($id);
+            $this->service()->exigirPermissao($competicao);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+            return;
+        }
 
         renderView('competicao/editar', ['competicao' => $competicao]);
     }
@@ -109,6 +120,7 @@ class CompeticaoController
         }
 
         try {
+            $this->service()->exigirPermissao($this->service()->buscar($id));
             $this->service()->atualizar($id, $_POST);
             header('Location: /competicoes/visualizar?id=' . $id);
             exit;
@@ -146,10 +158,14 @@ class CompeticaoController
             return;
         }
 
-        $this->service()->remover($id);
-
-        header('Location: /competicoes/listar');
-        exit;
+        try {
+            $this->service()->remover($id);
+            header('Location: /competicoes/listar');
+            exit;
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+        }
     }
 
 }

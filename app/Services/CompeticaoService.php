@@ -6,11 +6,14 @@ class CompeticaoService
 
     private Competicao $competicaoModel;
 
+    private VinculoUsuarioEscola $vinculoEscolaModel;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
 
         $this->competicaoModel = new Competicao();
+        $this->vinculoEscolaModel = new VinculoUsuarioEscola();
     }
 
     public function criar(array $dados): void
@@ -37,6 +40,8 @@ class CompeticaoService
             throw new Exception('Usuário não autenticado.');
         }
 
+        $idEscola = $this->resolverEscolaCompeticao($dados, $idCriador);
+
         try {
             $this->pdo->beginTransaction();
 
@@ -45,6 +50,7 @@ class CompeticaoService
                 'cd_formato' => $dados['cd_formato'] ?? null,
                 'cd_esporte' => $dados['cd_esporte'] ?? null,
                 'cd_modalidade' => $dados['cd_modalidade'] ?? null,
+                'cd_escola' => $idEscola,
                 'inicio_em' => $dados['dt_inicio'] ?? null,
                 'fim_em' => $dados['dt_encerramento'] ?? null,
             ], 
@@ -86,7 +92,8 @@ class CompeticaoService
             throw new Exception('Informe o nome da competição.');
         }
 
-        $this->buscar($id);
+        $competicao = $this->buscar($id);
+        $this->exigirPermissao($competicao);
         $this->competicaoModel->atualizar($id, [
             'nm_competicao' => $nome,
             'inicio_em' => $dados['dt_inicio'] ?? null,
@@ -96,6 +103,33 @@ class CompeticaoService
 
     public function remover(int $id): void
     {
+        $this->exigirPermissao($this->buscar($id));
         $this->competicaoModel->remover($id);
+    }
+
+    public function exigirPermissao(array $competicao): void
+    {
+        $idEscola = (int) ($competicao['cd_escola'] ?? 0);
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+
+        if ($idEscola <= 0 || !$this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
+            throw new Exception('Você não tem permissão para gerenciar esta competição.');
+        }
+    }
+
+    private function resolverEscolaCompeticao(array $dados, int $idUsuario): int
+    {
+        $papeis = $_SESSION['usuario']['papeis'] ?? [];
+        if (in_array('ADM', $papeis, true)) {
+            $idEscola = (int) ($dados['cd_escola'] ?? 0);
+        } else {
+            $idEscola = (int) ($this->vinculoEscolaModel->escolaGerenciavelPorUsuario($idUsuario) ?? 0);
+        }
+
+        if ($idEscola <= 0 || !$this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
+            throw new Exception('Você não tem permissão para criar competição nesta escola.');
+        }
+
+        return $idEscola;
     }
 }

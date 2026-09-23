@@ -39,6 +39,16 @@ class Aluno extends Model
         ]);
     }
 
+    public function existePorUsuario(int $idUsuario): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM aluno WHERE cd_usuario = :usuario LIMIT 1'
+        );
+        $stmt->execute([':usuario' => $idUsuario]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
     // Atualizar Aluno
     public function atualizar(int $id, array $dados): void
     {

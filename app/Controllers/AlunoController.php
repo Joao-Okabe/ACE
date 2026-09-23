@@ -18,8 +18,11 @@ class AlunoController
     public function create(): void
     {
         $escolas = (new EscolaService())->listar();
+        $ehDiretor = $this->ehDiretor();
         renderView('aluno/cadastrar', [
             'escolas' => $escolas,
+            'usuariosExistentes' => $ehDiretor ? $this->service()->listarUsuariosDisponiveis() : [],
+            'ehDiretor' => $ehDiretor,
             'ehAdministrador' => $this->ehAdministrador(),
             'escolaVinculada' => $this->escolaVinculada(),
         ]);
@@ -41,11 +44,14 @@ class AlunoController
             $dados = $_POST;
 
             $escolas = (new EscolaService())->listar();
+            $ehDiretor = $this->ehDiretor();
 
             renderView('aluno/cadastrar', [
                 'erro' => $erro,
                 'dados' => $dados,
                 'escolas' => $escolas,
+                'usuariosExistentes' => $ehDiretor ? $this->service()->listarUsuariosDisponiveis() : [],
+                'ehDiretor' => $ehDiretor,
                 'ehAdministrador' => $this->ehAdministrador(),
                 'escolaVinculada' => $this->escolaVinculada(),
             ]);
@@ -81,6 +87,11 @@ class AlunoController
         return in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true);
     }
 
+    private function ehDiretor(): bool
+    {
+        return in_array('DIR', $_SESSION['usuario']['papeis'] ?? [], true);
+    }
+
     private function escolaVinculada(): ?int
     {
         return (new VinculoUsuarioEscola())->escolaAtualPorPapeis(
@@ -99,6 +110,7 @@ class AlunoController
         }
 
         $aluno = $this->service()->buscar($id);
+        $this->service()->exigirPermissaoGerenciarAluno($id);
         $escolas = (new EscolaService())->listar();
         renderView('aluno/editar', ['aluno' => $aluno, 'escolas' => $escolas]);
     }
@@ -114,6 +126,7 @@ class AlunoController
         }
 
         try {
+            $this->service()->exigirPermissaoGerenciarAluno($id);
             $this->service()->atualizar($id, $_POST);
             header("Location: /alunos/listar");
             exit;
@@ -164,29 +177,7 @@ class AlunoController
         }
 
         try {
-            // Obter a escola do aluno
-            $idEscola = $this->service()->obterEscolaDoAluno($id);
-
-            if ($idEscola === null) {
-                $_SESSION['flash'] = ['error' => 'Aluno sem vínculo com escola.'];
-                header("Location: /alunos/listar");
-                exit;
-            }
-
-            $idUsuario = (int) $_SESSION['usuario']['id'];
-
-            $vinculoModel = new VinculoUsuarioEscola();
-
-            // permitir apenas COORD ou DIRETOR
-            $permitido = $vinculoModel->isUsuarioComPapeis($idUsuario, $idEscola, ['COORD', 'DIRETOR']);
-
-            if (!$permitido) {
-                http_response_code(403);
-                $_SESSION['flash'] = ['error' => 'Acesso negado.'];
-                header("Location: /alunos/listar");
-                exit;
-            }
-
+            $this->service()->exigirPermissaoGerenciarAluno($id);
             $this->service()->remover($id);
             $_SESSION['flash'] = ['success' => 'Aluno removido com sucesso.'];
             header("Location: /alunos/listar");

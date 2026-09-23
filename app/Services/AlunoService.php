@@ -27,30 +27,40 @@ class AlunoService
 
     public function cadastrar(array $dados): void
     {
-        if (empty($dados['nome'])) {
-            throw new Exception("Informe o nome do(a) aluno(a). ");
-        }
+        $idUsuarioExistente = (int) ($dados['cd_usuario'] ?? 0);
+        $usuarioExistente = null;
 
-        if (empty($dados['email'])) {
-            throw new Exception("Informe um e-mail.");
-        }
+        if ($idUsuarioExistente > 0) {
+            $papeis = $_SESSION['usuario']['papeis'] ?? [];
+            if (!in_array('DIR', $papeis, true)) {
+                throw new Exception('Somente diretor pode vincular usuário existente.');
+            }
 
-        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Informe um e-mail válido.");
-        }
+            $usuarioExistente = $this->usuarioModel->buscar($idUsuarioExistente);
+            if ($usuarioExistente === null) {
+                throw new Exception('Usuário selecionado não encontrado.');
+            }
 
-        if (empty($dados['senha'])) {
-            throw new Exception("Informe uma senha.");
-        }
+            if ($this->alunoModel->existePorUsuario($idUsuarioExistente)) {
+                throw new Exception('Este usuário já está cadastrado como aluno.');
+            }
+        } else {
+            if (empty($dados['nome'])) {
+                throw new Exception("Informe o nome do(a) aluno(a). ");
+            }
 
-        if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
-            throw new Exception("Já existe um usuário cadastrado com este e-mail.");
-        }
+            if (empty($dados['email']) || !filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+                throw new Exception("Informe um e-mail válido.");
+            }
 
-        $senhaHash = password_hash(
-            $dados['senha'],
-            PASSWORD_DEFAULT
-        );
+            if (empty($dados['senha'])) {
+                throw new Exception("Informe uma senha.");
+            }
+
+            if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
+                throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+            }
+        }
 
         $papelAluno = $this->papelModel->buscarPapelPorNome('ALUNO');
 
@@ -70,6 +80,11 @@ class AlunoService
             $idEscola = $this->resolverEscolaCadastro($dados);
             if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do aluno.');
+            }
+
+            $idUsuarioAtual = (int) ($_SESSION['usuario']['id'] ?? 0);
+            if (!$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola($idUsuarioAtual, $idEscola)) {
+                throw new Exception('Você não tem permissão para cadastrar aluno nesta escola.');
             }
 
             if (empty($dados['data_nascimento'])) {
@@ -116,12 +131,14 @@ class AlunoService
                 }
             }
 
-            $idUsuario = $this->usuarioModel->cadastrar([
-                'nm_usuario' => $dados['nome'],
-                'email' => $dados['email'],
-                'senha' => $senhaHash,
-                'foto_perfil' => $caminhoPublicoFoto
-            ]);
+            $idUsuario = $idUsuarioExistente > 0
+                ? $idUsuarioExistente
+                : $this->usuarioModel->cadastrar([
+                    'nm_usuario' => $dados['nome'],
+                    'email' => $dados['email'],
+                    'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
+                    'foto_perfil' => $caminhoPublicoFoto
+                ]);
 
             // Vincula usuário à escola com o papel ALUNO
             $this->vinculoEscolaUsuarioModel->vincularPapelEscola($idUsuario, $idEscola, $papelAlunoId);
@@ -155,6 +172,11 @@ class AlunoService
         return $this->alunoModel->listar($filtros);
     }
 
+    public function listarUsuariosDisponiveis(): array
+    {
+        return $this->usuarioModel->listarDisponiveisParaAluno();
+    }
+
     public function buscar(int $id): array
     {
         $aluno = $this->alunoModel->buscar($id);
@@ -173,6 +195,14 @@ class AlunoService
 
         if ($aluno === null) {
             throw new Exception('Aluno não encontrado.');
+        }
+
+        $idEscola = $this->obterEscolaDoAluno($id);
+        if ($idEscola === null || !$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola(
+            (int) ($_SESSION['usuario']['id'] ?? 0),
+            $idEscola
+        )) {
+            throw new Exception('Você não tem permissão para editar este aluno.');
         }
 
         $this->pdo->beginTransaction();
@@ -232,9 +262,20 @@ class AlunoService
         }
     }
 
+    public function exigirPermissaoGerenciarAluno(int $id): void
+    {
+        $idEscola = $this->obterEscolaDoAluno($id);
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+
+        if ($idEscola === null || !$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
+            throw new Exception('Você não tem permissão para gerenciar este aluno.');
+        }
+    }
+
     //Remove Aluno
     public function remover(int $id): void
     {
+        $this->exigirPermissaoGerenciarAluno($id);
         $this->alunoModel->remover($id);
     }
 
@@ -281,7 +322,7 @@ class AlunoService
         }
 
         $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-        return (int) ($this->vinculoEscolaUsuarioModel->escolaAtualPorPapeis($idUsuario, ['DIR', 'CRD']) ?? 0);
+        return (int) ($this->vinculoEscolaUsuarioModel->escolaGerenciavelPorUsuario($idUsuario) ?? 0);
     }
 
     private function normalizarCampoOpcional(?string $valor): ?string
