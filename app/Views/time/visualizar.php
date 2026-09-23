@@ -35,13 +35,13 @@ $podeGerenciar = $podeGerenciar ?? false;
 
     <div class="visu-box mb-4">
         <div class="row align-items-center">
-            <div class="col-lg-3">
-                <div class="foto">
+            <div class="col-lg-2">
+                <div class="escudo">
                     <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
                 </div>
             </div>
 
-            <div class="col-lg-9 d-flex align-items-center">
+            <div class="col-lg-10 d-flex align-items-center">
                 <div class="d-flex justify-content-between align-items-center w-100">
 
                     <div class="d-flex flex-column justify-content-center">
@@ -87,7 +87,9 @@ $podeGerenciar = $podeGerenciar ?? false;
 
         </div>
     </div>
+    
 
+<div class="visu-box mb-4">
     <div class="integrante-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Integrantes</h3>
@@ -98,7 +100,7 @@ $podeGerenciar = $podeGerenciar ?? false;
             <?php endif; ?>
         </div>
         
-        <div class="row g-4 mb-5">
+        <div class="row g-4">
             <?php foreach ($integrantes as $integrante): ?>
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="integrante-card">
@@ -108,7 +110,7 @@ $podeGerenciar = $podeGerenciar ?? false;
                         <div class="integrante-info">
                             <h4><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
                             <p class="label-info"><?= htmlspecialchars($integrante['nm_funcao_integrante'], ENT_QUOTES, 'UTF-8') ?></p>
-                            <?php if (!empty($integrante['numero_camisa']) || !empty($integrante['capitao']) || !empty($escalacao)): ?>p>
+                            <?php if (!empty($integrante['numero_camisa']) || !empty($integrante['capitao']) || !empty($escalacao)): ?>
                                 <p class="value-info">
                                     <?php if (!empty($escalacao)): ?>
                                         Escalação: <?php echo $escalacao === false ? "Reserva" : "Titular"; ?> 
@@ -139,9 +141,11 @@ $podeGerenciar = $podeGerenciar ?? false;
                 </div>
             <?php endforeach; ?>
         </div>
+        </div>
+        </div>
 
 
-   
+   <div class="visu-box mb-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title">Responsáveis</h3>
             <?php if ($podeGerenciar): ?>
@@ -167,6 +171,7 @@ $podeGerenciar = $podeGerenciar ?? false;
             <?php endforeach; ?>
         </div>
             
+        </div>
         </div>
 
     </div>
