@@ -2,7 +2,7 @@
 
 class Esporte extends Model
 {
-    public function listar()
+    public function listar(): array
     {
         $stmt = $this->pdo->query("
             SELECT * FROM esporte

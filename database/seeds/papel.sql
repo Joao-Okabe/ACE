@@ -1,10 +1,10 @@
-INSERT INTO papel (nome, descricao)
+INSERT INTO papel (nm_papel)
 VALUES
-('ADM', 'Administrador do sistema'),
-('DIR', 'Diretor'),
-('CRD', 'Coordenador Escolar'),
-('PRF', 'Professor'),
-('ARB', 'Árbitro'),
-('AGR', 'Aluno do grêmio'),
-('ALU', 'Aluno'),
-('VIS', 'Visitantes');
+('ADM'),
+('DIR'),
+('CRD'),
+('PRF'),
+('ARB'),
+('AGR'),
+('ALU'),
+('VIS');

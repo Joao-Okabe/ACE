@@ -18,9 +18,14 @@ class PartidaController
     {
         $idCompeticao = (int) ($_GET['id_competicao'] ?? 0);
 
-        $formatos = $this->service()->listarFormato();
-        $esportes = $this->service()->listarEsporte();
-        $modalidades = $this->service()->listarModalidade();
+        $formatoService = new FormatoService();
+        $formatos = $formatoService->listar();
+
+        $esporteService = new EsporteService();
+        $esportes = $esporteService->listar();
+
+        $modalidadeService = new ModalidadeService();
+        $modalidades = $modalidadeService->listar();
 
         $timeService = new TimeService();
         $times = $timeService->listar();
