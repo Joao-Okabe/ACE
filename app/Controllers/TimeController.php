@@ -196,4 +196,23 @@ class TimeController
         ]);
     }
 
+    public function escalacao(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $time = $this->service()->buscar($id);
+        $vinculoTimeService = new VinculoTimeService();
+        $integrantes = $vinculoTimeService->listarIntegrantesTime($id);
+
+        renderView('time/escalacao', [
+            'time' => $time,
+            'integrantes' => $integrantes,
+        ]);
+    }
+
 }

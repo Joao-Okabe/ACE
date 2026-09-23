@@ -74,7 +74,7 @@ $podeGerenciar = $podeGerenciar ?? false;
                                 Técnico
                             </a>
 
-                            <a href="/times/?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
+                            <a href="/times/escalacao?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
                                 <i class="bi bi-person"></i>     
                                 Escalação
                             </a>

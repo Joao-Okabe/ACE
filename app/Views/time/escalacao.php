@@ -24,3 +24,7 @@ $integrantes = $integrantes ?? [];
 
     <title>Definir Escalação</title>
 </head>
+<body>
+    
+</body>
+</html>

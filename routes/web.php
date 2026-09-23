@@ -205,7 +205,7 @@ $router->post(
 );
 
 $router->get(
-    '/times/escalacao', [VinculoTimeController::class, 'create']
+    '/times/escalacao', [TimeController::class, 'escalacao']
 );
 
 $router->get(
