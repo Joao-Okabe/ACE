@@ -145,8 +145,17 @@ class CompeticaoController
         $competicao = $this->service()->buscar($id);
 
         $escolas = (new EscolaService())->listar();
+        $periodoInscricao = $this->service()->buscarPeriodoInscricao($id);
+        $timesInscritos = $this->service()->listarTimesInscritos($id);
+        $timesDisponiveis = $this->service()->listarTimesDisponiveisInscricao($id);
 
-        renderView('competicao/vizualizar', ['competicao' => $competicao, 'escolas' => $escolas]);
+        renderView('competicao/vizualizar', [
+            'competicao' => $competicao,
+            'escolas' => $escolas,
+            'periodoInscricao' => $periodoInscricao,
+            'timesInscritos' => $timesInscritos,
+            'timesDisponiveis' => $timesDisponiveis,
+        ]);
     }
 
     public function remover(): void
@@ -165,6 +174,73 @@ class CompeticaoController
         } catch (Exception $e) {
             http_response_code(403);
             echo $e->getMessage();
+        }
+    }
+
+    public function criarInscricao(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->criarInscricao($id, $_POST);
+
+            header('Location: /competicoes/visualizar?id=' . $id . '&sucesso_inscricao=1');
+            exit;
+
+        } catch (Exception $e) {
+            $competicao = $this->service()->buscar($id);
+
+            renderView('competicao/editar', [
+                'erro' => $e->getMessage(),
+                'competicao' => array_merge($competicao, $_POST),
+            ]);
+        }
+    }
+
+    public function inscreverTime(): void
+    {
+        $idCompeticao = (int) ($_POST['id_competicao'] ?? 0);
+        $idTime = (int) ($_POST['id_time'] ?? 0);
+
+        if ($idCompeticao <= 0) {
+            http_response_code(400);
+            echo 'ID da competição inválido';
+            return;
+        }
+
+        try {
+            $this->service()->inscreverTime($idCompeticao, $idTime);
+            header('Location: /competicoes/visualizar?id=' . $idCompeticao . '&time_inscrito=1');
+            exit;
+        } catch (Exception $e) {
+            header('Location: /competicoes/visualizar?id=' . $idCompeticao . '&erro_inscricao=' . urlencode($e->getMessage()));
+            exit;
+        }
+    }
+
+    public function removerTimeInscrito(): void
+    {
+        $idCompeticao = (int) ($_POST['id_competicao'] ?? 0);
+        $idTime = (int) ($_POST['id_time'] ?? 0);
+
+        if ($idCompeticao <= 0) {
+            http_response_code(400);
+            echo 'ID da competição inválido';
+            return;
+        }
+
+        try {
+            $this->service()->removerTimeInscrito($idCompeticao, $idTime);
+            header('Location: /competicoes/visualizar?id=' . $idCompeticao . '&time_removido=1');
+            exit;
+        } catch (Exception $e) {
+            header('Location: /competicoes/visualizar?id=' . $idCompeticao . '&erro_inscricao=' . urlencode($e->getMessage()));
+            exit;
         }
     }
 

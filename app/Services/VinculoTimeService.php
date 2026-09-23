@@ -13,7 +13,7 @@ class VinculoTimeService
         $this->vinculoTimeModel = new VinculoTime();
     }
 
-    public function VincularTimeResponsavel
+    public function vincularTimeResponsavel
     (
         int $idResponsavel,
         int $idTime
@@ -70,6 +70,11 @@ class VinculoTimeService
     public function listarResponsaveisTime(int $idTime): array
     {
         return $this->vinculoTimeModel->listarResponsaveisTime($idTime);
+    }
+
+    public function listarTecnicosTime(int $idTime): array
+    {
+        return $this->vinculoTimeModel->listarTecnicosTime($idTime);
     }
 
     public function vincularTimeIntegrante
