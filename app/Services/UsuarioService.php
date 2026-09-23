@@ -139,4 +139,83 @@ class UsuarioService
             throw $e;
         }
     }
+
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE cd_usuario = :id');
+        $stmt->execute([':id' => $id]);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $usuario ?: null;
+    }
+
+    public function atualizar(int $id, array $dados): void
+    {
+        $nome = trim((string) ($dados['nm_usuario'] ?? ''));
+        $email = trim((string) ($dados['email'] ?? ''));
+
+        if ($nome === '') {
+            throw new Exception('Informe seu nome.');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Informe um e-mail válido.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM usuario WHERE email = :email AND cd_usuario <> :id'
+        );
+        $stmt->execute([':email' => $email, ':id' => $id]);
+        if ($stmt->fetchColumn() !== false) {
+            throw new Exception('Já existe um usuário cadastrado com este e-mail.');
+        }
+
+        $senha = trim((string) ($dados['senha'] ?? ''));
+        $senhaHash = $senha === '' ? null : password_hash($senha, PASSWORD_DEFAULT);
+        $foto = $this->salvarFoto($dados['foto_perfil'] ?? null);
+
+        $this->pdo->beginTransaction();
+        try {
+            $this->usuarioModel->atualizarPerfil($id, $nome, $email, $foto, $senhaHash);
+            $this->pdo->commit();
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    private function salvarFoto(?array $arquivo): ?string
+    {
+        if ($arquivo === null || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
+            throw new Exception('O arquivo enviado não é válido.');
+        }
+
+        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $tipo = (new finfo(FILEINFO_MIME_TYPE))->file($arquivo['tmp_name']);
+        if (!isset($tiposPermitidos[$tipo])) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
+        }
+
+        $pasta = __DIR__ . '/../../public/uploads';
+        if (!is_dir($pasta) && !mkdir($pasta, 0755, true) && !is_dir($pasta)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        $nome = uniqid('IMG_', true) . '.' . $tiposPermitidos[$tipo];
+        if (!move_uploaded_file($arquivo['tmp_name'], $pasta . DIRECTORY_SEPARATOR . $nome)) {
+            throw new Exception('Não foi possível salvar a imagem.');
+        }
+
+        return '/uploads/' . $nome;
+    }
 }

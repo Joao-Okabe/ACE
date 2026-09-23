@@ -43,7 +43,7 @@ class Time extends Model
                 t.path_escudo,
                 t.ativo,
                 t.criado_em,
-                t.atualizado
+                t.atualizado_em
             FROM time t";
 
         $filtrosSql = $this->filtro->filtrosTime($filtros);
@@ -64,7 +64,7 @@ class Time extends Model
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare('
-            SELECT cd_time, nm_time, cd_esporte, path_escudo, principal, ativo, criado_em, atualizado
+            SELECT cd_time, nm_time, cd_esporte, path_escudo, principal, ativo, criado_em, atualizado_em
             FROM time
             WHERE cd_time = :id
         ');
@@ -81,7 +81,7 @@ class Time extends Model
             UPDATE time
             SET nm_time = :nm_time,
                 path_escudo = :path_escudo,
-                atualizado = CURRENT_TIMESTAMP
+                atualizado_em = CURRENT_TIMESTAMP
             WHERE cd_time = :id
         ');
 

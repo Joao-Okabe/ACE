@@ -33,6 +33,16 @@ $router->post(
 );
 
 $router->get(
+    '/usuarios/editar',
+    [UsuarioController::class, 'edit']
+);
+
+$router->post(
+    '/usuarios/atualizar',
+    [UsuarioController::class, 'update']
+);
+
+$router->get(
     '/escolas/cadastrar',
     [EscolaController::class, 'create']
 );
@@ -164,6 +174,10 @@ $router->get(
 
 $router->get(
     '/times/adicionar-responsavel', [VinculoTimeController::class, 'adicionarResponsavel']
+);
+
+$router->post(
+    '/times/remover-integrante', [VinculoTimeController::class, 'removerIntegrante']
 );
 
 $router->post(

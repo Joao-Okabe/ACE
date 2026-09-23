@@ -55,7 +55,9 @@ class VinculoTimeService
     (
         int $idUsuario,
         int $idTime,
-        int $idFuncaoIntegrante
+        int $idFuncaoIntegrante,
+        ?int $numeroCamisa = null,
+        bool $capitao = false
     )
     {
         if ($idUsuario <= 0) {
@@ -68,7 +70,9 @@ class VinculoTimeService
             $this->vinculoTimeModel->vincularTimeIntegrante(
                 $idUsuario,
                 $idTime,
-                $idFuncaoIntegrante
+                $idFuncaoIntegrante,
+                $numeroCamisa,
+                $capitao
             );
 
             $this->pdo->commit();
@@ -86,6 +90,25 @@ class VinculoTimeService
     public function listarIntegrantesTime (int $idTime)
     {
         return $this->vinculoTimeModel->listarIntegrantesTime($idTime);
+    }
+
+    public function removerTimeIntegrante(int $idUsuario, int $idTime): void
+    {
+        if ($idUsuario <= 0 || $idTime <= 0) {
+            throw new Exception('Integrante ou time inválido.');
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->removerTimeIntegrante($idUsuario, $idTime);
+            $this->pdo->commit();
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+        }
     }
 
     public function listarAlunosTime(int $idTime): array

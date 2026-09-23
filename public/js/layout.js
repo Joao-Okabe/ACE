@@ -67,7 +67,7 @@ class Header extends HTMLElement {
                         <span>Partidas</span>
                     </a>
 
-                    <a href="#" class="menu-item">
+                    <a href="/usuarios/editar" class="menu-item">
                         <i class="bi bi-bar-chart-line-fill"></i>
                         <span>Rankings</span>
                     </a>

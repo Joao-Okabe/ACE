@@ -42,25 +42,47 @@ class VinculoTime extends Model{
     public function vincularTimeIntegrante(
         int $idUsuario,
         int $idTime,
-        int $idFuncaoIntegrante
+        int $idFuncaoIntegrante,
+        ?int $numeroCamisa = null,
+        bool $capitao = false
     )
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO vinculo_time_integrante(
                 cd_usuario,
                 cd_time,
-                cd_funcao_integrante
+                cd_funcao_integrante,
+                numero_camisa,
+                capitao
             ) VALUES (
                 :usuario,
                 :cd_time,
-                :cd_funcao_integrante
+                :cd_funcao_integrante,
+                :numero_camisa,
+                :capitao
             )"
         );
 
         $stmt->execute([
             ':usuario' => $idUsuario,
             ':cd_time' => $idTime,
-            ':cd_funcao_integrante' => $idFuncaoIntegrante
+            ':cd_funcao_integrante' => $idFuncaoIntegrante,
+            ':numero_camisa' => $numeroCamisa,
+            ':capitao' => $capitao
+        ]);
+    }
+
+    public function removerTimeIntegrante(int $idUsuario, int $idTime): void
+    {
+        $stmt = $this->pdo->prepare(
+            "DELETE FROM vinculo_time_integrante
+            WHERE cd_usuario = :cd_usuario
+              AND cd_time = :cd_time"
+        );
+
+        $stmt->execute([
+            ':cd_usuario' => $idUsuario,
+            ':cd_time' => $idTime
         ]);
     }
 
@@ -95,6 +117,8 @@ class VinculoTime extends Model{
                 vti.cd_usuario,
                 vti.cd_time,
                 vti.cd_funcao_integrante,
+                vti.numero_camisa,
+                vti.capitao,
                 u.nm_usuario,
                 u.path_ft_usuario AS foto_perfil,
                 fi.nm_funcao AS nm_funcao_integrante

@@ -71,9 +71,9 @@ class Aluno extends Model
             a.*,
             u.email,
             u.nm_usuario AS nome,
-            u.foto_perfil,
+            u.path_ft_usuario,
             (
-                SELECT e.nome
+                SELECT e.nm_escola
                 FROM vinculo_usuario_escola up
                 INNER JOIN escola e ON e.cd_escola = up.cd_escola
                 WHERE up.cd_usuario = a.cd_usuario
@@ -109,7 +109,7 @@ class Aluno extends Model
             u.nm_usuario AS nome,
             u.foto_perfil,
             (
-                SELECT e.nome
+                SELECT e.nm_escola
                 FROM vinculo_usuario_escola up
                 INNER JOIN escola e ON e.cd_escola = up.cd_escola
                 WHERE up.cd_usuario = a.cd_usuario
