@@ -6,6 +6,8 @@ $dados = $dados ?? [];
 $formatos = $formatos ?? [];
 $esportes = $esportes ?? [];
 $modalidades = $modalidades ?? [];
+$escolas = $escolas ?? [];
+$ehAdministrador = $ehAdministrador ?? false;
 
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 
@@ -62,6 +64,19 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
     <form action="/competicoes" method="POST" enctype="multipart/form-data">
         <div class="row">
+            <?php if ($ehAdministrador): ?>
+            <div class="col-12 mb-3">
+                <label class="form-label" for="cd_escola">Escola</label>
+                <select id="cd_escola" name="cd_escola" class="form-select form-input" required>
+                    <option value="">Selecione</option>
+                    <?php foreach ($escolas as $escola): ?>
+                        <option value="<?= (int) $escola['cd_escola'] ?>" <?= ((int) ($dados['cd_escola'] ?? 0) === (int) $escola['cd_escola']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($escola['nome'] ?? $escola['nm_escola'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
             <div class="col-12 mb-3">
                 <label class="form-label" for="nm_competicao">Nome da competição</label>
                 <input type="text" class="form-control form-input" id="nm_competicao" value="<?= $valor('nm_competicao') ?>" name="nm_competicao" required placeholder="Digite o nome da competição">

@@ -4,6 +4,8 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 $escolas = $escolas ?? [];
 $ehAdministrador = $ehAdministrador ?? false;
 $escolaVinculada = $escolaVinculada ?? null;
+$ehDiretor = $ehDiretor ?? false;
+$usuariosExistentes = $usuariosExistentes ?? [];
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -74,6 +76,26 @@ $escolaVinculada = $escolaVinculada ?? null;
 
             
             <div class="dados-primeiros">
+                <?php if ($ehDiretor): ?>
+                <div class="campo-inicial">
+                    <label for="cd_usuario" class="form-label">Usuário existente (opcional)</label>
+                    <select id="cd_usuario" name="cd_usuario" class="form-select form-input">
+                        <option value="">Cadastrar novo usuário</option>
+                        <?php foreach ($usuariosExistentes as $usuarioExistente): ?>
+                            <option
+                                value="<?= (int) $usuarioExistente['cd_usuario'] ?>"
+                                data-nome="<?= htmlspecialchars($usuarioExistente['nm_usuario'], ENT_QUOTES, 'UTF-8') ?>"
+                                data-email="<?= htmlspecialchars($usuarioExistente['email'], ENT_QUOTES, 'UTF-8') ?>"
+                                <?= ((int) ($dados['cd_usuario'] ?? 0) === (int) $usuarioExistente['cd_usuario']) ? 'selected' : '' ?>
+                            >
+                                <?= htmlspecialchars($usuarioExistente['nm_usuario'], ENT_QUOTES, 'UTF-8') ?>
+                                (<?= htmlspecialchars($usuarioExistente['email'], ENT_QUOTES, 'UTF-8') ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
+
                 <!-- NOME -->
                 <div class="campo-inicial">
                     <label for="nome" class="form-label"> Nome do(a) aluno(a) </label>
@@ -114,14 +136,14 @@ $escolaVinculada = $escolaVinculada ?? null;
                 <div class="col-md-6 mb-4">
                     <label for="email" class="form-label">E-mail de acesso</label>
                     <div class="form-input-group">
-                    <input type="email" id="email" name="email" value="<?= $valor('email') ?>" required class="form-control form-input" placeholder="Digite o e-mail">
+                    <input type="email" id="email" name="email" value="<?= $valor('email') ?>" class="form-control form-input" placeholder="Digite o e-mail">
                     </div>
                 </div>
 
                 <!-- SENHA -->
                 <div class="col-md-6 mb-4">
                     <label for="senha" class="form-label">Senha</label>
-                    <input type="password" id="senha" name="senha" required class="form-control form-input" placeholder="Digite uma senha">
+                    <input type="password" id="senha" name="senha" class="form-control form-input" placeholder="Digite uma senha">
                 </div>
 
             </div>
@@ -176,6 +198,32 @@ $escolaVinculada = $escolaVinculada ?? null;
     <script src="/js/cep.api.js"></script>
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
+
+    <?php if ($ehDiretor): ?>
+    <script>
+        const usuarioExistente = document.getElementById('cd_usuario');
+        const nomeAluno = document.getElementById('nome');
+        const emailAluno = document.getElementById('email');
+        const senhaAluno = document.getElementById('senha');
+
+        function atualizarUsuarioAluno() {
+            const opcao = usuarioExistente.options[usuarioExistente.selectedIndex];
+            const selecionado = usuarioExistente.value !== '';
+
+            nomeAluno.value = selecionado ? opcao.dataset.nome : '';
+            nomeAluno.readOnly = selecionado;
+            emailAluno.value = selecionado ? opcao.dataset.email : '';
+            emailAluno.required = !selecionado;
+            emailAluno.readOnly = selecionado;
+            senhaAluno.required = !selecionado;
+            senhaAluno.disabled = selecionado;
+            senhaAluno.value = selecionado ? '' : senhaAluno.value;
+        }
+
+        usuarioExistente.addEventListener('change', atualizarUsuarioAluno);
+        atualizarUsuarioAluno();
+    </script>
+    <?php endif; ?>
 
 </body>
 </html>

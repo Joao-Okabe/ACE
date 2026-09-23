@@ -21,6 +21,7 @@ class Competicao extends Model
                 cd_formato,
                 cd_esporte,
                 cd_modalidade,
+                cd_escola,
                 inicio_em,
                 fim_em
             )
@@ -30,6 +31,7 @@ class Competicao extends Model
                 :cd_formato,
                 :cd_esporte,
                 :cd_modalidade,
+                :cd_escola,
                 :inicio_em,
                 :fim_em
             )
@@ -41,6 +43,7 @@ class Competicao extends Model
             ":cd_formato" => $dados["cd_formato"],
             ":cd_esporte" => $dados["cd_esporte"],
             ":cd_modalidade" => $dados["cd_modalidade"],
+            ":cd_escola" => $dados["cd_escola"],
             ":inicio_em" => $dados["inicio_em"] ?? null,
             ":fim_em" => $dados["fim_em"] ?? null
         ]);

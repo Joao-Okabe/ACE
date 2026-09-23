@@ -19,4 +19,14 @@ class VinculoUsuarioEscolaService
     {
         return $this->vinculoUsuarioEscolaModel->isUsuarioDiretor($idUsuario, $idEscola);
     }
+
+    public function usuarioPodeGerenciarEscola(int $idUsuario, int $idEscola): bool
+    {
+        return $this->vinculoUsuarioEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola);
+    }
+
+    public function escolaGerenciavelPorUsuario(int $idUsuario): ?int
+    {
+        return $this->vinculoUsuarioEscolaModel->escolaGerenciavelPorUsuario($idUsuario);
+    }
 }

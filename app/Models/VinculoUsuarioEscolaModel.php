@@ -130,4 +130,91 @@ class VinculoUsuarioEscola extends Model
 
         return $res !== false && $res !== null;
     }
+
+    public function usuarioPodeGerenciarEscola(int $idUsuario, int $idEscola): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT EXISTS (
+                SELECT 1
+                FROM vinculo_usuario_escola vue
+                INNER JOIN papel p ON p.cd_papel = vue.cd_papel
+                WHERE vue.cd_usuario = :diretor_usuario
+                  AND vue.cd_escola = :diretor_escola
+                  AND p.nm_papel = 'DIR'
+                  AND vue.ativo = TRUE
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM vinculo_tecnico_time vtt
+                INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtt.cd_time
+                WHERE vtt.cd_usuario = :tecnico_usuario
+                  AND vte.cd_escola = :tecnico_escola
+                  AND vtt.ativo = TRUE
+                  AND vte.ativo = TRUE
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM vinculo_time_responsavel vtr
+                INNER JOIN responsavel r ON r.cd_responsavel = vtr.cd_responsavel
+                INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtr.cd_time
+                WHERE r.cd_usuario = :responsavel_usuario
+                  AND vte.cd_escola = :responsavel_escola
+                  AND r.ativo = TRUE
+                  AND vtr.ativo = TRUE
+                  AND vte.ativo = TRUE
+            ) AS permitido"
+        );
+
+        $stmt->execute([
+            ':diretor_usuario' => $idUsuario,
+            ':diretor_escola' => $idEscola,
+            ':tecnico_usuario' => $idUsuario,
+            ':tecnico_escola' => $idEscola,
+            ':responsavel_usuario' => $idUsuario,
+            ':responsavel_escola' => $idEscola,
+        ]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public function escolaGerenciavelPorUsuario(int $idUsuario): ?int
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT escola.cd_escola
+            FROM (
+                SELECT vue.cd_escola
+                FROM vinculo_usuario_escola vue
+                INNER JOIN papel p ON p.cd_papel = vue.cd_papel
+                WHERE vue.cd_usuario = :usuario_diretor
+                  AND p.nm_papel = 'DIR'
+                  AND vue.ativo = TRUE
+                UNION
+                SELECT vte.cd_escola
+                FROM vinculo_tecnico_time vtt
+                INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtt.cd_time
+                WHERE vtt.cd_usuario = :usuario_tecnico
+                  AND vtt.ativo = TRUE
+                  AND vte.ativo = TRUE
+                UNION
+                SELECT vte.cd_escola
+                FROM vinculo_time_responsavel vtr
+                INNER JOIN responsavel r ON r.cd_responsavel = vtr.cd_responsavel
+                INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtr.cd_time
+                WHERE r.cd_usuario = :usuario_responsavel
+                  AND r.ativo = TRUE
+                  AND vtr.ativo = TRUE
+                  AND vte.ativo = TRUE
+            ) escola
+            LIMIT 1"
+        );
+
+        $stmt->execute([
+            ':usuario_diretor' => $idUsuario,
+            ':usuario_tecnico' => $idUsuario,
+            ':usuario_responsavel' => $idUsuario,
+        ]);
+
+        $escola = $stmt->fetchColumn();
+        return $escola === false ? null : (int) $escola;
+    }
 }

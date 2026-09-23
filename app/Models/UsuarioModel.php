@@ -59,6 +59,31 @@ class Usuario extends Model
         return $usuario ?: null;
     }
 
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM usuario WHERE cd_usuario = :id AND ativo = TRUE'
+        );
+        $stmt->execute([':id' => $id]);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $usuario ?: null;
+    }
+
+    public function listarDisponiveisParaAluno(): array
+    {
+        $stmt = $this->pdo->query(
+            "SELECT u.cd_usuario, u.nm_usuario, u.email
+            FROM usuario u
+            LEFT JOIN aluno a ON a.cd_usuario = u.cd_usuario
+            WHERE u.ativo = TRUE
+              AND a.cd_usuario IS NULL
+            ORDER BY u.nm_usuario"
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     //Atualiza Senha
     public function atualizarSenha(int $id, string $senha): void
     {
