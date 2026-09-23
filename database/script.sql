@@ -282,6 +282,14 @@ CREATE TABLE vinculo_time_integrante (
     )
 );
 
+CREATE TABLE escalacao_integrante (
+    cd_vinculo_time_integrante INTEGER NOT NULL,
+    titular BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (cd_vinculo_time_integrante)
+        REFERENCES vinculo_time_integrante(cd_vinculo_time_integrante)
+        ON DELETE CASCADE
+);
+
 -- ============================================================
 -- 8. RESPONSÁVEIS
 -- ============================================================

@@ -103,6 +103,34 @@ class Usuario extends Model
         ]);
     }
 
+    public function atualizarPerfil(int $id, string $nome, string $email, ?string $foto = null, ?string $senha = null): void
+    {
+        $campos = [
+            'nm_usuario = :nome',
+            'email = :email'
+        ];
+        $parametros = [
+            ':nome' => $nome,
+            ':email' => $email,
+            ':id' => $id
+        ];
+
+        if ($foto !== null) {
+            $campos[] = 'path_ft_usuario = :foto';
+            $parametros[':foto'] = $foto;
+        }
+
+        if ($senha !== null) {
+            $campos[] = 'senha = :senha';
+            $parametros[':senha'] = $senha;
+        }
+
+        $stmt = $this->pdo->prepare(
+            'UPDATE usuario SET ' . implode(', ', $campos) . ' WHERE cd_usuario = :id'
+        );
+        $stmt->execute($parametros);
+    }
+
     //Remove usuario
     public function remover(int $id): void
     {

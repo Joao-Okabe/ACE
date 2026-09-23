@@ -69,6 +69,8 @@ class VinculoTimeController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
             $idFuncaoIntegrante = (int) ($_POST['cd_funcao_integrante'] ?? 0);
+            $numeroCamisa = trim((string) ($_POST['numero_camisa'] ?? ''));
+            $capitao = isset($_POST['capitao']);
             if ($idUsuario <= 0) {
                 http_response_code(400);
                 echo 'Selecione um aluno';
@@ -80,8 +82,20 @@ class VinculoTimeController
                 return;
             }
 
+            if ($numeroCamisa !== '' && (!ctype_digit($numeroCamisa) || (int) $numeroCamisa <= 0)) {
+                http_response_code(400);
+                echo 'Número da camiseta inválido';
+                return;
+            }
+
             try {
-                $this->service()->VincularTimeIntegrante($idUsuario, $id, $idFuncaoIntegrante);
+                $this->service()->VincularTimeIntegrante(
+                    $idUsuario,
+                    $id,
+                    $idFuncaoIntegrante,
+                    $numeroCamisa === '' ? null : (int) $numeroCamisa,
+                    $capitao
+                );
                 header('Location: /times/visualizar?id=' . $id);
                 exit;
             } catch (Exception $e) {
@@ -103,5 +117,26 @@ class VinculoTimeController
                 'funcoes' => $funcoes,
             ]
         );
+    }
+
+    public function removerIntegrante(): void
+    {
+        $idTime = (int) ($_POST['id_time'] ?? 0);
+        $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
+
+        if ($idTime <= 0 || $idUsuario <= 0) {
+            http_response_code(400);
+            echo 'Integrante ou time inválido';
+            return;
+        }
+
+        try {
+            $this->service()->removerTimeIntegrante($idUsuario, $idTime);
+            header('Location: /times/visualizar?id=' . $idTime);
+            exit;
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo $e->getMessage();
+        }
     }
 }

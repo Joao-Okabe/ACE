@@ -98,6 +98,30 @@ $responsaveis = $responsaveis ?? [];
                         <div class="integrante-info">
                             <h4><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
                             <p class="label-info"><?= htmlspecialchars($integrante['nm_funcao_integrante'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <?php if (!empty($integrante['numero_camisa']) || !empty($integrante['capitao']) || !empty($escalacao)): ?>p>
+                                <p class="value-info">
+                                    <?php if (!empty($escalacao)): ?>
+                                        Escalação: <?php echo $escalacao === false ? "Reserva" : "Titular"; ?> 
+                                    <?php endif; ?>
+                                </p>
+                                <p class="value-info">
+                                    <?php if (!empty($integrante['numero_camisa'])): ?>
+                                        Camisa <?= (int) $integrante['numero_camisa'] ?>
+                                    <?php endif; ?>
+                                </p>
+                                <p class="value-info">
+                                    <?php if (!empty($integrante['capitao'])): ?>
+                                        Capitão
+                                    <?php endif; ?>
+                                </p>
+                            <?php endif; ?>
+                            <form method="post" action="/times/remover-integrante" class="mt-2" onsubmit="return confirm('Remover este integrante do time?');">
+                                <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
+                                <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
+                                <button type="submit" class="btn btn-delete btn-sm" title="Remover integrante" aria-label="Remover integrante">
+                                    <i class="bi bi-trash-fill"></i> Remover
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

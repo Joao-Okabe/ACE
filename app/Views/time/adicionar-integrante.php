@@ -80,6 +80,27 @@ $funcoes = $funcoes ?? [];
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="numero_camisa" class="form-label">Número da camiseta</label>
+                        <input
+                            type="text"
+                            id="numero_camisa"
+                            name="numero_camisa"
+                            class="form-control form-input"
+                            inputmode="numeric"
+                            pattern="[1-9][0-9]*"
+                            maxlength="9"
+                            placeholder="Ex.: 10"
+                        >
+                    </div>
+
+                    <div class="col-md-4 mb-3 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="capitao" name="capitao" value="1">
+                            <label class="form-check-label" for="capitao">Capitão</label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="actions full d-flex justify-content-end gap-3 mt-4">
