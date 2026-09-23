@@ -109,44 +109,6 @@ $valor = static fn (string $campo): string => htmlspecialchars($aluno[$campo] ??
     </div>
 
     <div class="row">
-
-        <div class="col-lg-6">
-            <div class="visu-box mb-4">
-                <h5>
-                <i class="bi bi-info-circle-fill"></i>
-                Dados gerais
-                </h5>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <h6>Nome do(a) aluno(a)</h6>
-                        <p><?= $valor('nome') ?: '—' ?></p>
-                        <br>
-                        <h6>RA</h6>
-                        <p><?= $valor('ra') ?: '—' ?></p>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="visu-box mb-4">
-                <h5>
-                <i class="bi bi-info-circle-fill"></i>
-                Dados pessoais
-                </h5>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <h6>Data de nascimento</h6>
-                        <p><?= $valor('data_nascimento') ?: '—' ?></p>
-                        <br>
-                        <h6>Sexo</h6>
-                        <p><?= $valor('sexo') ?: '—' ?></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="col-lg-6">
             <div class="visu-box mb-4">
                 <h5>
