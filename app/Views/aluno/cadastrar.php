@@ -176,7 +176,6 @@ $escolaVinculada = $escolaVinculada ?? null;
     <script src="/js/cep.api.js"></script>
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
-    <script src="../../js/acessibilidade.js"></script>
 
 </body>
 </html>

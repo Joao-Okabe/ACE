@@ -136,7 +136,7 @@ $valor = function ($campo) use ($dados) {
 </div>
             
 <script src="../../js/script.js"></script>
-<script src="../../js/acessibilidade.js"></script>
+
 
     <!--Mostrar senha-->
 <script>

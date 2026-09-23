@@ -25,7 +25,7 @@ $responsaveis = $responsaveis ?? [];
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/lista.css">
-    <link rel="stylesheet" href="../../css/acessibilidade.css">
+
 
     <title>Times</title>
     <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
@@ -84,6 +84,6 @@ $responsaveis = $responsaveis ?? [];
 
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
-    <script src="../../js/acessibilidade.js"></script>
+
 </body>
 </html>
