@@ -24,10 +24,12 @@ class DashboardController
 
         $qtAluno = $this->dashboard()->qtAluno((int) $usuario['id']);
         $qtTime = $this->dashboard()->qtTime((int) $usuario['id']);
+        $qtCompeticao = $this->dashboard()->qtCompeticao((int) $usuario['id']);
 
         renderView('auth/dashboard', [
             'qtAluno' => $qtAluno,
-            'qtTime' => $qtTime
+            'qtTime' => $qtTime,
+            'qtCompeticao' => $qtCompeticao
         ]);
     }
 }
