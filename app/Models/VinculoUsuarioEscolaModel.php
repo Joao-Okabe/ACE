@@ -134,7 +134,14 @@ class VinculoUsuarioEscola extends Model
     public function usuarioPodeGerenciarEscola(int $idUsuario, int $idEscola): bool
     {
         $stmt = $this->pdo->prepare(
-            "SELECT EXISTS (
+          "SELECT EXISTS (
+              SELECT 1
+              FROM usuario_papel up
+              INNER JOIN papel p ON p.cd_papel = up.cd_papel
+              WHERE up.cd_usuario = :admin_usuario
+                AND p.nm_papel = 'ADM'
+           )
+           OR EXISTS (
                 SELECT 1
                 FROM vinculo_usuario_escola vue
                 INNER JOIN papel p ON p.cd_papel = vue.cd_papel
@@ -166,6 +173,7 @@ class VinculoUsuarioEscola extends Model
         );
 
         $stmt->execute([
+            ':admin_usuario' => $idUsuario,
             ':diretor_usuario' => $idUsuario,
             ':diretor_escola' => $idEscola,
             ':tecnico_usuario' => $idUsuario,
