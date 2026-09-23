@@ -1,0 +1,106 @@
+.card-escalacao {
+    width: 100%;
+    max-width: 500px;
+    padding: 23px;
+    background: var(--branco);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(24, 24, 71, 0.08);
+}
+
+.campo-futsal {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 1100;
+    overflow: hidden;
+    border-radius: 10px;
+    background-image: url("../img/campo-futsal.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.jogador {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+}
+
+.jogador img {
+    width: 58px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+.jogador span {
+    display: block;
+    background: #181847;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.jogador small {
+    display: inline-block;
+    margin-top: 3px;
+    color: #fff;
+    background: #F44E1C;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Ataque */
+.pivo {
+    top: 22%;
+    left: 50%;
+}
+
+/* Meio */
+.ala-esquerda {
+    top: 38%;
+    left: 25%;
+}
+
+.ala-direita {
+    top: 38%;
+    left: 75%;
+}
+
+/* Defesa */
+.fixo {
+    top: 57%;
+    left: 50%;
+}
+
+/* Goleiro */
+.goleiro {
+    top: 78%;
+    left: 50%;
+}
+
+.escalacao-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+    width: 100%;
+}
+
+.card-posicoes {
+    width: 100%;
+    padding: 25px;
+    background: var(--branco);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(24, 24, 71, 0.08);
+}
+
+.card-posicoes h3 {
+    font-size: 24px;
+}
