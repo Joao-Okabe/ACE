@@ -11,7 +11,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 	<link rel="stylesheet" href="../../bootstrap-icons-1.13.1/bootstrap-icons.css">
 	<link rel="stylesheet" href="../../css/geral.css">
 	<link rel="stylesheet" href="../../css/layout.css">
-	<link rel="stylesheet" href="../../css/acessibilidade.css">
+
 	<title>Configurações do usuário</title>
 </head>
 <body>
@@ -60,6 +60,6 @@ window.usuarioLogado = {
 };
 </script>
 <script src="../../js/layout.js"></script>
-<script src="../../js/acessibilidade.js"></script>
+
 </body>
 </html>

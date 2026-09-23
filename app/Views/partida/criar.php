@@ -195,7 +195,6 @@ $idPartida = $idPartida ?? [];
 
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
-    <script src="../../js/acessibilidade.js"></script>
 
 </body>
 </html>
