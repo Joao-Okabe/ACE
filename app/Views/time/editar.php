@@ -14,6 +14,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
     <link rel="stylesheet" href="../../css/layout.css">
 
     <title>Editar time</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 <app-header></app-header>

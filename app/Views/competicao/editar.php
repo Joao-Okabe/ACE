@@ -15,6 +15,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
     <link rel="stylesheet" href="../../css/layout.css">
 
     <title>Editar competição</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

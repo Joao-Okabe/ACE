@@ -23,6 +23,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
     <link rel="stylesheet" href="../../css/chaveamento.css">
 
     <title>Visualizar competição</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

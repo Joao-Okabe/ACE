@@ -21,7 +21,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
   
 
     <title>Login</title>
-    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body class="cor">
 

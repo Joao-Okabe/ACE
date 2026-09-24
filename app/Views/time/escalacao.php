@@ -36,6 +36,7 @@ unset($posicao);
     <link rel="stylesheet" href="../../css/visualizar.css">
 
     <title>Definir Escalação</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

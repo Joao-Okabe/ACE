@@ -14,6 +14,7 @@ $usuarios = $usuarios ?? [];
     <link rel="stylesheet" href="../../css/lista.css">
     <link rel="stylesheet" href="../../css/acessibilidade.css">
     <title>Adicionar técnico</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
     <app-header></app-header>
