@@ -8,12 +8,17 @@ class CompeticaoService
 
     private VinculoUsuarioEscola $vinculoEscolaModel;
 
+    private Confronto $confrontoModel;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
 
         $this->competicaoModel = new Competicao();
+
         $this->vinculoEscolaModel = new VinculoUsuarioEscola();
+
+        $this->confrontoModel = new Confronto();
     }
 
     public function criar(array $dados): void
@@ -209,5 +214,10 @@ class CompeticaoService
         $papeis = $_SESSION['usuario']['papeis'] ?? [];
 
         return in_array('ADM', $papeis, true);
+    }
+
+    public function listarChaveamento(int $idCompeticao): array
+    {
+        return $this->confrontoModel->listarChaveamento($idCompeticao);
     }
 }

@@ -136,6 +136,7 @@ class CompeticaoController
     public function visualizar(): void
     {
         $id = (int) ($_GET['id'] ?? 0);
+
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
@@ -148,6 +149,7 @@ class CompeticaoController
         $periodoInscricao = $this->service()->buscarPeriodoInscricao($id);
         $timesInscritos = $this->service()->listarTimesInscritos($id);
         $timesDisponiveis = $this->service()->listarTimesDisponiveisInscricao($id);
+        $chaveamento = $this->service()->listarChaveamento($id);
 
         renderView('competicao/vizualizar', [
             'competicao' => $competicao,
@@ -155,6 +157,7 @@ class CompeticaoController
             'periodoInscricao' => $periodoInscricao,
             'timesInscritos' => $timesInscritos,
             'timesDisponiveis' => $timesDisponiveis,
+            'chaveamento' => $chaveamento
         ]);
     }
 
