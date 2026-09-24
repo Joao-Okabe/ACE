@@ -148,6 +148,10 @@ $router->post(
     '/competicoes/remover-time-inscrito', [CompeticaoController::class, 'removerTimeInscrito']
 );
 
+$router->post(
+    '/competicoes/gerar-chaveamento', [CompeticaoController::class, 'gerarChaveamento']
+);
+
 $router->get(
     '/times/criar', [TimeController::class, 'create']
 );
