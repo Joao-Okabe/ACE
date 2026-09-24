@@ -18,6 +18,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
     <link rel="stylesheet" href="../../css/visualizar.css">
+    <link rel="stylesheet" href="../../css/chaveamento.css">
 
     <title>Visualizar competição</title>
 </head>
@@ -106,6 +107,8 @@ Inscrição
         <div class="competicao-painel" id="chaveamento">
             <h3>Chaveamento</h3>
             <p>O chaveamento da competição aparecerá aqui.</p>
+
+            <div class="chaveamento" id="chaveamento-container"></div>
         </div>
 
         <!-- Partidas -->
@@ -275,6 +278,7 @@ document.querySelectorAll('.competicao-tab').forEach(botao => {
 
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>
+<script src="../../js/chaveamento.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,339 @@
+/* === CHAVEAMENTO === */
+.chaveamento {
+    width: 100%;
+    padding: 30px 10px;
+    overflow-x: auto;
+}
+
+/* Estrutura */
+.bracket {
+    --partida-w: 240px;
+    --partida-h: 64px;
+    --conexao-w: 55px;
+    display: grid;
+    grid-template-columns:
+        var(--partida-w)
+        var(--conexao-w)
+        var(--partida-w)
+        var(--conexao-w)
+        var(--partida-w)
+        var(--conexao-w)
+        var(--partida-w)
+        var(--conexao-w)
+        var(--partida-w);
+    width: max-content;
+    margin: 0 auto;
+}
+
+
+/* Colunas */
+.bracket-coluna {
+    width: var(--partida-w);
+}
+
+.bracket-conexoes {
+    width: var(--conexao-w);
+}
+
+/* Título da fase */
+.round-title {
+    height: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: var(--laranja-principal);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 2px;
+    box-sizing: border-box;
+}
+
+
+/* Ajuste visual dos títulos */
+.dezesseisavos + .bracket-conexoes {}
+
+.bracket-coluna:nth-child(1) .round-title {
+    transform: translateY(8px);
+}
+
+.bracket-coluna:nth-child(3) .round-title {
+    transform: translateY(48px);
+}
+
+.bracket-coluna:nth-child(5) .round-title {
+    transform: translateY(128px);
+}
+
+.bracket-coluna:nth-child(7) .round-title {
+    transform: translateY(288px);
+}
+
+.bracket-coluna:nth-child(9) .round-title {
+    transform: translateY(608px);
+}
+
+/* Área da partida */
+.round {
+    position: relative;
+
+    width: var(--partida-w);
+    height: 1280px;
+}
+
+.partida {
+    position: absolute;
+    left: 0;
+    width: var(--partida-w);
+    height: var(--partida-h);
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+    border-radius: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow:
+        0 3px 10px rgba(24, 24, 71, 0.08);
+}
+
+
+/* === TIME === */
+.time {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 31px;
+    padding: 3px 10px;
+    gap: 9px;
+    color: var(--azul-principal);
+    font-size: 12px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.time + .time {
+    border-top: 1px solid var(--azul-principal);
+}
+
+.time img {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--azul-principal);
+}
+
+.time span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* === POSIÇÃO - 16AVOS === */
+.dezesseisavos .partida:nth-child(1)  { top: 11px; }
+.dezesseisavos .partida:nth-child(2)  { top: 91px; }
+.dezesseisavos .partida:nth-child(3)  { top: 171px; }
+.dezesseisavos .partida:nth-child(4)  { top: 251px; }
+.dezesseisavos .partida:nth-child(5)  { top: 331px; }
+.dezesseisavos .partida:nth-child(6)  { top: 411px; }
+.dezesseisavos .partida:nth-child(7)  { top: 491px; }
+.dezesseisavos .partida:nth-child(8)  { top: 571px; }
+.dezesseisavos .partida:nth-child(9)  { top: 651px; }
+.dezesseisavos .partida:nth-child(10) { top: 731px; }
+.dezesseisavos .partida:nth-child(11) { top: 811px; }
+.dezesseisavos .partida:nth-child(12) { top: 891px; }
+.dezesseisavos .partida:nth-child(13) { top: 971px; }
+.dezesseisavos .partida:nth-child(14) { top: 1051px; }
+.dezesseisavos .partida:nth-child(15) { top: 1131px; }
+.dezesseisavos .partida:nth-child(16) { top: 1211px; }
+
+
+/* === POSIÇÃO - OITAVAS === */
+.oitavas .partida:nth-child(1) { top: 51px; }
+.oitavas .partida:nth-child(2) { top: 211px; }
+.oitavas .partida:nth-child(3) { top: 371px; }
+.oitavas .partida:nth-child(4) { top: 531px; }
+.oitavas .partida:nth-child(5) { top: 691px; }
+.oitavas .partida:nth-child(6) { top: 851px; }
+.oitavas .partida:nth-child(7) { top: 1011px; }
+.oitavas .partida:nth-child(8) { top: 1171px; }
+
+
+/* === POSIÇÃO - QUARTAS === */
+.quartas .partida:nth-child(1) { top: 131px; }
+.quartas .partida:nth-child(2) { top: 451px; }
+.quartas .partida:nth-child(3) { top: 771px; }
+.quartas .partida:nth-child(4) { top: 1091px; }
+
+
+/* === POSIÇÃO - SEMIFINAL === */
+.semifinal .partida:nth-child(1) { top: 291px; }
+.semifinal .partida:nth-child(2) { top: 931px; }
+
+
+/* === POSIÇÃO - FINAL === */
+.final .partida {
+    top: 611px;
+}
+
+
+/* === CONEXÕES === */
+.bracket-conexoes {
+    position: relative;
+    height: 1280px;
+}
+.conexao {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 160px;
+    pointer-events: none;
+    transform: translateY(35px);
+}
+
+
+/* === LINHAS HORIZONTAIS === */
+.conexao .entrada-1,
+.conexao .entrada-2,
+.conexao .saida {
+    position: absolute;
+    height: 2px;
+    background: var(--azul-principal);
+}
+
+.conexao .entrada-1,
+.conexao .entrada-2 {
+    left: 0;
+    width: 50%;
+}
+
+.conexao .saida {
+    right: 0;
+    width: 50%;
+}
+
+
+/* === LINHA VERTICAL === */
+.conexao .vertical {
+    position: absolute;
+    left: 50%;
+    width: 2px;
+    background: var(--azul-principal);
+}
+
+
+/* === 16AVOS > OITAVAS === */
+.dezesseisavos-para-oitavas .conexao:nth-child(1) { top: 0; }
+.dezesseisavos-para-oitavas .conexao:nth-child(2) { top: 160px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(3) { top: 320px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(4) { top: 480px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(5) { top: 640px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(6) { top: 800px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(7) { top: 960px; }
+.dezesseisavos-para-oitavas .conexao:nth-child(8) { top: 1120px; }
+
+.dezesseisavos-para-oitavas .entrada-1 {
+    top: 43px;
+}
+
+.dezesseisavos-para-oitavas .entrada-2 {
+    top: 123px;
+}
+
+.dezesseisavos-para-oitavas .vertical {
+    top: 43px;
+    height: 82px;
+}
+
+.dezesseisavos-para-oitavas .saida {
+    top: 83px;
+}
+
+
+/* === OITAVAS > QUARTAS === */
+.oitavas-para-quartas .conexao:nth-child(1) { top: 0; }
+.oitavas-para-quartas .conexao:nth-child(2) { top: 320px; }
+.oitavas-para-quartas .conexao:nth-child(3) { top: 640px; }
+.oitavas-para-quartas .conexao:nth-child(4) { top: 960px; }
+
+.oitavas-para-quartas .entrada-1 {
+    top: 83px;
+}
+
+.oitavas-para-quartas .entrada-2 {
+    top: 243px;
+}
+
+.oitavas-para-quartas .vertical {
+    top: 83px;
+    height: 162px;
+}
+
+.oitavas-para-quartas .saida {
+    top: 163px;
+}
+
+
+/* === QUARTAS > SEMIFINAL === */
+.quartas-para-semifinal .conexao:nth-child(1) {
+    top: 0;
+}
+
+.quartas-para-semifinal .conexao:nth-child(2) {
+    top: 640px;
+}
+
+.quartas-para-semifinal .entrada-1 {
+    top: 163px;
+}
+
+.quartas-para-semifinal .entrada-2 {
+    top: 483px;
+}
+
+.quartas-para-semifinal .vertical {
+    top: 163px;
+    height: 322px;
+}
+
+.quartas-para-semifinal .saida {
+    top: 323px;
+}
+
+
+/* === SEMIFINAL > FINAL === */
+.semifinal-para-final .conexao {
+    height: 1280px;
+    top: 0;
+}
+
+.semifinal-para-final .entrada-1 {
+    top: 323px;
+}
+
+.semifinal-para-final .entrada-2 {
+    top: 963px;
+}
+
+.semifinal-para-final .vertical {
+    top: 323px;
+    height: 642px;
+}
+
+.semifinal-para-final .saida {
+    top: 643px;
+}
+
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 900px) {
+
+    .chaveamento {
+        padding: 20px 5px;
+    }
+
+    .bracket {
+        margin-left: 0;
+    }
+}
