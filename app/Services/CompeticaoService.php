@@ -10,6 +10,8 @@ class CompeticaoService
 
     private Confronto $confrontoModel;
 
+    private EtapaCompeticao $etapaCompeticaoModel;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -19,6 +21,8 @@ class CompeticaoService
         $this->vinculoEscolaModel = new VinculoUsuarioEscola();
 
         $this->confrontoModel = new Confronto();
+
+        $this->etapaCompeticaoModel = new EtapaCompeticao();
     }
 
     public function criar(array $dados): void
@@ -58,7 +62,7 @@ class CompeticaoService
                 'cd_escola' => $idEscola,
                 'inicio_em' => $dados['dt_inicio'] ?? null,
                 'fim_em' => $dados['dt_encerramento'] ?? null,
-            ], 
+            ],
                 $idCriador
             );
 
@@ -219,5 +223,51 @@ class CompeticaoService
     public function listarChaveamento(int $idCompeticao): array
     {
         return $this->confrontoModel->listarChaveamento($idCompeticao);
+    }
+
+    /**
+     * Indica se o usuário logado é o criador da competição.
+     */
+    public function usuarioEhCriador(array $competicao): bool
+    {
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idCriador = (int) ($competicao['cd_criador'] ?? 0);
+
+        return $idUsuario > 0 && $idUsuario === $idCriador;
+    }
+
+    public function gerarChaveamento(int $idCompeticao): void
+    {
+        $competicao = $this->buscar($idCompeticao);
+
+        if (!$this->usuarioEhCriador($competicao)) {
+            throw new Exception('Apenas o criador da competição pode gerar o chaveamento.');
+        }
+
+        if ($this->confrontoModel->listarChaveamento($idCompeticao) !== []) {
+            throw new Exception('Esta competição já possui um chaveamento.');
+        }
+
+        $etapa = $this->etapaCompeticaoModel->buscarEliminatoriaPorCompeticao($idCompeticao);
+
+        if ($etapa === null) {
+            $cdTipoEtapa = $this->etapaCompeticaoModel->buscarTipoPorNome('ELIMINATORIA');
+
+            if ($cdTipoEtapa === null) {
+                throw new Exception('Tipo de etapa eliminatória não cadastrado.');
+            }
+
+            $cdEtapa = $this->etapaCompeticaoModel->criar([
+                'cd_competicao' => $idCompeticao,
+                'cd_tipo_etapa' => $cdTipoEtapa,
+                'nm_etapa' => 'Eliminatória',
+                'ordem' => 1,
+                'descricao' => 'Etapa de eliminatória simples da competição.',
+            ]);
+        } else {
+            $cdEtapa = (int) $etapa['cd_etapa_competicao'];
+        }
+
+        (new EliminatoriaSimplesService())->gerar($idCompeticao, $cdEtapa);
     }
 }

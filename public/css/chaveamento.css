@@ -1,4 +1,26 @@
 /* === CHAVEAMENTO === */
+.chaveamento-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.chaveamento-header h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.chaveamento-header p {
+    margin: 4px 0 0;
+}
+
 .chaveamento {
     width: 100%;
     padding: 30px 10px;

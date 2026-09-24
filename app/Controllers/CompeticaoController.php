@@ -150,6 +150,7 @@ class CompeticaoController
         $timesInscritos = $this->service()->listarTimesInscritos($id);
         $timesDisponiveis = $this->service()->listarTimesDisponiveisInscricao($id);
         $chaveamento = $this->service()->listarChaveamento($id);
+        $podeGerarChaveamento = $this->service()->usuarioEhCriador($competicao);
 
         renderView('competicao/vizualizar', [
             'competicao' => $competicao,
@@ -157,8 +158,29 @@ class CompeticaoController
             'periodoInscricao' => $periodoInscricao,
             'timesInscritos' => $timesInscritos,
             'timesDisponiveis' => $timesDisponiveis,
-            'chaveamento' => $chaveamento
+            'chaveamento' => $chaveamento,
+            'podeGerarChaveamento' => $podeGerarChaveamento,
         ]);
+    }
+
+    public function gerarChaveamento(): void
+    {
+        $id = (int) ($_POST['id_competicao'] ?? 0);
+
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID da competição inválido';
+            return;
+        }
+
+        try {
+            $this->service()->gerarChaveamento($id);
+            header('Location: /competicoes/visualizar?id=' . $id . '&chaveamento_gerado=1');
+            exit;
+        } catch (Exception $e) {
+            header('Location: /competicoes/visualizar?id=' . $id . '&erro_chaveamento=' . urlencode($e->getMessage()));
+            exit;
+        }
     }
 
     public function remover(): void

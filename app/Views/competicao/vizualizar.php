@@ -5,6 +5,7 @@ $periodoInscricao = $periodoInscricao ?? null;
 $timesInscritos = $timesInscritos ?? [];
 $timesDisponiveis = $timesDisponiveis ?? [];
 $chaveamento = $chaveamento ?? []; 
+$podeGerarChaveamento = $podeGerarChaveamento ?? false;
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($valor, 0, 10), ENT_QUOTES, 'UTF-8') : 'Não definida';
 ?>
@@ -24,7 +25,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
     <title>Visualizar competição</title>
 </head>
 <body>
-    
+
 <app-header></app-header>
 <div class="content">
 
@@ -106,8 +107,30 @@ Inscrição
 
         <!-- Chaveamento -->
         <div class="competicao-painel" id="chaveamento">
-            <h3>Chaveamento</h3>
-            <p>O chaveamento da competição aparecerá aqui.</p>
+            <div class="chaveamento-header">
+                <div>
+                    <h3>Chaveamento</h3>
+                    <p>O chaveamento da competição aparecerá aqui.</p>
+                </div>
+
+                <?php if ($podeGerarChaveamento && empty($chaveamento)): ?>
+                    <form action="/competicoes/gerar-chaveamento" method="post">
+                        <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
+                        <button type="submit" class="btn btn-laranja">
+                            <i class="bi bi-diagram-3"></i>
+                            Gerar chaveamento
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($_GET['chaveamento_gerado'])): ?>
+                <div class="alert alert-success">Chaveamento gerado com sucesso.</div>
+            <?php endif; ?>
+
+            <?php if (!empty($_GET['erro_chaveamento'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($_GET['erro_chaveamento'], ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
 
             <div class="chaveamento" id="chaveamento-container"></div>
         </div>
