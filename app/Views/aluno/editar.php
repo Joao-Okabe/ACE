@@ -33,12 +33,19 @@ $escolas = $escolas ?? [];
 <div class="content">
     <div class="card form-card shadow-sm">
 
-        <div class="cabecalho mb-5">
-            <div>
-                <h2 class="form-title">Editar Aluno</h2>
-                <p class="form-subtitle">Atualize os dados do aluno.</p>
+        <div class="mb-2">
+            <div class="header-form">
+                <a href="/alunos/listar" class="btn-voltar" aria-label="Voltar para a lista de escolas">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Editar Aluno</h2>
+                    <p class="form-subtitle">Atualize os dados do aluno.</p>
+                </div>
             </div>
         </div>
+
 
         <?php if (!empty($_GET['sucesso'])): ?>
             <div class="alert alert-success auth-success" role="alert" aria-live="polite">
@@ -67,6 +74,7 @@ $escolas = $escolas ?? [];
                             <i class="bi bi-camera-fill"></i>
                         <?php endif; ?>
                     </label>
+                    <input type="file" accept="image/*" name="foto_perfil" id="foto_perfil" hidden>
                     <div class="text-perfil">
                     <p class="form-label">Editar foto</p>
                 </div> 
@@ -136,17 +144,6 @@ $escolas = $escolas ?? [];
             
             </div>
         </div>
-
-                <div class="col-md-12 mb-4">
-                    <label for="foto_perfil" class="form-label">Foto de perfil</label>
-                    <input type="file" id="foto_perfil" name="foto_perfil" class="form-control form-input" accept="image/*">
-                    <?php if (!empty($dados['foto_perfil'])): ?>
-                        <div class="mt-3">
-                            <img src="<?= htmlspecialchars(upload_url($dados['foto_perfil'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil" class="img-thumbnail" style="max-width: 160px;">
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
 
             <div class="d-flex justify-content-end gap-3 mt-4">
                 <a href="/alunos/listar" class="btn btn-secondary">Cancelar</a>

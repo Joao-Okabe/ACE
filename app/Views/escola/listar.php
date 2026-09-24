@@ -119,7 +119,7 @@ $escolas = $escolas ?? [];
                     <tr>
                         <td>
                             <div class="tc list-perfil">
-                                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasão">
+                                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/brasao.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasão">
                             </div>
                         </td>
                         <td><?= htmlspecialchars($escola['cd_escola']) ?></td>

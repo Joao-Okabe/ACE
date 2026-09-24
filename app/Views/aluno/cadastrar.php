@@ -35,12 +35,17 @@ $usuariosExistentes = $usuariosExistentes ?? [];
 <!--Conteúdo-->
 <div class="content">
     <div class="card form-card shadow-sm">
-        <div class="cabecalho mb-5">
-            <div>
-                <h2 class="form-title">Cadastro de Aluno</h2>
-                <p class="form-subtitle">
-                Preencha os dados do aluno para realizar o cadastro.
-                </p>
+       
+        <div class="mb-2">
+            <div class="header-form">
+                <a href="/alunos/listar" class="btn-voltar" aria-label="Voltar para a lista de escolas">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Cadastro de Aluno</h2>
+                    <p class="form-subtitle">Preencha os dados do aluno realizar o cadastro.</p>
+                </div>
             </div>
         </div>
 
@@ -75,9 +80,10 @@ $usuariosExistentes = $usuariosExistentes ?? [];
             </div>
 
             
-            <div class="dados-primeiros">
+            <div class="dados-aluno">
+
                 <?php if ($ehDiretor): ?>
-                <div class="campo-inicial">
+                <div class="campo-inicial usuario-existente">
                     <label for="cd_usuario" class="form-label">Usuário existente (opcional)</label>
                     <select id="cd_usuario" name="cd_usuario" class="form-select form-input">
                         <option value="">Cadastrar novo usuário</option>
@@ -96,6 +102,8 @@ $usuariosExistentes = $usuariosExistentes ?? [];
                 </div>
                 <?php endif; ?>
 
+                <div class="dados-primeiros">
+
                 <!-- NOME -->
                 <div class="campo-inicial">
                     <label for="nome" class="form-label"> Nome do(a) aluno(a) </label>
@@ -108,7 +116,8 @@ $usuariosExistentes = $usuariosExistentes ?? [];
                     <input type="text" id="ra" name="ra" value="<?= $valor('ra') ?>" class="form-control form-input" placeholder="Digite o RA">
                 </div>
             </div>
-
+            
+        </div>
         </div>
         </div>
 

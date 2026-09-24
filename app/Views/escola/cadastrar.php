@@ -29,12 +29,17 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <!--Conteúdo-->
 <div class="content">
      <div class="card form-card shadow-sm">
+
         <div class="mb-2">
-            <div>
-                <h2 class="form-title">Cadastro da Escola</h2>
-                <p class="form-subtitle">
-                Preencha os dados da escola para realizar o cadastro.
-                </p>
+            <div class="header-form">
+                <a href="/escolas/listar" class="btn-voltar" aria-label="Voltar para a lista de escolas">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Cadastro Escola</h2>
+                    <p class="form-subtitle">Preencha os dados da escola para realizar o cadastro.</p>
+                </div>
             </div>
         </div>
 

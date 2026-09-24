@@ -36,11 +36,15 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <div class="content">
      <div class="card form-card shadow-sm">
         <div class="mb-2">
-            <div>
-                <h2 class="form-title">Cadastrar Time</h2>
-                <p class="form-subtitle">
-                Preencha os dados do time para realizar o cadastro.
-                </p>
+            <div class="header-form">
+                <a href="/times/listar" class="btn-voltar" aria-label="Voltar">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Cadastrar time</h2>
+                    <p class="form-subtitle">Preencha os dados do time para realizar o cadastro.</p>
+                </div>
             </div>
         </div>
     
@@ -59,25 +63,28 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
     <form action="/times" method="POST" enctype="multipart/form-data">
+        <div class="form-section"> 
+        <div class="dados-iniciais"> 
+
         <!-- Foto de perfil -->
         <div class="perfil-aluno mb-4">
             <label for="path_escudo" class="foto-perfil">
-                <i class="bi bi-camera-fill"></i>
+                <i class="bi bi-shield-shaded"></i>
             </label>
             <div class="text-perfil">
-                <p class="form-label">Adicionar imagem do brasão</p>
+                <p class="form-label">Adicionar brasão</p>
             </div>
             <input type="file" accept="image/*" name="path_escudo" id="path_escudo" hidden>
         </div>
 
-        <div class="row">      
-            <div class="col-md-4 mb-3">
+        <div class="dados-primeiros">   
+            <div class="campo-inicial">
                 <label class="form-label" for="nm_time">Nome do time</label>
                 <input type="text" class="form-control form-input" id="nm_time" value="<?= $valor('nm_time') ?>" name="nm_time" required placeholder="Digite o nome do time">
             </div>
 
         <?php if ($ehAdministrador): ?>
-            <div class="col-md-4 mb-3">
+            <div class="campo-inicial">
             <label class="form-label" for="escola">Escola</label>
             <select class="form-select form-input" id="escola" name="escola" required> 
                 <option value="">Selecione</option>
@@ -90,7 +97,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </div>
         <?php endif; ?>
 
-            <div class="col-md-4 mb-3">
+            <div class="campo-inicial">
             <label class="form-label" for="cd_esporte">Esporte</label>
             <select class="form-select form-input" id="cd_esporte" name="cd_esporte" required> 
                 <option value="">Selecione</option>
@@ -101,6 +108,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <?php endforeach; ?>
             </select>
             </div>
+        </div>
+        </div>
+         </div>
 
             <div class="actions full d-flex justify-content-end gap-3 mt-4">
                 <a href="/times/listar" class="btn btn-secondary">Cancelar</a>

@@ -37,7 +37,7 @@ $podeGerenciar = $podeGerenciar ?? false;
         <div class="row align-items-center">
             <div class="col-lg-2">
                 <div class="escudo">
-                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
+                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/escudo.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Brasao do time">
                 </div>
             </div>
 
@@ -104,62 +104,79 @@ $podeGerenciar = $podeGerenciar ?? false;
         $ehCapitao = static fn (array $integrante): bool => in_array($integrante['capitao'] ?? false, [true, 1, '1', 't'], true);
         $temCapitao = (bool) array_filter($integrantes, $ehCapitao);
         ?>
+
         <div class="row g-4">
+
             <?php foreach ($integrantes as $integrante): ?>
+
                 <div class="col-12 col-sm-6 col-lg-3">
+
                     <div class="integrante-card">
-                        <div class="integrante-foto">
-                            <img src="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do integrante">
-                        </div>
-                        <div class="integrante-info">
-                            <h4><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
-                            <p class="label-info"><?= htmlspecialchars($integrante['nm_funcao_integrante'], ENT_QUOTES, 'UTF-8') ?></p>
-                            <?php if (!empty($integrante['numero_camisa']) || $ehCapitao($integrante) || !empty($escalacao)): ?>
-                                <p class="value-info">
-                                    <?php if (!empty($escalacao)): ?>
+
+                        <div class="integrante-conteudo">
+
+                            <div class="integrante-foto">
+                                <img src="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do integrante">
+                            </div>
+
+                            <div class="integrante-info">
+                                <h4><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></h4>
+                                <p class="label-info"><?= htmlspecialchars($integrante['nm_funcao_integrante'], ENT_QUOTES, 'UTF-8') ?></p>
+                                    <?php if (!empty($integrante['numero_camisa']) || $ehCapitao($integrante) || !empty($escalacao)): ?>
+                                    <p class="value-info">
+                                        <?php if (!empty($escalacao)): ?>
                                         Escalação: <?php echo $escalacao === false ? "Reserva" : "Titular"; ?>
-                                    <?php endif; ?>
-                                </p>
-                                <p class="value-info">
-                                    <?php if (!empty($integrante['numero_camisa'])): ?>
+                                        <?php endif; ?>
+                                    </p>
+                                    <p class="value-info">
+                                        <?php if (!empty($integrante['numero_camisa'])): ?>
                                         Camisa <?= (int) $integrante['numero_camisa'] ?>
-                                    <?php endif; ?>
-                                </p>
-                                <p class="value-info">
-                                    <?php if ($ehCapitao($integrante)): ?>
+                                        <?php endif; ?>
+                                    </p>
+                                    <p class="value-info">
+                                        <?php if ($ehCapitao($integrante)): ?>
                                         Capitão
-                                    <?php endif; ?>
-                                </p>
-                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+
                             <?php if ($podeGerenciar): ?>
-                            <?php if ($ehCapitao($integrante)): ?>
-                            <form method="post" action="/times/remover-capitao" class="mt-2">
-                                <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
-                                <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
-                                <button type="submit" class="btn btn-secondary btn-sm">Remover cargo de capitão</button>
-                            </form>
-                            <?php elseif (!$temCapitao): ?>
-                            <form method="post" action="/times/tornar-capitao" class="mt-2">
-                                <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
-                                <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
-                                <button type="submit" class="btn btn-laranja btn-sm"><i class="bi bi-star-fill" aria-hidden="true"></i> Tornar capitão</button>
-                            </form>
-                            <?php endif; ?>
-                            <form method="post" action="/times/remover-integrante" class="mt-2" onsubmit="return confirm('Remover este integrante do time?');">
-                                <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
-                                <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
-                                <button type="submit" class="btn btn-delete btn-sm" title="Remover integrante" aria-label="Remover integrante">
+                            <div class="integrante-acoes">
+
+                                <?php if ($ehCapitao($integrante)): ?>
+                                <form method="post" action="/times/remover-capitao" class="mt-2">
+                                    <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
+                                    <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
+                                    <button type="submit" class="btn btn-secondary btn-sm">Remover cargo de capitão</button>
+                                </form>
+
+                                <?php elseif (!$temCapitao): ?>
+                                <form method="post" action="/times/tornar-capitao" class="mt-2">
+                                    <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
+                                    <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
+                                    <button type="submit" class="btn btn-laranja btn-sm"><i class="bi bi-star-fill" aria-hidden="true"></i> Tornar capitão</button>
+                                </form>
+
+                                <?php endif; ?>
+                                <form method="post" action="/times/remover-integrante" class="mt-2" onsubmit="return confirm('Remover este integrante do time?');">
+                                    <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
+                                    <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
+                                    <button type="submit" class="btn btn-delete">
                                     <i class="bi bi-trash-fill"></i> Remover
-                                </button>
-                            </form>
+                                    </button>
+                                </form>
+
+                            </div>
                             <?php endif; ?>
+
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-        </div>
-        </div>
+    </div>
 
 
    <div class="visu-box mb-4">
@@ -175,7 +192,8 @@ $podeGerenciar = $podeGerenciar ?? false;
         <div class="row g-4">
             <?php foreach ($responsaveis as $responsavel): ?>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="integrante-card">
+                    <div class="responsavel-card">
+                        <div class="integrante-conteudo">
                         <div class="integrante-foto">
                             <img src="<?= htmlspecialchars(upload_url($responsavel['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto do responsável">
                         </div>
@@ -184,6 +202,7 @@ $podeGerenciar = $podeGerenciar ?? false;
                             <p class="label-info">Responsável</p>
                         </div>
                     </div>
+                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
