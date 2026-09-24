@@ -125,10 +125,58 @@ class TimeService
         }
 
         $time = $this->buscar($id);
-        $this->timeModel->atualizar($id, [
-            'nm_time' => $nome,
-                'path_escudo' => $dados['path_escudo'] ?? $time['path_escudo'],
-        ]);
+        $novoEscudo = $this->salvarEscudo($dados['path_escudo'] ?? null);
+
+        try {
+            $this->timeModel->atualizar($id, [
+                'nm_time' => $nome,
+                'path_escudo' => $novoEscudo ?? $time['path_escudo'],
+            ]);
+        } catch (Throwable $e) {
+            if ($novoEscudo !== null) {
+                unlink(__DIR__ . '/../../public' . $novoEscudo);
+            }
+            throw $e;
+        }
+    }
+
+    private function salvarEscudo(?array $arquivo): ?string
+    {
+        if ($arquivo === null || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            throw new Exception('Erro durante o upload da imagem. Verifique o tamanho do arquivo e tente novamente.');
+        }
+
+        $tmpArquivo = $arquivo['tmp_name'] ?? '';
+        if (!is_uploaded_file($tmpArquivo)) {
+            throw new Exception('O arquivo enviado não é válido.');
+        }
+
+        $extensoesPorTipo = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $tipo = mime_content_type($tmpArquivo);
+        if (!isset($extensoesPorTipo[$tipo]) || getimagesize($tmpArquivo) === false) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
+        }
+        $extensao = $extensoesPorTipo[$tipo];
+
+        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $pastaUploads = __DIR__ . '/../../public/uploads';
+        if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        $nome = uniqid('IMG_', true) . '.' . $extensao;
+        if (!move_uploaded_file($tmpArquivo, $pastaUploads . DIRECTORY_SEPARATOR . $nome)) {
+            throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
+        }
+
+        return '/uploads/' . $nome;
     }
 
     public function remover(int $id)

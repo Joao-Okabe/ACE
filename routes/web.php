@@ -193,6 +193,14 @@ $router->post(
 );
 
 $router->post(
+    '/times/tornar-capitao', [VinculoTimeController::class, 'tornarCapitao']
+);
+
+$router->post(
+    '/times/remover-capitao', [VinculoTimeController::class, 'removerCapitao']
+);
+
+$router->post(
     '/times/adicionar-responsavel', [VinculoTimeController::class, 'adicionarResponsavel']
 );
 

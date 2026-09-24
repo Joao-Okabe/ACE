@@ -157,6 +157,50 @@ class VinculoTimeController
         }
     }
 
+    public function tornarCapitao(): void
+    {
+        $idTime = (int) ($_POST['id_time'] ?? 0);
+        $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
+
+        if ($idTime <= 0 || $idUsuario <= 0) {
+            http_response_code(400);
+            echo 'Integrante ou time inválido';
+            return;
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+            $this->service()->tornarCapitao($idUsuario, $idTime);
+            header('Location: /times/visualizar?id=' . $idTime);
+            exit;
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo $e->getMessage();
+        }
+    }
+
+    public function removerCapitao(): void
+    {
+        $idTime = (int) ($_POST['id_time'] ?? 0);
+        $idUsuario = (int) ($_POST['cd_usuario'] ?? 0);
+
+        if ($idTime <= 0 || $idUsuario <= 0) {
+            http_response_code(400);
+            echo 'Integrante ou time inválido';
+            return;
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+            $this->service()->removerCapitao($idUsuario, $idTime);
+            header('Location: /times/visualizar?id=' . $idTime);
+            exit;
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo $e->getMessage();
+        }
+    }
+
     public function adicionarTecnico(): void
     {
         $idTime = (int) ($_GET['id'] ?? $_POST['id_time'] ?? 0);

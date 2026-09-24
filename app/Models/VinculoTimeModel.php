@@ -145,6 +145,50 @@ class VinculoTime extends Model{
         ]);
     }
 
+    public function tornarCapitao(int $idUsuario, int $idTime): void
+    {
+        // Bloqueia o time durante a verificação e a atualização para evitar duas nomeações simultâneas.
+        $stmt = $this->pdo->prepare('SELECT cd_time FROM time WHERE cd_time = :cd_time FOR UPDATE');
+        $stmt->execute([':cd_time' => $idTime]);
+        if (!$stmt->fetchColumn()) {
+            throw new Exception('Time não encontrado.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM vinculo_time_integrante WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE'
+        );
+        $stmt->execute([':cd_usuario' => $idUsuario, ':cd_time' => $idTime]);
+        if (!$stmt->fetchColumn()) {
+            throw new Exception('Integrante não encontrado neste time.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM vinculo_time_integrante WHERE cd_time = :cd_time AND ativo = TRUE AND capitao = TRUE LIMIT 1'
+        );
+        $stmt->execute([':cd_time' => $idTime]);
+        if ($stmt->fetchColumn()) {
+            throw new Exception('O time já possui um capitão.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            'UPDATE vinculo_time_integrante SET capitao = TRUE
+             WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE'
+        );
+        $stmt->execute([':cd_usuario' => $idUsuario, ':cd_time' => $idTime]);
+    }
+
+    public function removerCapitao(int $idUsuario, int $idTime): void
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE vinculo_time_integrante SET capitao = FALSE
+             WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE AND capitao = TRUE'
+        );
+        $stmt->execute([':cd_usuario' => $idUsuario, ':cd_time' => $idTime]);
+        if ($stmt->rowCount() === 0) {
+            throw new Exception('Capitão não encontrado neste time.');
+        }
+    }
+
     public function listarResponsaveisTime(int $idTime): array
     {
         $stmt = $this->pdo->prepare(

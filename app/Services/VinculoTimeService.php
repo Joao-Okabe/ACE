@@ -138,6 +138,33 @@ class VinculoTimeService
         }
     }
 
+    public function tornarCapitao(int $idUsuario, int $idTime): void
+    {
+        if ($idUsuario <= 0 || $idTime <= 0) {
+            throw new Exception('Integrante ou time inválido.');
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->tornarCapitao($idUsuario, $idTime);
+            $this->pdo->commit();
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    public function removerCapitao(int $idUsuario, int $idTime): void
+    {
+        if ($idUsuario <= 0 || $idTime <= 0) {
+            throw new Exception('Integrante ou time inválido.');
+        }
+
+        $this->vinculoTimeModel->removerCapitao($idUsuario, $idTime);
+    }
+
     public function listarAlunosTime(int $idTime): array
     {
         return $this->vinculoTimeModel->listarAlunosTime($idTime);

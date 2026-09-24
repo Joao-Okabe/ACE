@@ -130,7 +130,8 @@ class EliminatoriaSimplesService
 
     private function calcularTamanhoChave(
         int $quantidadeTimes
-    ): int {
+    ): int 
+    {
         $tamanho = 1;
 
         while ($tamanho < $quantidadeTimes) {
@@ -142,7 +143,8 @@ class EliminatoriaSimplesService
 
     private function gerarSeeds(
         int $tamanho
-    ): array {
+    ): array 
+    {
         $seeds = [1, 2];
 
         while (count($seeds) < $tamanho) {
