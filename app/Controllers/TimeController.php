@@ -209,11 +209,27 @@ class TimeController
 
         $time = $this->service()->buscar($id);
         $vinculoTimeService = new VinculoTimeService();
+        $podeGerenciar = $vinculoTimeService->usuarioPodeGerenciarTime($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $vinculoTimeService->exigirPermissaoGerenciarTime($id);
+                $vinculoTimeService->salvarEscalacao($id, array_keys($_POST['titulares'] ?? []));
+                header('Location: /times/escalacao?id=' . $id . '&sucesso=1');
+                exit;
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
         $integrantes = $vinculoTimeService->listarIntegrantesTime($id);
 
         renderView('time/escalacao', [
             'time' => $time,
             'integrantes' => $integrantes,
+            'podeGerenciar' => $podeGerenciar,
+            'sucesso' => isset($_GET['sucesso']),
+            'erro' => $erro ?? null,
         ]);
     }
 

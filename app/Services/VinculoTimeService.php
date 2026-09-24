@@ -201,28 +201,59 @@ class VinculoTimeService
         }
     }
 
+    public function salvarEscalacao(int $idTime, array $idUsuariosTitulares): void
+    {
+        if ($idTime <= 0) {
+            throw new Exception('Time inválido.');
+        }
+
+        if (count($idUsuariosTitulares) > 5) {
+            throw new Exception('Apenas 5 jogadores podem ser titulares.');
+        }
+
+        $vinculos = $this->vinculoTimeModel->listarVinculosTime($idTime);
+        $mapa = [];
+        foreach ($vinculos as $vinculo) {
+            $mapa[(int) $vinculo['cd_usuario']] = (int) $vinculo['cd_vinculo_time_integrante'];
+        }
+
+        $titulares = [];
+        foreach ($idUsuariosTitulares as $idUsuario) {
+            $idUsuario = (int) $idUsuario;
+            if ($idUsuario <= 0) {
+                continue;
+            }
+            if (!isset($mapa[$idUsuario])) {
+                throw new Exception('Integrante não pertence a este time.');
+            }
+            $titulares[$mapa[$idUsuario]] = true;
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $this->vinculoTimeModel->limparEscalacao($idTime);
+
+            foreach ($mapa as $cdVinculo) {
+                $this->vinculoTimeModel->inserirEscalacao($cdVinculo, isset($titulares[$cdVinculo]));
+            }
+
+            $this->pdo->commit();
+
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     public function tornarTitular (int $idIntegrante) 
     {
         if ($idIntegrante <= 0) {
             throw new Exception('Integrante inválido.');
         }
 
-        try {
-            $this->pdo->beginTransaction();
-
-            $this->vinculoTimeModel->tornarTitular(
-                $idIntegrante
-            );
-
-            $this->pdo->commit();
-
-        } catch (Exception $e) {
-
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-
-            throw $e;
-        }
+        $this->vinculoTimeModel->inserirEscalacao($idIntegrante, true);
     }
 }

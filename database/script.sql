@@ -212,6 +212,29 @@ CREATE TABLE vinculo_tecnico_time (
     FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE
 );
 
+CREATE TABLE responsavel (
+    cd_responsavel INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_usuario INTEGER NOT NULL,
+    CONSTRAINT responsavel_cd_usuario_fkey
+        FOREIGN KEY (cd_usuario)
+        REFERENCES usuario (cd_usuario),
+    CONSTRAINT responsavel_cd_usuario_unique
+        UNIQUE (cd_usuario)
+);
+
+CREATE TABLE responsavel_time (
+    cd_time INTEGER NOT NULL,
+    cd_responsavel INTEGER NOT NULL,
+    CONSTRAINT responsavel_time_pk
+        PRIMARY KEY (cd_time, cd_responsavel),
+    CONSTRAINT responsavel_time_cd_time_fkey
+        FOREIGN KEY (cd_time)
+        REFERENCES time (cd_time),
+    CONSTRAINT responsavel_time_cd_responsavel_fkey
+        FOREIGN KEY (cd_responsavel)
+        REFERENCES responsavel (cd_responsavel)
+);
+
 -- ============================================================
 -- 8. INSCRIÇÃO NA COMPETIÇÃO
 -- ============================================================

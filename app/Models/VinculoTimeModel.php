@@ -229,12 +229,16 @@ class VinculoTime extends Model{
                 vti.capitao,
                 u.nm_usuario,
                 u.path_ft_usuario AS foto_perfil,
-                fi.nm_funcao AS nm_funcao_integrante
+                fi.nm_funcao AS nm_funcao_integrante,
+                ei.titular
             FROM vinculo_time_integrante vti
             INNER JOIN usuario u
                 ON u.cd_usuario = vti.cd_usuario
             INNER JOIN funcao_integrante fi
                 ON fi.cd_funcao_integrante = vti.cd_funcao_integrante
+            LEFT JOIN escalacao_time ei
+                ON ei.cd_vinculo_time_integrante = vti.cd_vinculo_time_integrante
+                AND ei.ativo = TRUE
             WHERE vti.ativo = TRUE
                 AND vti.cd_time = :cd_time
             ORDER BY u.nm_usuario"
@@ -293,7 +297,37 @@ class VinculoTime extends Model{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function tornarTitular (int $idIntegrante) 
+    public function listarVinculosTime(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT
+                cd_vinculo_time_integrante,
+                cd_usuario
+            FROM vinculo_time_integrante
+            WHERE cd_time = :cd_time
+                AND ativo = TRUE"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function limparEscalacao(int $idTime): void
+    {
+        $stmt = $this->pdo->prepare(
+            "DELETE FROM escalacao_time
+            WHERE cd_vinculo_time_integrante IN (
+                SELECT cd_vinculo_time_integrante
+                FROM vinculo_time_integrante
+                WHERE cd_time = :cd_time
+            )"
+        );
+
+        $stmt->execute([':cd_time' => $idTime]);
+    }
+
+    public function inserirEscalacao(int $idVinculo, bool $titular): void
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO escalacao_time (
@@ -305,10 +339,9 @@ class VinculoTime extends Model{
             )"
         );
 
-        ($stmt->execute([
-            ':cd_vinculo_time_integrante' => $idIntegrante,
-            ':titular' => true
-        ]));
+        $stmt->bindValue(':cd_vinculo_time_integrante', $idVinculo, PDO::PARAM_INT);
+        $stmt->bindValue(':titular', $titular, PDO::PARAM_BOOL);
+        $stmt->execute();
     }
 
     public function vincularTecnicoTime (int $idUsuario, int $idTime ) 
