@@ -1,9 +1,21 @@
 <?php
 
-$tecnico = $tecnico ?? [];
 $time = $time ?? [];
 $integrantes = $integrantes ?? [];
+$posicoes = [
+    'pivo' => ['nome' => 'Pivô', 'funcoes' => ['pivô', 'pivo']],
+    'ala-esquerda' => ['nome' => 'Ala-esquerda', 'funcoes' => ['alas esquerdo', 'ala esquerda', 'ala esquerdo']],
+    'ala-direita' => ['nome' => 'Ala-direita', 'funcoes' => ['alas direito', 'ala direita', 'ala direito']],
+    'fixo' => ['nome' => 'Fixo', 'funcoes' => ['fixo']],
+    'goleiro' => ['nome' => 'Goleiro', 'funcoes' => ['goleiro']],
+];
 
+foreach ($posicoes as &$posicao) {
+    $posicao['integrantes'] = array_values(array_filter($integrantes, static function (array $integrante) use ($posicao): bool {
+        return in_array(strtolower(trim($integrante['nm_funcao_integrante'] ?? '')), $posicao['funcoes'], true);
+    }));
+}
+unset($posicao);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -27,55 +39,29 @@ $integrantes = $integrantes ?? [];
 </head>
 <body>
 
-    
+
 <app-header></app-header>
 
 <div class="content">
 
     <div class="header-visualizar ">
-        <a href="/times/escalacao" class="btn-voltar"><i class="bi bi-arrow-left"></i></a>
+        <a href="/times/visualizar?id=<?= (int) $time['cd_time'] ?>" class="btn-voltar" aria-label="Voltar ao time"><i class="bi bi-arrow-left"></i></a>
         <h2 class="form-title">Escalação</h2>
     </div>
-    
+
     <div class="escalacao-layout">
         <div class="card-escalacao">
 
             <div class="campo-futsal">
 
-                <!-- Pivô -->
-                <div class="jogador pivo">
-                    <img src="/img/alunos/joao.jpg" alt="João Silva">
-                    <span>Nome</span>
-                    <small>PIVÔ</small>
-                </div>
-
-                <!-- Ala esquerda -->
-                <div class="jogador ala-esquerda">
-                    <img src="/img/alunos/carlos.jpg" alt="Carlos Souza">
-                    <span>Nome</span>
-                    <small>ALA</small>
-                </div>
-
-                <!-- Ala direita -->
-                <div class="jogador ala-direita">
-                    <img src="/img/alunos/pedro.jpg" alt="Pedro Lima">
-                    <span>Nome</span>
-                    <small>ALA</small>
-                </div>
-
-                <!-- Fixo -->
-                <div class="jogador fixo">
-                    <img src="/img/alunos/rafael.jpg" alt="Rafael Santos">
-                    <span>Nome</span>
-                    <small>FIXO</small>
-                </div>
-
-                <!-- Goleiro -->
-                <div class="jogador goleiro">
-                    <img src="/img/alunos/bruno.jpg" alt="Bruno Alves">
-                    <span>Nome</span>
-                    <small>GOL</small>
-                </div>
+                <?php foreach ($posicoes as $chave => $posicao): ?>
+                    <?php $jogador = $posicao['integrantes'][0] ?? null; ?>
+                    <div class="jogador <?= $chave ?>" data-posicao="<?= $chave ?>">
+                        <img src="<?= htmlspecialchars(upload_url($jogador['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($jogador['nm_usuario'] ?? 'jogador', ENT_QUOTES, 'UTF-8') ?>" <?= $jogador ? '' : 'hidden' ?>>
+                        <span><?= htmlspecialchars($jogador['nm_usuario'] ?? 'Sem integrante', ENT_QUOTES, 'UTF-8') ?></span>
+                        <small><?= htmlspecialchars($posicao['nome'], ENT_QUOTES, 'UTF-8') ?></small>
+                    </div>
+                <?php endforeach; ?>
 
             </div>
         </div>
@@ -84,55 +70,27 @@ $integrantes = $integrantes ?? [];
         <div class="card-posicoes">
 
             <div class="mb-2">
-                <h3 class="form-title">Definir escalação</h3>
-                <p class="form-subtitle">Selecione um jogador para cada posição.</p>
+                <h3 class="form-title">Integrantes por função</h3>
+                <p class="form-subtitle">Os integrantes aparecem nas funções cadastradas no time. Se houver mais de um na mesma função, selecione quem deseja visualizar no campo.</p>
             </div>
 
-                <!-- Goleiro -->
-                <div class="mb-4">
-                    <label for="goleiro" class="form-label">Goleiro</label>
-                    <select class="form-select form-input">
-                        <option value="">Selecione o jogador</option>
-                    </select>
-                </div>
+                <?php foreach (['goleiro', 'fixo', 'ala-esquerda', 'ala-direita', 'pivo'] as $chave): ?>
+                    <?php $posicao = $posicoes[$chave]; ?>
+                    <div class="mb-4">
+                        <label for="<?= $chave ?>" class="form-label"><?= htmlspecialchars($posicao['nome'], ENT_QUOTES, 'UTF-8') ?></label>
+                        <select id="<?= $chave ?>" class="form-select form-input" data-posicao="<?= $chave ?>">
+                            <?php if (!$posicao['integrantes']): ?>
+                                <option value="">Nenhum integrante nesta função</option>
+                            <?php else: ?>
+                                <?php foreach ($posicao['integrantes'] as $integrante): ?>
+                                    <option value="<?= (int) $integrante['cd_usuario'] ?>" data-foto="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                <?php endforeach; ?>
 
-                <!-- Fixo -->
-                <div class="mb-4">
-                    <label for="fixo" class="form-label">Fixo</label>
-                    <select class="form-select form-input">
-                        <option value="">Selecione o jogador</option>
-                    </select>
-                </div>
-
-                <!-- Ala-esquerda -->
-                <div class="mb-4">
-                    <label for="ala-esquerda" class="form-label">Ala-esquerda</label>
-                    <select class="form-select form-input">
-                        <option value="">Selecione o jogador</option>
-                    </select>
-                </div>
-
-                <!-- Ala-direita -->
-                <div class="mb-4">
-                    <label for="ala-direita" class="form-label">Ala-direita</label>
-                    <select class="form-select form-input">
-                        <option value="">Selecione o jogador</option>
-                    </select>
-                </div>
-
-                <!-- Pivô -->
-                <div class="mb-4">
-                    <label for="pivo" class="form-label">Pivô</label>
-                    <select class="form-select form-input">
-                        <option value="">Selecione o jogador</option>
-                    </select>
-                </div>
-
-
-            <div class="d-flex justify-content-end gap-3 mt-4">
-                <a href="/times/escalacao" class="btn btn-secondary">Cancelar</a>
-                <button type="button" class="btn btn-laranja">Confirmar escalação</button>
-            </div>
+                <a href="/times/visualizar?id=<?= (int) $time['cd_time'] ?>" class="btn btn-secondary">Voltar ao time</a>
 
     </div>
 
@@ -143,11 +101,26 @@ $integrantes = $integrantes ?? [];
 
 
     <script>
-        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
-        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>,
+        email: <?= json_encode($usuario['email'] ?? '—') ?>,
         foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
     </script>
 
+    <script>
+        document.querySelectorAll('select[data-posicao]').forEach(select => {
+            select.addEventListener('change', () => {
+                const jogador = document.querySelector(`.jogador[data-posicao="${select.dataset.posicao}"]`);
+                const foto = jogador.querySelector('img');
+                const selecionado = select.selectedOptions[0];
+                jogador.querySelector('span').textContent = selecionado.value ? selecionado.textContent : 'Sem integrante';
+                foto.hidden = !selecionado.value;
+                if (selecionado.value) {
+                    foto.src = selecionado.dataset.foto;
+                    foto.alt = `Foto de ${selecionado.textContent}`;
+                }
+            });
+        });
+    </script>
     <script src="../../js/script.js"></script>
     <script src="../../js/layout.js"></script>
 

@@ -140,7 +140,9 @@ class TimeController
 
         try {
             (new VinculoTimeService())->exigirPermissaoGerenciarTime($id);
-            $this->service()->atualizar($id, $_POST);
+            $dados = $_POST;
+            $dados['path_escudo'] = $_FILES['path_escudo'] ?? null;
+            $this->service()->atualizar($id, $dados);
             header('Location: /times/visualizar?id=' . $id);
             exit;
         } catch (Exception $e) {

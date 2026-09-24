@@ -21,7 +21,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
     <div class="card form-card shadow-sm">
         <h2 class="form-title">Editar time</h2>
         <p class="form-subtitle">
-            Altualize o nome do time.
+            Atualize o nome e a imagem do time.
         </p>
 
         <?php if (!empty($_GET['sucesso'])): ?>
@@ -38,7 +38,15 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
             </div>
         <?php endif; ?>
 
-        <form action="/times/atualizar?id=<?= urlencode($time['cd_time']) ?>" method="post" class="form-grid">
+        <form action="/times/atualizar?id=<?= urlencode($time['cd_time']) ?>" method="post" enctype="multipart/form-data" class="form-grid">
+            <div class="mb-3">
+                <?php if (!empty($time['path_escudo'])): ?>
+                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo']), ENT_QUOTES, 'UTF-8') ?>" alt="Escudo atual do time" class="mb-2 d-block" style="width: 96px; height: 96px; object-fit: contain;">
+                <?php endif; ?>
+                <label class="form-label" for="path_escudo">Imagem do time</label>
+                <input type="file" class="form-control form-input" id="path_escudo" name="path_escudo" accept="image/jpeg,image/png,image/webp">
+                <div class="form-text">Deixe em branco para manter a imagem atual. JPG, PNG ou WEBP, até 2 MB.</div>
+            </div>
 
         <div class="row">    
             <div class="col-12 mb-3">
