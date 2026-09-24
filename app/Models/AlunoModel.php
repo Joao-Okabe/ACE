@@ -76,8 +76,8 @@ class Aluno extends Model
     // v = vinculo
     public function listar(array $filtros = []): array
     {
-        $sql = "
-        SELECT
+        $sql = 
+        "SELECT
             a.*,
             u.email,
             u.nm_usuario,
@@ -88,12 +88,21 @@ class Aluno extends Model
                 INNER JOIN escola e ON e.cd_escola = up.cd_escola
                 WHERE up.cd_usuario = a.cd_usuario
                     AND up.ativo = TRUE
+                ORDER BY up.criado_em DESC
                 LIMIT 1
-            ) AS escola
+            ) AS escola,
+
+            (
+                SELECT up.cd_escola
+                FROM vinculo_usuario_escola up
+                WHERE up.cd_usuario = a.cd_usuario
+                    AND up.ativo = TRUE
+                ORDER BY up.criado_em DESC
+                LIMIT 1
+            ) AS cd_escola
         FROM aluno a
         INNER JOIN usuario u
-            ON u.cd_usuario = a.cd_usuario
-        ";
+            ON u.cd_usuario = a.cd_usuario";
 
         $filtrosSql = $this->filtro->filtrosAluno($filtros);
 

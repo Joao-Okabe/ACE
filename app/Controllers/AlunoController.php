@@ -75,10 +75,28 @@ class AlunoController
         $alunos = $this->service()->listar($filtros);
         $escolas = (new EscolaService())->listar();
 
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $vinculoModel = new VinculoUsuarioEscola();
+        $podeGerenciar = [];
+
+        foreach ($alunos as $aluno) {
+            $idAluno = (int) ($aluno['cd_aluno'] ?? 0);
+            $idEscola = (int) ($aluno['cd_escola'] ?? 0);
+
+            $podeGerenciar[$idAluno] = (
+                $idEscola > 0
+                && $vinculoModel->usuarioPodeGerenciarEscola(
+                    $idUsuario,
+                    $idEscola
+                )
+            );
+        }
+
         renderView('aluno/listar', [
             'alunos' => $alunos,
             'escolas' => $escolas,
             'filtros' => $filtros,
+            'podeGerenciar' => $podeGerenciar,
         ]);
     }
 

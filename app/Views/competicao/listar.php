@@ -3,6 +3,7 @@ $usuario = $usuario ?? null;
 
 $escolas = $escolas ?? [];
 $competicoes = $competicoes ?? [];
+$podeGerenciar = $podeGerenciar ?? [];
 
 // Gera CSRF token se necessário
 if (empty($_SESSION['csrf_token'])) {
@@ -128,6 +129,7 @@ if (!empty($_SESSION['flash'])) {
             </thead>
 
             <tbody class="table-group-divider">
+
             <?php foreach ($competicoes as $competicao): ?>
                 <tr>
                     <td><?= htmlspecialchars($competicao['cd_competicao']) ?></td>
@@ -135,14 +137,19 @@ if (!empty($_SESSION['flash'])) {
                     <td><?= htmlspecialchars($competicao['cd_criador'] ?? '') ?></td>
                     <td><?= htmlspecialchars(substr((string) ($competicao['inicio_em'] ?? ''), 0, 10)) ?></td>
                     <td><?= htmlspecialchars(substr((string) ($competicao['fim_em'] ?? ''), 0, 10)) ?></td>
+                    <?php
+                        $idCompeticao = (int) ($competicao['cd_competicao'] ?? 0);
+                        $podeEditarExcluir = $podeGerenciar[$idCompeticao] ?? false;
+                    ?>
                     <td class="acoes">
                         <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/competicoes/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
+                        <?php if ($podeEditarExcluir): ?>
+                            <a href="/competicoes/editar?id=<?= urlencode($competicao['cd_competicao']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
 
                             <form method="post" action="/competicoes/remover" class="form-excluir">
                                 <input type="hidden" name="id" value="<?= (int) $competicao['cd_competicao'] ?>">
@@ -151,8 +158,9 @@ if (!empty($_SESSION['flash'])) {
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>
-                        </td>
-                    </tr>
+                        <?php endif; ?>
+                    </td>
+                </tr>
             <?php endforeach; ?>
             </tbody>
             </table>
