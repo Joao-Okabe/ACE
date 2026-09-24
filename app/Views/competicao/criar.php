@@ -30,6 +30,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
 
     <title>Criar Competição</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

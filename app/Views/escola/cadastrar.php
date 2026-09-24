@@ -20,6 +20,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 
 
     <title>Cadastro escola</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

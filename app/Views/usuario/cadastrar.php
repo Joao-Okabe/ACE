@@ -27,7 +27,8 @@ $valor = function ($campo) use ($dados) {
     <link rel="stylesheet" href="../../css/auth.css">
 
 
-    <title>ACE - Cadastro</title>
+    <title>Cadastro</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body class="cor"> 
 

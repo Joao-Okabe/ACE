@@ -24,7 +24,7 @@ $qtCompeticao = $qtCompeticao ?? 0;
     <link rel="stylesheet" href="../../css/painel.css">
 
     <title>Painel</title>
-    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 

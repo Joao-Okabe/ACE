@@ -5,6 +5,7 @@ http_response_code(404);
 <html lang="pt-br">
 <head>
     <title>Página não encontrada - 404</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     

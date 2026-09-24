@@ -28,7 +28,7 @@ $responsaveis = $responsaveis ?? [];
 
 
     <title>Times</title>
-    <link rel="icon" type="image/png" href="../../img/logo-ace-completa.png">
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
     <app-header></app-header>

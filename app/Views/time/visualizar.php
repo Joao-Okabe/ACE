@@ -21,6 +21,7 @@ $podeGerenciar = $podeGerenciar ?? false;
 
 
     <title>Visualizar time</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
 
