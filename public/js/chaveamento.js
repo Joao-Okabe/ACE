@@ -1,162 +1,163 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const container = document.getElementById('chaveamento-container');
 
-    if (!container) {
+    if (!container || !window.chaveamento) {
         return;
     }
 
-    container.innerHTML = `
+    const dados = window.chaveamento;
 
-        <div class="bracket" data-times="<?= count($times) ?>">
+    if (!dados.length) {
+        container.innerHTML = '<p>Nenhum chaveamento foi gerado.</p>';
+        return;
+    }
 
-            <!-- 16AVOS-->
-            <div class="bracket-coluna">
+    const rodadas = agruparRodadas(dados);
+    const quantidadeTimes = contarTimes(dados);
 
-                <div class="round-title">
-                    16-AVOS DE FINAL
+    let html = `<div class="bracket" data-times="${quantidadeTimes}">`;
+
+    rodadas.forEach((rodada, indice) => {
+        html += criarColunaRodada(rodada);
+
+        if (indice < rodadas.length - 1) {
+            const proximaRodada = rodadas[indice + 1];
+            const classeConexao = criarClasseConexao(rodada, proximaRodada);
+
+            html += `
+                <div class="bracket-conexoes ${classeConexao}">
+                    ${criarConexoes(proximaRodada.confrontos.length)}
                 </div>
+            `;
+        }
+    });
 
-                <div class="round dezesseisavos">
-                    ${criarPartida('Time 01', '/img/escudo-time-1.png', 'Time 02', '/img/escudo-time-2.png')}
-                    ${criarPartida('Time 03', '/img/escudo-time-3.png', 'Time 04', '/img/escudo-time-4.png')}
-                    ${criarPartida('Time 05', '/img/escudo-time-5.png', 'Time 06', '/img/escudo-time-6.png')}
-                    ${criarPartida('Time 07', '/img/escudo-time-7.png', 'Time 08', '/img/escudo-time-8.png')}
-                    ${criarPartida('Time 09', '/img/escudo-time-9.png', 'Time 10', '/img/escudo-time-10.png')}
-                    ${criarPartida('Time 11', '/img/escudo-time-11.png', 'Time 12', '/img/escudo-time-12.png')}
-                    ${criarPartida('Time 13', '/img/escudo-time-13.png', 'Time 14', '/img/escudo-time-14.png')}
-                    ${criarPartida('Time 15', '/img/escudo-time-15.png', 'Time 16', '/img/escudo-time-16.png')}
-                    ${criarPartida('Time 17', '/img/escudo-time-17.png', 'Time 18', '/img/escudo-time-18.png')}
-                    ${criarPartida('Time 19', '/img/escudo-time-19.png', 'Time 20', '/img/escudo-time-20.png')}
-                    ${criarPartida('Time 21', '/img/escudo-time-21.png', 'Time 22', '/img/escudo-time-22.png')}
-                    ${criarPartida('Time 23', '/img/escudo-time-23.png', 'Time 24', '/img/escudo-time-24.png')}
-                    ${criarPartida('Time 25', '/img/escudo-time-25.png', 'Time 26', '/img/escudo-time-26.png')}
-                    ${criarPartida('Time 27', '/img/escudo-time-27.png', 'Time 28', '/img/escudo-time-28.png')}
-                    ${criarPartida('Time 29', '/img/escudo-time-29.png', 'Time 30', '/img/escudo-time-30.png')}
-                    ${criarPartida('Time 31', '/img/escudo-time-31.png', 'Time 32', '/img/escudo-time-32.png')}
-                </div>
+    html += '</div>';
 
-            </div>
+    container.innerHTML = html;
 
-
-            <!-- CONEXÃO 16AVOS > OITAVAS -->
-            <div class="bracket-conexoes dezesseisavos-para-oitavas">
-                ${criarConexoes(8)}
-            </div>
-
-
-            <!-- OITAVAS -->
-            <div class="bracket-coluna">
-
-                <div class="round-title">
-                    OITAVAS DE FINAL
-                </div>
-
-                <div class="round oitavas">
-                    ${criarPartida('Vencedor 16A1', '/img/escudo-time-1.png', 'Vencedor 16A2', '/img/escudo-time-2.png')}
-                    ${criarPartida('Vencedor 16A3', '/img/escudo-time-3.png', 'Vencedor 16A4', '/img/escudo-time-4.png')}
-                    ${criarPartida('Vencedor 16A5', '/img/escudo-time-5.png', 'Vencedor 16A6', '/img/escudo-time-6.png')}
-                    ${criarPartida('Vencedor 16A7', '/img/escudo-time-7.png', 'Vencedor 16A8', '/img/escudo-time-8.png')}
-                    ${criarPartida('Vencedor 16A9', '/img/escudo-time-9.png', 'Vencedor 16A10', '/img/escudo-time-10.png')}
-                    ${criarPartida('Vencedor 16A11', '/img/escudo-time-11.png', 'Vencedor 16A12', '/img/escudo-time-12.png')}
-                    ${criarPartida('Vencedor 16A13', '/img/escudo-time-13.png', 'Vencedor 16A14', '/img/escudo-time-14.png')}
-                    ${criarPartida('Vencedor 16A15', '/img/escudo-time-15.png', 'Vencedor 16A16', '/img/escudo-time-16.png')}
-                </div>
-
-            </div>
-
-
-            <!-- CONEXÃO OITAVAS > QUARTAS -->
-            <div class="bracket-conexoes oitavas-para-quartas">
-                ${criarConexoes(4)}
-            </div>
-
-
-            <!-- QUARTAS -->
-            <div class="bracket-coluna">
-
-                <div class="round-title">
-                    QUARTAS DE FINAL
-                </div>
-
-                <div class="round quartas">
-                    ${criarPartida('Vencedor O1', '/img/escudo-time-1.png', 'Vencedor O2', '/img/escudo-time-2.png')}
-                    ${criarPartida('Vencedor O3', '/img/escudo-time-3.png', 'Vencedor O4', '/img/escudo-time-4.png')}
-                    ${criarPartida('Vencedor O5', '/img/escudo-time-5.png', 'Vencedor O6', '/img/escudo-time-6.png')}
-                    ${criarPartida('Vencedor O7', '/img/escudo-time-7.png', 'Vencedor O8', '/img/escudo-time-8.png')}
-                </div>
-
-            </div>
-
-
-            <!-- CONEXÃO QUARTAS > SEMIFINAL -->
-            <div class="bracket-conexoes quartas-para-semifinal">
-                ${criarConexoes(2)}
-            </div>
-
-
-            <!-- SEMIFINAL -->
-            <div class="bracket-coluna">
-
-                <div class="round-title">
-                    SEMIFINAL
-                </div>
-
-                <div class="round semifinal">
-                    ${criarPartida('Vencedor Q1', '/img/escudo-time-1.png', 'Vencedor Q2', '/img/escudo-time-2.png')}
-                    ${criarPartida('Vencedor Q3', '/img/escudo-time-3.png', 'Vencedor Q4', '/img/escudo-time-4.png')}
-                </div>
-
-            </div>
-
-
-            <!-- CONEXÃO SEMIFINAL > FINAL-->
-            <div class="bracket-conexoes semifinal-para-final">
-                ${criarConexoes(1)}
-            </div>
-
-
-            <!-- FINAL= -->
-            <div class="bracket-coluna">
-
-                <div class="round-title">
-                    FINAL
-                </div>
-
-                <div class="round final">
-                    ${criarPartida('Vencedor S1', '/img/escudo-time-1.png', 'Vencedor S2', '/img/escudo-time-2.png')}
-                </div>
-
-            </div>
-
-        </div>
-    `;
+    console.log('Chaveamento carregado:', dados);
+    console.log('Rodadas:', rodadas);
+    console.log('Times:', quantidadeTimes);
 });
 
 
-/* Cria uma partida */
-function criarPartida(time1, escudo1, time2, escudo2) {
-    return `
-        <div class="partida">
+function agruparRodadas(dados) {
+    const mapa = new Map();
 
-            <div class="time">
-                <img src="${escudo1}" alt="Escudo do ${time1}">
-                <span>${time1}</span>
+    dados.forEach(item => {
+        const numero = Number(item.nr_rodada);
+
+        if (!mapa.has(numero)) {
+            mapa.set(numero, {
+                numero,
+                nome: item.nm_rodada,
+                confrontos: new Map()
+            });
+        }
+
+        const rodada = mapa.get(numero);
+        const idConfronto = Number(item.cd_confronto);
+
+        if (!rodada.confrontos.has(idConfronto)) {
+            rodada.confrontos.set(idConfronto, {
+                id: idConfronto,
+                numero: Number(item.nr_confronto),
+                status: item.status,
+                vencedor: item.cd_vencedor,
+                participantes: []
+            });
+        }
+
+        rodada.confrontos.get(idConfronto).participantes.push(item);
+    });
+
+    return Array.from(mapa.values())
+        .sort((a, b) => a.numero - b.numero)
+        .map(rodada => ({
+            ...rodada,
+            confrontos: Array.from(rodada.confrontos.values())
+                .sort((a, b) => a.numero - b.numero)
+        }));
+}
+
+function criarColunaRodada(rodada) {
+    const classeRodada = classeDaRodada(rodada.nome);
+
+    return `
+        <div class="bracket-coluna">
+
+            <div class="round-title">
+                ${escapeHtml(rodada.nome)}
             </div>
 
-            <div class="time">
-                <img src="${escudo2}" alt="Escudo do ${time2}">
-                <span>${time2}</span>
+            <div class="round ${classeRodada}">
+                ${rodada.confrontos
+                    .map(confronto => criarConfronto(confronto))
+                    .join('')}
             </div>
 
         </div>
     `;
 }
 
+function criarConfronto(confronto) {
+    const participantes = confronto.participantes;
 
-/* Cria conexão */
+    const participante1 = participantes.find(p => Number(p.posicao) === 1);
+    const participante2 = participantes.find(p => Number(p.posicao) === 2);
+
+    return `
+        <div class="partida">
+            ${criarParticipante(participante1)}
+            ${criarParticipante(participante2)}
+        </div>
+    `;
+}
+
+
+function criarParticipante(participante) {
+    if (!participante) {
+        return `
+            <div class="time">
+                <span>A definir</span>
+            </div>
+        `;
+    }
+
+    let nome = 'A definir';
+    let escudo = null;
+
+    if (participante.tipo_origem === 'TIME') {
+        nome = participante.nm_time || 'Time';
+        escudo = participante.path_escudo;
+    }
+
+    if (participante.tipo_origem === 'CONFRONTO') {
+        nome = `Vencedor C${participante.origem_confronto}`;
+    }
+
+    if (participante.tipo_origem === 'BYE') {
+        nome = 'BYE';
+    }
+
+    return `
+        <div class="time">
+            ${escudo ? `
+                <img
+                    src="${escapeHtml(escudo)}"
+                    alt="Escudo do ${escapeHtml(nome)}"
+                >
+            ` : ''}
+            <span>${escapeHtml(nome)}</span>
+        </div>
+    `;
+}
+
+
 function criarConexoes(quantidade) {
     let conexoes = '';
+
     for (let i = 0; i < quantidade; i++) {
         conexoes += `
             <div class="conexao">
@@ -171,17 +172,60 @@ function criarConexoes(quantidade) {
     return conexoes;
 }
 
-/* Tipo de chaveamento */
-document.addEventListener('DOMContentLoaded', () => {
-    const bracket = document.querySelector('.bracket');
-    if (!bracket) {
-        return;
-    }
-    const quantidadeTimes = Number(
-        bracket.dataset.times || 0
-    );
-    console.log(
-        `Chaveamento carregado: ${quantidadeTimes} times`
-    );
 
-});
+function classeDaRodada(nome) {
+    const nomeNormalizado = String(nome || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+    if (nomeNormalizado.includes('16-avos')) {
+        return 'dezesseisavos';
+    }
+
+    if (nomeNormalizado.includes('oitavas')) {
+        return 'oitavas';
+    }
+
+    if (nomeNormalizado.includes('quartas')) {
+        return 'quartas';
+    }
+
+    if (nomeNormalizado.includes('semifinal')) {
+        return 'semifinal';
+    }
+
+    if (nomeNormalizado.includes('final')) {
+        return 'final';
+    }
+
+    return 'rodada';
+}
+
+function criarClasseConexao(rodadaAtual, proximaRodada) {
+    const atual = classeDaRodada(rodadaAtual.nome);
+    const proxima = classeDaRodada(proximaRodada.nome);
+
+    return `${atual}-para-${proxima}`;
+}
+
+function contarTimes(dados) {
+    const times = new Set();
+
+    dados.forEach(item => {
+        if (item.tipo_origem === 'TIME' && item.cd_time) {
+            times.add(Number(item.cd_time));
+        }
+    });
+
+    return times.size;
+}
+
+function escapeHtml(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}

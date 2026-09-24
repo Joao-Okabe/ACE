@@ -4,6 +4,7 @@ $dados = $competicao ?? [];
 $periodoInscricao = $periodoInscricao ?? null;
 $timesInscritos = $timesInscritos ?? [];
 $timesDisponiveis = $timesDisponiveis ?? [];
+$chaveamento = $chaveamento ?? []; 
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($valor, 0, 10), ENT_QUOTES, 'UTF-8') : 'Não definida';
 ?>
@@ -243,7 +244,12 @@ Inscrição
     </div>
 
 </div>
-
+<script>
+window.chaveamento = <?= json_encode(
+    $chaveamento,
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+) ?>;
+</script>
 <script>
 
 window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
