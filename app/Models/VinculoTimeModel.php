@@ -122,13 +122,18 @@ class VinculoTime extends Model{
             )"
         );
 
-        $stmt->execute([
-            ':usuario' => $idUsuario,
-            ':cd_time' => $idTime,
-            ':cd_funcao_integrante' => $idFuncaoIntegrante,
-            ':numero_camisa' => $numeroCamisa,
-            ':capitao' => $capitao
-        ]);
+        //liga o parametro e o valor
+        $stmt->bindValue(':usuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':cd_time', $idTime, PDO::PARAM_INT);
+        $stmt->bindValue(':cd_funcao_integrante', $idFuncaoIntegrante, PDO::PARAM_INT);
+        if ($numeroCamisa === null) {
+            $stmt->bindValue(':numero_camisa', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(':numero_camisa', $numeroCamisa, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(':capitao', $capitao, PDO::PARAM_BOOL);
+
+        $stmt->execute();
     }
 
     public function removerTimeIntegrante(int $idUsuario, int $idTime): void
