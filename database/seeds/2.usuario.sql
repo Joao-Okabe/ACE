@@ -18,8 +18,6 @@ VALUES
 ('Aluno 6', 'aluno6@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Aluno 7', 'aluno7@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Aluno 8', 'aluno8@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
-('Aluno 9', 'aluno9@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
-('Aluno 10', 'aluno10@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC');
 ('Axl Rose', 'axl@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Duff McKagan', 'duff@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Richard Fortus', 'fortus@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
@@ -40,6 +38,8 @@ VALUES
 ('Chiquinha', 'ueeueeuee@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Professor Girafales', 'tatatata@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Chaves', 'chavinhoquegostosochavinho@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Dona Florinda', '@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
+('Seu Barriga', '@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Cubismo', 'nadatemcomcubos@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Dadaísmo', 'rebeldia@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
 ('Expressionismo', 'ocabagritandonaponte@gmail.com', '$2a$12$uIfCzkWNVpU56aDwp9qyiuVnC6U2osMlK1o0x8VtIm9OAvAOwr1LC'),
