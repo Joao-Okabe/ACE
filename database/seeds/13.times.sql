@@ -2,6 +2,7 @@ INSERT INTO time (
     nm_time,
     cd_esporte
 ) VALUES
+('Primeiro Time', 2),
 ('Guns N’ Rosas FC', 2),
 ('Gurizada FC', 2),
 ('Calça Quadrada FC', 2),

@@ -16,6 +16,10 @@ foreach ($posicoes as &$posicao) {
     }));
 }
 unset($posicao);
+
+$podeGerenciar = $podeGerenciar ?? false;
+$titularesSalvos = array_filter($integrantes, static fn (array $i): bool => in_array($i['titular'] ?? null, [true, 1, '1', 't'], true));
+$titularesSalvos = array_map(static fn (array $i): int => (int) $i['cd_usuario'], $titularesSalvos);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -70,28 +74,41 @@ unset($posicao);
         <!-- CARD DOS SELECTS -->
         <div class="card-posicoes">
 
+            <?php if (!empty($sucesso)): ?>
+                <div class="alert alert-success">Escalacão salva com sucesso.</div>
+            <?php elseif (!empty($erro)): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+
             <div class="mb-2">
                 <h3 class="form-title">Integrantes por função</h3>
-                <p class="form-subtitle">Os integrantes aparecem nas funções cadastradas no time. Se houver mais de um na mesma função, selecione quem deseja visualizar no campo.</p>
+                <p class="form-subtitle"><?= $podeGerenciar ? 'Selecione os jogadores titulares e salve a escalacão.' : 'Apenas o responsável pelo time pode alterar a escalacão.' ?></p>
             </div>
+
+            <form method="post" action="/times/escalacao">
+                <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
 
                 <?php foreach (['goleiro', 'fixo', 'ala-esquerda', 'ala-direita', 'pivo'] as $chave): ?>
                     <?php $posicao = $posicoes[$chave]; ?>
                     <div class="mb-4">
                         <label for="<?= $chave ?>" class="form-label"><?= htmlspecialchars($posicao['nome'], ENT_QUOTES, 'UTF-8') ?></label>
-                        <select id="<?= $chave ?>" class="form-select form-input" data-posicao="<?= $chave ?>">
-                            <?php if (!$posicao['integrantes']): ?>
-                                <option value="">Nenhum integrante nesta função</option>
-                            <?php else: ?>
-                                <?php foreach ($posicao['integrantes'] as $integrante): ?>
-                                    <option value="<?= (int) $integrante['cd_usuario'] ?>" data-foto="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?></option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <select id="<?= $chave ?>" name="titulares[<?= $chave ?>]" class="form-select form-input" data-posicao="<?= $chave ?>" <?= $podeGerenciar ? '' : 'disabled' ?>>
+                            <option value="">Nenhum jogador nesta posição</option>
+                            <?php foreach ($posicao['integrantes'] as $integrante): ?>
+                                <option value="<?= (int) $integrante['cd_usuario'] ?>" data-foto="<?= htmlspecialchars(upload_url($integrante['foto_perfil'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" <?= in_array((int) $integrante['cd_usuario'], $titularesSalvos, true) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($integrante['nm_usuario'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 <?php endforeach; ?>
 
+                <?php if ($podeGerenciar): ?>
+                    <button type="submit" class="btn btn-laranja">Salvar escalacão</button>
+                <?php endif; ?>
+
                 <a href="/times/visualizar?id=<?= (int) $time['cd_time'] ?>" class="btn btn-secondary">Voltar ao time</a>
+            </form>
 
     </div>
 

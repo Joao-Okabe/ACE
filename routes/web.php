@@ -220,6 +220,10 @@ $router->get(
     '/times/escalacao', [TimeController::class, 'escalacao']
 );
 
+$router->post(
+    '/times/escalacao', [TimeController::class, 'escalacao']
+);
+
 $router->get(
     '/partidas/criar', [PartidaController::class, 'create']
 );
