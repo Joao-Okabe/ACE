@@ -182,6 +182,11 @@ class UsuarioService
         return $usuario ?: null;
     }
 
+    public function listarVinculos(int $idUsuario): array
+    {
+        return $this->vinculoUsuarioEscolaModel->listarVinculo($idUsuario);
+    }
+
     public function atualizar(int $id, array $dados): void
     {
         $nome = trim((string) ($dados['nm_usuario'] ?? ''));

@@ -95,7 +95,12 @@ class UsuarioController
             return;
         }
 
-        renderView('usuario/editar', ['dados' => $usuario]);
+        $vinculos = $this->service()->listarVinculos($id);
+
+        renderView('usuario/editar', [
+            'dados' => $usuario,
+            'vinculos' => $vinculos
+        ]);
     }
 
     public function update(): void

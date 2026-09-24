@@ -1,4 +1,6 @@
 <?php
+$vinculos = $vinculos ?? [];
+
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
@@ -50,6 +52,43 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 				<button type="submit" class="btn btn-laranja">Salvar alterações</button>
 			</div>
 		</form>
+	</div>
+	<div class="form-card shadow-sm mt-5">
+		<h1 class="form-title">Vinculos da conta</h1>
+		<p class="form-subtitle">Confira seus vinculos com escolas e seus respectivos papeis.</p>
+
+		<div class="card-body">
+			<?php if (empty($vinculos)): ?>
+				<p class="text-muted mb-0">Nenhum vínculo encontrado.</p>
+			<?php else: ?>
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Escola</th>
+								<th>Papel</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ($vinculos as $vinculo): ?>
+								<tr>
+									<td><?= htmlspecialchars($vinculo['nm_escola']) ?></td>
+									<td><?= htmlspecialchars($vinculo['nm_papel']) ?></td>
+									<td>
+										<?php if ($vinculo['ativo']): ?>
+											<span class="badge bg-success">Ativo</span>
+										<?php else: ?>
+											<span class="badge bg-secondary">Inativo</span>
+										<?php endif; ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			<?php endif; ?>
+		</div>
 	</div>
 </main>
 <script>

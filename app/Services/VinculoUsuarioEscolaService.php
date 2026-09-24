@@ -15,6 +15,11 @@ class VinculoUsuarioEscolaService
         $this->vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
     }
 
+    public function listarVinculos(int $idUsuario): array
+    {
+        return $this->vinculoUsuarioEscolaModel->listarVinculo($idUsuario);
+    }
+
     public function isUsuarioDiretor(int $idUsuario, int $idEscola)
     {
         return $this->vinculoUsuarioEscolaModel->isUsuarioDiretor($idUsuario, $idEscola);

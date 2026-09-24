@@ -3,6 +3,7 @@ $usuario = $usuario ?? null;
 
 $escolas = $escolas ?? [];
 $alunos = $alunos ?? [];
+$podeGerenciar = $podeGerenciar ?? [];
 
 // Gera CSRF token se necessário
 if (empty($_SESSION['csrf_token'])) {
@@ -141,22 +142,28 @@ if (!empty($_SESSION['flash'])) {
                     <td><?= htmlspecialchars($aluno['ra'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['escola'] ?? '') ?></td>
                     <td><?= htmlspecialchars($aluno['telefone'] ?? '') ?></td>
+                    <?php
+                    $idAluno = (int) ($aluno['cd_aluno'] ?? 0);
+                    $podeEditarExcluir = $podeGerenciar[$idAluno] ?? false;
+                    ?>
                     <td class="acoes">
                         <a href="/alunos/visualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
 
-                        <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
+                        <?php if ($podeEditarExcluir): ?>
+                            <a href="/alunos/editar?id=<?= urlencode($aluno['cd_aluno']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
 
-                        <form method="post" action="/alunos/remover" class="form-excluir">
-                            <input type="hidden" name="id" value="<?= (int) $aluno['cd_aluno'] ?>">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-                            <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </form>
+                            <form method="post" action="/alunos/remover" class="form-excluir">
+                                <input type="hidden" name="id" value="<?= $idAluno ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" class="btn btn-delete btn-sm" title="Excluir">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

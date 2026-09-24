@@ -27,19 +27,30 @@ class VinculoUsuarioEscola extends Model
         ]);
     }
 
-    public function listarVinculo (int $idUsuario) {
-        $stmt = $this->pdo->prepare(
-            "SELECT cd_escola, cd_papel
-            FROM vinculo_usuario_escola
-            WHERE cd_usuario = :cd_usuario"
-        );
+    public function listarVinculo(int $idUsuario): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                v.cd_escola,
+                e.nm_escola,
+                v.cd_papel,
+                p.nm_papel,
+                v.ativo
+            FROM vinculo_usuario_escola v
+            INNER JOIN escola e
+                ON e.cd_escola = v.cd_escola
+            INNER JOIN papel p
+                ON p.cd_papel = v.cd_papel
+            WHERE v.cd_usuario = :cd_usuario
+            ORDER BY e.nm_escola, p.nm_papel
+        ");
 
         $stmt->execute([
             ':cd_usuario' => $idUsuario
         ]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+    }
 
     public function escolaAtualPorPapeis(int $idUsuario, array $papeis): ?int
     {
