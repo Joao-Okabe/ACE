@@ -22,9 +22,21 @@ $usuarios = $usuarios ?? [];
         <div class="card form-card shadow-sm">
             <form action="/times/adicionar-tecnico?id=<?= (int) ($times['cd_time'] ?? 0) ?>" method="post">
                 <input type="hidden" name="id_time" value="<?= (int) ($times['cd_time'] ?? 0) ?>">
-                <h1 class="form-title">Adicionar técnico ao time</h1>
-                <p class="form-subtitle">Selecione um usuário para vincular como técnico.</p>
 
+        <div class="mb-2">
+            <div class="header-form">
+                <a href="/times/listar" class="btn-voltar" aria-label="Voltar">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Adicionar técnico ao time</h2>
+                    <p class="form-subtitle">Selecione um usuário para vincular como técnico.</p>
+                </div>
+            </div>
+        </div>
+
+            <div class="form-section"> 
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="time" class="form-label">Time</label>
@@ -43,6 +55,7 @@ $usuarios = $usuarios ?? [];
                         </select>
                     </div>
                 </div>
+            </div>
 
                 <div class="actions full d-flex justify-content-end gap-3 mt-4">
                     <a href="/times/visualizar?id=<?= (int) ($times['cd_time'] ?? 0) ?>" class="btn btn-secondary">Cancelar</a>

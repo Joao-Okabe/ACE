@@ -22,7 +22,18 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
 
 <div class="content">
     <div class="card form-card shadow-sm">
-        <h2 class="form-title">Editar competição</h2>
+        <div class="mb-2">
+            <div class="header-form">
+                <a href="/competicoes/visualizar" class="btn-voltar" aria-label="Voltar">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Editar Competição</h2>
+                    <p class="form-subtitle">Altere os dados da competição.</p>
+                </div>
+            </div>
+        </div>
 
         <?php if (!empty($_GET['sucesso'])): ?>
             <div class="alert alert-success auth-success" role="alert" aria-live="polite">
@@ -39,7 +50,8 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
         <?php endif; ?>
 
         <form action="/competicoes/atualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
-            <div class="row">
+           <div class="form-section">
+             <div class="row">
                 <div class="col-12 mb-3">
                     <label class="form-label" for="nm_competicao">Nome da competição</label>
                     <input class="form-control form-input" type="text" id="nm_competicao" name="nm_competicao" value="<?= $valor('nm_competicao') ?>" required placeholder="Digite o nome da competição">
@@ -56,17 +68,22 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
                     <label class="form-label" for="dt_encerramento">Data de encerramento</label>
                     <input class="form-control form-input" type="date" id="dt_encerramento" name="dt_encerramento" value="<?= $data('fim_em') ?>">
                 </div>
+            </div>
+        </div>
 
-                <div class="d-flex justify-content-end gap-3 mt-4">
+                <div class="d-flex justify-content-end gap-3 mt-4 mb-5">
                     <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-laranja">Salvar alterações</button>
                 </div>
-            </div>
         </form>
 
-        <h2 class="form-title">Adicionar período de inscrição</h2>
-        <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
+        <div class="mb-4">
+            <h2 class="form-title">Adicionar período de inscrição</h2>
+            <p class="form-subtitle">Defina o período de inscrição da competição.</p>
+        </div>
 
+        <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
+        <div class="form-section">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="dt_inicio_inscricao">Data de início das Inscrições</label>
@@ -77,15 +94,16 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
                     <label class="form-label" for="dt_encerramento_inscricao">Data de encerramento das Inscrições</label>
                     <input class="form-control form-input" type="date" id="dt_encerramento_inscricao" name="dt_encerramento_inscricao" value="<?= $data('fim_em') ?>">
                 </div>
-
+            </div>
+        </div>
                 <div class="d-flex justify-content-end gap-3 mt-4">
                     <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-laranja">Adicionar Período de Inscrição</button>
                 </div>
-            </div>
         </form>
     </div>
 </div>
+
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>
 

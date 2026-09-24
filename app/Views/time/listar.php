@@ -40,7 +40,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <h2 class="form-title">Times</h2>
             <p class="form-subtitle">Gerencie os times da sua escola.</p>
         </div>
-        <div class="d-flex flex-column flex-md-row justify-content-between  mb-4">
+        <div>
             <a href="/times/criar" class="btn btn-laranja">
             + Adicionar time
             </a>
@@ -52,6 +52,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <div class="card-body">
             <div class="d-flex justify-content-between mb-4">
                 <form class="row gx-2 gy-2 align-items-center w-100" method="get" action="/times/listar">
+
                     <div class="col-md-4">
                         <div class="input-group pesquisa-escola">
                             <div class="form-input-group search-box">
@@ -124,7 +125,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <tr>
                     <td>
                         <div class="tc list-perfil">
-                            <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                            <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/escudo.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
                         </div>
                     </td>
                     <td><?= htmlspecialchars($time['cd_time']) ?></td>
@@ -166,9 +167,9 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             </div>
 
             <div class="modal-body text-center">
-                <h3 id="modalExcluirTitulo">Excluir aluno?</h3>
+                <h3 id="modalExcluirTitulo">Excluir time?</h3>
                 <p>
-                    Tem certeza de que deseja excluir este aluno? <br>
+                    Tem certeza de que deseja excluir este time? <br>
                     Essa ação não poderá ser desfeita.
                 </p>
             </div>

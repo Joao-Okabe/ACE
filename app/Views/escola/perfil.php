@@ -59,7 +59,7 @@ if (!empty($_SESSION['flash'])) {
         <!-- Foto -->
         <div class="col-lg-3">
             <div class="foto">
-                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
+                <img src="<?= htmlspecialchars(upload_url($escola['img_logo'] ?? '/img/brasao.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Perfil">
             </div>
         </div>
 

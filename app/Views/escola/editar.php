@@ -31,14 +31,21 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <!--Conteúdo-->
 <div class="content">
     <div class="card form-card shadow-sm">
+        
         <div class="mb-2">
-            <div>
-                <h2 class="form-title">Editar Escola</h2>
-                <p class="form-subtitle">
-                Altere os dados da escola.
-                </p>
+            <div class="header-form">
+                <a href="/escolas/listar" class="btn-voltar" aria-label="Voltar para a lista de escolas">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Editar Escola</h2>
+                    <p class="form-subtitle">Altere os dados da escola.</p>
+                </div>
             </div>
         </div>
+
+
 
         <?php if (!empty($_GET['sucesso'])): ?>
             <div class="alert alert-success auth-success" role="alert" aria-live="polite">
@@ -63,7 +70,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
             <div class="perfil-aluno">
                 <label for="img_logo" class="foto-perfil" id="fotoLogoEscolaEditar">
                     <?php if (!empty($dados['img_logo'] ?? null)): ?>
-                    <img src="<?= htmlspecialchars(upload_url($dados['img_logo'] ?? '/img/perfil.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
+                    <img src="<?= htmlspecialchars(upload_url($dados['img_logo'] ?? '/img/brasao.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Logo" style="max-width:160px;" class="img-thumbnail">
                     <?php else: ?>
                     <i class="bi bi-camera-fill"></i>
                     <?php endif; ?>
