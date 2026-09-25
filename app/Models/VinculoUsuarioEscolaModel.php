@@ -177,8 +177,6 @@ class VinculoUsuarioEscola extends Model
                 INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtr.cd_time
                 WHERE r.cd_usuario = :responsavel_usuario
                   AND vte.cd_escola = :responsavel_escola
-                  AND r.ativo = TRUE
-                  AND vtr.ativo = TRUE
                   AND vte.ativo = TRUE
             ) AS permitido"
         );
@@ -220,8 +218,6 @@ class VinculoUsuarioEscola extends Model
                 INNER JOIN responsavel r ON r.cd_responsavel = vtr.cd_responsavel
                 INNER JOIN vinculo_time_escola vte ON vte.cd_time = vtr.cd_time
                 WHERE r.cd_usuario = :usuario_responsavel
-                  AND r.ativo = TRUE
-                  AND vtr.ativo = TRUE
                   AND vte.ativo = TRUE
             ) escola
             LIMIT 1"

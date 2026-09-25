@@ -195,13 +195,11 @@ class Competicao extends Model
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO inscricao_competicao(
-                cd_inscricao_competicao,
                 cd_competicao,
                 dt_inicio_inscricao,
                 dt_encerramento_inscricao
             )
             VALUES(
-                (SELECT COALESCE(MAX(ic.cd_inscricao_competicao), 0) + 1 FROM inscricao_competicao ic),
                 :cd_competicao,
                 :dt_inicio_inscricao,
                 :dt_encerramento_inscricao
