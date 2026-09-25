@@ -222,7 +222,7 @@ CREATE TABLE responsavel (
         UNIQUE (cd_usuario)
 );
 
-CREATE TABLE responsavel_time (
+CREATE TABLE vinculo_time_responsavel (
     cd_time INTEGER NOT NULL,
     cd_responsavel INTEGER NOT NULL,
     CONSTRAINT responsavel_time_pk
