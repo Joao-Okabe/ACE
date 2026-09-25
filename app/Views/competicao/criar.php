@@ -41,6 +41,10 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
 <div class="content">
      <div class="card form-card shadow-sm">
         <div class="mb-2">
+            <div class="header-form">
+                <a href="/competicoes/listar" class="btn-voltar" aria-label="Voltar">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
             <div>
                 <h2 class="form-title">Cadastrar Competição</h2>
                 <p class="form-subtitle">
@@ -64,6 +68,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
     <form action="/competicoes" method="POST" enctype="multipart/form-data">
+        <div class="form-section">
         <div class="row">
             <?php if ($ehAdministrador): ?>
             <div class="col-12 mb-3">
@@ -131,7 +136,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <label class="form-label" for="dt_encerramento">Data de encerramento</label>
                 <input type="date" class="form-control form-input" id="dt_encerramento" value="<?= $valor('dt_encerramento') ?>" name="dt_encerramento">
             </div>
-
+</div>
             <div class="actions full d-flex justify-content-end gap-3 mt-4">
                 <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
                 <button class="btn btn-laranja" type="submit">Cadastrar competição</button>
