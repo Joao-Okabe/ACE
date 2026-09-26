@@ -44,7 +44,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
 
         <button type="button" class="competicao-tab active" data-tab="inscricao">
             <i class="bi bi-file-earmark-medical"></i>
-Inscrição
+            Inscrição
         </button>
 
         <button type="button" class="competicao-tab" data-tab="localedata">

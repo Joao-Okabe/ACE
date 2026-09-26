@@ -96,7 +96,24 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                 <select id="cd_formato" name="cd_formato" class="form-select form-input" required>
                     <option value="">Selecione</option>
                     <?php foreach ($formatos as $formato): ?>
-                        <option value="<?= htmlspecialchars($formato['cd_formato']) ?>" <?= ($valor('cd_formato') == $formato['cd_formato']) ? 'selected' : '' ?>><?= htmlspecialchars($formato['nm_formato']) ?></option>
+                        <option value="<?= htmlspecialchars($formato['cd_formato']) ?>" 
+                            <?= ($valor('cd_formato') == $formato['cd_formato']) ? 'selected' : '' ?>>
+                            <?php switch ($formato['cd_formato']): 
+                                    case (1):
+                                        echo "Eliminatória";
+                                        break;
+                                    case (2):
+                                        echo "Eliminatória Dupla";
+                                        break; 
+                                    case (3):
+                                        echo "Fase de Grupos + Eliminatória";
+                                        break; 
+                                    case (4):
+                                        echo "Sistema Suiço";
+                                        break;
+                            ?>
+                        <?php endswitch; ?>
+                    </option>
                     <?php endforeach; ?>
                 </select>
             </div>
