@@ -57,6 +57,11 @@ class VinculoTimeService
             return false;
         }
 
+        // O papel ADM é tratado na camada de permissões (mesma lógica de podeGerenciarEscola)
+        if (Permissoes::temPapel('ADM')) {
+            return true;
+        }
+
         return $this->vinculoTimeModel->usuarioPodeGerenciarTime($idUsuario, $idTime);
     }
 

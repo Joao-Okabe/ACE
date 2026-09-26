@@ -67,7 +67,8 @@ class TimeController
         );
     }
 
-    public function list(): void{
+    public function list(): void
+    {
         $filtros = [
             'nome' => trim($_GET['nome'] ?? ''),
             'categoria' => trim($_GET['categoria'] ?? ''),
@@ -79,10 +80,18 @@ class TimeController
         }
 
         $times = $this->service()->listar($filtros);
+        $vinculoTimeService = new VinculoTimeService();
+
+        $podeGerenciar = [];
+        foreach ($times as $time) {
+            $idTime = (int) $time['cd_time'];
+            $podeGerenciar[$idTime] = $vinculoTimeService->usuarioPodeGerenciarTime($idTime);
+        }
 
         renderView('time/listar', [
             'times' => $times,
             'filtros' => $filtros,
+            'podeGerenciar' => $podeGerenciar
         ]);
     }
 
@@ -200,7 +209,7 @@ class TimeController
 
     public function escalacao(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        $id = (int) ($_GET['id'] ?? $_POST['id_time'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';

@@ -3,6 +3,9 @@
 $times = $times ?? [];
 $escolas = $escola ?? []; 
 
+$usuario = $usuario ?? [];
+$podeGerenciar = $podeGerenciar ?? [];
+
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 
@@ -135,7 +138,10 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                         <a href="/times/visualizar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-view btn-sm me-1" title="Visualizar">
                             <i class="bi bi-eye-fill"></i>
                         </a>
+                        
+                        <?php $podeGerenciarTime = $podeGerenciar[(int) $time['cd_time']] ?? false; ?>
 
+                        <?php if ($podeGerenciarTime): ?>
                         <a href="/times/editar?id=<?= urlencode($time['cd_time']) ?>" class="btn btn-edit btn-sm me-1" title="Editar">
                             <i class="bi bi-pencil-fill"></i>
                         </a>
@@ -147,6 +153,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
                                 <i class="bi bi-trash-fill"></i>
                             </button>
                         </form>
+                        <?php endif ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
