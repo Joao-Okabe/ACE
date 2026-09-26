@@ -196,7 +196,7 @@ CREATE TABLE vinculo_time_integrante (
     CHECK (numero_camisa IS NULL OR numero_camisa > 0)
 );
 
-CREATE TABLE escalacao_integrante (
+CREATE TABLE escalacao_time (
     cd_vinculo_time_integrante INTEGER PRIMARY KEY,
     titular BOOLEAN NOT NULL DEFAULT FALSE,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -215,6 +215,7 @@ CREATE TABLE vinculo_tecnico_time (
 CREATE TABLE responsavel (
     cd_responsavel INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cd_usuario INTEGER NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE, 
     CONSTRAINT responsavel_cd_usuario_fkey
         FOREIGN KEY (cd_usuario)
         REFERENCES usuario (cd_usuario),
@@ -225,6 +226,7 @@ CREATE TABLE responsavel (
 CREATE TABLE vinculo_time_responsavel (
     cd_time INTEGER NOT NULL,
     cd_responsavel INTEGER NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE, 
     CONSTRAINT responsavel_time_pk
         PRIMARY KEY (cd_time, cd_responsavel),
     CONSTRAINT responsavel_time_cd_time_fkey
