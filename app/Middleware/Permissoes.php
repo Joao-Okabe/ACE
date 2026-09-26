@@ -59,6 +59,25 @@ class Permissoes
         return false;
     }
 
+    public static function podeGerenciarTime(int $idTime): bool
+    {
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+
+        if ($idUsuario <= 0 || $idTime <= 0) {
+            return false;
+        }
+
+        // Administrador pode gerenciar qualquer time
+        if (self::temPapel('ADM')) {
+            return true;
+        }
+
+        // Técnico, responsável ou diretor da escola vinculada ao time
+        $vinculoTimeModel = new VinculoTime();
+
+        return $vinculoTimeModel->usuarioPodeGerenciarTime($idUsuario, $idTime);
+    }
+
     public static function podeGerenciarUsuarios(): bool
     {
         return self::temPapel('ADM') || self::temPapel('DIR');

@@ -69,14 +69,14 @@ $podeGerenciar = $podeGerenciar ?? false;
                                 Partidas
                             </button>
                             
-                            <?php if ($podeGerenciar): ?>
+                            <?php if ($podeGerenciar): ?> 
                             <a href="/times/adicionar-tecnico?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
                                 <i class="bi bi-person"></i>     
                                 Técnico
                             </a>
 
                             <a href="/times/escalacao?id=<?= (int) ($time['cd_time'] ?? 0) ?>" class="btn btn-tecnico">
-                                <i class="bi bi-person"></i>     
+                                <i class="bi bi-flag-fill"></i>
                                 Escalação
                             </a>
                             <?php endif; ?>
