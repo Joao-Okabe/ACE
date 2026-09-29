@@ -78,13 +78,33 @@ class CompeticaoController
             $filtros['ordem'] = 'asc';
         }
 
-        $competicao = $this->service()->listar($filtros);
+        $competicoes = $this->service()->listar($filtros);
         $escolas = (new EscolaService())->listar();
 
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $ehAdm = in_array('ADM', $_SESSION['usuario']['papeis'] ?? [], true);
+        $podeGerenciar = [];
+
+        foreach ($competicoes as $competicao) {
+            $idCompeticao = (int) ($competicao['cd_competicao'] ?? 0);
+            $idEscola = (int) ($competicao['cd_escola'] ?? 0);
+            $idCriador = (int) ($competicao['cd_criador'] ?? 0);
+
+            $podeGerenciar[$idCompeticao] = (
+                $idUsuario > 0
+                && (
+                    $idCriador === $idUsuario
+                    || $ehAdm
+                    || ($idEscola > 0 && $this->service()->usuarioPodeGerenciarEscola($idUsuario, $idEscola))
+                )
+            );
+        }
+
         renderView('competicao/listar', [
-            'competicoes' => $competicao,
+            'competicoes' => $competicoes,
             'escolas' => $escolas,
             'filtros' => $filtros,
+            'podeGerenciar' => $podeGerenciar,
         ]);
     }
 
