@@ -1,6 +1,8 @@
 <?php
 $usuario = $usuario ?? null;
 $competicao = $competicao ?? [];
+$periodoInscricao = $periodoInscricao ?? null;
+$valorData = static fn (string $campo): string => htmlspecialchars(substr((string) ($periodoInscricao[$campo] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8');
 $valor = static fn (string $campo): string => htmlspecialchars((string) ($competicao[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
 $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($competicao[$campo] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8');
 ?>
@@ -14,7 +16,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
     <link rel="stylesheet" href="../../css/geral.css">
     <link rel="stylesheet" href="../../css/layout.css">
 
-    <title>Editar competição</title>
+    <title>Editar Inscrições de competição</title>
     <link rel="icon" type="image/png" href="../../img/icon.png">
 </head>
 <body>
@@ -30,8 +32,8 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
                 </a>
 
                 <div>
-                    <h2 class="form-title">Editar Competição</h2>
-                    <p class="form-subtitle">Altere os dados da competição.</p>
+                    <h2 class="form-title">Editar Período de Inscrição</h2>
+                    <p class="form-subtitle">Altere os dados de inscrição.</p>
                 </div>
             </div>
         </div>
@@ -39,7 +41,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
         <?php if (!empty($_GET['sucesso'])): ?>
             <div class="alert alert-success auth-success" role="alert" aria-live="polite">
                 <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
-                <span>Competição editada com sucesso.</span>
+                <span>Período de inscrição editado com sucesso.</span>
             </div>
         <?php endif; ?>
 
@@ -50,34 +52,25 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
             </div>
         <?php endif; ?>
 
-        <form action="/competicoes/atualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
-           <div class="form-section">
-             <div class="row">
-                <div class="col-12 mb-3">
-                    <label class="form-label" for="nm_competicao">Nome da competição</label>
-                    <input class="form-control form-input" type="text" id="nm_competicao" name="nm_competicao" value="<?= $valor('nm_competicao') ?>" required placeholder="Digite o nome da competição">
-                </div>
-            </div>
-
+        <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
+        <div class="form-section">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="dt_inicio">Data de início</label>
-                    <input class="form-control form-input" type="date" id="dt_inicio" name="dt_inicio" value="<?= $data('inicio_em') ?>">
+                    <label class="form-label" for="dt_inicio_inscricao">Data de início das Inscrições</label>
+                    <input class="form-control form-input" type="date" id="dt_inicio_inscricao" name="dt_inicio_inscricao" value="<?= $valorData('dt_inicio_inscricao') ?>" required>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" for="dt_encerramento">Data de encerramento</label>
-                    <input class="form-control form-input" type="date" id="dt_encerramento" name="dt_encerramento" value="<?= $data('fim_em') ?>">
+                    <label class="form-label" for="dt_encerramento_inscricao">Data de encerramento das Inscrições</label>
+                    <input class="form-control form-input" type="date" id="dt_encerramento_inscricao" name="dt_encerramento_inscricao" value="<?= $valorData('dt_encerramento_inscricao') ?>">
                 </div>
             </div>
         </div>
-
-                <div class="d-flex justify-content-end gap-3 mt-4 mb-5">
-                    <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-laranja">Salvar alterações</button>
+                <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-laranja">Adicionar Período de Inscrição</button>
                 </div>
         </form>
-
     </div>
 </div>
 

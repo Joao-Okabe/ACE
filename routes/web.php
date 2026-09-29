@@ -136,6 +136,10 @@ $router->post(
     '/competicoes', [CompeticaoController::class, 'store']
 );
 
+$router->get(
+    '/competicoes/inscricao', [CompeticaoController::class, 'editInscricao']
+);
+
 $router->post(
     '/competicoes/inscricao', [CompeticaoController::class, 'criarInscricao']
 );

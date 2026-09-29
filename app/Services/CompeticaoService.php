@@ -224,7 +224,10 @@ class CompeticaoService
 
         $idEscola = (int) ($competicao['cd_escola'] ?? 0);
 
-        return $idEscola > 0 && $this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola);
+        return $idEscola > 0 && $this->vinculoEscolaModel->usuarioPodeGerenciarEscola(
+            $idUsuario,
+            $idEscola
+        );
     }
 
     private function usuarioEhAdm(int $idUsuario): bool
@@ -240,14 +243,12 @@ class CompeticaoService
     }
 
     /**
-     * Indica se o usuário logado é o criador da competição.
+     * Indica se o usuário logado pode gerenciar a competição
+     * (dono da competição ou administrador do sistema).
      */
     public function usuarioEhCriador(array $competicao): bool
     {
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-        $idCriador = (int) ($competicao['cd_criador'] ?? 0);
-
-        return $idUsuario > 0 && $idUsuario === $idCriador;
+        return $this->podeGerenciar($competicao);
     }
 
     public function gerarChaveamento(int $idCompeticao): void
@@ -255,7 +256,7 @@ class CompeticaoService
         $competicao = $this->buscar($idCompeticao);
 
         if (!$this->usuarioEhCriador($competicao)) {
-            throw new Exception('Apenas o criador da competição pode gerar o chaveamento.');
+            throw new Exception('Você não tem permissão para gerar o chaveamento desta competição.');
         }
 
         if ($this->confrontoModel->listarChaveamento($idCompeticao) !== []) {
