@@ -114,16 +114,14 @@ class EliminatoriaSimplesService
         }
     }
 
-    private function buscarTimes(
-        int $cdCompeticao
-    ): array {
+    private function buscarTimes(int $cdCompeticao): array
+    {
         return $this->competicaoModel
             ->listarTimesInscritos($cdCompeticao);
     }
 
-    private function validarQuantidadeTimes(
-        array $times
-    ): void {
+    private function validarQuantidadeTimes(array $times): void
+    {
         if (count($times) < 2) {
             throw new RuntimeException(
                 'A eliminatória simples precisa de pelo menos 2 times.'
@@ -134,7 +132,8 @@ class EliminatoriaSimplesService
     private function validarEtapa(
         int $cdCompeticao,
         int $cdEtapaCompeticao
-    ): void {
+    ): void 
+    {
         $etapa = $this->etapaCompeticaoModel
             ->buscarPorCompeticao(
                 $cdEtapaCompeticao,
