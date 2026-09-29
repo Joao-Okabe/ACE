@@ -213,6 +213,20 @@ class CompeticaoService
         $this->competicaoModel->removerTimeInscrito($idCompeticao, $idTime);
     }
 
+    public function podeGerenciar(array $competicao): bool
+    {
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idCriador = (int) ($competicao['cd_criador'] ?? 0);
+
+        if ($idCriador === $idUsuario || $this->usuarioEhAdm($idUsuario)) {
+            return true;
+        }
+
+        $idEscola = (int) ($competicao['cd_escola'] ?? 0);
+
+        return $idEscola > 0 && $this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola);
+    }
+
     private function usuarioEhAdm(int $idUsuario): bool
     {
         $papeis = $_SESSION['usuario']['papeis'] ?? [];
