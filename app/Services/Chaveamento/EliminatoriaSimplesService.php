@@ -1,4 +1,29 @@
 <?php
+/*
+    gerar(); 
+        -> gera competições +(model)
+    buscarTimes(); 
+        -> busca times incritos na competição (model)
+    validarQuantidadeTimes();  
+        -> Confere se existem pelo menos 2 times 
+    validarEtapa(); 
+        -> Valida (model) se a etapa da competição é eliminatória 
+    calcularTamanhoChave();
+        -> Variável $tamanho=1 que é dobrada caso seja menor que a quantidade de times
+           Ex: caso tenham 4 times, tamanho sera multiplicado até ser 4;
+           caso sejam 7 times, o tamanho será multiplcado até ser 8.
+    gerarSeeds();
+        -> Gera a ordem das seeds de um chaveamento, criando pares de posições opostas
+           até atingir o tamanho desejado. Ex:
+    distribuirTimes();
+        -> Cria um array que possui seed, cd_t e nm_t e copia esse array para posicoes[]
+    criarRodadas();
+    nomeRodada();
+    criarPrimeiraRodada();
+    criarProximasRodadas();
+    adicionarOrigemConfronto();
+*/
+
 
 class EliminatoriaSimplesService
 {
@@ -36,9 +61,10 @@ class EliminatoriaSimplesService
     }
 
     public function gerar(
-        int $cdCompeticao,
+        int $cdCompeticao, 
         int $cdEtapaCompeticao
-    ): void {
+    ): void
+    {
         $this->pdo->beginTransaction();
 
         try {
@@ -165,8 +191,7 @@ class EliminatoriaSimplesService
 
     private function distribuirTimes(
         array $times,
-        array $seeds,
-        int $tamanhoChave
+        array $seeds
     ): array {
         $timesPorSeed = [];
 
@@ -205,16 +230,16 @@ class EliminatoriaSimplesService
             $numero <= $quantidadeRodadas;
             $numero++
         ) {
-            $rodadas[] = $this->rodadaCompeticaoModel
-                ->criar([
-                    'cd_etapa_competicao' =>
-                        $cdEtapaCompeticao,
+            $rodadas[] = $this->rodadaCompeticaoModel->criar(
+                [
+                    'cd_etapa_competicao' => $cdEtapaCompeticao,
                     'nr_rodada' => $numero,
                     'nm_rodada' => $this->nomeRodada(
                         $quantidadeRodadas,
                         $numero
                     )
-                ]);
+                ]
+            );
         }
 
         return $rodadas;
