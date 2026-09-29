@@ -6,6 +6,7 @@ $timesInscritos = $timesInscritos ?? [];
 $timesDisponiveis = $timesDisponiveis ?? [];
 $chaveamento = $chaveamento ?? []; 
 $podeGerarChaveamento = $podeGerarChaveamento ?? false;
+$podeGerenciar = $podeGerenciar ?? false;
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
 $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($valor, 0, 10), ENT_QUOTES, 'UTF-8') : 'Não definida';
 ?>
@@ -72,80 +73,18 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             <i class="bi bi-dribbble"></i>
             Partidas
         </button>
+
+        <?php if ($podeGerenciar): ?>
+        <button type="button" class="competicao-tab" data-tab="gerir">
+            <i class="bi bi-trophy-fill"></i>
+            Gerenciar Competição
+        </button>
+        <?php endif; ?>
     </div>
 
 
     <!-- Conteúdo -->
     <div class="competicao-conteudo">
-
-        <!-- Local Data -->
-        <div class="competicao-painel" id="localedata">
-            <h3>Local e Datas da competição</h3>
-
-            <div class="info-grid">
-                <div class="info-item">
-                    <h6>Data de início</h6>
-                    <p><?= htmlspecialchars(substr((string) ($competicao['inicio_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
-                </div>
-
-                <div class="info-item">
-                    <h6>Data de encerramento</h6>
-                    <p><?= htmlspecialchars(substr((string) ($competicao['fim_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
-                </div>
-
-                <div class="info-item">
-                    <h6>Local</h6>
-                    <p><?= $valor('local') ?></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Árbitros -->
-        <div class="competicao-painel" id="arbitros">
-            <h3>Árbitros</h3>
-            <p>Informações dos árbitros aparecerão aqui.</p>
-        </div>
-
-        <!-- Chaveamento -->
-        <div class="competicao-painel" id="chaveamento">
-            <div class="chaveamento-header">
-                <div>
-                    <h3>Chaveamento</h3>
-                    <p>O chaveamento da competição aparecerá aqui.</p>
-                </div>
-
-                <?php if ($podeGerarChaveamento && empty($chaveamento)): ?>
-                    <form action="/competicoes/gerar-chaveamento" method="post">
-                        <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
-                        <button type="submit" class="btn btn-laranja">
-                            <i class="bi bi-diagram-3"></i>
-                            Gerar chaveamento
-                        </button>
-                    </form>
-                <?php endif; ?>
-            </div>
-
-            <?php if (!empty($_GET['chaveamento_gerado'])): ?>
-                <div class="alert alert-success">Chaveamento gerado com sucesso.</div>
-            <?php endif; ?>
-
-            <?php if (!empty($_GET['erro_chaveamento'])): ?>
-                <div class="alert alert-danger"><?= htmlspecialchars($_GET['erro_chaveamento'], ENT_QUOTES, 'UTF-8') ?></div>
-            <?php endif; ?>
-
-            <div class="chaveamento" id="chaveamento-container"></div>
-        </div>
-
-        <!-- Partidas -->
-        <div class="competicao-painel" id="partidas">
-            <h3>Partidas</h3>
-            <div class="partidas-header">
-                <p>Confira as partidas desta competição ou adicione novas partidas.</p>
-                <a href="/partidas/criar?id_competicao=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
-                + Adicionar partidas
-                </a>
-            </div>
-        </div>
 
         <!-- Inscrição -->
         <div class="competicao-painel active" id="inscricao">
@@ -173,12 +112,9 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
                         Inscrições de <?= $data($periodoInscricao['dt_inicio_inscricao'] ?? null) ?>
                         até <?= $data($periodoInscricao['dt_encerramento_inscricao'] ?? null) ?>
                     <?php else: ?>
-                        Cadastre um período de inscrição na edição da competição.
+                        Está competição, por enquanto, não possui data de Inscrição.
                     <?php endif; ?>
                 </p>
-                <a href="/competicoes/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
-                    Editar período
-                </a>
             </div>
 
             <?php if ($periodoInscricao !== null): ?>
@@ -236,6 +172,27 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             </div>
         </div>
 
+        <!-- Local Data -->
+        <div class="competicao-painel" id="localedata">
+            <h3>Local e Datas da competição</h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h6>Data de início</h6>
+                    <p><?= htmlspecialchars(substr((string) ($competicao['inicio_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
+                </div>
+
+                <div class="info-item">
+                    <h6>Data de encerramento</h6>
+                    <p><?= htmlspecialchars(substr((string) ($competicao['fim_em'] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8') ?></p>
+                </div>
+
+                <div class="info-item">
+                    <h6>Local</h6>
+                    <p><?= $valor('local') ?></p>
+                </div>
+            </div>
+        </div>
 
         <!-- Time -->
         <div class="competicao-painel" id="times">
@@ -265,6 +222,75 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
                     </div>
                 <?php endforeach; ?>
         </div>
+
+        <!-- Árbitros -->
+        <div class="competicao-painel" id="arbitros">
+            <h3>Árbitros</h3>
+            <p>Informações dos árbitros aparecerão aqui.</p>
+        </div>
+
+        <!-- Chaveamento -->
+        <div class="competicao-painel" id="chaveamento">
+            <div class="chaveamento-header">
+                <div>
+                    <h3>Chaveamento</h3>
+                    <p>O chaveamento da competição aparecerá aqui.</p>
+                </div>
+            </div>
+
+            <?php if (!empty($_GET['chaveamento_gerado'])): ?>
+                <div class="alert alert-success">Chaveamento gerado com sucesso.</div>
+            <?php endif; ?>
+
+            <?php if (!empty($_GET['erro_chaveamento'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($_GET['erro_chaveamento'], ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+
+            <div class="chaveamento" id="chaveamento-container"></div>
+        </div>
+
+        <!-- Partidas -->
+        <div class="competicao-painel" id="partidas">
+            <h3>Partidas</h3>
+            <div class="partidas-header">
+                <p>Confira as partidas desta competição.</p>
+            </div>
+        </div>
+
+        <!-- Gerir Competição -->
+        <?php if ($podeGerenciar): ?>
+        <div class="competicao-painel" id="gerir">
+            <h3>Gerir competição</h3>
+            <div class="partidas-header">
+                <p>Editar informações da Competição</p>
+                <a href="/competicoes/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
+                    Editar informações da Competição
+                </a>
+            </div>
+            <br>
+            <div class="partidas-header">
+                <p>Editar período de Inscrição</p>
+                <a href="/competicoes/inscricao?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
+                    Editar Período de Inscrição
+                </a>
+            </div>
+            <br>
+            <div class="partidas-header">
+                <p>Editar Locais e Datas</p>
+                <a href="/competicoes/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
+                    Editar Locais e Datas
+                </a>
+            </div>
+            <br>
+            <div class="partidas-header">
+                <p>Editar Locais e Datas</p>
+                <a href="/competicoes/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
+                    Editar Etapas da Competição
+                </a>
+            </div>
+        </div>
+        <?php endif; ?>
+
     </div>
 
 </div>

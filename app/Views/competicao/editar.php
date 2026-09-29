@@ -25,7 +25,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
     <div class="card form-card shadow-sm">
         <div class="mb-2">
             <div class="header-form">
-                <a href="/competicoes/visualizar" class="btn-voltar" aria-label="Voltar">
+                <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" class="btn-voltar" aria-label="Voltar">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
                 </a>
 
@@ -78,32 +78,12 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
                 </div>
         </form>
 
-        <div class="mb-4">
-            <h2 class="form-title">Adicionar período de inscrição</h2>
-            <p class="form-subtitle">Defina o período de inscrição da competição.</p>
-        </div>
-
-        <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
-        <div class="form-section">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="dt_inicio_inscricao">Data de início das Inscrições</label>
-                    <input class="form-control form-input" type="date" id="dt_inicio_inscricao" name="dt_inicio_inscricao" value="<?= $data('inicio_em') ?>" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="dt_encerramento_inscricao">Data de encerramento das Inscrições</label>
-                    <input class="form-control form-input" type="date" id="dt_encerramento_inscricao" name="dt_encerramento_inscricao" value="<?= $data('fim_em') ?>">
-                </div>
-            </div>
-        </div>
-                <div class="d-flex justify-content-end gap-3 mt-4">
-                    <a href="/competicoes/listar" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-laranja">Adicionar Período de Inscrição</button>
-                </div>
-        </form>
     </div>
 </div>
+
+window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
 
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>

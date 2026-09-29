@@ -171,6 +171,7 @@ class CompeticaoController
         $timesDisponiveis = $this->service()->listarTimesDisponiveisInscricao($id);
         $chaveamento = $this->service()->listarChaveamento($id);
         $podeGerarChaveamento = $this->service()->usuarioEhCriador($competicao);
+        $podeGerenciar = $this->service()->podeGerenciar($competicao);
 
         renderView('competicao/vizualizar', [
             'competicao' => $competicao,
@@ -180,6 +181,7 @@ class CompeticaoController
             'timesDisponiveis' => $timesDisponiveis,
             'chaveamento' => $chaveamento,
             'podeGerarChaveamento' => $podeGerarChaveamento,
+            'podeGerenciar' => $podeGerenciar,
         ]);
     }
 
@@ -245,6 +247,31 @@ class CompeticaoController
                 'competicao' => array_merge($competicao, $_POST),
             ]);
         }
+    }
+
+    //Exibe formulário de edição do período de inscrição
+    public function editInscricao(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $competicao = $this->service()->buscar($id);
+            $this->service()->exigirPermissao($competicao);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+            return;
+        }
+
+        renderView('competicao/inscricao', [
+            'competicao' => $competicao,
+            'periodoInscricao' => $this->service()->buscarPeriodoInscricao($id),
+        ]);
     }
 
     public function inscreverTime(): void

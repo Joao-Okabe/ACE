@@ -1,0 +1,85 @@
+<?php
+$usuario = $usuario ?? null;
+$competicao = $competicao ?? [];
+$periodoInscricao = $periodoInscricao ?? null;
+$valorData = static fn (string $campo): string => htmlspecialchars(substr((string) ($periodoInscricao[$campo] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8');
+$valor = static fn (string $campo): string => htmlspecialchars((string) ($competicao[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
+$data = static fn (string $campo): string => htmlspecialchars(substr((string) ($competicao[$campo] ?? ''), 0, 10), ENT_QUOTES, 'UTF-8');
+?>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../bootstrap-icons-1.13.1/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../css/geral.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+
+    <title>Editar Inscrições de competição</title>
+    <link rel="icon" type="image/png" href="../../img/icon.png">
+</head>
+<body>
+
+<app-header></app-header>
+
+<div class="content">
+    <div class="card form-card shadow-sm">
+        <div class="mb-2">
+            <div class="header-form">
+                <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" class="btn-voltar" aria-label="Voltar">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                </a>
+
+                <div>
+                    <h2 class="form-title">Editar Período de Inscrição</h2>
+                    <p class="form-subtitle">Altere os dados de inscrição.</p>
+                </div>
+            </div>
+        </div>
+
+        <?php if (!empty($_GET['sucesso'])): ?>
+            <div class="alert alert-success auth-success" role="alert" aria-live="polite">
+                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                <span>Período de inscrição editado com sucesso.</span>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($erro)): ?>
+            <div class="alert alert-danger auth-error" role="alert" aria-live="assertive">
+                <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                <span><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+        <?php endif; ?>
+
+        <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
+        <div class="form-section">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="dt_inicio_inscricao">Data de início das Inscrições</label>
+                    <input class="form-control form-input" type="date" id="dt_inicio_inscricao" name="dt_inicio_inscricao" value="<?= $valorData('dt_inicio_inscricao') ?>" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="dt_encerramento_inscricao">Data de encerramento das Inscrições</label>
+                    <input class="form-control form-input" type="date" id="dt_encerramento_inscricao" name="dt_encerramento_inscricao" value="<?= $valorData('dt_encerramento_inscricao') ?>">
+                </div>
+            </div>
+        </div>
+                <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/competicoes/visualizar?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-laranja">Adicionar Período de Inscrição</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
+
+<script src="../../js/script.js"></script>
+<script src="../../js/layout.js"></script>
+
+</body>
+</html>
