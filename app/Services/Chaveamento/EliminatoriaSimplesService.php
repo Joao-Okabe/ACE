@@ -1,26 +1,107 @@
 <?php
 /*
     gerar(); 
-        -> gera competições +(model)
+        ->  gera competições +(model)
+
     buscarTimes(); 
-        -> busca times incritos na competição (model)
+        ->  busca times incritos na competição (model)
+
     validarQuantidadeTimes();  
-        -> Confere se existem pelo menos 2 times 
+        ->  Confere se existem pelo menos 2 times 
+
     validarEtapa(); 
-        -> Valida (model) se a etapa da competição é eliminatória 
+        ->  Valida (model) se a etapa da competição é eliminatória 
+
     calcularTamanhoChave();
-        -> Variável $tamanho=1 que é dobrada caso seja menor que a quantidade de times
-           Ex: caso tenham 4 times, tamanho sera multiplicado até ser 4;
-           caso sejam 7 times, o tamanho será multiplcado até ser 8.
+        ->  Variável $tamanho=1 que é dobrada caso seja menor que a quantidade de times
+            Ex: caso tenham 4 times, tamanho sera multiplicado até ser 4;
+            caso sejam 7 times, o tamanho será multiplcado até ser 8.
+
     gerarSeeds();
-        -> Gera a ordem das seeds de um chaveamento, criando pares de posições opostas
-           até atingir o tamanho desejado. Ex:
+        ->  Gera a ordem das seeds de um chaveamento, criando pares de posições opostas
+            até atingir o tamanho desejado.
+            
     distribuirTimes();
-        -> Cria um array que possui seed, cd_t e nm_t e copia esse array para posicoes[]
+        ->  Cria um array que possui seed, cd_t e nm_t e copia esse array para posicoes[]
+            onde t é time
+
     criarRodadas();
+        ->  log₂(8) = 3, então em um exemplo onde $tamanhoChave = 8:
+            $quantidadeRodadas = 3
+            8 participantes -> Rodada 1 → Quartas de Final
+            ↓
+            4 participantes -> Rodada 2 → Semifinal
+            ↓
+            2 participantes -> Rodada 3 → Final
+            ↓
+            1 campeão
+
     nomeRodada();
+        ->  distancia = 3 - 1 | Calcula com a quantidade total de rodadas e o numero da rodada atual
+            2 => 'Quartas de final' 
+
     criarPrimeiraRodada();
+        ->  Cria os confrontos da primeira rodada. Em um exemplo onde temos 8 posições:
+            $posicoes = [1, 8, 4, 5, 2, 7, 3, 6];
+            $indice = 0
+            $numeroConfronto = ($indice / 2) + 1;
+            $numeroConfronto = 1
+            Confronto 1
+            ├── Participante 1 → seed 1
+            └── Participante 2 → seed 8
+            Depois ele insere essas informações no banco e chama elas novamente
+            para poder adicionar os participantes dos confrontos
+            
+    adicionarParticipante();
+        ->  Chama o confronto, a posição e o time caso tenha um nesse confronto
+            se não tiver time, ele cria um BYE e o time real é vencedor por padrão.
+            Se tiver time ele pega o confronto e a posição e insere na origem do
+            participante
+
     criarProximasRodadas();
+        ->  Em um exemplo onde temos 4 confrontos na rodada anterior:
+            $confrontosAnteriores = [1, 2, 3, 4];
+            $indiceRodada = 1; -> Aqui ele já começa em 1 pois não foi a primeira rodada
+            $novosConfrontos = [];
+            $indice = 0;
+            $confrontoA = $confrontosAnteriores[0];
+            $confrontoA = 1;
+            $confrontoB = $confrontosAnteriores[1];
+            $confrontoB = 2;
+            $numeroConfronto = ($indice / 2) + 1;
+            $numeroConfronto = 1;
+            Confronto 1 da próxima rodada
+            ├── Origem 1 → Confronto 1 anterior
+            └── Origem 2 → Confronto 2 anterior
+
+            Depois ele insere essas informações no banco e chama
+            adicionarOrigemConfronto() para registrar de quais
+            confrontos anteriores esse novo confronto depende.
+
+            Depois o índice aumenta em 2:
+            $indice = 2;
+            $confrontoA = $confrontosAnteriores[2];
+            $confrontoA = 3;
+            $confrontoB = $confrontosAnteriores[3];
+            $confrontoB = 4;
+            $numeroConfronto = (2 / 2) + 1;
+            $numeroConfronto = 2;
+            Confronto 2 da próxima rodada
+            ├── Origem 1 → Confronto 3 anterior
+            └── Origem 2 → Confronto 4 anterior
+
+            Depois ele insere essas informações no banco.
+            Ao terminar essa rodada:
+            $novosConfrontos = [5, 6];
+            $confrontosAnteriores = $novosConfrontos;
+            Agora os confrontos anteriores passam a ser:
+            [5, 6]
+
+            E a função repete o processo para criar a próxima rodada:
+            Confronto 3 da próxima rodada
+            ├── Origem 1 → Confronto 5
+            └── Origem 2 → Confronto 6
+
     adicionarOrigemConfronto();
 */
 
@@ -85,8 +166,7 @@ class EliminatoriaSimplesService
 
             $posicoes = $this->distribuirTimes(
                 $times,
-                $seeds,
-                $tamanhoChave
+                $seeds
             );
 
             $rodadas = $this->criarRodadas(
@@ -134,11 +214,10 @@ class EliminatoriaSimplesService
         int $cdEtapaCompeticao
     ): void 
     {
-        $etapa = $this->etapaCompeticaoModel
-            ->buscarPorCompeticao(
+        $etapa = $this->etapaCompeticaoModel->buscarPorCompeticao(
                 $cdEtapaCompeticao,
                 $cdCompeticao
-            );
+        );
 
         if (!$etapa) {
             throw new RuntimeException(
@@ -272,12 +351,13 @@ class EliminatoriaSimplesService
         ) {
             $numeroConfronto = ($indice / 2) + 1;
 
-            $cdConfronto = $this->confrontoModel
-                ->criar([
+            $cdConfronto = $this->confrontoModel->criar(
+                [
                     'cd_rodada' => $cdRodada,
                     'nr_confronto' => $numeroConfronto,
                     'status' => 'PENDENTE'
-                ]);
+                ]
+            );
 
             $confrontos[] = $cdConfronto;
 
@@ -303,34 +383,31 @@ class EliminatoriaSimplesService
         ?array $time
     ): void {
         if ($time === null) {
-            $cdOrigem = $this
-                ->origemParticipanteConfrontoModel
-                ->criarBye();
+            $cdOrigem = $this->origemParticipanteConfrontoModel->criarBye();
 
             $status = 'BYE';
         } else {
-            $cdOrigem = $this
-                ->origemParticipanteConfrontoModel
-                ->criarTime(
+            $cdOrigem = $this->origemParticipanteConfrontoModel->criarTime(
                     $time['cd_time']
-                );
-
+            );
             $status = 'DEFINIDO';
         }
 
-        $this->confrontoParticipanteModel
-            ->criar([
+        $this->confrontoParticipanteModel->criar(
+            [
                 'cd_confronto' => $cdConfronto,
                 'posicao' => $posicao,
                 'cd_origem_participante' => $cdOrigem,
                 'status' => $status
-            ]);
+            ]
+        );
     }
 
     private function criarProximasRodadas(
         array $rodadas,
         array $confrontosAnteriores
-    ): void {
+    ): void 
+    {
         for (
             $indiceRodada = 1;
             $indiceRodada < count($rodadas);
@@ -343,27 +420,21 @@ class EliminatoriaSimplesService
                 $indice < count($confrontosAnteriores);
                 $indice += 2
             ) {
-                $confrontoA =
-                    $confrontosAnteriores[$indice];
+                $confrontoA = $confrontosAnteriores[$indice];
 
-                $confrontoB =
-                    $confrontosAnteriores[$indice + 1];
+                $confrontoB = $confrontosAnteriores[$indice + 1];
 
-                $numeroConfronto =
-                    ($indice / 2) + 1;
+                $numeroConfronto = ($indice / 2) + 1;
 
-                $cdConfronto =
-                    $this->confrontoModel->criar([
-                        'cd_rodada' =>
-                            $rodadas[$indiceRodada],
-                        'nr_confronto' =>
-                            $numeroConfronto,
+                $cdConfronto = $this->confrontoModel->criar(
+                    [
+                        'cd_rodada' => $rodadas[$indiceRodada],
+                        'nr_confronto' => $numeroConfronto,
                         'status' => 'AGUARDANDO',
-                        'cd_confronto_anterior_a' =>
-                            $confrontoA,
-                        'cd_confronto_anterior_b' =>
-                            $confrontoB
-                    ]);
+                        'cd_confronto_anterior_a' => $confrontoA,
+                        'cd_confronto_anterior_b' => $confrontoB
+                    ]
+                );
 
                 $novosConfrontos[] = $cdConfronto;
 
@@ -388,19 +459,19 @@ class EliminatoriaSimplesService
         int $cdConfronto,
         int $posicao,
         int $cdConfrontoAnterior
-    ): void {
-        $cdOrigem = $this
-            ->origemParticipanteConfrontoModel
-            ->criarVencedorConfronto(
+    ): void 
+    {
+        $cdOrigem = $this->origemParticipanteConfrontoModel->criarVencedorConfronto(
                 $cdConfrontoAnterior
-            );
+        );
 
-        $this->confrontoParticipanteModel
-            ->criar([
+        $this->confrontoParticipanteModel->criar(
+            [
                 'cd_confronto' => $cdConfronto,
                 'posicao' => $posicao,
                 'cd_origem_participante' => $cdOrigem,
                 'status' => 'PENDENTE'
-            ]);
+            ]
+        );
     }
 }
