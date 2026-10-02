@@ -1,7 +1,19 @@
 <?php
 /*
-    autenticar();
-        ->  realiza login e salva os dados em $_SESSION
+    criar();
+        ->  realiza cadastro da competição (MODEL)
+
+    listar();
+        ->  lista todas as competições (MODEL)
+
+    buscar();
+        ->  busca uma competição em específico (MODEL)
+
+    atualizar();
+        ->  atualiza informações cadastrais de uma competição (MODEL)
+
+    atualizar();
+        ->  atualiza informações cadastrais de uma competição (MODEL)
 */
 class CompeticaoService
 {
@@ -15,6 +27,8 @@ class CompeticaoService
 
     private EtapaCompeticao $etapaCompeticaoModel;
 
+    private Permissoes $permissoes;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -26,6 +40,8 @@ class CompeticaoService
         $this->confrontoModel = new Confronto();
 
         $this->etapaCompeticaoModel = new EtapaCompeticao();
+        
+        $this->permissoes = new Permissoes();
     }
 
     public function criar(array $dados): void
@@ -125,7 +141,7 @@ class CompeticaoService
         $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
         $idCriador = (int) ($competicao['cd_criador'] ?? 0);
 
-        if ($idCriador === $idUsuario || $this->usuarioEhAdm($idUsuario)) {
+        if ($idCriador === $idUsuario || $this->permissoes->temPapelAdm($idUsuario)) {
             return;
         }
 
@@ -221,7 +237,7 @@ class CompeticaoService
         $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
         $idCriador = (int) ($competicao['cd_criador'] ?? 0);
 
-        if ($idCriador === $idUsuario || $this->usuarioEhAdm($idUsuario)) {
+        if ($idCriador === $idUsuario || $this->permissoes->temPapelAdm($idUsuario)) {
             return true;
         }
 
@@ -233,22 +249,15 @@ class CompeticaoService
         );
     }
 
-    private function usuarioEhAdm(int $idUsuario): bool
-    {
-        $papeis = $_SESSION['usuario']['papeis'] ?? [];
-
-        return in_array('ADM', $papeis, true);
-    }
-
     public function listarChaveamento(int $idCompeticao): array
     {
         return $this->confrontoModel->listarChaveamento($idCompeticao);
     }
 
-    /**
-     * Indica se o usuário logado pode gerenciar a competição
-     * (dono da competição ou administrador do sistema).
-     */
+    /*
+        Indica se o usuário logado pode gerenciar a competição
+        (dono da competição ou administrador do sistema).
+    */
     public function usuarioEhCriador(array $competicao): bool
     {
         return $this->podeGerenciar($competicao);
@@ -278,7 +287,7 @@ class CompeticaoService
             $cdEtapa = $this->etapaCompeticaoModel->criar([
                 'cd_competicao' => $idCompeticao,
                 'cd_tipo_etapa' => $cdTipoEtapa,
-                'nm_etapa' => 'Eliminatória',
+                'nm_etapa' => 'ELIMINATORIA',
                 'ordem' => 1,
                 'descricao' => 'Etapa de eliminatória simples da competição.',
             ]);
