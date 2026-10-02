@@ -34,4 +34,5 @@ class VinculoUsuarioEscolaService
     {
         return $this->vinculoUsuarioEscolaModel->escolaGerenciavelPorUsuario($idUsuario);
     }
+
 }

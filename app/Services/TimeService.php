@@ -7,6 +7,10 @@ class TimeService
     private Time $timeModel;
 
     private VinculoUsuarioEscola $vinculoModel;
+    
+    private VinculoUsuarioEscolaService $vinculoUsuarioEscolaService;
+    
+    private Permissoes $permissoes;
 
     public function __construct()
     {
@@ -14,6 +18,7 @@ class TimeService
 
         $this->timeModel = new Time();
         $this->vinculoModel = new VinculoUsuarioEscola();
+        $this->permissoes = new Permissoes();
     }
 
     public function cadastrar(array $dados): void
@@ -26,7 +31,7 @@ class TimeService
                 throw new Exception('Selecione o esporte do time.');
             }
 
-            $idEscola = $this->resolverEscolaCadastro($dados);
+            $idEscola = $this->permissoes->resolverEscolaCadastro($dados);
             if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do time.');
             }
@@ -88,17 +93,6 @@ class TimeService
             throw $e;
 
         }
-    }
-
-    private function resolverEscolaCadastro(array $dados): int
-    {
-        $papeis = $_SESSION['usuario']['papeis'] ?? [];
-        if (in_array('ADM', $papeis, true)) {
-            return (int) ($dados['escola'] ?? 0);
-        }
-
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-        return (int) ($this->vinculoModel->escolaAtualPorPapeis($idUsuario, ['DIR', 'CRD']) ?? 0);
     }
 
     public function listar(array $filtros = []): array

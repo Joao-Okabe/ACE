@@ -73,7 +73,7 @@ class Aluno extends Model
 
     //Lista Alunos, a = aluno, u = usuario 
     // a.* = tudo da tabela aluno
-    // v = vinculo
+    // v = vinculoapp/Models/AlunoModel.php
     public function listar(array $filtros = []): array
     {
         $sql = 
@@ -157,5 +157,28 @@ class Aluno extends Model
         $stmt->execute([
             ':id' => $id
         ]);
+    }
+
+    public function obterEscolaDoAluno(int $idAluno): ?int
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT up.cd_escola
+            FROM vinculo_usuario_escola up
+            WHERE up.cd_usuario = :cd_usuario
+              AND up.ativo = TRUE
+            ORDER BY up.criado_em DESC
+            LIMIT 1"
+        );
+
+        $stmt->execute([':cd_usuario' => $idAluno]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($res === false || $res === null) {
+            return null;
+        }
+
+        return (int) ($res['cd_escola'] ?? 0) ?: null;
+
     }
 }
