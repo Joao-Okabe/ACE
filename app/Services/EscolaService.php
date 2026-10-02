@@ -1,4 +1,26 @@
 <?php
+/*
+
+    cadastrar():
+        ->  Cadastra
+
+    listar();
+        ->  Lista
+
+    busca();
+        ->  
+
+    atualizar();
+        ->  Atualiza
+
+    salvarLogo();
+        ->  Salva a foto, usado no cadastrar() e atualizar()
+
+    remover();
+        ->  Remove 
+
+*/
+
 
 class EscolaService
 {

@@ -128,7 +128,14 @@ class Usuario extends Model
         ]);
     }
 
-    public function atualizarPerfil(int $id, string $nome, string $email, ?string $foto = null, ?string $senha = null): void
+    public function atualizarPerfil
+    (
+        int $id,
+        string $nome,
+        string $email,
+        ?string $foto = null,
+        ?string $senha = null
+    ): void
     {
         $campos = [
             'nm_usuario = :nome',
