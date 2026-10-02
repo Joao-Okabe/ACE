@@ -1,5 +1,29 @@
 <?php
 
+/*
+cadastrar();
+    ->  Cadastra usuário + aluno com o vinculo da escola do usuário atual
+        ou selecionado. (Model)
+
+listar(); 
+    ->  Lista todos os Alunos (Model)
+
+listarUsuariosDisponiveis();
+    ->  Lista os usuário ativos que não são alunos (Model)
+
+buscar();
+    ->  Busca aluno específico (Model)
+
+atualizar();
+    ->  Atualiza informações cadastrais de um aluno (Model)
+
+remover();
+    ->  Deleta aluno específico (Model)
+
+obterEscolaDoAluno();
+    -> Procura escola do aluno listado (Model)
+*/
+
 class AlunoService
 {
     private PDO $pdo;
@@ -12,17 +36,20 @@ class AlunoService
 
     private Papel $papelModel;
 
+    private Permissoes $permissoes;
+
+    private NormalizadorCampo $normalizadorCampo;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
 
         $this->usuarioModel = new Usuario();
-
         $this->alunoModel = new Aluno();
-
         $this->vinculoEscolaUsuarioModel = new VinculoUsuarioEscola();
-
         $this->papelModel = new Papel();
+        $this->permissoes = new Permissoes();
+        $this->normalizadorCampo = new NormalizadorCampo();
     }
 
     public function cadastrar(array $dados): void
@@ -77,7 +104,7 @@ class AlunoService
         try {
             $this->pdo->beginTransaction();
 
-            $idEscola = $this->resolverEscolaCadastro($dados);
+            $idEscola = $this->permissoes->resolverEscolaCadastro($dados);
             if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do aluno.');
             }
@@ -141,7 +168,11 @@ class AlunoService
                 ]);
 
             // Vincula usuário à escola com o papel ALUNO
-            $this->vinculoEscolaUsuarioModel->vincularPapelEscola($idUsuario, $idEscola, $papelAlunoId);
+            $this->vinculoEscolaUsuarioModel->vincularPapelEscola(
+                $idUsuario,
+                $idEscola,
+                $papelAlunoId
+            );
 
             $this->alunoModel->cadastrar([
                 'usuario' => $idUsuario,
@@ -150,8 +181,8 @@ class AlunoService
                 'ra' => $dados['ra'] ?? null,
                 'data_nascimento' => $dados['data_nascimento'] ?? null,
                 'sexo' => $dados['sexo'] ?? null,
-                'telefone' => $this->normalizarCampoOpcional($dados['telefone'] ?? null),
-                'cep' => $this->normalizarCampoOpcional($dados['cep'] ?? null),
+                'telefone' => $this->normalizadorCampo->normalizarCampoNulo($dados['telefone'] ?? null),
+                'cep' => $this->normalizadorCampo->normalizarCampoNulo($dados['cep'] ?? null),
             ]);
 
             $this->pdo->commit();
@@ -182,7 +213,7 @@ class AlunoService
         $aluno = $this->alunoModel->buscar($id);
 
         if ($aluno === null) {
-            throw new Exception("Aluno não encontrada.");
+            throw new Exception("Aluno(a) não encontrado(a).");
         }
 
         return $aluno;
@@ -262,20 +293,10 @@ class AlunoService
         }
     }
 
-    public function exigirPermissaoGerenciarAluno(int $id): void
-    {
-        $idEscola = $this->obterEscolaDoAluno($id);
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-
-        if ($idEscola === null || !$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
-            throw new Exception('Você não tem permissão para gerenciar este aluno.');
-        }
-    }
-
     //Remove Aluno
     public function remover(int $id): void
     {
-        $this->exigirPermissaoGerenciarAluno($id);
+        $this->permissoes->exigirPermissaoGerenciarAluno($id);
         $this->alunoModel->remover($id);
     }
 
@@ -283,56 +304,16 @@ class AlunoService
     public function obterEscolaDoAluno(int $idAluno): ?int
     {
         $aluno = $this->alunoModel->buscar($idAluno);
-
         if ($aluno === null) {
             return null;
         }
 
         $cdUsuario = (int) ($aluno['cd_usuario'] ?? 0);
-
         if ($cdUsuario <= 0) {
             return null;
         }
-
-        $stmt = $this->pdo->prepare(
-            "SELECT up.cd_escola
-            FROM vinculo_usuario_escola up
-            WHERE up.cd_usuario = :cd_usuario
-              AND up.ativo = TRUE
-            ORDER BY up.criado_em DESC
-            LIMIT 1"
-        );
-
-        $stmt->execute([':cd_usuario' => $cdUsuario]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($res === false || $res === null) {
-            return null;
-        }
-
-        return (int) ($res['cd_escola'] ?? 0) ?: null;
+        
+        return $this->alunoModel->obterEscolaDoAluno($idAluno);
     }
 
-    private function resolverEscolaCadastro(array $dados): int
-    {
-        $papeis = $_SESSION['usuario']['papeis'] ?? [];
-        if (in_array('ADM', $papeis, true)) {
-            return (int) ($dados['escola'] ?? 0);
-        }
-
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-        return (int) ($this->vinculoEscolaUsuarioModel->escolaGerenciavelPorUsuario($idUsuario) ?? 0);
-    }
-
-    private function normalizarCampoOpcional(?string $valor): ?string
-    {
-        if ($valor === null) {
-            return null;
-        }
-
-        $valor = trim($valor);
-
-        return $valor === '' ? null : $valor;
-    }
 }

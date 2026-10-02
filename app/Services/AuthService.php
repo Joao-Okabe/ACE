@@ -1,5 +1,8 @@
 <?php
-
+/*
+    autenticar();
+        ->  realiza login e salva os dados em $_SESSION
+*/
 class AuthService
 {
     private Auth $authModel;
