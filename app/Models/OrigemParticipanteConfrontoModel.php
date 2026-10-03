@@ -63,4 +63,28 @@ class OrigemParticipanteConfronto extends Model
 
         return (int) $stmt->fetchColumn();
     }
+
+    public function criarPerdedorConfronto(
+        int $idConfronto
+    ): int {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO origem_participante_confronto (
+                tipo_origem,
+                cd_confronto,
+                resultado_confronto
+            )
+            VALUES (
+                'CONFRONTO',
+                :confronto,
+                'PERDEDOR'
+            )
+            RETURNING cd_origem_participante
+        ");
+
+        $stmt->execute([
+            ':confronto' => $idConfronto
+        ]);
+
+        return (int) $stmt->fetchColumn();
+    }
 }

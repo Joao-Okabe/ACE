@@ -83,6 +83,13 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
         </form>
     </div>
 </div>
+
+<script>
+        window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
+        email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+        foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };    
+</script>
+
 <script src="../../js/script.js"></script>
 <script src="../../js/layout.js"></script>
 
