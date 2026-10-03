@@ -121,7 +121,26 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 										<?php foreach ($vinculos as $vinculo): ?>
 											<tr>
 												<td><?= htmlspecialchars($vinculo['nm_escola']) ?></td>
-												<td><?= htmlspecialchars($vinculo['nm_papel']) ?></td>
+												<td><?php switch ($vinculo['nm_papel']): 
+															case ('DIR'):
+																echo "Diretor(a) da Escola";
+																break; 
+															case ('CRD'):
+																echo "Coordenador(a) da Escola";
+																break; 
+															case ('PRF'):
+																echo "Professor(a) da Escola";
+																break;
+															case ('ARB'):
+																echo "Árbitro(a)";
+																break;	
+															case ('AGR'):
+																echo "Aluno(a) Gremista";
+																break;
+															case ('ALU'):
+																echo "Aluno(a)";
+																break;
+													?><?php endswitch; ?>
 												<td>
 													<?php if ($vinculo['ativo']): ?>
 														<span class="badge bg-success">Ativo</span>
@@ -129,8 +148,8 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 														<span class="badge bg-secondary">Inativo</span>
 													<?php endif; ?>
 												</td>
-											</tr>
-										<?php endforeach; ?>
+												</tr>
+											<?php endforeach; ?>
 									</tbody>
 								</table>
 							</div>
