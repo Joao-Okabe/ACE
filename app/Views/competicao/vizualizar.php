@@ -69,9 +69,9 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             Chaveamento
         </button>
 
-        <button type="button" class="competicao-tab" data-tab="partidas">
+        <button type="button" class="competicao-tab" data-tab="etapas">
             <i class="bi bi-dribbble"></i>
-            Partidas
+            Etapas
         </button>
 
         <?php if ($podeGerenciar): ?>
@@ -266,11 +266,11 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             <div class="chaveamento" id="chaveamento-container"></div>
         </div>
 
-        <!-- Partidas -->
-        <div class="competicao-painel" id="partidas">
-            <h3>Partidas</h3>
+        <!-- Etapas -->
+        <div class="competicao-painel" id="etapas">
+            <h3>Etapas</h3>
             <div class="partidas-header">
-                <p>Confira as partidas desta competição.</p>
+                <p>Confira as etapas desta competição.</p>
             </div>
         </div>
 
