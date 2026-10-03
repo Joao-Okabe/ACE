@@ -237,7 +237,8 @@ class Competicao extends Model
         $stmt = $this->pdo->prepare("
             SELECT
                 t.cd_time,
-                t.nm_time
+                t.nm_time,
+                t.path_escudo
             FROM inscricao_competicao ic
             INNER JOIN vinculo_inscricao_time vic
                 ON vic.cd_inscricao_competicao = ic.cd_inscricao_competicao
