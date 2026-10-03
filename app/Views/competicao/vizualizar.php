@@ -154,7 +154,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
                             <div class="integrante-conteudo">
                             
                                 <div class="tc integrante-foto">
-                                    <img src="<?= htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/escudo.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Escudo do time">
+                                    <img src="<?=htmlspecialchars(upload_url($time['path_escudo'] ?? '/img/escudo.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Escudo do time">
                                 </div>
 
                                 <div class="integrante-info">
