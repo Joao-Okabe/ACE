@@ -185,6 +185,104 @@ class CompeticaoController
         ]);
     }
 
+    //Exibe a listagem das etapas cadastradas da competição
+    public function editEtapa(): void
+    {
+        $idCompeticao = (int) ($_GET['id'] ?? 0);
+
+        if ($idCompeticao <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $competicao = $this->service()->buscar($idCompeticao);
+            $this->service()->exigirPermissao($competicao);
+
+            renderView('competicao/editar-etapa', [
+                'competicao' => $competicao,
+                'etapas' => $this->service()->listarEtapas($idCompeticao),
+                'erro' => $_GET['erro'] ?? null,
+            ]);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+        }
+    }
+
+    //Salva a edição de uma etapa da competição
+    public function updateEtapa(): void
+    {
+        $idCompeticao = (int) ($_GET['id'] ?? 0);
+        $idEtapa = (int) ($_GET['etapa'] ?? 0);
+
+        if ($idCompeticao <= 0 || $idEtapa <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->atualizarEtapa($idEtapa, $idCompeticao, $_POST);
+            header('Location: /competicoes/etapas/editar?id=' . $idCompeticao . '&sucesso=1');
+            exit;
+        } catch (Exception $e) {
+            header('Location: /competicoes/etapas/editar?id=' . $idCompeticao . '&erro=' . urlencode($e->getMessage()));
+            exit;
+        }
+    }
+
+    //Exibe formulário de cadastro de etapa da competição
+    public function createEtapa(): void
+    {
+        $idCompeticao = (int) ($_GET['id'] ?? 0);
+
+        if ($idCompeticao <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $competicao = $this->service()->buscar($idCompeticao);
+            $this->service()->exigirPermissao($competicao);
+
+            renderView('competicao/criar-etapa', [
+                'competicao' => $competicao,
+                'dados' => $_POST,
+                'erro' => null,
+            ]);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo $e->getMessage();
+        }
+    }
+
+    //Salva uma nova etapa da competição
+    public function storeEtapa(): void
+    {
+        $idCompeticao = (int) ($_GET['id'] ?? 0);
+
+        if ($idCompeticao <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $this->service()->criarEtapa($idCompeticao, $_POST);
+            header('Location: /competicoes/etapas/editar?id=' . $idCompeticao . '&sucesso=1');
+            exit;
+        } catch (Exception $e) {
+            renderView('competicao/criar-etapa', [
+                'competicao' => $this->service()->buscar($idCompeticao),
+                'dados' => $_POST,
+                'erro' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function gerarChaveamento(): void
     {
         $id = (int) ($_POST['id_competicao'] ?? 0);

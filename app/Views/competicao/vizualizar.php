@@ -272,6 +272,29 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             <div class="partidas-header">
                 <p>Confira as etapas desta competição.</p>
             </div>
+
+            <?php $etapasCompeticao = (new EtapaCompeticao())->listarPorCompeticao((int) ($dados['cd_competicao'] ?? 0)); ?>
+            <?php if (empty($etapasCompeticao)): ?>
+                <p>Esta competição ainda não possui etapas cadastradas.</p>
+            <?php else: ?>
+                <ul class="list-group">
+                    <?php foreach ($etapasCompeticao as $etapaItem): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong><?= htmlspecialchars((string) $etapaItem['nm_etapa'], ENT_QUOTES, 'UTF-8') ?></strong>
+                                (<?= htmlspecialchars((string) $etapaItem['nm_tipo_etapa'], ENT_QUOTES, 'UTF-8') ?>)
+                                — ordem <?= (int) $etapaItem['ordem'] ?>
+                            </span>
+                            <?php if ($podeGerenciar): ?>
+                                <a class="btn btn-sm btn-laranja"
+                                   href="/competicoes/etapas/editar?id=<?= urlencode((string) $dados['cd_competicao']) ?>&etapa=<?= urlencode((string) $etapaItem['cd_etapa_competicao']) ?>">
+                                    Editar
+                                </a>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
         </div>
 
         <!-- Gerir Competição -->
@@ -300,8 +323,12 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
             </div>
             <br>
             <div class="partidas-header">
-                <p>Editar Locais e Datas</p>
-                <a href="/competicoes/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?>" class="btn btn-laranja">
+                <p>Editar Etapas da Competição</p>
+                <?php
+                $etapasParaGerir = (new EtapaCompeticao())->listarPorCompeticao((int) ($dados['cd_competicao'] ?? 0));
+                $primeiraEtapa = (int) ($etapasParaGerir[0]['cd_etapa_competicao'] ?? 0);
+                ?>
+                <a href="/competicoes/etapas/editar?id=<?= urlencode($dados['cd_competicao'] ?? '') ?><?= $primeiraEtapa > 0 ? '&etapa=' . urlencode((string) $primeiraEtapa) : '' ?>" class="btn btn-laranja">
                     Editar Etapas da Competição
                 </a>
             </div>
@@ -319,8 +346,8 @@ window.chaveamento = <?= json_encode(
 </script>
 <script>
 
-window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>, 
-email: <?= json_encode($usuario['email'] ?? '—') ?>, 
+window.usuarioLogado = { nome: <?= json_encode($usuario['nome'] ?? 'Usuário') ?>,
+email: <?= json_encode($usuario['email'] ?? '—') ?>,
 foto: <?= json_encode( upload_url($usuario['foto_perfil'] ?? '/img/perfil.jpg') ) ?> };
 
 document.querySelectorAll('.competicao-tab').forEach(botao => {
