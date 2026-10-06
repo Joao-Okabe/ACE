@@ -157,6 +157,22 @@ $router->post(
 );
 
 $router->get(
+    '/competicoes/etapas/editar', [CompeticaoController::class, 'editEtapa']
+);
+
+$router->post(
+    '/competicoes/etapas/atualizar', [CompeticaoController::class, 'updateEtapa']
+);
+
+$router->get(
+    '/competicoes/etapas/criar', [CompeticaoController::class, 'createEtapa']
+);
+
+$router->post(
+    '/competicoes/etapas', [CompeticaoController::class, 'storeEtapa']
+);
+
+$router->get(
     '/times/criar', [TimeController::class, 'create']
 );
 

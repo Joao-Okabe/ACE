@@ -193,6 +193,87 @@ class CompeticaoService
         return $this->competicaoModel->buscarPeriodoInscricao($idCompeticao);
     }
 
+    //Lista as etapas de uma competição
+    public function listarEtapas(int $idCompeticao): array
+    {
+        return $this->etapaCompeticaoModel->listarPorCompeticao($idCompeticao);
+    }
+
+    //Busca uma etapa específica da competição
+    public function buscarEtapa(int $idEtapa, int $idCompeticao): array
+    {
+        $etapa = $this->etapaCompeticaoModel->buscarPorCompeticao($idEtapa, $idCompeticao);
+
+        if ($etapa === null) {
+            throw new Exception('Etapa não encontrada nesta competição.');
+        }
+
+        return $etapa;
+    }
+
+    //Atualiza uma etapa da competição
+    public function atualizarEtapa(int $idEtapa, int $idCompeticao, array $dados): void
+    {
+        $competicao = $this->buscar($idCompeticao);
+        $this->exigirPermissao($competicao);
+
+        $nome = trim((string) ($dados['nm_etapa'] ?? ''));
+        if ($nome === '') {
+            throw new Exception('Informe o nome da etapa.');
+        }
+
+        $idTipoEtapa = (int) ($dados['cd_tipo_etapa'] ?? 0);
+        if ($idTipoEtapa <= 0) {
+            throw new Exception('Selecione o tipo da etapa.');
+        }
+
+        $ordem = (int) ($dados['ordem'] ?? 0);
+        if ($ordem <= 0) {
+            throw new Exception('Informe uma ordem válida para a etapa.');
+        }
+
+        $descricao = trim((string) ($dados['descricao'] ?? ''));
+
+        $this->etapaCompeticaoModel->atualizar($idEtapa, $idCompeticao, [
+            'cd_tipo_etapa' => $idTipoEtapa,
+            'nm_etapa' => $nome,
+            'ordem' => $ordem,
+            'descricao' => $descricao !== '' ? $descricao : null,
+        ]);
+    }
+
+    //Cria uma nova etapa da competição
+    public function criarEtapa(int $idCompeticao, array $dados): void
+    {
+        $competicao = $this->buscar($idCompeticao);
+        $this->exigirPermissao($competicao);
+
+        $nome = trim((string) ($dados['nm_etapa'] ?? ''));
+        if ($nome === '') {
+            throw new Exception('Informe o nome da etapa.');
+        }
+
+        $idTipoEtapa = (int) ($dados['cd_tipo_etapa'] ?? 0);
+        if ($idTipoEtapa <= 0) {
+            throw new Exception('Selecione o tipo da etapa.');
+        }
+
+        $ordem = (int) ($dados['ordem'] ?? 0);
+        if ($ordem <= 0) {
+            throw new Exception('Informe uma ordem válida para a etapa.');
+        }
+
+        $descricao = trim((string) ($dados['descricao'] ?? ''));
+
+        $this->etapaCompeticaoModel->criar([
+            'cd_competicao' => $idCompeticao,
+            'cd_tipo_etapa' => $idTipoEtapa,
+            'nm_etapa' => $nome,
+            'ordem' => $ordem,
+            'descricao' => $descricao !== '' ? $descricao : null,
+        ]);
+    }
+
     public function listarTimesInscritos(int $idCompeticao): array
     {
         return $this->competicaoModel->listarTimesInscritos($idCompeticao);
