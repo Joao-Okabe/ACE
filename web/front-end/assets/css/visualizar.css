@@ -1,0 +1,501 @@
+/*==== VISUALIZAR ====*/
+
+.header-visualizar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 9px;
+}
+
+.visu-title {
+    font-weight: bold;
+    font-size: 23px;
+    color: var(--azul-principal);
+}
+
+
+/*==== CARD ====*/
+.visu-box {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    background: var(--branco);
+    border-radius: 18px;
+    padding: 23px;
+    box-shadow: var(--shadow-sm);
+}
+.visu-box h5 {
+    color: var(--azul-principal);
+    font-weight: 700;
+    margin-bottom: 22px;
+    padding-bottom: 13px;
+    border-bottom: 2px solid #ececec;
+}
+
+
+/*==== INFOS DO CARD ====*/
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+}
+.info-item h6 {
+    color: var(--laranja-principal);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.info-item p {
+    color: var(--azul-principal);
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+
+/*==== COR DAS INFOS DO PRIMEIRO CARD ====*/
+.label-info {
+    color: var(--laranja-principal);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.label-info i {
+    color: var(--laranja-principal);
+    margin-right: 5px;
+}
+
+.value-info{
+    font-size: 15px;
+    color: var(--azul-principal);
+    font-weight: 600;
+}
+
+/*==== NOME DO ALUNO / ESCOLA ====*/
+.name {
+    color: var(--azul-principal);
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0;
+}
+
+
+/*==== STATUS ====*/
+.badge-status {
+    background: #FFE7DE;
+    color: var(--laranja-principal);
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 30px;
+}
+
+/*==== FOTO ====*/
+.foto {
+    display: flex;
+    gap: 20px;
+    padding-left: 50px;
+}
+
+.foto img {
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--azul-principal);
+}
+
+
+/*==== VISUALIZAR TIMES ====*/
+
+/*==== FOTO ====*/
+.escudo {
+    display: flex;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.escudo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--azul-principal);
+}
+
+
+/* Botões do visu-box */
+.btn-partida{
+    background: var(--azul-principal);
+    color: var(--branco);
+    height: 46px;
+    width: 100%;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-partida:hover{
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.btn-partida i{
+    min-width: 15px;
+    margin-right: 10px;
+    color: var(--branco);
+    font-size: 21px;
+    text-align: center;
+}
+
+.btn-tecnico{
+    background: var(--azul-principal);
+    color: var(--branco);
+    height: 46px;
+    width: 100%;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-tecnico:hover{
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.btn-tecnico i{
+    min-width: 15px;
+    margin-right: 10px;
+    color: var(--branco);
+    font-size: 21px;
+    text-align: center;
+}
+
+
+
+
+/* Integrantes */
+.integrante-section {
+    width: 100%;
+}
+
+.section-title {
+    margin-bottom: 20px;
+    color: var(--azul-principal);
+
+    font-weight: 600;
+}
+
+.responsavel-card {
+    width: 100%;
+    min-height: 100px;
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.responsavel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+
+.integrante-card {
+    width: 100%;
+    min-height: 220px;
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+
+
+
+/* Foto + informações */
+.integrante-conteudo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 1;
+}
+
+.integrante-foto {
+    flex-shrink: 0;
+}
+
+.integrante-foto img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--azul-principal);
+    display: block;
+}
+
+.integrante-info {
+    min-width: 0;
+}
+
+.integrante-info h4 {
+    margin: 0 0 6px;
+    color: var(--azul-principal);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.integrante-info .label-info {
+    margin: 0 0 8px;
+    color: var(--laranja-principal);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.integrante-info .value-info {
+    margin: 3px 0;
+    color: var(--azul-principal);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* Botões */
+.integrante-acoes {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #ececec;
+}
+
+.integrante-acoes form {
+    flex: 1;
+    margin: 0;
+}
+
+.integrante-acoes .btn {
+    width: 100%;
+    min-height: 36px;
+    font-size: 13px;
+}
+
+/* Botão de exclusão */
+.btn-delete {
+    color:  #dc3545;
+    height: 46px;
+    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #dc3545;
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-delete:hover {
+    border-color: #bb2d3b;
+    background-color: #bb2d3b;
+    color: var(--branco);
+}
+
+
+.name-competicao{
+    color: var(--azul-principal);
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.competicao-titulo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.competicao-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.competicao-info .name-competicao {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.competicao-info p {
+    color: var(--cinza);
+    margin: 4px 0 0;
+}
+
+.competicao-titulo .btn-voltar {
+    position: static !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 7px 0 0 !important;
+}
+
+/* ==== ABAS DA COMPETIÇÃO ==== */
+
+.competicao-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.competicao-tab {
+    border: none;
+    background: var(--branco);
+    color: var(--azul-principal);
+    width: 218px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--azul-principal);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.competicao-tab i {
+    margin-right: 6px;
+}
+
+.competicao-tab:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.competicao-tab.active {
+    background: var(--azul-principal);
+    color: var(--branco);
+}
+
+
+/* ==== CONTEÚDO DAS ABAS ==== */
+
+.competicao-painel {
+    display: none;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+}
+
+.competicao-painel.active {
+    display: block;
+}
+
+.competicao-conteudo {
+    width: 100%;
+    height: auto;
+}
+
+.competicao-painel.active {
+    display: block;
+    height: auto;
+}
+
+.competicao-painel h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    border-bottom: 2px solid #ececec;
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+    margin: 0 0 20px;
+
+}
+
+.competicao-painel p {
+    color: var(--azul-principal);
+}
+
+.partida-card{
+    width: 100%;
+    min-height: 140px;
+    background: var(--branco);
+    border: 1px solid var(--azul-principal);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+}
+
+.partida-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.partida-info {
+    width: 100%;
+}
+
+.partida-info h4 {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    color: var(--azul-principal);
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 2px solid #ececec;
+}
+
+.partida-info p {
+    margin: 5px 0;
+    color: var(--azul-principal);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.partida-info i {
+    color: var(--laranja-principal);
+    margin-right: 6px;
+}
+
+.partidas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+}
+
+.partidas-header h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+

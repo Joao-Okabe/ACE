@@ -1,0 +1,317 @@
+/*==== LISTA / TABELA ====*/
+
+/*==== LISTA ====*/
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+/*==== CARD ====*/
+.card-list {
+    width: 100%;
+    overflow: hidden;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--azul-principal);
+    box-shadow: var(--shadow-md);
+}
+
+/*==== PESQUISA ====*/
+.search-box {
+    position: relative;
+    width: 100%;
+}
+.search-box i {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--laranja-principal);
+    font-size: 17px;
+    z-index: 10;
+    pointer-events: none;
+}
+.search-box input {
+    padding: 0 15px 0 42px;
+}
+.search-box input,
+.form-input-group .form-select,
+.btn-buscar {
+    width: 100%;
+    height: 43px;
+    border-radius: var(--radius) !important;
+    border: 2px solid #dee2e6 !important;
+    outline: none !important;
+    box-shadow: none;
+    transition: var(--transition);
+}
+.search-box input:focus,
+.form-input-group .form-select:focus {
+    border: 2px solid var(--laranja-principal) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 .15rem rgba(244, 78, 28, .15) !important;
+}
+
+/* Botão de filtro */
+.btn-filtro {
+    width: 100%;
+}
+
+/* Botão buscar */
+.btn-buscar {
+    background-color: var(--azul-principal);
+    color: var(--branco);
+    font-weight: 600;
+    border-radius: var(--radius);
+    border: none;
+    transition: var(--transition);
+}
+.btn-buscar:hover {
+    background-color: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.btn-filtro,
+.btn-buscar {
+    width: 100%;
+    height: 43px;
+    border-radius: var(--radius);
+}
+
+/*==== TABELA ====*/
+
+/* Cabeçalho da tabela */
+.table-blue,
+.table-blue th {
+    background: var(--azul-principal);
+    color: var(--branco);
+    border-color: var(--azul-principal);
+}
+
+/* Card da tabela */
+.card-list .table {
+    --bs-table-striped-bg: #f7efe4;
+    --bs-table-color: var(--azul-principal);
+}
+
+/* Perfil / brasão */
+.list-perfil {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-left: auto;
+}
+.list-perfil img {
+    margin-left: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--azul-principal);
+}
+
+/* Células da tabela */
+.card-list .table th,
+.card-list .table td {
+    vertical-align: middle;
+    text-align: left;
+    padding: 9px 16px;
+}
+
+/*==== BOTÕES DE AÇÃO ====*/
+.btn-view,
+.btn-edit,
+.btn-delete {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+/* Editar */
+.btn-edit {
+    color: var(--branco);
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
+}
+.btn-edit i.bi {
+    color: var(--azul-principal) !important;
+}
+.btn-edit:hover i.bi {
+    color: var(--azul-principal) !important;
+}
+.btn-edit:hover {
+    color: var(--azul-principal);
+    background-color: var(--laranja-principal);
+}
+
+/* Visualizar */
+.btn-view {
+    color: var(--azul-principal);
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
+}
+.btn-view:hover {
+    color: var(--azul-principal);
+    background-color: var(--laranja-principal);
+}
+
+/* Excluir */
+.btn-delete {
+    color: var(--azul-principal);
+    border: 2px solid var(--azul-principal);
+    font-size: 19px;
+}
+.btn-delete:hover {
+    color: var(--azul-principal);
+    background-color: var(--laranja-principal);
+}
+
+/*==== RESPONSIVIDADE ====*/
+.pesquisa-escola {
+    width: 100%;
+}
+@media (max-width: 768px) {
+
+    /* Card */
+    .card-list {
+        border-radius: var(--radius);
+    }
+
+    /* Pesquisa */
+    .pesquisa-escola {
+        width: 100%;
+    }
+
+    /* Tabela */
+    .card-list .table {
+        min-width: 800px;
+    }
+    .card-list .table th,
+    .card-list .table td {
+        white-space: nowrap;
+        padding: 9px 13px;
+    }
+    /* Perfil / brasão */
+    .list-perfil {
+        margin-left: 0;
+    }
+
+    /* Botões de ação */
+    .btn-view,
+    .btn-edit,
+    .btn-delete {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Botão adicionar */
+    .btn-laranja {
+        width: 100%;
+    }
+}
+
+/* ================================
+   MODAL DE EXCLUSÃO
+================================ */
+
+.modal-excluir {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.modal-excluir .modal-header {
+    border: none;
+    padding: 20px 20px 0;
+}
+
+.modal-excluir .modal-body {
+    padding: 15px 30px 10px;
+}
+
+.modal-excluir .modal-body h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.modal-excluir .modal-body p {
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.modal-excluir .modal-footer {
+    border: none;
+    padding: 15px 24px 24px;
+    gap: 10px;
+}
+
+.btn-cancelar {
+    background: var(--branco);
+    color: var(--laranja-principal);
+    border: 1px solid var(--laranja-principal);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-cancelar:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.btn-confirmar-exclusao {
+    background: var(--azul-principal);
+    color: var(--branco);
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 19px;
+    font-size: 8px 18px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-confirmar-exclusao:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+
+.acoes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.acoes form {
+    display: inline-flex;
+    margin: 0;
+}
+
+/*==== VARIÁVEIS ====*/
+:root {
+    --azul-principal: #181847;
+    --laranja-principal: #F44E1C;
+    --bege-principal: #F1E4D1;
+    --branco: #FFF;
+    --preto: #212529;
+
+    --radius: 12px;
+    --transition: .3s ease;
+
+    --shadow-sm: 0 3px 8px rgba(0, 0, 0, .08);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, .12);
+}
