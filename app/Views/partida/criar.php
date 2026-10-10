@@ -2,11 +2,7 @@
 
 $dados = $dados ?? [];
 $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ?? '', ENT_QUOTES, 'UTF-8');
-// 1 parte
-$formatos = $formatos ?? [];
-$esportes = $esportes ?? [];
-$modalidades = $modalidades ?? [];
-// 2 parte
+
 $times = $times ?? [];
 
 $idPartida = $idPartida ?? [];
@@ -42,112 +38,7 @@ $idPartida = $idPartida ?? [];
     <div class="card form-card shadow-sm">
 
         <form action="/partidas" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id_competicao" value="<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>">
-            <div id="etapa1">
-                <h4 class="form-title">Adicionar partida</h4>
-                <p class="form-subtitle">
-                    Preencha os dados da partida.
-                </p>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="formato" class="form-label">Formato</label>
-
-                        <select id="formato" name="formato" class="form-select form-input" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($formatos as $formato): ?>
-                                <option value="<?= htmlspecialchars($formato['cd_formato']) ?>" <?= ($valor('formato') == $formato['cd_formato']) ? 'selected' : '' ?>><?= htmlspecialchars($formato['nm_formato']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="esporte" class="form-label">Esporte</label>
-
-                        <select id="esporte" name="esporte" class="form-select form-input" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($esportes as $esporte): ?>
-                                <option value="<?= htmlspecialchars($esporte['cd_esporte']) ?>" <?= ($valor('esporte') == $esporte['cd_esporte']) ? 'selected' : '' ?>><?= htmlspecialchars($esporte['nm_esporte']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="modalidade" class="form-label">Modalidade</label>
-                        <select id="modalidade" name="modalidade" class="form-select form-input" required>
-                            <option value="">Selecione</option>
-                            <?php foreach ($modalidades as $modalidade): ?>
-                                <option value="<?= htmlspecialchars($modalidade['cd_modalidade']) ?>" <?= ($valor('modalidade') == $modalidade['cd_modalidade']) ? 'selected' : '' ?>><?= htmlspecialchars(($modalidade['ds_restr_genero'] ?? '') . ' / ' . ($modalidade['ds_restr_idade'] ?? '')) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="actions full d-flex justify-content-end gap-3 mt-4">
-                    <a href="/competicoes/visualizar?id=<?= htmlspecialchars($idCompeticao ?? 0, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary">Cancelar</a>
-                    <button class="btn btn-laranja" type="button" id="btnProximo">Próximo</button>
-                </div>
-
-            </div>
-
-            <div id="etapa2" style="display: none;">
-                <h4 class="form-title">Informações da partida</h4>
-                <p class="form-subtitle">
-                    Preencha os dados da partida.
-                </p>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label for="timeCasa" class="form-label">Time 1</label>
-
-                        <select id="timeCasa" name="time_casa" class="form-select form-input" required>
-                            <option value="">Selecione o time</option>
-                            <?php foreach ($times as $time): ?>
-                                <option value="<?= htmlspecialchars($time['cd_time']) ?>" <?= ($valor('time') == $time['cd_time']) ? 'selected' : '' ?>><?= htmlspecialchars($time['nm_time']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="timeFora" class="form-label">Time 2</label>
-
-                        <select id="timeFora" name="time_fora" class="form-select form-input" required>
-                            <option value="">Selecione o time</option>
-                            <?php foreach ($times as $time): ?>
-                                <option value="<?= htmlspecialchars($time['cd_time']) ?>" <?= ($valor('time') == $time['cd_time']) ? 'selected' : '' ?>><?= htmlspecialchars($time['nm_time']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="dataPartida" class="form-label">Data da partida</label>
-                        <input type="date" id="dataPartida" name="data_partida" class="form-control form-input" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="horaPartida" class="form-label">Horário</label>
-                        <input type="time" id="horaPartida" name="hora_partida" class="form-control form-input" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="localPartida" class="form-label">Local</label>
-
-                        <input type="text" id="localPartida" name="local_partida" class="form-control form-input"  required>
-                    </div>
-
-                </div>
-
-                <div class="actions full d-flex justify-content-end gap-3 mt-4">
-
-                    <button type="button" class="btn btn-secondary" id="btnVoltar">Voltar</button>
-                    <button class="btn btn-laranja" type="submit">Adicionar partida</button>
-
-                </div>
-
-            </div>
         </form>
 
     </div>
