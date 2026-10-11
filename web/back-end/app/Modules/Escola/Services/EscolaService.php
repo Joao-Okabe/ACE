@@ -32,6 +32,8 @@ class EscolaService
 
     private NormalizadorCampo $normalizador;
 
+    private EscolaValidator $escolaValidator;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -41,35 +43,15 @@ class EscolaService
         $this->escolaModel = new Escola();
 
         $this->normalizador = new NormalizadorCampo();
+
+        $this->escolaValidator = new EscolaValidator();
     }
 
     //Cadastro de escola
     public function cadastrar(array $dados): void
     {
 
-        if (empty($dados['nome'])) {
-            throw new Exception("Informe o nome da escola.");
-        }
-
-        if (empty($dados['email'])) {
-            throw new Exception("Informe um e-mail.");
-        }
-
-        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Informe um e-mail válido.");
-        }
-
-        if (empty($dados['senha'])) {
-            throw new Exception("Informe uma senha.");
-        }
-
-        if (empty($dados['categoria_administrativa'])) {
-            throw new Exception("Informe a categoria administrativa.");
-        }
-
-        if (!in_array($dados['categoria_administrativa'], ['Escola Municipal', 'Escola Estadual', 'Privada'], true)) {
-            throw new Exception("Categoria administrativa inválida.");
-        }
+        $this->escolaValidator->validarCadastroEscola($dados);
 
         if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
             throw new Exception("Já existe um usuário cadastrado com este e-mail.");
@@ -89,15 +71,10 @@ class EscolaService
             $this->escolaModel->cadastrar([
 
                 'nome' => $dados['nome'],
-
                 'telefone' => $this->normalizador->normalizarCampoNulo($dados['telefone'] ?? null),
-
                 'cep' => $this->normalizador->normalizarCampoNulo($dados['cep'] ?? null),
-
                 'numero' => $this->normalizador->normalizarCampoNulo($dados['numero'] ?? null),
-
                 'categoria_administrativa' => $dados['categoria_administrativa'],
-
                 'img_logo' => $caminhoPublico
 
             ]);

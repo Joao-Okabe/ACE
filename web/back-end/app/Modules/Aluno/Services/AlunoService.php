@@ -36,18 +36,19 @@ class AlunoService
 
     private Papel $papelModel;
 
+    private AlunoValidator $alunoValidator;
+
     private Permissoes $permissoes;
 
     private NormalizadorCampo $normalizadorCampo;
 
     public function __construct()
     {
-        $this->pdo = Database::connect();
-
         $this->usuarioModel = new Usuario();
         $this->alunoModel = new Aluno();
         $this->vinculoEscolaUsuarioModel = new VinculoUsuarioEscola();
         $this->papelModel = new Papel();
+        $this->alunoValidator = new AlunoValidator();
         $this->permissoes = new Permissoes();
         $this->normalizadorCampo = new NormalizadorCampo();
     }
@@ -72,21 +73,7 @@ class AlunoService
                 throw new Exception('Este usuário já está cadastrado como aluno.');
             }
         } else {
-            if (empty($dados['nome'])) {
-                throw new Exception("Informe o nome do(a) aluno(a). ");
-            }
-
-            if (empty($dados['email']) || !filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("Informe um e-mail válido.");
-            }
-
-            if (empty($dados['senha'])) {
-                throw new Exception("Informe uma senha.");
-            }
-
-            if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
-                throw new Exception("Já existe um usuário cadastrado com este e-mail.");
-            }
+            $this->alunoValidator->validarCadastroAluno($dados);
         }
 
         $papelAluno = $this->papelModel->buscarPapelPorNome('ALUNO');
@@ -105,6 +92,7 @@ class AlunoService
             $this->pdo->beginTransaction();
 
             $idEscola = $this->permissoes->resolverEscolaCadastro($dados);
+
             if ($idEscola <= 0) {
                 throw new Exception('Selecione a escola do aluno.');
             }
@@ -118,45 +106,7 @@ class AlunoService
                 throw new Exception('Informe a data de nascimento.');
             }
 
-            // tratar upload de foto_perfil (opcional) e enviar ao cadastro de usuário
-            $arquivo = $_FILES['foto_perfil'] ?? null;
-            $caminhoPublicoFoto = null;
-
-            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
-                $nomeArquivo = $arquivo['name'];
-                $tamanhoArquivo = (int) $arquivo['size'];
-                $erroArquivo = (int) $arquivo['error'];
-                $tmpArquivo = $arquivo['tmp_name'];
-
-                $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
-                $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-                if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
-                    throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
-                }
-
-                if ($erroArquivo !== 0) {
-                    throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
-                }
-
-                if ($tamanhoArquivo > 2 * 1024 * 1024) {
-                    throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
-                }
-
-                $pastaUploads = __DIR__ . '/../../public/uploads';
-
-                if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
-                    throw new Exception('Não foi possível criar a pasta de uploads.');
-                }
-
-                $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
-                $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
-                $caminhoPublicoFoto = '/uploads/' . $novoNomeArquivo;
-
-                if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
-                    throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
-                }
-            }
+            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil']);
 
             $idUsuario = $idUsuarioExistente > 0
                 ? $idUsuarioExistente
@@ -198,16 +148,19 @@ class AlunoService
         }
     }
 
+    // Lista todos os alunos
     public function listar(array $filtros = []): array
     {
         return $this->alunoModel->listar($filtros);
     }
 
+    // Lista usuários disponiveis para se tornarem alunos
     public function listarUsuariosDisponiveis(): array
     {
         return $this->usuarioModel->listarDisponiveisParaAluno();
     }
 
+    // Busca alunos com base no seu cd
     public function buscar(int $id): array
     {
         $aluno = $this->alunoModel->buscar($id);
@@ -242,40 +195,9 @@ class AlunoService
             $arquivo = $_FILES['foto_perfil'] ?? null;
             $caminhoPublicoFoto = null;
 
-            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) {
-                $nomeArquivo = $arquivo['name'];
-                $tamanhoArquivo = (int) $arquivo['size'];
-                $erroArquivo = (int) $arquivo['error'];
-                $tmpArquivo = $arquivo['tmp_name'];
-
-                $extensaoArquivo = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
-                $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-                if (!in_array($extensaoArquivo, $extensoesPermitidas, true)) {
-                    throw new Exception('Tipo de arquivo inválido. Apenas JPG, JPEG, PNG e WEBP são permitidos.');
-                }
-
-                if ($erroArquivo !== 0) {
-                    throw new Exception('Erro durante a transferência do arquivo, tente novamente.');
-                }
-
-                if ($tamanhoArquivo > 2 * 1024 * 1024) {
-                    throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
-                }
-
-                $pastaUploads = __DIR__ . '/../../public/uploads';
-
-                if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
-                    throw new Exception('Não foi possível criar a pasta de uploads.');
-                }
-
-                $novoNomeArquivo = uniqid('IMG_', true) . '.' . $extensaoArquivo;
-                $caminhoCompleto = $pastaUploads . DIRECTORY_SEPARATOR . $novoNomeArquivo;
-                $caminhoPublicoFoto = '/uploads/' . $novoNomeArquivo;
-
-                if (!move_uploaded_file($tmpArquivo, $caminhoCompleto)) {
-                    throw new Exception('Não foi possível salvar a imagem na pasta de uploads.');
-                }
+            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) 
+            {
+                $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil']);
 
                 $this->usuarioModel->atualizarFotoPerfil((int) $aluno['cd_usuario'], $caminhoPublicoFoto);
             }
@@ -314,6 +236,39 @@ class AlunoService
         }
         
         return $this->alunoModel->obterEscolaDoAluno($idAluno);
+    }
+
+    private function salvarFoto(?array $arquivo): ?string
+    {
+        if ($arquivo === null || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
+            throw new Exception('O arquivo enviado não é válido.');
+        }
+
+        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $tipo = (new finfo(FILEINFO_MIME_TYPE))->file($arquivo['tmp_name']);
+        if (!isset($tiposPermitidos[$tipo])) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
+        }
+
+        $pasta = __DIR__ . '/../../public/uploads';
+        if (!is_dir($pasta) && !mkdir($pasta, 0755, true) && !is_dir($pasta)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        $nome = uniqid('IMG_', true) . '.' . $tiposPermitidos[$tipo];
+        if (!move_uploaded_file($arquivo['tmp_name'], $pasta . DIRECTORY_SEPARATOR . $nome)) {
+            throw new Exception('Não foi possível salvar a imagem.');
+        }
+
+        return '/uploads/' . $nome;
     }
 
 }

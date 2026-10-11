@@ -6,7 +6,8 @@ services:
     ports:
       - ${APP_PORT}:80
     volumes:
-      - ./:/var/www/html:rwt
+      - ./web/back-end:/var/www/html:rw
+      - ./.env:/var/www/html/.env:ro
     env_file:
       - .env
     environment:

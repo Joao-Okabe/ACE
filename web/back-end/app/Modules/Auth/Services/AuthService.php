@@ -6,36 +6,26 @@
 class AuthService
 {
     private Auth $authModel;
-
     private Usuario $usuarioModel;
-
     private Papel $papel;
+    private AuthValidator $authValidator;
 
     public function __construct()
     {
         $this->authModel = new Auth();
-
         $this->usuarioModel = new Usuario();
-
         $this->papel = new Papel();
+        $this->authValidator = new AuthValidator();
     }
 
     public function autenticar(array $dados): array
     {
-        if (empty($dados['email'])) {
-            throw new Exception("Informe o e-mail.");
-        }
-
-        if (empty($dados['senha'])) {
-            throw new Exception("Informe a senha.");
-        }
+        $this->authValidator->validarAutenticacao($dados);
 
         $usuario = $this->usuarioModel->buscarPorEmail($dados['email']);
-
         if ($usuario === null || !password_verify($dados['senha'], $usuario['senha'])) {
             throw new Exception("E-mail ou senha inválidos.");
         }
-
         if (isset($usuario['ativo']) && $usuario['ativo'] === false) {
             throw new Exception("Usuário inativo.");
         }

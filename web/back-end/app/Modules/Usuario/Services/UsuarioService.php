@@ -10,6 +10,8 @@ class UsuarioService
 
     private VinculoUsuarioEscola $vinculoUsuarioEscolaModel;
 
+    private UsuarioValidator $usuarioValidator;
+
     public function __construct()
     {
         $this->pdo = Database::connect();
@@ -19,33 +21,18 @@ class UsuarioService
         $this->papelModel = new Papel();
 
         $this->vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
+
+        $this->usuarioValidator = new UsuarioValidator();
     }
 
     public function cadastrar(array $dados): int
     {
-        if (trim((string) ($dados['nm_usuario'] ?? '')) === '') {
-            throw new Exception('Informe o nome do usuário.');
-        }
+
+        $this->usuarioValidator->validarCadastroUsuario($dados);
 
         $papeisSessao = $_SESSION['usuario']['papeis'] ?? [];
         $podeVincular = is_array($papeisSessao)
             && (in_array('ADM', $papeisSessao, true) || in_array('DIR', $papeisSessao, true));
-
-        if (empty($dados['email'])) {
-            throw new Exception("Informe um e-mail.");
-        }
-
-        if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Informe um e-mail válido.");
-        }
-
-        if (empty($dados['senha'])) {
-            throw new Exception("Informe uma senha.");
-        }
-
-        if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
-            throw new Exception("Já existe um usuário cadastrado com este e-mail.");
-        }
 
         $senhaHash = password_hash(
             $dados['senha'],
