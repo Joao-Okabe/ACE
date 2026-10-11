@@ -32,29 +32,81 @@ class Router
         $this->routes[$method][$uri] = $action;
     }
 
+    private function encontrarRota(
+        string $method,
+        string $uri
+    ): ?array {
+        foreach ($this->routes[$method] ?? [] as $rota => $action) {
+            $segmentos = explode('/', trim($rota, '/'));
+            $padroes = [];
+
+            foreach ($segmentos as $segmento) {
+                if (preg_match(
+                    '/^\{([a-zA-Z_][a-zA-Z0-9_]*)\}$/',
+                    $segmento,
+                    $match
+                )) {
+                    $padroes[] = '(?P<' . $match[1] . '>[^/]+)';
+                } else {
+                    $padroes[] = preg_quote($segmento, '#');
+                }
+            }
+
+            $padrao = $rota === '/'
+                ? '#^/$#'
+                : '#^/' . implode('/', $padroes) . '$#';
+
+            if (preg_match($padrao, $uri, $matches)) {
+                $parametros = [];
+
+                foreach ($matches as $chave => $valor) {
+                    if (is_string($chave)) {
+                        $parametros[] = rawurldecode($valor);
+                    }
+                }
+
+                return [$action, $parametros];
+            }
+        }
+
+        return null;
+    }
 
     public function dispatch(): void
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if (!$this->rotaPublica($method, $uri) && empty($_SESSION['usuario']['id'])) {
-            (new AuthController())->logout();
+        // Normaliza a URI, removendo a barra final.
+        if ($uri !== '/') {
+            $uri = rtrim($uri, '/');
         }
 
-        if(isset($this->routes[$method][$uri])) {
+        // 1. Procura a rota antes de verificar a autenticação.
+        $rota = $this->encontrarRota($method, $uri);
 
-            [$controller, $action] = $this->routes[$method][$uri];
-
-            $controllerInstance = new $controller();
-
-            $controllerInstance->$action();
-
+        // 2. Se a rota não existir, retorna 404.
+        if ($rota === null) {
+            http_response_code(404);
+            require __DIR__ . '/../Views/error/404.php';
             return;
         }
 
-        http_response_code(404);
-        require __DIR__ . '/../Views/error/404.php';
+        // 3. Verifica a autenticação somente para rotas existentes.
+        if (
+            !$this->rotaPublica($method, $uri)
+            && empty($_SESSION['usuario']['id'])
+        ) {
+            header('Location: /login');
+            exit;
+        }
+
+        // 4. Executa a rota encontrada.
+        [$action, $parametros] = $rota;
+        [$controller, $metodo] = $action;
+
+        $controllerInstance = new $controller();
+        $controllerInstance->$metodo(...$parametros);
     }
 
     private function rotaPublica(string $method, string $uri): bool
