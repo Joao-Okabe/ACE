@@ -3,7 +3,7 @@
 class AlunoController 
 {
 
-    private ?AlunoService $service = null;
+    private AlunoService $service;
 
     private function service(): AlunoService
     {
@@ -128,7 +128,7 @@ class AlunoController
         }
 
         $aluno = $this->service()->buscar($id);
-        $this->service()->exigirPermissaoGerenciarAluno($id);
+        (new Permissoes())->exigirPermissaoGerenciarAluno($id);
         $escolas = (new EscolaService())->listar();
         renderView('aluno/editar', ['aluno' => $aluno, 'escolas' => $escolas]);
     }
@@ -144,7 +144,7 @@ class AlunoController
         }
 
         try {
-            $this->service()->exigirPermissaoGerenciarAluno($id);
+            (new Permissoes())->exigirPermissaoGerenciarAluno($id);
             $this->service()->atualizar($id, $_POST);
             header("Location: /alunos/listar");
             exit;
@@ -195,7 +195,7 @@ class AlunoController
         }
 
         try {
-            $this->service()->exigirPermissaoGerenciarAluno($id);
+            (new Permissoes())->exigirPermissaoGerenciarAluno($id);
             $this->service()->remover($id);
             $_SESSION['flash'] = ['success' => 'Aluno removido com sucesso.'];
             header("Location: /alunos/listar");

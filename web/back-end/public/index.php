@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../config/env.php';
 loadEnv(__DIR__ . '/../.env');
 
@@ -6,7 +7,10 @@ session_start();
 
 require_once __DIR__ . '/../app/Core/Autoloader.php';
 Autoloader::register();
+
 require_once __DIR__ . '/../app/Core/View.php';
 
 require_once __DIR__ . '/../routes/web.php';
+require_once __DIR__ . '/../routes/api.php';
+
 $router->dispatch();

@@ -1,3 +1,6 @@
 <?php 
-$router = new Router();
 
+$router->get(
+    '/api/alunos',
+    [AlunoApiController::class, 'index']
+);

@@ -91,11 +91,9 @@ class Permissoes
     {
         $alunoService = new AlunoService();
 
-        $idEscola = $this->$alunoService->obterEscolaDoAluno($id);
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idEscola = $alunoService->obterEscolaDoAluno($id);
 
-        if 
-        ($idEscola === null || !$this->$alunoService->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
+        if ($idEscola === null || !self::podeGerenciarEscola($idEscola)) {
             throw new Exception('Você não tem permissão para gerenciar este aluno.');
         }
     }

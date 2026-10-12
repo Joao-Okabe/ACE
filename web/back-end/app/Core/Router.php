@@ -72,36 +72,98 @@ class Router
         return null;
     }
 
+    private function metodosPermitidos(string $uri): array
+    {
+        $permitidos = [];
+
+        foreach ($this->routes as $method => $rotas) {
+            if ($this->encontrarRota($method, $uri) !== null) {
+                $permitidos[] = $method;
+            }
+        }
+
+        return $permitidos;
+    }
+
+    private function ehApi(string $uri): bool
+    {
+        return $uri === '/api'
+            || str_starts_with($uri, '/api/');
+    }
+
     public function dispatch(): void
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = parse_url(
+            $_SERVER['REQUEST_URI'],
+            PHP_URL_PATH
+        );
 
-        // Normaliza a URI, removendo a barra final.
+        $method = strtoupper($_SERVER['REQUEST_METHOD']);
+
+        if (!is_string($uri)) {
+            $uri = '/';
+        }
+
+        // Normaliza a URI.
         if ($uri !== '/') {
             $uri = rtrim($uri, '/');
         }
 
-        // 1. Procura a rota antes de verificar a autenticação.
+        $ehApi = $this->ehApi($uri);
+
+        // 1. Procura a rota para o método solicitado.
         $rota = $this->encontrarRota($method, $uri);
 
-        // 2. Se a rota não existir, retorna 404.
+        // 2. Verifica se o caminho existe com outro método.
         if ($rota === null) {
+            $permitidos = $this->metodosPermitidos($uri);
+
+            if ($permitidos !== []) {
+                header('Allow: ' . implode(', ', $permitidos));
+
+                if ($ehApi) {
+                    Response::json([
+                        'sucesso' => false,
+                        'mensagem' => 'Método HTTP não permitido.',
+                        'metodos_permitidos' => $permitidos
+                    ], 405);
+                }
+
+                http_response_code(405);
+                echo 'Método HTTP não permitido.';
+                return;
+            }
+
+            // 3. Caminho inexistente: 404.
+            if ($ehApi) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Endpoint não encontrado.'
+                ], 404);
+            }
+
             http_response_code(404);
             require __DIR__ . '/../Views/error/404.php';
             return;
         }
 
-        // 3. Verifica a autenticação somente para rotas existentes.
+        // 4. Verifica autenticação para rotas existentes.
         if (
             !$this->rotaPublica($method, $uri)
             && empty($_SESSION['usuario']['id'])
         ) {
+            if ($ehApi) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Autenticação necessária.'
+                ], 401);
+            }
+
             header('Location: /login');
             exit;
         }
 
-        // 4. Executa a rota encontrada.
+        // 5. Executa o controller.
         [$action, $parametros] = $rota;
         [$controller, $metodo] = $action;
 
@@ -109,9 +171,20 @@ class Router
         $controllerInstance->$metodo(...$parametros);
     }
 
-    private function rotaPublica(string $method, string $uri): bool
-    {
-        return $method === 'GET' && in_array($uri, ['/', '/login', '/logout'], true)
-            || $method === 'POST' && $uri === '/login';
+    private function rotaPublica(
+        string $method,
+        string $uri
+    ): bool {
+        return (
+            $method === 'GET'
+            && in_array(
+                $uri,
+                ['/','/login','/logout'],
+                true
+            )
+        ) || (
+            $method === 'POST'
+            && $uri === '/login'
+        );
     }
 }
