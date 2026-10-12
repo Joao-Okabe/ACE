@@ -44,6 +44,8 @@ class AlunoService
 
     public function __construct()
     {
+        $this->pdo = Database::connect();
+
         $this->usuarioModel = new Usuario();
         $this->alunoModel = new Aluno();
         $this->vinculoEscolaUsuarioModel = new VinculoUsuarioEscola();
@@ -76,7 +78,7 @@ class AlunoService
             $this->alunoValidator->validarCadastroAluno($dados);
         }
 
-        $papelAluno = $this->papelModel->buscarPapelPorNome('ALUNO');
+        $papelAluno = $this->papelModel->buscarPapelPorNome('ALU');
 
         if ($papelAluno === null) {
             throw new Exception("Papel ALUNO não encontrado.");
@@ -106,7 +108,7 @@ class AlunoService
                 throw new Exception('Informe a data de nascimento.');
             }
 
-            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil']);
+            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil'] ?? null);
 
             $idUsuario = $idUsuarioExistente > 0
                 ? $idUsuarioExistente
@@ -226,17 +228,20 @@ class AlunoService
     public function obterEscolaDoAluno(int $idAluno): ?int
     {
         $aluno = $this->alunoModel->buscar($idAluno);
+
         if ($aluno === null) {
             return null;
         }
 
         $cdUsuario = (int) ($aluno['cd_usuario'] ?? 0);
+
         if ($cdUsuario <= 0) {
             return null;
         }
-        
-        return $this->alunoModel->obterEscolaDoAluno($idAluno);
+
+        return $this->alunoModel->obterEscolaDoAluno($cdUsuario);
     }
+
 
     private function salvarFoto(?array $arquivo): ?string
     {

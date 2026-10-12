@@ -159,26 +159,28 @@ class Aluno extends Model
         ]);
     }
 
-    public function obterEscolaDoAluno(int $idAluno): ?int
+    public function obterEscolaDoAluno(int $idUsuario): ?int
     {
         $stmt = $this->pdo->prepare(
-            "SELECT up.cd_escola
-            FROM vinculo_usuario_escola up
-            WHERE up.cd_usuario = :cd_usuario
-              AND up.ativo = TRUE
-            ORDER BY up.criado_em DESC
+            "SELECT cd_escola
+            FROM vinculo_usuario_escola
+            WHERE cd_usuario = :cd_usuario
+            AND ativo = TRUE
+            ORDER BY criado_em DESC
             LIMIT 1"
         );
 
-        $stmt->execute([':cd_usuario' => $idAluno]);
+        $stmt->execute([
+            ':cd_usuario' => $idUsuario
+        ]);
 
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        $idEscola = $stmt->fetchColumn();
 
-        if ($res === false || $res === null) {
+        if ($idEscola === false) {
             return null;
         }
 
-        return (int) ($res['cd_escola'] ?? 0) ?: null;
-
+        return (int) $idEscola ?: null;
     }
+
 }
