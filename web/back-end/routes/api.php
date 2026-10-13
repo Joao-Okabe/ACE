@@ -55,3 +55,31 @@ $router->delete(
     '/api/usuarios/{id}',
     [UsuarioApiController::class, 'destroy']
 );
+/*
+    Rotas de escolas
+    1. listar todas
+    2. buscar uma
+    3. guardar(no banco)
+    4. atualiza escola
+    5. deleta escola
+*/
+$router->get(
+    '/api/escolas',
+    [EscolaApiController::class, 'index']
+);
+$router->get(
+    '/api/escolas/{id}',
+    [EscolaApiController::class, 'show']
+);
+$router->post(
+    '/api/escolas',
+    [EscolaApiController::class, 'store']
+);
+$router->put(
+    '/api/escolas/{id}',
+    [EscolaApiController::class, 'update']
+);
+$router->delete(
+    '/api/escolas/{id}',
+    [EscolaApiController::class, 'destroy']
+);
