@@ -162,7 +162,7 @@ class TimeController
         }
     }
 
-    //Remove escola
+    //Remove time
     public function destroy(): void
     {
         $id = (int) ($_POST['id'] ?? 0);
