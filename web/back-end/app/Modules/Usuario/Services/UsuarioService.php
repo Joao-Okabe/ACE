@@ -109,6 +109,25 @@ class UsuarioService
         }
     }
 
+    // Lista usuários, respeitando o escopo de escola do diretor
+    public function listar(array $filtros = []): array
+    {
+        return $this->usuarioModel->listar($filtros);
+    }
+
+    // Retorna o id da escola em que o usuário está vinculado (vínculo ativo), ou null
+    public function obterEscolaDoUsuario(int $idUsuario): ?int
+    {
+        if ($idUsuario <= 0) {
+            return null;
+        }
+
+        return $this->vinculoUsuarioEscolaModel->escolaAtualPorPapeis(
+            $idUsuario,
+            ['ALU', 'PRF', 'AGR', 'DIR']
+        );
+    }
+
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE cd_usuario = :id');
@@ -144,6 +163,11 @@ class UsuarioService
             throw new Exception('Já existe um usuário cadastrado com este e-mail.');
         }
 
+        $usuarioAtual = $this->buscar($id);
+        if ($usuarioAtual === null) {
+            throw new Exception('Usuário não encontrado.');
+        }
+
         $senha = trim((string) ($dados['senha'] ?? ''));
         $senhaHash = $senha === '' ? null : password_hash($senha, PASSWORD_DEFAULT);
         $foto = $this->salvarFoto($dados['foto_perfil'] ?? null);
@@ -158,6 +182,18 @@ class UsuarioService
             }
             throw $e;
         }
+    }
+
+    //Remove usuário
+    public function remover(int $id): void
+    {
+        $usuario = $this->buscar($id);
+
+        if ($usuario === null) {
+            throw new Exception('Usuário não encontrado.');
+        }
+
+        $this->usuarioModel->remover($id);
     }
 
     private function salvarFoto(?array $arquivo): ?string

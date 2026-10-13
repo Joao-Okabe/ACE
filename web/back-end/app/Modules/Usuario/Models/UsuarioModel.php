@@ -59,6 +59,48 @@ class Usuario extends Model
         return $usuario ?: null;
     }
 
+    //Lista usuários, com filtros opcionais de escola e papel (vínculos ativos)
+    public function listar(array $filtros = []): array
+    {
+        $sql = "SELECT
+                u.cd_usuario,
+                u.nm_usuario,
+                u.email,
+                u.path_ft_usuario,
+                u.ativo
+            FROM usuario u";
+
+        $parametros = [];
+
+        if (!empty($filtros['escola']) && (int) $filtros['escola'] > 0) {
+            $sql .= "
+            INNER JOIN vinculo_usuario_escola v
+                ON v.cd_usuario = u.cd_usuario
+                AND v.ativo = TRUE
+                AND v.cd_escola = :escola";
+
+            $parametros[':escola'] = (int) $filtros['escola'];
+
+            if (!empty($filtros['papel'])) {
+                $sql .= "
+            INNER JOIN papel p
+                ON p.cd_papel = v.cd_papel
+                AND p.nm_papel = :papel";
+
+                $parametros[':papel'] = (string) $filtros['papel'];
+            }
+        }
+
+        $sql .= "
+            WHERE u.ativo = TRUE
+            ORDER BY u.nm_usuario";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parametros);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function buscar(int $id): ?array
     {
         $stmt = $this->pdo->prepare(
