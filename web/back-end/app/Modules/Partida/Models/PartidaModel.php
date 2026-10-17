@@ -31,7 +31,7 @@ class Partida extends Model
         ");
 
         $stmt->execute([
-            ':cd_competicao' => $idCompeticao,
+            ':cd_competicao' => $idCompeticao ?? null,
             ':cd_esporte' => $dados['cd_esporte'],
             ':cd_modalidade' => $dados['cd_modalidade'],
             ':cd_formato' => $dados['cd_formato'],
