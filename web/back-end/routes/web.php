@@ -76,7 +76,7 @@ $router->post(
     '/escolas/atualizar', [EscolaController::class, 'update']
 );
 
-$router->get(
+$router->post(
     '/escolas/remover', [EscolaController::class, 'destroy']
 );
 

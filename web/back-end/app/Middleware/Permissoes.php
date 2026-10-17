@@ -87,7 +87,7 @@ class Permissoes
     }
 
     
-    public function exigirPermissaoGerenciarAluno(int $id): void
+    public static function exigirPermissaoGerenciarAluno(int $id): void
     {
         $alunoService = new AlunoService();
 
@@ -117,10 +117,10 @@ class Permissoes
         return $vinculoTimeModel->usuarioPodeGerenciarTime($idUsuario, $idTime);
     }
 
-    // Retorna true para ADMs, usado para ocultar
-    // os selects de escola nos cadastros caso o usuário
-    // seja um diretor, por exemplo. 
-    public function resolverEscolaCadastro(array $dados): int
+    // Retorna o id da escola para preencher o cadastro;
+    // ADM escolhe livremente, demais papeis ficam
+    // limitados à escola gerenciável pelo vínculo.
+    public static function resolverEscolaCadastro(array $dados): int
     {
         $vinculoUsuarioEscolaModel = new VinculoUsuarioEscola;
         $papeis = $_SESSION['usuario']['papeis'] ?? [];

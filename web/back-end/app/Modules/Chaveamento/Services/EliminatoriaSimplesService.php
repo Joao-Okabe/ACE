@@ -334,6 +334,9 @@ class EliminatoriaSimplesService
             1 => 'Semifinal',
             2 => 'Quartas de final',
             3 => 'Oitavas de final',
+            4 => '16avos de final',
+            5 => '32avos de final',
+            6 => '64avos de final',
             default => "Rodada {$rodada}"
         };
     }

@@ -114,10 +114,31 @@ class EscolaController
     //Remove escola
     public function destroy(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
+            return;
+        }
+
+        // Verifica sessão
+        if (empty($_SESSION['usuario']['id'])) {
+            http_response_code(401);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        // CSRF
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
+            http_response_code(403);
+            echo 'Token inválido.';
             return;
         }
 
@@ -125,13 +146,14 @@ class EscolaController
 
             $this->service()->remover($id);
 
+            $_SESSION['flash'] = ['success' => 'Escola removida com sucesso.'];
             header("Location: /escolas/listar");
             exit;
 
         } catch (Exception $e) {
-
-            echo $e->getMessage();
-
+            $_SESSION['flash'] = ['error' => $e->getMessage()];
+            header("Location: /escolas/listar");
+            exit;
         }
     }
 
