@@ -148,6 +148,7 @@ $podeGerenciar = $podeGerenciar ?? false;
 
                                 <?php if ($ehCapitao($integrante)): ?>
                                 <form method="post" action="/times/remover-capitao" class="mt-2">
+                                <?= \Csrf::campo() ?>
                                     <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                     <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
                                     <button type="submit" class="btn btn-secondary btn-sm">Remover cargo de capitão</button>
@@ -155,6 +156,7 @@ $podeGerenciar = $podeGerenciar ?? false;
 
                                 <?php elseif (!$temCapitao): ?>
                                 <form method="post" action="/times/tornar-capitao" class="mt-2">
+                                <?= \Csrf::campo() ?>
                                     <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                     <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
                                     <button type="submit" class="btn btn-laranja btn-sm"><i class="bi bi-star-fill" aria-hidden="true"></i> Tornar capitão</button>
@@ -162,6 +164,7 @@ $podeGerenciar = $podeGerenciar ?? false;
 
                                 <?php endif; ?>
                                 <form method="post" action="/times/remover-integrante" class="mt-2" onsubmit="return confirm('Remover este integrante do time?');">
+                                <?= \Csrf::campo() ?>
                                     <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                     <input type="hidden" name="cd_usuario" value="<?= (int) $integrante['cd_usuario'] ?>">
                                     <button type="submit" class="btn btn-delete">

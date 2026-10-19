@@ -62,6 +62,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
         <form action="/escolas/atualizar?id=<?= urlencode($escola['cd_escola']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
+        <?= \Csrf::campo() ?>
 
             <div class="form-section">
 

@@ -147,7 +147,19 @@ class Router
             return;
         }
 
-        // 4. Verifica autenticação para rotas existentes.
+        // 4. Proteção CSRF para requisições mutantes (POST, PUT,
+        //    PATCH e DELETE), antes de qualquer outro processamento.
+        //    /login e /api/auth/login ficam isentos: o formulário de
+        //    login é público e a sessão ainda não tem estado a proteger
+        //    (login CSRF mitigado pela troca de ID de sessão no login).
+        $rotaSemCsrf = $method === 'POST'
+            && in_array($uri, ['/login', '/api/auth/login'], true);
+
+        if (!$rotaSemCsrf && in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+            Csrf::exigirToken();
+        }
+
+        // 5. Verifica autenticação para rotas existentes.
         if (
             !$this->rotaPublica($method, $uri)
             && empty($_SESSION['usuario']['id'])
@@ -163,28 +175,31 @@ class Router
             exit;
         }
 
-        // 5. Executa o controller.
+        // 6. Executa o controller.
         [$action, $parametros] = $rota;
         [$controller, $metodo] = $action;
 
         $controllerInstance = new $controller();
         $controllerInstance->$metodo(...$parametros);
     }
-
     private function rotaPublica(
         string $method,
         string $uri
     ): bool {
         return (
-            $method === 'GET'
+            $method === 'POST'
             && in_array(
                 $uri,
-                ['/','/login','/logout'],
+                ['/login', '/api/auth/login'],
                 true
             )
         ) || (
-            $method === 'POST'
-            && $uri === '/login'
+            $method === 'GET'
+            && in_array(
+                $uri,
+                ['/', '/login', '/logout', '/api/csrf'],
+                true
+            )
         );
     }
 }

@@ -1,4 +1,13 @@
 <?php
+
+/*
+    Rotas de proteção CSRF
+*/
+$router->get(
+    '/api/csrf',
+    [CsrfApiController::class, 'token']
+);
+
 /*
     Rotas de Alunos
     1. listar todos

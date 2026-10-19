@@ -49,6 +49,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
             <form action="/login" method="post">
+                <?= \Csrf::campo() ?>
                 <label for="email">E-mail</label>
                 <div class="form-input-group mb-3">
                     <input type="email" id="email" name="email" class="form-control form-input" placeholder="Digite seu e-mail" value="<?= $valor('email') ?>" required autofocus autocomplete="username">

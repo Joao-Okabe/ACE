@@ -54,6 +54,10 @@ class PartidaController
                 throw new Exception('Competição inválida.');
             }
 
+            $idPartida = $this->service()->criarBase($dados, $idCompeticao);
+
+            $this->service()->criarInfo($dados, $idPartida);
+
             header("Location: /competicoes/visualizar?id={$idCompeticao}&sucesso=1");
             exit;
 

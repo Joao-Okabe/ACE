@@ -90,7 +90,7 @@ class TimeService
             ]);
         } catch (Throwable $e) {
             if ($novoEscudo !== null) {
-                unlink(__DIR__ . '/../../public' . $novoEscudo);
+                unlink(__DIR__ . '/../../../../public' . $novoEscudo);
             }
             throw $e;
         }
@@ -122,7 +122,7 @@ class TimeService
             throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
         }
 
-        $pastaUploads = __DIR__ . '/../../public/uploads';
+        $pastaUploads = __DIR__ . '/../../../../public/uploads';
         if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
             throw new Exception('Não foi possível criar a pasta de uploads.');
         }

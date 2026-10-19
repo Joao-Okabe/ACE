@@ -59,6 +59,7 @@ $valor = static fn (string $campo): string => htmlspecialchars($dados[$campo] ??
         <?php endif; ?>
 
         <form action="/escolas" method="post" class="form-grid" enctype="multipart/form-data">
+        <?= \Csrf::campo() ?>
 
             <!-- Foto de perfil -->
             <div class="perfil-aluno mb-4">

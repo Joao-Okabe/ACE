@@ -26,6 +26,10 @@ class EscolaController
     public function store(): void
     {
         try {
+            // Somente administradores podem cadastrar escolas.
+            if (!Permissoes::temPapel('ADM')) {
+                throw new Exception('Você não tem permissão para cadastrar escolas.');
+            }
 
             $dados = $_POST;
             $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
@@ -79,7 +83,18 @@ class EscolaController
             return;
         }
 
-        $escola = $this->service()->buscar($id);
+        try {
+            $escola = $this->service()->buscar($id);
+
+            // Apenas ADM ou diretor da própria escola podem editar.
+            if (!Permissoes::podeGerenciarEscola($id)) {
+                throw new Exception('Você não tem permissão para editar esta escola.');
+            }
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+            return;
+        }
 
         renderView('escola/editar', ['escola' => $escola]);
     }
@@ -95,6 +110,10 @@ class EscolaController
         }
 
         try {
+            // Apenas ADM ou diretor da própria escola podem atualizar.
+            if (!Permissoes::podeGerenciarEscola($id)) {
+                throw new Exception('Você não tem permissão para editar esta escola.');
+            }
 
             $dados = $_POST;
             $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
@@ -106,7 +125,7 @@ class EscolaController
 
         } catch (Exception $e) {
 
-            echo $e->getMessage();
+            echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
 
         }
     }
@@ -134,11 +153,12 @@ class EscolaController
             return;
         }
 
-        // CSRF
-        $token = $_POST['csrf_token'] ?? '';
-        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
+        // CSRF: verificado centralmente pelo Router (Csrf::exigirToken).
+
+        // Apenas administradores podem remover escolas.
+        if (!Permissoes::temPapel('ADM')) {
             http_response_code(403);
-            echo 'Token inválido.';
+            echo 'Você não tem permissão para remover escolas.';
             return;
         }
 
@@ -195,13 +215,7 @@ class EscolaController
             return;
         }
 
-        // CSRF
-        $token = $_POST['csrf_token'] ?? '';
-        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
-            http_response_code(403);
-            echo 'Token inválido.';
-            return;
-        }
+        // CSRF: verificado centralmente pelo Router (Csrf::exigirToken).
 
         $idUsuario = (int) $_SESSION['usuario']['id'];
 

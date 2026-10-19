@@ -22,6 +22,7 @@ $usuarios = $usuarios ?? [];
     <main class="content">
         <div class="card form-card shadow-sm">
             <form action="/times/adicionar-tecnico?id=<?= (int) ($times['cd_time'] ?? 0) ?>" method="post">
+            <?= \Csrf::campo() ?>
                 <input type="hidden" name="id_time" value="<?= (int) ($times['cd_time'] ?? 0) ?>">
 
         <div class="mb-2">

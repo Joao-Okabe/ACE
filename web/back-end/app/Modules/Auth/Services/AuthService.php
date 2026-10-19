@@ -23,11 +23,29 @@ class AuthService
         $this->authValidator->validarAutenticacao($dados);
 
         $usuario = $this->usuarioModel->buscarPorEmail($dados['email']);
-        if ($usuario === null || !password_verify($dados['senha'], $usuario['senha'])) {
-            throw new Exception("E-mail ou senha inválidos.");
+
+        // Mensagem genérica para não revelar se o e-mail existe.
+        $mensagemCredenciais = 'E-mail ou senha inválidos.';
+
+        if ($usuario === null) {
+            // Consumir tempo comparando com um hash fictício,
+            // para mitigar ataques de enumeração por tempo de resposta.
+            password_verify($dados['senha'],
+                '$2y$10$dummyhashdummyhashdummyhashdummyhashdummyhashdummy');
+            throw new DomainException($mensagemCredenciais);
         }
-        if (isset($usuario['ativo']) && $usuario['ativo'] === false) {
-            throw new Exception("Usuário inativo.");
+
+        // Bloqueia usuários inativos antes de validar a senha,
+        // cobrindo também o caso de senha nula/vazia no banco.
+        if (!isset($usuario['ativo']) || (bool) $usuario['ativo'] !== true) {
+            throw new DomainException('Usuário inativo. Contate o administrador.');
+        }
+
+        if (
+            empty($usuario['senha'])
+            || !password_verify($dados['senha'], $usuario['senha'])
+        ) {
+            throw new DomainException($mensagemCredenciais);
         }
 
         $this->authModel->verificaPapelUsuario($usuario['cd_usuario']);        

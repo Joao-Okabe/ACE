@@ -123,7 +123,7 @@ class Competicao extends Model
         Por criador da competição
     */
 
-    public function listarNome(string $nome): array
+    public function listarNome(string $nome): ?array
     {
         $stmt = $this->pdo->prepare("
             SELECT *
@@ -140,7 +140,7 @@ class Competicao extends Model
         return $competicao ?: null;
     }
 
-    public function listarDataInicio(string $dt_inicio): array
+    public function listarDataInicio(string $dt_inicio): ?array
     {
         $stmt = $this->pdo->prepare("
             SELECT *
@@ -162,7 +162,7 @@ class Competicao extends Model
         // Vai ter que chamar por partida que o usuário participou
     }
 
-    public function listarCriador(string $criador): array
+    public function listarCriador(string $criador): ?array
     {
         $stmt = $this->pdo->prepare("
             SELECT *

@@ -58,13 +58,26 @@ class AuthApiController
                     'papeis' => $usuario['papeis']
                 ]
             ]);
+        } catch (InvalidArgumentException $e) {
+            // Erro de validação (e-mail/senha ausentes ou inválidos).
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 422);
+        } catch (DomainException $e) {
+            // Credenciais inválidas ou usuário inativo.
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 401);
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            // Erro interno inesperado: nunca expõe detalhes ao cliente.
+            error_log(__METHOD__ . ': ' . $e->getMessage());
 
             Response::json([
                 'sucesso' => false,
-                'mensagem' => 'E-mail ou senha inválidos.'
-            ], 401);
+                'mensagem' => 'Erro interno ao autenticar. Tente novamente mais tarde.'
+            ], 500);
         }
     }
 
@@ -78,11 +91,14 @@ class AuthApiController
             setcookie(
                 session_name(),
                 '',
-                time() - 42000,
-                $params['path'],
-                $params['domain'],
-                $params['secure'],
-                $params['httponly']
+                [
+                    'expires' => time() - 42000,
+                    'path' => $params['path'],
+                    'domain' => $params['domain'],
+                    'secure' => $params['secure'],
+                    'httponly' => $params['httponly'],
+                    'samesite' => 'Lax'
+                ]
             );
         }
 

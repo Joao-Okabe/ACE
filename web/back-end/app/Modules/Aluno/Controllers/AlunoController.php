@@ -32,6 +32,12 @@ class AlunoController
     public function store(): void
     {
         try {
+            // Apenas ADM e DIR podem cadastrar alunos.
+            if (!Permissoes::podeGerenciarUsuarios()) {
+                http_response_code(403);
+                echo 'Você não tem permissão para cadastrar alunos.';
+                return;
+            }
 
             $this->service()->cadastrar($_POST);
 
@@ -136,7 +142,13 @@ class AlunoController
     //Atualiza Aluno
     public function update(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? ($_GET['id'] ?? 0));
         if ($id <= 0) {
             http_response_code(400);
             echo 'ID inválido';
@@ -186,13 +198,7 @@ class AlunoController
             return;
         }
 
-        // CSRF
-        $token = $_POST['csrf_token'] ?? '';
-        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $token)) {
-            http_response_code(403);
-            echo 'Token inválido.';
-            return;
-        }
+        // CSRF: verificado centralmente pelo Router (Csrf::exigirToken).
 
         try {
             (new Permissoes())->exigirPermissaoGerenciarAluno($id);
@@ -217,7 +223,15 @@ class AlunoController
             return;
         }
 
-        $aluno = $this->service()->buscar($id);
+        try {
+            $aluno = $this->service()->buscar($id);
+            // Somente ADM ou diretor da escola do aluno pode visualizar.
+            (new Permissoes())->exigirPermissaoGerenciarAluno($id);
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+            return;
+        }
 
         $escolas = (new EscolaService())->listar();
 

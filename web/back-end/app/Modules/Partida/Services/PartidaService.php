@@ -22,11 +22,11 @@ class PartidaService
         }
 
         if (empty($dados['cd_esporte'])) {
-            throw new Exception("Informe o formato da partida.");
+            throw new Exception("Informe o esporte da partida.");
         }
 
         if (empty($dados['cd_modalidade'])) {
-            throw new Exception("Informe o formato da partida.");
+            throw new Exception("Informe a modalidade da partida.");
         }
 
         if (empty($dados['cd_formato'])) {
@@ -48,7 +48,6 @@ class PartidaService
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-            $this->pdo->commit();
 
             throw $e;
 
@@ -74,7 +73,7 @@ class PartidaService
 
             $this->pdo->beginTransaction();
 
-            $this->partidaModel->criarBase($dados, $idPartida);
+            $this->partidaModel->criarInfo($dados, $idPartida);
 
             $this->pdo->commit();
 
@@ -83,7 +82,6 @@ class PartidaService
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
-            $this->pdo->commit();
 
             throw $e;
 

@@ -39,7 +39,7 @@ class VinculoTimeController
             }
 
             try {
-                $this->service()->VincularTimeResponsavel(
+                $this->service()->vincularTimeResponsavel(
                     $idResponsavel,
                     $idTime
                 );
@@ -105,7 +105,7 @@ class VinculoTimeController
             }
 
             try {
-                $this->service()->VincularTimeIntegrante(
+                $this->service()->vincularTimeIntegrante(
                     $idUsuario,
                     $id,
                     $idFuncaoIntegrante,

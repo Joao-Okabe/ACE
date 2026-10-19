@@ -48,6 +48,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
         <?php endif; ?>
 
         <form action="/times/atualizar?id=<?= urlencode($time['cd_time']) ?>" method="post" enctype="multipart/form-data" class="form-grid">
+        <?= \Csrf::campo() ?>
            <div class="form-section"> 
 
             <div class="dados-iniciais"> 

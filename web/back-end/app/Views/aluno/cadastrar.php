@@ -64,6 +64,7 @@ $usuariosExistentes = $usuariosExistentes ?? [];
         <?php endif; ?>
 
         <form action="/alunos" method="post" class="form-grid" enctype="multipart/form-data">
+            <?= \Csrf::campo() ?>
 
             <div class="form-section">
 

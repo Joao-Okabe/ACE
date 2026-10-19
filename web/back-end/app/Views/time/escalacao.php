@@ -86,6 +86,7 @@ $titularesSalvos = array_map(static fn (array $i): int => (int) $i['cd_usuario']
             </div>
 
             <form method="post" action="/times/escalacao">
+            <?= \Csrf::campo() ?>
                 <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
 
                 <?php foreach (['goleiro', 'fixo', 'ala-esquerda', 'ala-direita', 'pivo'] as $chave): ?>

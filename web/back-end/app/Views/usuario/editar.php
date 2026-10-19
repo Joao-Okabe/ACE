@@ -74,6 +74,7 @@ $valor = static fn (string $campo): string => htmlspecialchars((string) ($dados[
 					<?php endif; ?>
 
 					<form action="/usuarios/atualizar" method="post" enctype="multipart/form-data">
+					<?= \Csrf::campo() ?>
 						<div class="mb-3">
 							<label for="nm_usuario" class="form-label">Nome</label>
 							<input type="text" id="nm_usuario" name="nm_usuario" class="form-control form-input" value="<?= $valor('nm_usuario') ?>" required>

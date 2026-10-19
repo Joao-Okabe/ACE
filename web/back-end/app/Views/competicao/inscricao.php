@@ -53,6 +53,7 @@ $data = static fn (string $campo): string => htmlspecialchars(substr((string) ($
         <?php endif; ?>
 
         <form action="/competicoes/inscricao?id=<?= urlencode($competicao['cd_competicao'] ?? '') ?>" method="post">
+        <?= \Csrf::campo() ?>
         <div class="form-section">
             <div class="row">
                 <div class="col-md-6 mb-3">

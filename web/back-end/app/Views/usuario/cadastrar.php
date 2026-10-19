@@ -63,6 +63,7 @@ $valor = function ($campo) use ($dados) {
             <?php endif; ?>
 
             <form action="/usuarios" method="post" enctype="multipart/form-data">
+            <?= \Csrf::campo() ?>
 
 
         <?php if ($podeVincular): ?>

@@ -519,3 +519,12 @@ CREATE INDEX idx_origem_confronto ON origem_participante_confronto(cd_confronto)
 CREATE INDEX idx_origem_classificacao ON origem_participante_confronto(cd_classificacao_grupo);
 CREATE INDEX idx_confronto_participante_origem ON confronto_participante(cd_origem_participante);
 CREATE INDEX idx_partida_confronto ON partida(cd_confronto);
+
+-- ============================================================
+-- 15. Notificação
+-- ============================================================
+
+CREATE TABLE tipo_notificação (
+    cd_tipo_notificacao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ds_tipo_infracao TEXT
+);

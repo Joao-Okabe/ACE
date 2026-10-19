@@ -62,6 +62,7 @@ $escolas = $escolas ?? [];
         <?php endif; ?>
 
         <form action="/alunos/atualizar?id=<?= urlencode($aluno['cd_aluno']) ?>" method="post" class="form-grid" enctype="multipart/form-data">
+            <?= \Csrf::campo() ?>
             <div class="form-section">
                 <div class="dados-iniciais">
 

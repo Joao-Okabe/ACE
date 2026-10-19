@@ -41,11 +41,26 @@ class AuthController
 
             header("Location: /dashboard");
             exit;
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Erro de validação (e-mail/senha ausentes ou inválidos).
             $erro = $e->getMessage();
             $dados = $_POST;
 
             renderView('auth/login', ['erro' => $erro, 'dados' => $dados]);
+        } catch (DomainException $e) {
+            // Credenciais inválidas ou usuário inativo.
+            $erro = $e->getMessage();
+            $dados = $_POST;
+
+            renderView('auth/login', ['erro' => $erro, 'dados' => $dados]);
+        } catch (Throwable $e) {
+            // Erro interno inesperado: registra e exibe mensagem genérica.
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+
+            renderView('auth/login', [
+                'erro' => 'Erro interno ao autenticar. Tente novamente mais tarde.',
+                'dados' => $_POST
+            ]);
         }
     }
 
@@ -59,11 +74,14 @@ class AuthController
             setcookie(
                 session_name(),
                 '',
-                time() - 42000,
-                $params['path'],
-                $params['domain'],
-                $params['secure'],
-                $params['httponly']
+                [
+                    'expires' => time() - 42000,
+                    'path' => $params['path'],
+                    'domain' => $params['domain'],
+                    'secure' => $params['secure'],
+                    'httponly' => $params['httponly'],
+                    'samesite' => 'Lax'
+                ]
             );
         }
 

@@ -91,6 +91,10 @@ class AlunoService
         }
 
         try {
+            // Valida o upload ANTES de abrir a transação, para que uma
+            // foto inválida não dispare rollback desnecessário.
+            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil'] ?? null);
+
             $this->pdo->beginTransaction();
 
             $idEscola = $this->permissoes->resolverEscolaCadastro($dados);
@@ -103,12 +107,6 @@ class AlunoService
             if (!$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola($idUsuarioAtual, $idEscola)) {
                 throw new Exception('Você não tem permissão para cadastrar aluno nesta escola.');
             }
-
-            if (empty($dados['data_nascimento'])) {
-                throw new Exception('Informe a data de nascimento.');
-            }
-
-            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil'] ?? null);
 
             $idUsuario = $idUsuarioExistente > 0
                 ? $idUsuarioExistente
@@ -184,24 +182,44 @@ class AlunoService
         }
 
         $idEscola = $this->obterEscolaDoAluno($id);
-        if ($idEscola === null || !$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola(
-            (int) ($_SESSION['usuario']['id'] ?? 0),
-            $idEscola
-        )) {
-            throw new Exception('Você não tem permissão para editar este aluno.');
+        if (
+            $idEscola === null
+            || !Permissoes::podeGerenciarEscola($idEscola)
+        ) {
+            throw new Exception(
+                'Você não tem permissão para editar este aluno.'
+            );
         }
 
         $this->pdo->beginTransaction();
 
         try {
+            // Validação dos campos enviados na atualização.
+            $this->alunoValidator->validarAtualizacaoAluno($dados);
+
             $arquivo = $_FILES['foto_perfil'] ?? null;
             $caminhoPublicoFoto = null;
 
-            if ($arquivo !== null && isset($arquivo['tmp_name']) && is_uploaded_file($arquivo['tmp_name'])) 
-            {
-                $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil']);
+            if ($arquivo !== null && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+                // Guarda o caminho da foto atual para remover após o commit.
+                $fotoAnterior = (string) ($aluno['foto_perfil'] ?? '');
+
+                $caminhoPublicoFoto = $this->salvarFoto($arquivo);
 
                 $this->usuarioModel->atualizarFotoPerfil((int) $aluno['cd_usuario'], $caminhoPublicoFoto);
+
+                // Remove o arquivo antigo somente após a troca bem-sucedida
+                // (e se for um upload local, não um asset padrão).
+                if (
+                    $fotoAnterior !== ''
+                    && $fotoAnterior !== '/img/perfil.jpg'
+                    && str_starts_with($fotoAnterior, '/uploads/')
+                ) {
+                    $caminhoAntigo = __DIR__ . '/../../../../public' . $fotoAnterior;
+                    if (is_file($caminhoAntigo)) {
+                        @unlink($caminhoAntigo);
+                    }
+                }
             }
 
             $this->usuarioModel->atualizarNome((int) $aluno['cd_usuario'], (string) $dados['nome']);
@@ -249,29 +267,56 @@ class AlunoService
             return null;
         }
 
-        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
-            throw new Exception('O arquivo enviado não é válido.');
+        $erro = (int) ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE);
+
+        if ($erro !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
+            // Mensagens específicas por código de erro do PHP.
+            $mensagens = [
+                UPLOAD_ERR_INI_SIZE => 'O arquivo excede o limite de upload do servidor.',
+                UPLOAD_ERR_FORM_SIZE => 'O arquivo excede o limite do formulário.',
+                UPLOAD_ERR_PARTIAL => 'O upload do arquivo foi interrompido. Tente novamente.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Erro de configuração do servidor (pasta temporária ausente).',
+                UPLOAD_ERR_CANT_WRITE => 'Erro de configuração do servidor (falha ao gravar).',
+                UPLOAD_ERR_EXTENSION => 'O upload foi bloqueado por uma extensão do PHP.'
+            ];
+
+            throw new Exception(
+                $mensagens[$erro] ?? 'O arquivo enviado não é válido.'
+            );
         }
 
-        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+        $tamanho = (int) ($arquivo['size'] ?? 0);
+
+        if ($tamanho <= 0) {
+            throw new Exception('O arquivo enviado está vazio.');
+        }
+
+        if ($tamanho > 2 * 1024 * 1024) {
             throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
         }
 
         $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
-        $tipo = (new finfo(FILEINFO_MIME_TYPE))->file($arquivo['tmp_name']);
-        if (!isset($tiposPermitidos[$tipo])) {
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $tipo = $finfo->file($arquivo['tmp_name']);
+
+        if ($tipo === false || !isset($tiposPermitidos[$tipo])) {
             throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
         }
 
-        $pasta = __DIR__ . '/../../public/uploads';
+        $pasta = __DIR__ . '/../../../../public/uploads';
         if (!is_dir($pasta) && !mkdir($pasta, 0755, true) && !is_dir($pasta)) {
             throw new Exception('Não foi possível criar a pasta de uploads.');
         }
 
         $nome = uniqid('IMG_', true) . '.' . $tiposPermitidos[$tipo];
-        if (!move_uploaded_file($arquivo['tmp_name'], $pasta . DIRECTORY_SEPARATOR . $nome)) {
+        $destino = $pasta . DIRECTORY_SEPARATOR . $nome;
+
+        if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
             throw new Exception('Não foi possível salvar a imagem.');
         }
+
+        chmod($destino, 0644);
 
         return '/uploads/' . $nome;
     }

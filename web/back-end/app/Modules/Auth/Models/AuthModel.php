@@ -24,9 +24,29 @@ class Auth extends Model
             ':cd_usuario_global' => $id
         ]);
 
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        $possuiPapel = $stmt->fetchColumn();
 
-        if ($usuario === false) {
+        if ($possuiPapel === false) {
+            // Garante que o usuário exista antes de vincular o papel padrão (VIS).
+            $stmt = $this->pdo->prepare(
+                "SELECT 1 FROM usuario WHERE cd_usuario = :id"
+            );
+            $stmt->execute([':id' => $id]);
+
+            if ($stmt->fetchColumn() === false) {
+                return;
+            }
+
+            $papelVisitante = $this->pdo->prepare(
+                "SELECT cd_papel FROM papel WHERE nm_papel = 'VIS'"
+            );
+            $papelVisitante->execute();
+            $cdPapel = $papelVisitante->fetchColumn();
+
+            if ($cdPapel === false) {
+                throw new Exception('O papel de visitante não está cadastrado.');
+            }
+
             $stmt = $this->pdo->prepare("
                 INSERT INTO usuario_papel(
                     cd_usuario,
@@ -39,7 +59,7 @@ class Auth extends Model
 
             $stmt->execute([
                 ':cd_usuario_global' => $id,
-                ':cd_papel' => 8
+                ':cd_papel' => (int) $cdPapel
             ]);
         }
     }

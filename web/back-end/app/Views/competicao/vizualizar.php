@@ -119,6 +119,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
 
             <?php if ($periodoInscricao !== null): ?>
                 <form action="/competicoes/inscrever-time" method="post" class="row g-3 align-items-end mb-4">
+                <?= \Csrf::campo() ?>
                     <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
 
                     <div class="col-md-8">
@@ -169,6 +170,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
                                 </div>
                                 <div class="integrante-acoes">
                                 <form action="/competicoes/remover-time-inscrito" method="post" class="mt-2">
+                                <?= \Csrf::campo() ?>
                                     <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
                                     <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                     <button type="submit" class="btn btn-delete">Remover</button>
@@ -228,6 +230,7 @@ $data = static fn (?string $valor): string => $valor ? htmlspecialchars(substr($
                                 </div>
                                 <div class="integrante-acoes">
                                 <form action="/competicoes/remover-time-inscrito" method="post" class="mt-2">
+                                <?= \Csrf::campo() ?>
                                     <input type="hidden" name="id_competicao" value="<?= (int) ($dados['cd_competicao'] ?? 0) ?>">
                                     <input type="hidden" name="id_time" value="<?= (int) $time['cd_time'] ?>">
                                     <button type="submit" class="btn btn-delete">Remover</button>

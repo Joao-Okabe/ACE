@@ -82,6 +82,7 @@ $idCompeticao = (int) ($competicao['cd_competicao'] ?? 0);
                                 aria-labelledby="cabecalho-etapa-<?= $idEtapa ?>" data-bs-parent="#accordionEtapas">
                                 <div class="accordion-body">
                                     <form action="/competicoes/etapas/atualizar?id=<?= urlencode((string) $idCompeticao) ?>&etapa=<?= urlencode((string) $idEtapa) ?>" method="post">
+                                    <?= \Csrf::campo() ?>
                                         <div class="row">
                                             <div class="col-12 mb-3">
                                                 <label class="form-label" for="nm_etapa_<?= $idEtapa ?>">Nome da etapa</label>

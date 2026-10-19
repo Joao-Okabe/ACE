@@ -28,6 +28,14 @@ class TimeController
     public function store(): void
     {
         try {
+            // Apenas ADM, DIR e CRD podem cadastrar times.
+            if (
+                !Permissoes::temPapel('ADM')
+                && !Permissoes::temPapel('DIR')
+                && !Permissoes::temPapel('CRD')
+            ) {
+                throw new Exception('Você não tem permissão para cadastrar times.');
+            }
 
             $dados = $_POST;
             $dados['path_escudo'] = $_FILES['path_escudo'] ?? null;

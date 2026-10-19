@@ -10,10 +10,10 @@ class Partida extends Model
         $this->filtro = new Filtro();
     }
 
-    public function criarBase(array $dados, int $idCompeticao): array
+    public function criarBase(array $dados, int $idCompeticao): int
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO partida 
+            INSERT INTO partida
             (
                 cd_competicao,
                 cd_esporte,
@@ -26,7 +26,7 @@ class Partida extends Model
                 :cd_esporte,
                 :cd_modalidade,
                 :cd_formato
-            ) 
+            )
             RETURNING cd_partida
         ");
 
@@ -37,9 +37,13 @@ class Partida extends Model
             ':cd_formato' => $dados['cd_formato'],
         ]);
 
-        $idPartida = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $idPartida = $stmt->fetchColumn();
 
-        return $idPartida;
+        if ($idPartida === false) {
+            throw new Exception("Não foi possível criar a partida.");
+        }
+
+        return (int) $idPartida;
     }
 
     public function criarInfo(array $dados, int $idPartida)
