@@ -434,6 +434,7 @@ CREATE TABLE partida (
     cd_confronto INTEGER,
     status VARCHAR(30) NOT NULL DEFAULT 'AGENDADA',
     inicio_agendado TIMESTAMP,
+    motivo_cancelamento TEXT,
     FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE,
     FOREIGN KEY (cd_confronto) REFERENCES confronto(cd_confronto) ON DELETE SET NULL,
     CHECK (status IN ('AGENDADA', 'EM_ANDAMENTO', 'FINALIZADA', 'CANCELADA'))

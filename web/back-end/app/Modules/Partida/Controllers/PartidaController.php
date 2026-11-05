@@ -1,6 +1,6 @@
 <?php
 
-class PartidaController 
+class PartidaController
 {
     private ?PartidaService $service = null;
 
@@ -13,86 +13,100 @@ class PartidaController
         return $this->service;
     }
 
-    //Exibe o formulário de cadastro
+    private function usuarioAtual(): int
+    {
+        $id = (int) ($_SESSION['id'] ?? $_SESSION['cd_usuario'] ?? 0);
+
+        if ($id <= 0) {
+            throw new RuntimeException('Sessão inválida. Faça login novamente.');
+        }
+
+        return $id;
+    }
+
     public function create(): void
     {
-        $idCompeticao = (int) ($_GET['id_competicao'] ?? 0);
-
-        $formatoService = new FormatoService();
-        $formatos = $formatoService->listar();
-
-        $esporteService = new EsporteService();
-        $esportes = $esporteService->listar();
-
-        $modalidadeService = new ModalidadeService();
-        $modalidades = $modalidadeService->listar();
-
-        $timeService = new TimeService();
-        $times = $timeService->listar();
-
-        renderView(
-            'partida/criar', 
-            [
-               'idCompeticao' => $idCompeticao,
-                'formatos' => $formatos,
-                'esportes' => $esportes,
-                'modalidades' => $modalidades,
-                'times' => $times
-            ] 
-        );
-    }
-
-    //Salva uma nova partida
-    public function storeBase(): void
-    {
         try {
+            $idCompeticao = isset($_GET['id_competicao']) ? (int) $_GET['id_competicao'] : null;
 
-            $dados = $_POST;
-            $idCompeticao = (int) ($dados['id_competicao'] ?? 0);
-
-            if ($idCompeticao <= 0) {
-                throw new Exception('Competição inválida.');
+            if ($idCompeticao) {
+                $this->service()->exigirAcessoCompeticao($this->usuarioAtual(), $idCompeticao);
             }
 
-            $idPartida = $this->service()->criarBase($dados, $idCompeticao);
+            $esporteService = new EsporteService();
+            $modalidadeService = new ModalidadeService();
+            $timeService = new TimeService();
 
-            $this->service()->criarInfo($dados, $idPartida);
-
-            header("Location: /competicoes/visualizar?id={$idCompeticao}&sucesso=1");
-            exit;
-
-        } catch (Exception $e) {
-
-            $erro = $e->getMessage();
-            $dados = $_POST;
-
-            renderView(
-                'partida/criar', 
-                [
-                    'erro' => $erro,
-                    'dados' => $dados
-                ]
-            );
+            renderView('partida/criar', [
+                'idCompeticao' => $idCompeticao,
+                'esportes' => $esporteService->listar(),
+                'modalidades' => $modalidadeService->listar(),
+                'times' => $timeService->listar(),
+            ]);
+        } catch (Throwable $e) {
+            http_response_code(403);
+            renderView('erro', ['erro' => $e->getMessage()]);
         }
     }
 
-    //Lista todas as escolas
+    public function store(): void
+    {
+        try {
+            $idUsuario = $this->usuarioAtual();
+            $dados = $_POST;
+
+            // Campos opcionais: sem competição = partida avulsa;
+            // sem confronto = partida independente dentro da competição.
+            $idPartida = $this->service()->criar($dados, $idUsuario);
+
+            $idCompeticao = (int) ($dados['cd_competicao'] ?? 0);
+
+            if ($idCompeticao > 0) {
+                header("Location: /competicoes/visualizar?id={$idCompeticao}&partida_criada=1");
+            } else {
+                header("Location: /partidas/visualizar?id={$idPartida}&partida_criada=1");
+            }
+            exit;
+        } catch (Throwable $e) {
+            http_response_code(422);
+            renderView('partida/criar', [
+                'erro' => $e->getMessage(),
+                'dados' => $_POST,
+            ]);
+        }
+    }
+
+    public function show(): void
+    {
+        try {
+            $id = (int) ($_GET['id'] ?? 0);
+            $partida = $this->service()->buscar($id, $this->usuarioAtual());
+
+            renderView('partida/visualizar', ['partida' => $partida]);
+        } catch (Throwable $e) {
+            http_response_code(404);
+            renderView('erro', ['erro' => $e->getMessage()]);
+        }
+    }
+
     public function list(): void
     {
-        $filtros = [
-            'nome' => trim($_GET['nome'] ?? ''),
-            'categoria' => trim($_GET['categoria'] ?? ''),
-            'ordem' => strtolower($_GET['ordem'] ?? 'asc'),
-        ];
+        try {
+            $filtros = [
+                'cd_competicao' => isset($_GET['cd_competicao']) ? (int) $_GET['cd_competicao'] : null,
+                'status' => trim($_GET['status'] ?? ''),
+                'visibilidade' => trim($_GET['visibilidade'] ?? ''),
+            ];
 
-        if (!in_array($filtros['ordem'], ['asc', 'desc'], true)) {
-            $filtros['ordem'] = 'asc';
+            $partidas = $this->service()->listar($filtros, $this->usuarioAtual());
+
+            renderView('partida/listar', [
+                'partidas' => $partidas,
+                'filtros' => $filtros,
+            ]);
+        } catch (Throwable $e) {
+            http_response_code(403);
+            renderView('erro', ['erro' => $e->getMessage()]);
         }
-
-        $escolas = $this->service()->listar($filtros);
-
-        renderView('partida/listar', [
-            'filtros' => $filtros,
-        ]);
     }
 }
