@@ -30,10 +30,6 @@ class UsuarioService
 
         $this->usuarioValidator->validarCadastroUsuario($dados);
 
-        $papeisSessao = $_SESSION['usuario']['papeis'] ?? [];
-        $podeVincular = is_array($papeisSessao)
-            && (in_array('ADM', $papeisSessao, true) || in_array('DIR', $papeisSessao, true));
-
         $senhaHash = password_hash(
             $dados['senha'],
             PASSWORD_DEFAULT
@@ -53,49 +49,16 @@ class UsuarioService
                 'foto_perfil' => $caminhoPublicoFoto
             ]);
 
-            if (!$podeVincular) {
-                $papel = $this->papelModel->buscarPapelPorNome('VIS');
+            $papelVisitante = $this->papelModel->buscarPapelPorNome('VIS');
 
-                if ($papel === null) {
-                    throw new Exception('O papel de visitante não está cadastrado.');
-                }
-
-                $this->papelModel->vincularPapel(
-                    $idUsuario,
-                    (int) $papel['cd_papel']
-                );
-            } else {
-                $papelCodigo = strtoupper(trim((string) ($dados['papel'] ?? '')));
-                if (!in_array($papelCodigo, ['ALU', 'PRF', 'AGR'], true)) {
-                    throw new Exception('Selecione um papel válido.');
-                }
-
-                $idEscola = (int) ($dados['escola'] ?? 0);
-                if (in_array('DIR', $papeisSessao, true) && !in_array('ADM', $papeisSessao, true)) {
-                    $idEscolaDiretor = $this->vinculoUsuarioEscolaModel->escolaAtualPorPapeis(
-                        (int) ($_SESSION['usuario']['id'] ?? 0),
-                        ['DIR']
-                    );
-                    if ($idEscolaDiretor === null || $idEscola !== $idEscolaDiretor) {
-                        throw new Exception('O diretor só pode vincular usuários à sua escola.');
-                    }
-                }
-
-                if ($idEscola <= 0) {
-                    throw new Exception('Selecione uma escola.');
-                }
-
-                $papel = $this->papelModel->buscarPapelPorNome($papelCodigo);
-                if ($papel === null) {
-                    throw new Exception('Papel não encontrado.');
-                }
-
-                $this->vinculoUsuarioEscolaModel->vincularPapelEscola(
-                    $idUsuario,
-                    $idEscola,
-                    (int) $papel['cd_papel']
-                );
+            if ($papelVisitante === null) {
+                throw new Exception('O papel de visitante não está cadastrado.');
             }
+
+            $this->papelModel->vincularPapel(
+                $idUsuario,
+                (int) $papelVisitante['cd_papel']
+            );
 
             $this->pdo->commit();
 
