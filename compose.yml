@@ -7,7 +7,8 @@ services:
     ports:
       - ${APP_PORT:-8080}:80
     volumes:
-      - ./web/front-end:/usr/share/nginx/html:ro
+       - ./web/front-end:/usr/share/nginx/html:ro
+  
     depends_on:
       - backend
 

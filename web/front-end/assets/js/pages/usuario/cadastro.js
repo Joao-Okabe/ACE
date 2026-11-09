@@ -90,7 +90,7 @@ if (!formCadastro) {
         }
         let cadastroConcluido = false;
         try {
-            const dados = { nome, email, senha };
+            const dados = {nm_usuario: nome, email, senha };
             const resposta = await usuarioService.criar(dados);
             cadastroConcluido = true;
             exibirSucesso(resposta?.mensagem || "Cadastro realizado com sucesso!");
