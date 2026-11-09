@@ -10,10 +10,30 @@ export class ApiError extends Error{
     }
 }
 
+let csrfTokenPromise = null;
+
+async function obterCsrfToken() {
+    if (!csrfTokenPromise) {
+        csrfTokenPromise = fetch(`${API_URL}/csrf`, { credentials: "same-origin" })
+            .then(res => res.json())
+            .then(dados => dados?.dados?.csrf_token || "")
+            .catch(() => "");
+    }
+    return csrfTokenPromise;
+}
+
 //envia o pedido para a api
 export async function apiFetch(endpoint, options = {}){
     const headers = new Headers(options.headers || {});
     headers.set("Accept", "application/json");
+
+    const metodo = (options.method || "GET").toUpperCase();
+    if (["POST", "PUT", "PATCH", "DELETE"].includes(metodo) && !headers.has("X-CSRF-Token")) {
+        const token = await obterCsrfToken();
+        if (token) {
+            headers.set("X-CSRF-Token", token);
+        }
+    }
 
     let body = options.body; 
     if(body !== undefined && 
@@ -85,6 +105,9 @@ export async function apiFetch(endpoint, options = {}){
             code: codigo
         });
     }
-    //retorna os dados recebidos da api
+    // Retorna os dados recebidos da api (se o backend envelopou em { sucesso, dados }, desempacota dados)
+    if (dados && typeof dados === "object" && "dados" in dados) {
+        return dados.dados;
+    }
     return dados;
 }

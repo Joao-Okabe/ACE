@@ -1,4 +1,5 @@
-import { alunoService } from "../../services/aluno.js";
+import { alunoService } from "../../services/alunoService.js";
+// E os import @Claralops?
 
 const parametros = new URLSearchParams(window.location.search);
 const idAluno = parametros.get("id");
@@ -49,7 +50,7 @@ function preencherAluno(aluno) {
     preencherTexto(elementos.cep, aluno.cep);
 
     if (elementos.foto) {
-        elementos.foto.src = aluno.img || "/assets/img/no-prof-pic.png";
+        elementos.foto.src = aluno.path_ft_usuario || aluno.img || "/assets/img/no-prof-pic.png";
         elementos.foto.alt = `Foto de ${nome}`;
 
         elementos.foto.onerror = () => {

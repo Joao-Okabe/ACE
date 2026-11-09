@@ -4,22 +4,22 @@ class Router
 {
     private array $routes = [];
 
-    public function get(string $uri, array $action): void
+    public function get(string $uri, array|callable $action): void
     {
         $this->addRoute('GET', $uri, $action);
     }
 
-    public function post(string $uri, array $action): void
+    public function post(string $uri, array|callable $action): void
     {
         $this->addRoute('POST', $uri, $action);
     }
 
-    public function put(string $uri, array $action): void
+    public function put(string $uri, array|callable $action): void
     {
         $this->addRoute('PUT', $uri, $action);
     }
 
-    public function delete(string $uri, array $action): void
+    public function delete(string $uri, array|callable $action): void
     {
         $this->addRoute('DELETE', $uri, $action);
     }
@@ -27,7 +27,7 @@ class Router
     private function addRoute(
         string $method,
         string $uri,
-        array $action
+        array|callable $action
     ): void {
         $this->routes[$method][$uri] = $action;
     }
@@ -111,6 +111,12 @@ class Router
 
         $ehApi = $this->ehApi($uri);
 
+        // Trata preflight CORS OPTIONS
+        if ($method === 'OPTIONS') {
+            http_response_code(204);
+            exit;
+        }
+
         // 1. Procura a rota para o método solicitado.
         $rota = $this->encontrarRota($method, $uri);
 
@@ -121,30 +127,18 @@ class Router
             if ($permitidos !== []) {
                 header('Allow: ' . implode(', ', $permitidos));
 
-                if ($ehApi) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Método HTTP não permitido.',
-                        'metodos_permitidos' => $permitidos
-                    ], 405);
-                }
-
-                http_response_code(405);
-                echo 'Método HTTP não permitido.';
-                return;
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Método HTTP não permitido.',
+                    'metodos_permitidos' => $permitidos
+                ], 405);
             }
 
             // 3. Caminho inexistente: 404.
-            if ($ehApi) {
-                Response::json([
-                    'sucesso' => false,
-                    'mensagem' => 'Endpoint não encontrado.'
-                ], 404);
-            }
-
-            http_response_code(404);
-            require __DIR__ . '/../Views/error/404.php';
-            return;
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Endpoint não encontrado.'
+            ], 404);
         }
 
         // 4. Proteção CSRF para requisições mutantes (POST, PUT,
@@ -164,19 +158,20 @@ class Router
             !$this->rotaPublica($method, $uri)
             && empty($_SESSION['usuario']['id'])
         ) {
-            if ($ehApi) {
-                Response::json([
-                    'sucesso' => false,
-                    'mensagem' => 'Autenticação necessária.'
-                ], 401);
-            }
-
-            header('Location: /login');
-            exit;
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Autenticação necessária.'
+            ], 401);
         }
 
-        // 6. Executa o controller.
+        // 6. Executa a ação da rota (callable ou [Controller, metodo]).
         [$action, $parametros] = $rota;
+
+        if (is_callable($action)) {
+            $action(...$parametros);
+            return;
+        }
+
         [$controller, $metodo] = $action;
 
         $controllerInstance = new $controller();
@@ -190,14 +185,14 @@ class Router
             $method === 'POST'
             && in_array(
                 $uri,
-                ['/login', '/api/auth/login'],
+                ['/login', '/api/auth/login', '/api/auth/cadastro', '/api/usuarios'],
                 true
             )
         ) || (
             $method === 'GET'
             && in_array(
                 $uri,
-                ['/', '/login', '/logout', '/api/csrf'],
+                ['/', '/api', '/api/status', '/login', '/logout', '/api/csrf'],
                 true
             )
         );

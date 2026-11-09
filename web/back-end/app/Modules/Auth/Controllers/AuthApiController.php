@@ -81,6 +81,21 @@ class AuthApiController
         }
     }
 
+    public function me(): void
+    {
+        if (empty($_SESSION['usuario']['id'])) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Não autenticado.'
+            ], 401);
+        }
+
+        Response::json([
+            'sucesso' => true,
+            'dados' => $_SESSION['usuario']
+        ]);
+    }
+
     public function logout(): void
     {
         $_SESSION = [];

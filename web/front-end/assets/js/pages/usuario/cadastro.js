@@ -1,5 +1,7 @@
-import { authService } from "../services/authService.js";
-import { configurarToggleSenha } from "../components/toggleSenha.js";
+import { authService } from "../../services/authService.js";
+import { usuarioService } from "../../services/usuarioService.js";
+import { configurarToggleSenha } from "../../components/toggleSenha.js";
+
 
 // Elementos
 const formCadastro = document.getElementById("form-cadastro");

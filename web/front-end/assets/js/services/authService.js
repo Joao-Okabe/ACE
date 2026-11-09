@@ -6,6 +6,10 @@ export const authService = {
             body: { email, senha }
         });
     },
+    // @Claralops Ficou faltando esse método, está lá nas rotas da api!
+    me() {
+        return apiFetch("/auth/me");
+    },
     logout() {
         return apiFetch("/auth/logout", {
             method: "POST"

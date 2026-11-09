@@ -81,6 +81,7 @@ class Aluno extends Model
             a.*,
             u.email,
             u.nm_usuario,
+            u.nm_usuario AS nome,
             u.path_ft_usuario,
             (
                 SELECT e.nm_escola

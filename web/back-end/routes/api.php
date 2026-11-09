@@ -1,4 +1,17 @@
 <?php
+/*
+    Status da API
+*/
+$router->get(
+    '/api',
+    function () {
+        Response::json([
+            'sucesso' => true,
+            'mensagem' => 'ACE API REST está online.',
+            'versao' => '0.1.0'
+        ]);
+    }
+);
 
 /*
     Rotas de proteção CSRF
@@ -123,8 +136,13 @@ $router->delete(
 /*
     Rotas de autenticação
     1. login (autentica e inicia sessão)
-    2. logout (encerra a sessão)
+    2. me (dados do usuário logado)
+    3. logout (encerra a sessão)
 */
+$router->get(
+    '/api/auth/me',
+    [AuthApiController::class, 'me']
+);
 $router->post(
     '/api/auth/login',
     [AuthApiController::class, 'login']
