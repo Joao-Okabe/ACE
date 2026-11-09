@@ -134,15 +134,15 @@ class UsuarioApiController
 
     public function store(): void
     {
-        if (
-            !Permissoes::temPapel('ADM')
-            && !Permissoes::temPapel('DIR')
-        ) {
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Você não tem permissão para cadastrar usuários.'
-            ], 403);
-        }
+    //     if (
+    //         !Permissoes::temPapel('ADM')
+    //         && !Permissoes::temPapel('DIR')
+    //     ) {
+    //         Response::json([
+    //             'sucesso' => false,
+    //             'mensagem' => 'Você não tem permissão para cadastrar usuários.'
+    //         ], 403);
+    //     }
 
         $contentType = strtolower(
             $_SERVER['CONTENT_TYPE'] ?? ''
