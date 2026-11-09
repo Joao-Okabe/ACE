@@ -1,0 +1,449 @@
+:root {
+    --azul-principal: #181847;
+    --laranja-principal: #F44E1C;
+    --bege-principal: #F1E4D1;
+    --fundo-lista: #faf8f5;
+    --borda-lista: #e5e1db;
+    --texto-secundario: #737373;
+    --radius-lista: 12px;
+}
+
+/* Cabeçalho */
+
+.lista-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.lista-titulo {
+    margin: 0 0 6px;
+    color: var(--azul-principal);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.lista-subtitulo {
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 15px;
+}
+
+/* Botão adicionar */
+
+.btn-adicionar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border: 1px solid var(--laranja-principal);
+    border-radius: 8px;
+    background: var(--laranja-principal);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-adicionar span {
+    font-size: 21px;
+    line-height: 1;
+}
+
+.btn-adicionar:hover {
+    background: #d93d12;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Card principal */
+
+.listagem-card {
+    padding: 24px;
+    border: 1px solid var(--borda-lista);
+    border-radius: var(--radius-lista);
+    background: #fff;
+    box-shadow: 0 3px 12px rgb(24 24 71 / 5%);
+}
+
+/* Pesquisa e filtros */
+
+.filtros {
+    display: grid;
+    grid-template-columns: minmax(200px, 1.5fr) minmax(160px, 1fr) minmax(160px, 1fr) auto;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.campo-busca,
+.campo-filtro {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--borda-lista);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.campo-busca {
+    gap: 10px;
+    padding: 0 12px;
+}
+
+.campo-busca svg {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--texto-secundario);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+.campo-busca input,
+.campo-filtro select {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--azul-principal);
+    font: inherit;
+    font-size: 14px;
+}
+
+.campo-busca input::placeholder {
+    color: #929292;
+}
+
+.campo-filtro {
+    padding: 0 10px;
+}
+
+.campo-filtro select {
+    cursor: pointer;
+}
+
+.campo-busca:focus-within,
+.campo-filtro:focus-within {
+    border-color: var(--azul-principal);
+    box-shadow: 0 0 0 3px rgb(24 24 71 / 8%);
+}
+
+.btn-buscar-lista {
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid var(--azul-principal);
+    border-radius: 8px;
+    background: var(--azul-principal);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-buscar-lista:hover {
+    background: #292967;
+}
+
+/* Lista */
+
+.lista-conteudo {
+    display: flex;
+    flex-direction: column;
+        border: 1px solid var(--borda-lista);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lista-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--borda-lista);
+    transition: background 0.2s;
+}
+
+.lista-item:first-child {
+    border-top: none;
+}
+
+.lista-item:last-child {
+    border-bottom: none;
+}
+
+.lista-item:hover {
+    background: var(--fundo-lista);
+}
+
+/* Área clicável que abre a visualização */
+
+.lista-link {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.lista-link:hover {
+    color: inherit;
+}
+
+.lista-link:focus-visible,
+.btn-editar-item:focus-visible,
+.btn-adicionar:focus-visible,
+.btn-buscar-lista:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+/* Brasão */
+
+.lista-brasao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--borda-lista);
+    border-radius: 10px;
+    background: var(--bege-principal);
+}
+
+.lista-brasao img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Informações */
+
+.lista-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lista-info h2 {
+    overflow: hidden;
+    margin: 0 0 7px;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+}
+
+.lista-detalhes {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.lista-seta {
+    flex-shrink: 0;
+    color: var(--texto-secundario);
+    font-size: 26px;
+    transition: transform 0.3s ease;
+}
+
+.lista-item {
+    transition: background 0.3s ease;
+}
+
+.lista-item:hover {
+    background: var(--fundo-lista);
+}
+
+.lista-item:hover .lista-seta {
+    transform: translateX(4px);
+}
+
+
+.lista-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-ativa {
+    background: #e5f5e9;
+    color: #23733a;
+}
+
+.status-inativa {
+    background: #fbe8e6;
+    color: #a32d24;
+}
+
+/* Botão editar */
+
+.btn-editar-lista {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-shrink: 0;
+    padding: 9px 12px;
+    border: 1px solid var(--laranja-principal);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--laranja-principal);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-editar-lista svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn-editar-lista:hover {
+    background: var(--laranja-principal);
+    color: #fff;
+}
+
+/* Lista vazia */
+
+.lista-vazia {
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.lista-vazia p {
+    margin: 0 0 8px;
+    color: var(--azul-principal);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.lista-vazia span {
+    color: var(--texto-secundario);
+    font-size: 14px;
+}
+
+/* Responsividade */
+
+@media (max-width: 1000px) {
+    .lista-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .campo-busca {
+        grid-column: 1 / -1;
+    }
+
+    .btn-buscar-lista {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 650px) {
+    .lista-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .lista-titulo {
+        font-size: 24px;
+    }
+
+    .listagem-card {
+        padding: 14px;
+    }
+
+    .lista-filtros {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .campo-busca,
+    .btn-buscar-lista {
+        grid-column: auto;
+    }
+
+    .lista-item {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 4px;
+    }
+
+    .lista-link {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr) 18px;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .lista-brasao {
+        width: 48px;
+        height: 48px;
+    }
+
+    .lista-info h2 {
+        font-size: 14px;
+    }
+
+    .lista-detalhes {
+        flex-direction: column;
+        gap: 3px;
+        font-size: 12px;
+    }
+
+    .lista-status {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .lista-seta {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    .btn-editar-lista {
+        margin-left: 60px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-adicionar,
+    .escola-item,
+    .escola-seta,
+    .btn-editar-lista {
+        transition: none;
+    }
+}

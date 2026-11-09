@@ -1,0 +1,37 @@
+/*VARIÁVEIS*/
+:root{
+    --azul-principal: #181847;
+    --laranja-principal: #F44E1C;
+    --bege-principal: #F1E4D1;
+
+    --branco: #FFF;
+    --preto: #212529;
+    --cinza: #6c757d;
+
+    --fundo: #faf8f5;
+    --borda: #E8E8E8;
+    --radius: 12px;
+    --transition: .3s ease;
+
+    --shadow-sm: 0 3px 8px rgba(0, 0, 0, .08);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, .12);
+}
+
+/*PADRONIZAÇÂO GLOBAL*/
+*, *::before,
+*::after{
+    box-sizing: border-box;
+}
+
+html{
+    min-height: 100vh;
+    background-color: var(--fundo);
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--fundo);
+    color: var(--preto);
+    font-family: "Poppins", sans-serif;
+}

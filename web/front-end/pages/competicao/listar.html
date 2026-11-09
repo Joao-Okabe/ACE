@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/lista.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+
+    <title>Competições</title>
+</head>
+<body>
+
+<app-bar></app-bar>
+<app-sidebar></app-sidebar>
+
+<div class="content">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h2 class="form-title">Competições</h2>
+            <p class="form-subtitle">Gerencie as competições cadastradas.</p>
+        </div>
+        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalCompeticao">+ Adicionar competição</button>
+    </div>
+    <app-lista placeholder="Pesquisar competição">
+        <div class="lista-item">
+            <a href="visualizar.html?id=1" class="lista-link">
+                <div class="lista-brasao">
+                    <img src="/assets/img/icon.png" alt="Ícone da competição">
+                </div>
+                <div class="lista-info">
+                    <h2>Jogos Escolares Municipais</h2>
+                    <div class="lista-detalhes">
+                        <span>Código: 001 | Criador: 1</span>
+                        <span>Início: 10/11/2026 | Encerramento: 20/11/2026</span>
+                    </div>
+                </div>
+                <span class="lista-seta" aria-hidden="true">›</span>
+            </a>
+            <button type="button" class="btn-editar-lista" data-editar-competicao data-id="1" aria-label="Editar competição">Editar</button>
+        </div>
+    </app-lista>
+</div>
+
+<!-- Modal de cadastro -->
+<app-modal titulo="Cadastrar competição">
+    <form id="form-competicao">
+        <div class="row">
+            <div class="campo-form col-12">
+                <label for="escolaCompeticao" class="form-label">Escola</label>
+                <select class="form-input" id="escolaCompeticao" name="cd_escola">
+                    <option value="">Selecione uma escola</option>
+                </select>
+            </div>
+            <div class="campo-form col-12">
+                <label for="nomeCompeticao" class="form-label">Nome da competição</label>
+                <input class="form-control form-input" type="text" id="nomeCompeticao" name="nm_competicao" placeholder="Digite o nome da competição" required>
+            </div>
+            <div class="campo-form col-md-4">
+                <label for="formatoCompeticao" class="form-label">Formato</label>
+                <select class="form-input" id="formatoCompeticao" name="cd_formato" required>
+                    <option value="">Selecione</option>
+                    <option value="1">Eliminatória</option>
+                    <option value="2">Eliminatória Dupla</option>
+                    <option value="3">Fase de Grupos + Eliminatória</option>
+                    <option value="4">Sistema Suíço</option>
+                </select>
+            </div>
+            <div class="campo-form col-md-4">
+                <label for="esporteCompeticao" class="form-label">Esporte</label>
+                <select class="form-input" id="esporteCompeticao" name="cd_esporte" required>
+                    <option value="">Selecione um esporte</option>
+                </select>
+            </div>
+            <div class="campo-form col-md-4">
+                <label for="modalidadeCompeticao" class="form-label">Modalidade</label>
+                <select class="form-input" id="modalidadeCompeticao" name="cd_modalidade" required>
+                    <option value="">Selecione uma modalidade</option>
+                </select>
+            </div>
+            <div class="campo-form col-md-6">
+                <label for="inicioCompeticao" class="form-label">Data de início</label>
+                <input class="form-control form-input" type="date" id="inicioCompeticao" name="dt_inicio">
+            </div>
+            <div class="campo-form col-md-6">
+                <label for="fimCompeticao" class="form-label">Data de encerramento</label>
+                <input class="form-control form-input" type="date" id="fimCompeticao" name="dt_encerramento">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
+                <button type="submit" class="custom-btn custom-btn-primary"> Cadastrar </button> 
+            </div>
+            
+        </div>
+    </form>
+</app-modal>
+
+<!-- Modal de edição -->
+<app-modal titulo="Editar competição">
+    <form id="form-editar-competicao">
+        <input type="hidden" id="editarIdCompeticao" name="cd_competicao">
+        <div class="row">
+            <div class="campo-form col-12">
+                <label for="editarNomeCompeticao" class="form-label">Nome da competição</label>
+                <input class="form-control form-input" type="text" id="editarNomeCompeticao" name="nm_competicao" placeholder="Digite o nome da competição" required>
+            </div>
+            <div class="campo-form col-md-6">
+                <label for="editarInicioCompeticao" class="form-label">Data de início</label>
+                <input class="form-control form-input" type="date" id="editarInicioCompeticao" name="dt_inicio">
+            </div>
+            <div class="campo-form col-md-6">
+                <label for="editarFimCompeticao" class="form-label">Data de encerramento</label>
+                <input class="form-control form-input" type="date" id="editarFimCompeticao" name="dt_encerramento">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
+                <button type="submit" class="custom-btn custom-btn-primary"> Confirmar </button> 
+            </div>
+        </div>
+    </form>
+</app-modal>
+
+<script type="module" src="/assets/js/main.js"></script>
+<script type="module" src="/assets/js/pages/competicao/listar.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/pages/lista.css">
+
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+
+    <title>Alunos</title>
+</head>
+<body>
+
+<app-bar></app-bar>
+<app-sidebar></app-sidebar>
+
+<div class="content">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h2 class="form-title">Alunos</h2>
+            <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
+        </div>
+        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalAluno">+ Adicionar aluno</button>
+    </div>
+
+    <app-lista placeholder="Pesquisar aluno">
+        <div class="lista-item">
+            <a href="visualizar.html?id=1" class="lista-link">
+                <div class="lista-brasao">
+                    <img src="/assets/img/no-prof-pic.png" alt="Foto do aluno">
+                </div>
+                <div class="lista-info">
+                    <h2>Nome do aluno</h2>
+                    <div class="lista-detalhes">
+                        <span>Código: 001 | RA: 123456</span>
+                        <span>Escola Municipal Exemplo | (13) 99999-9999</span>
+                    </div>
+                </div>
+                <span class="lista-seta" aria-hidden="true">›</span>
+            </a>
+            <button type="button" class="btn-editar-lista" data-editar-aluno data-id="1" aria-label="Editar aluno">Editar</button>
+        </div>
+    </app-lista>
+
+</div>
+
+<!-- Modal de cadastro -->
+<app-modal titulo="Cadastrar aluno">
+    <form id="form-aluno">
+
+        <div class="form-identificacao">
+            <div class="form-imagem">
+                <label for="img_aluno" class="seletor-imagem">
+                    <img src="/assets/img/no-prof-pic.png" alt="" class="icone-camera">
+                    <span class="imagem-adicionar" aria-hidden="true">+</span>
+                </label>
+                <input type="file" accept="image/*" name="img" id="img_aluno" hidden>
+            </div>
+
+            <div class="form-campos-principais">
+                <div class="campo-form">
+                    <label for="nomeAluno" class="form-label">Nome do(a) aluno(a)</label>
+                    <input class="form-control form-input" type="text" id="nomeAluno" name="nome" placeholder="Digite o nome completo" required>
+                </div>
+                <div class="campo-form">
+                    <label for="raAluno" class="form-label">RA</label>
+                    <input class="form-control form-input" type="text" id="raAluno" name="ra" placeholder="Digite o RA">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="campo-form col-md-6">
+                <label for="dataNascimentoAluno" class="form-label">Data de nascimento</label>
+                <input class="form-control form-input" type="date" id="dataNascimentoAluno" name="data_nascimento">
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="sexoAluno" class="form-label">Sexo</label>
+                <select class="form-input" id="sexoAluno" name="sexo">
+                    <option value="" selected>Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                </select>
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="emailAluno" class="form-label">E-mail de acesso</label>
+                <input class="form-control form-input" type="email" id="emailAluno" name="email" placeholder="Digite o e-mail">
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="senhaAluno" class="form-label">Senha</label>
+                <input class="form-control form-input" type="password" id="senhaAluno" name="senha" placeholder="Digite uma senha">
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="escolaAluno" class="form-label">Escola</label>
+                <select class="form-input" id="escolaAluno" name="escola" required>
+                    <option value="" selected disabled>Selecione uma escola</option>
+                </select>
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="telefoneAluno" class="form-label">Telefone</label>
+                <input class="form-control form-input" type="tel" id="telefoneAluno" name="telefone" placeholder="(00) 00000-0000">
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="cepAluno" class="form-label">CEP</label>
+                <input class="form-control form-input" type="text" id="cepAluno" name="cep" maxlength="9" inputmode="numeric" placeholder="00000-000">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
+                <button type="submit" class="custom-btn custom-btn-primary"> Cadastrar </button> 
+            </div>
+
+        </div>
+    </form>
+</app-modal>
+
+<!-- Modal de edição -->
+<app-modal titulo="Editar aluno">
+    <form id="form-editar-aluno">
+        <input type="hidden" id="editarIdAluno" name="id">
+
+        <div class="form-identificacao">
+            <div class="form-imagem">
+                <label for="editar_img_aluno" class="seletor-imagem">
+                    <img src="/assets/img/no-prof-pic.png" alt="" class="icone-camera">
+                    <span class="imagem-adicionar" aria-hidden="true">+</span>
+                </label>
+                <input type="file" accept="image/*" name="img" id="editar_img_aluno" hidden>
+            </div>
+
+            <div class="form-campos-principais">
+                <div class="campo-form">
+                    <label for="editarNomeAluno" class="form-label">Nome do(a) aluno(a)</label>
+                    <input class="form-control form-input" type="text" id="editarNomeAluno" name="nome" placeholder="Digite o nome completo" required>
+                </div>
+
+                <div class="campo-form">
+                    <label for="editarRaAluno" class="form-label">RA</label>
+                    <input class="form-control form-input" type="text" id="editarRaAluno" name="ra" placeholder="Digite o RA">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="campo-form col-md-6">
+                <label for="editarDataNascimentoAluno" class="form-label">Data de nascimento</label>
+                <input class="form-control form-input" type="date" id="editarDataNascimentoAluno" name="data_nascimento">
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="editarSexoAluno" class="form-label">Sexo</label>
+                <select class="form-input" id="editarSexoAluno" name="sexo">
+                    <option value="">Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                </select>
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="editarEscolaAluno" class="form-label">Escola</label>
+                <select class="form-input" id="editarEscolaAluno" name="escola" required>
+                    <option value="" selected disabled>Selecione uma escola</option>
+                </select>
+            </div>
+
+            <div class="campo-form col-md-6">
+                <label for="editarTelefoneAluno" class="form-label">Telefone</label>
+                <input class="form-control form-input" type="tel" id="editarTelefoneAluno" name="telefone" placeholder="(00) 00000-0000">
+            </div>
+            
+            <div class="campo-form col-md-6">
+                <label for="editarCepAluno" class="form-label">CEP</label>
+                <input class="form-control form-input" type="text" id="editarCepAluno" name="cep" maxlength="9" inputmode="numeric" placeholder="00000-000">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
+                <button type="submit" class="custom-btn custom-btn-primary"> Confirmar </button> 
+            </div>
+
+        </div>
+    </form>
+</app-modal>
+
+<script type="module" src="/assets/js/main.js"></script>
+<script type="module" src="/assets/js/pages/aluno/listar.js"></script>
+
+</body>
+</html>

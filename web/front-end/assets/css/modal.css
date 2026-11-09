@@ -1,0 +1,332 @@
+/* ===== Fundo do modal ===== */
+app-modal {
+    display: block;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgb(24 24 71 / 55%);
+}
+
+.modal-overlay.ativo {
+    display: flex;
+}
+
+/* ===== Caixa do modal ===== */
+.modal-container {
+    width: 100%;
+    max-width: 900px;
+    max-height: calc(85vh - 30px);
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: var(--radius, 12px);
+    box-shadow: 0 12px 40px rgb(0 0 0 / 18%);
+    animation: aparecer 0.25s ease;
+}
+
+/* ===== Cabeçalho ===== */
+.modal-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 24px;
+}
+
+.modal-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 24px;
+    right: 24px;
+    height: 1px;
+    background: var(--borda);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* ===== Botão fechar ===== */
+.modal-fechar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+.modal-fechar:hover {
+    background-color: rgb(24 24 71 / 10%);
+}
+
+.modal-fechar img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===== Conteúdo ===== */
+
+.modal-body {
+    padding: 24px;
+    line-height: 1.6;
+}
+
+.modal-body p {
+    margin: 0;
+    color: var(--texto-secundario);
+    font-size: 15px;
+}
+
+.modal-body form {
+    display: block;
+    width: 100%;
+}
+
+.modal-body form .actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 0 24px 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding:0 10px 10px;
+    margin-top: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-footer button {
+    margin: 0;
+}
+
+/* ===== Campos do formulário ===== */
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.campo-form .form-label {
+    margin-bottom: 8px;
+}
+
+.campo-form .form-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== Ações do formulário ===== */
+.modal-body .actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* ===== Seleção de imagem ===== */
+.form-imagem {
+    flex-shrink: 0;
+}
+
+.seletor-imagem {
+    position: relative;
+    display: block;
+    width: 130px;
+    height: 130px;
+    cursor: pointer;
+    border: 3px solid var(--azul-principal);
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.seletor-imagem > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.icone-camera {
+    width: 36px;
+    height: 36px;
+}
+
+.imagem-adicionar {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: var(--azul-principal);
+    color: var(--branco);
+    border: 4px solid var(--fundo-form);
+    border-radius: 50%;
+    font-size: 30px;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.seletor-imagem:hover .imagem-adicionar {
+    background: var(--laranja-principal);
+}
+
+.seletor-imagem:focus-within {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 5px;
+}
+
+.seletor-imagem:has(.imagem-selecionada) .icone-camera {
+    display: none;
+}
+
+/* ===== Identificação do formulário ===== */
+.form-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.form-campos-principais {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.form-campos-principais .campo-form:first-child {
+    grid-column: 1 / -1;
+}
+
+.form-campos-principais .campo-form {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.form-campos-principais .form-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== Animação ===== */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Telas pequenas ===== */
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal-container {
+        max-height: 90vh;
+    }
+
+    .modal-header {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 22px;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .form-identificacao {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .seletor-imagem {
+        width: 100px;
+        height: 100px;
+    }
+
+    .imagem-adicionar {
+        width: 36px;
+        height: 36px;
+        font-size: 26px;
+    }
+
+    .form-campos-principais {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form-campos-principais .campo-form:first-child {
+        grid-column: auto;
+    }
+
+    .modal-body .actions {
+        flex-direction: column-reverse;
+    }
+
+    .modal-body .actions button {
+        width: 100%;
+    }
+}
+
+/* ===== Compatibilidade com o grid ===== */
+@media (min-width: 768px) {
+    .col-md-6 {
+        width: 50%;
+    }
+}
+
+/* ===== Foco acessível ===== */
+.modal-container:focus {
+    outline: none;
+}
+
+.modal-fechar:focus-visible,
+.modal-body button:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
