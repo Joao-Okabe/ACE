@@ -1,7 +1,7 @@
 FROM php:8.4-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev unzip \
-    && docker-php-ext-install pdo_pgsql pgsql \
+    && docker-php-ext-install pdo_pgsql pgsql iconv \
     && a2enmod rewrite \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

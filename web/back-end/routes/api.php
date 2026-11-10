@@ -188,3 +188,10 @@ $router->put(
     '/api/times/{id}/escalacao',
     [VinculoTimeApiController::class, 'salvarEscalacao']
 );
+
+// Zona de Teste!!!!!!!1
+
+$authV1 = new AuthV1Controller();
+
+$router->post('/api/v1/auth/login', [$authV1, 'login']);
+$router->get('/api/v1/auth/me', [$authV1, 'me']);

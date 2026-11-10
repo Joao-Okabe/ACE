@@ -93,6 +93,8 @@ class Router
 
     public function dispatch(): void
     {
+        AuthContext::limpar();
+
         $uri = parse_url(
             $_SERVER['REQUEST_URI'],
             PHP_URL_PATH
@@ -110,8 +112,9 @@ class Router
         }
 
         $ehApi = $this->ehApi($uri);
+        $ehApiV1 = str_starts_with($uri, '/api/v1/');
 
-        // Trata preflight CORS OPTIONS
+        // Trata preflight CORS OPTIONS.
         if ($method === 'OPTIONS') {
             http_response_code(204);
             exit;
@@ -132,6 +135,8 @@ class Router
                     'mensagem' => 'Método HTTP não permitido.',
                     'metodos_permitidos' => $permitidos
                 ], 405);
+
+                return;
             }
 
             // 3. Caminho inexistente: 404.
@@ -139,32 +144,70 @@ class Router
                 'sucesso' => false,
                 'mensagem' => 'Endpoint não encontrado.'
             ], 404);
+
+            return;
+        }
+        
+        /*
+         * 4. Autenticação e proteção das APIs.
+         */
+
+        if ($ehApiV1) {
+
+            // Login mobile é a única rota pública desta versão.
+            $rotaPublicaV1 = (
+                $method === 'POST'
+                && $uri === '/api/v1/auth/login'
+            );
+
+            if (!$rotaPublicaV1) {
+                if (!JwtMiddleware::autenticar()) {
+                    return;
+                }
+            }
+
+        } else {
+
+            // Proteção CSRF das rotas existentes.
+            $rotaSemCsrf = $method === 'POST'
+                && in_array(
+                    $uri,
+                    ['/login', '/api/auth/login'],
+                    true
+                );
+
+            if (
+                !$rotaSemCsrf
+                && in_array(
+                    $method,
+                    ['POST', 'PUT', 'PATCH', 'DELETE'],
+                    true
+                )
+            ) {
+                Csrf::exigirToken();
+            }
+
+            // Autenticação por sessão.
+            if (
+                !$this->rotaPublica($method, $uri)
+                && empty($_SESSION['usuario']['id'])
+            ) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Autenticação necessária.'
+                ], 401);
+
+                return;
+            }
+
+            // Disponibiliza a sessão no contexto unificado.
+            if (!empty($_SESSION['usuario']['id'])) {
+                AuthContext::definir($_SESSION['usuario']);
+            }
         }
 
-        // 4. Proteção CSRF para requisições mutantes (POST, PUT,
-        //    PATCH e DELETE), antes de qualquer outro processamento.
-        //    /login e /api/auth/login ficam isentos: o formulário de
-        //    login é público e a sessão ainda não tem estado a proteger
-        //    (login CSRF mitigado pela troca de ID de sessão no login).
-        $rotaSemCsrf = $method === 'POST'
-            && in_array($uri, ['/login', '/api/auth/login'], true);
 
-        if (!$rotaSemCsrf && in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
-            Csrf::exigirToken();
-        }
-
-        // 5. Verifica autenticação para rotas existentes.
-        if (
-            !$this->rotaPublica($method, $uri)
-            && empty($_SESSION['usuario']['id'])
-        ) {
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Autenticação necessária.'
-            ], 401);
-        }
-
-        // 6. Executa a ação da rota (callable ou [Controller, metodo]).
+        // 5. Executa a ação da rota.
         [$action, $parametros] = $rota;
 
         if (is_callable($action)) {
@@ -177,6 +220,8 @@ class Router
         $controllerInstance = new $controller();
         $controllerInstance->$metodo(...$parametros);
     }
+
+
     private function rotaPublica(
         string $method,
         string $uri

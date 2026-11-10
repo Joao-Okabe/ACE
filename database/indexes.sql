@@ -29,8 +29,14 @@ CREATE INDEX idx_origem_classificacao
 CREATE INDEX idx_participante_competicao_usuario
     ON participante_competicao (cd_usuario, cd_competicao);
 
+CREATE INDEX idx_participante_competicao_time
+    ON participante_competicao (cd_competicao, cd_time);
+
 CREATE INDEX idx_participante_partida_usuario
     ON participante_partida (cd_usuario, cd_partida);
+
+CREATE INDEX idx_participante_partida_time
+    ON participante_partida (cd_partida, cd_time);
 
 -- Impede mais de uma partida vinculada ao mesmo confronto.
 CREATE UNIQUE INDEX uq_partida_confronto

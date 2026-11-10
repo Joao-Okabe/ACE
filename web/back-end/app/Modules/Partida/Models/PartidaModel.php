@@ -325,9 +325,45 @@ class Partida extends Model
             SELECT EXISTS (
                 SELECT 1 FROM participante_partida
                 WHERE cd_partida = :partida AND cd_usuario = :usuario
+            ) OR EXISTS (
+                SELECT 1
+                FROM vinculo_partida_time vpt
+                JOIN vinculo_time_integrante vti
+                  ON vti.cd_time = vpt.cd_time
+                 AND vti.cd_usuario = :usuario_integrante
+                 AND vti.ativo = TRUE
+                WHERE vpt.cd_partida = :partida_integrante
+            ) OR EXISTS (
+                SELECT 1
+                FROM vinculo_partida_time vpt
+                JOIN vinculo_tecnico_time vtt
+                  ON vtt.cd_time = vpt.cd_time
+                 AND vtt.cd_usuario = :usuario_tecnico
+                 AND vtt.ativo = TRUE
+                WHERE vpt.cd_partida = :partida_tecnico
+            ) OR EXISTS (
+                SELECT 1
+                FROM vinculo_partida_time vpt
+                JOIN vinculo_time_responsavel vtr
+                  ON vtr.cd_time = vpt.cd_time
+                 AND vtr.ativo = TRUE
+                JOIN responsavel r
+                  ON r.cd_responsavel = vtr.cd_responsavel
+                 AND r.cd_usuario = :usuario_responsavel
+                 AND r.ativo = TRUE
+                WHERE vpt.cd_partida = :partida_responsavel
             )
         ");
-        $stmt->execute([':partida' => $idPartida, ':usuario' => $idUsuario]);
+        $stmt->execute([
+            ':partida' => $idPartida,
+            ':usuario' => $idUsuario,
+            ':usuario_integrante' => $idUsuario,
+            ':partida_integrante' => $idPartida,
+            ':usuario_tecnico' => $idUsuario,
+            ':partida_tecnico' => $idPartida,
+            ':usuario_responsavel' => $idUsuario,
+            ':partida_responsavel' => $idPartida,
+        ]);
 
         return (bool) $stmt->fetchColumn();
     }
@@ -359,7 +395,9 @@ class Partida extends Model
     public function capturarParticipantes(int $idPartida, array $idsTimes): void
     {
         $sql = "
-            INSERT INTO participante_partida (cd_partida, cd_usuario, cd_time, origem)
+            INSERT INTO participante_partida (
+                cd_partida, cd_usuario, cd_time, origem
+            )
             SELECT :partida, vti.cd_usuario, vti.cd_time, 'INTEGRANTE'
             FROM vinculo_time_integrante vti
             WHERE vti.ativo = TRUE AND vti.cd_time = :time
@@ -368,7 +406,9 @@ class Partida extends Model
         $stmt = $this->pdo->prepare($sql);
 
         $sqlTecnicos = "
-            INSERT INTO participante_partida (cd_partida, cd_usuario, cd_time, origem)
+            INSERT INTO participante_partida (
+                cd_partida, cd_usuario, cd_time, origem
+            )
             SELECT :partida, vtt.cd_usuario, vtt.cd_time, 'TECNICO'
             FROM vinculo_tecnico_time vtt
             WHERE vtt.ativo = TRUE AND vtt.cd_time = :time
@@ -377,7 +417,9 @@ class Partida extends Model
         $stmtTecnicos = $this->pdo->prepare($sqlTecnicos);
 
         $sqlResponsaveis = "
-            INSERT INTO participante_partida (cd_partida, cd_usuario, cd_time, origem)
+            INSERT INTO participante_partida (
+                cd_partida, cd_usuario, cd_time, origem
+            )
             SELECT :partida, r.cd_usuario, rt.cd_time, 'RESPONSAVEL'
             FROM vinculo_time_responsavel rt
             JOIN responsavel r ON r.cd_responsavel = rt.cd_responsavel
@@ -398,8 +440,10 @@ class Partida extends Model
     public function capturarParticipantesCompeticao(int $idCompeticao, array $idsTimes): void
     {
         $sql = "
-            INSERT INTO participante_competicao (cd_competicao, cd_usuario, cd_time)
-            SELECT :competicao, vti.cd_usuario, vti.cd_time
+            INSERT INTO participante_competicao (
+                cd_competicao, cd_usuario, cd_time, origem
+            )
+            SELECT :competicao, vti.cd_usuario, vti.cd_time, 'INTEGRANTE'
             FROM vinculo_time_integrante vti
             WHERE vti.ativo = TRUE AND vti.cd_time = :time
             ON CONFLICT (cd_competicao, cd_usuario, cd_time, origem) DO NOTHING
@@ -407,8 +451,10 @@ class Partida extends Model
         $stmt = $this->pdo->prepare($sql);
 
         $sqlTecnicos = "
-            INSERT INTO participante_competicao (cd_competicao, cd_usuario, cd_time)
-            SELECT :competicao, vtt.cd_usuario, vtt.cd_time
+            INSERT INTO participante_competicao (
+                cd_competicao, cd_usuario, cd_time, origem
+            )
+            SELECT :competicao, vtt.cd_usuario, vtt.cd_time, 'TECNICO'
             FROM vinculo_tecnico_time vtt
             WHERE vtt.ativo = TRUE AND vtt.cd_time = :time
             ON CONFLICT (cd_competicao, cd_usuario, cd_time, origem) DO NOTHING
@@ -416,8 +462,10 @@ class Partida extends Model
         $stmtTecnicos = $this->pdo->prepare($sqlTecnicos);
 
         $sqlResponsaveis = "
-            INSERT INTO participante_competicao (cd_competicao, cd_usuario, cd_time)
-            SELECT :competicao, r.cd_usuario, rt.cd_time
+            INSERT INTO participante_competicao (
+                cd_competicao, cd_usuario, cd_time, origem
+            )
+            SELECT :competicao, r.cd_usuario, rt.cd_time, 'RESPONSAVEL'
             FROM vinculo_time_responsavel rt
             JOIN responsavel r ON r.cd_responsavel = rt.cd_responsavel
             WHERE rt.ativo = TRUE
