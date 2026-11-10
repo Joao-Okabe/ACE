@@ -2,9 +2,9 @@
 
 class Partida extends Model
 {
-    public function criar(array $dados): int
+        public function criar(array $dados): int
     {
-        $sql = "
+        $stmt = $this->pdo->prepare("
             INSERT INTO partida (
                 cd_competicao,
                 cd_confronto,
@@ -25,9 +25,8 @@ class Partida extends Model
                 :inicio_agendado
             )
             RETURNING cd_partida
-        ";
+        ");
 
-        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':cd_competicao' => $dados['cd_competicao'],
             ':cd_confronto' => $dados['cd_confronto'],
@@ -38,29 +37,25 @@ class Partida extends Model
             ':inicio_agendado' => $dados['inicio_agendado'],
         ]);
 
-        $id = $stmt->fetchColumn();
-
-        if ($id === false) {
-            throw new RuntimeException('Não foi possível criar a partida.');
-        }
-
-        return (int) $id;
+        return (int) $stmt->fetchColumn();
     }
 
     public function criarInfo(int $idPartida, array $dados): void
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO info_partida (
-                cd_partida, dt_partida, inicio_em, local_partida, observacoes
+                cd_partida,
+                local_partida,
+                observacoes
             ) VALUES (
-                :cd_partida, :dt_partida, :inicio_em, :local_partida, :observacoes
+                :cd_partida,
+                :local_partida,
+                :observacoes
             )
         ");
 
         $stmt->execute([
             ':cd_partida' => $idPartida,
-            ':dt_partida' => $dados['dt_partida'],
-            ':inicio_em' => $dados['inicio_em'],
             ':local_partida' => $dados['local_partida'],
             ':observacoes' => $dados['observacoes'],
         ]);

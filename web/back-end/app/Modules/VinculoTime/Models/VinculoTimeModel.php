@@ -364,21 +364,19 @@ class VinculoTime extends Model{
 
     public function listarTecnicosTime(int $idTime): array
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT
-                t.cd_usuario,
+        $stmt = $this->pdo->prepare("
+            SELECT
+                vtt.cd_usuario,
                 u.nm_usuario,
                 u.path_ft_usuario
-            FROM tecnico t
+            FROM vinculo_tecnico_time vtt
             INNER JOIN usuario u
-                ON u.cd_usuario = t.cd_usuario
-            INNER JOIN vinculo_tecnico_time vtt
-                ON vtt.cd_usuario = u.cd_usuario
-            WHERE r.ativo = TRUE
-                AND vtt.ativo = TRUE
-                AND vtt.cd_time = :cd_time
-            ORDER BY u.nm_usuario"
-        );
+                ON u.cd_usuario = vtt.cd_usuario
+            WHERE vtt.cd_time = :cd_time
+            AND vtt.ativo = TRUE
+            AND u.ativo = TRUE
+            ORDER BY u.nm_usuario
+        ");
 
         $stmt->execute([':cd_time' => $idTime]);
 
