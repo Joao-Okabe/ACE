@@ -33,31 +33,7 @@
             </button>
     </div>
 
-    <app-lista placeholder="Pesquisar escola">
-        <div class="lista-item">
-            <a href="visualizar.html?id=1" class="lista-link">
-
-                <div class="lista-brasao">
-                    <img src="/assets/img/brasao.jpg" alt="">
-                </div>
-
-                <div class="lista-info">
-                    <h2>Escola Municipal Exemplo</h2>
-
-                    <div class="lista-detalhes">
-                        <span>Código: 001</span>
-                        <span>Escola Municipal | (13) 3333-1111</span>
-                    </div>
-                </div>
-
-                <span class="lista-seta" aria-hidden="true">›</span>
-            </a>
-
-            <button type="button" class="btn-editar-lista" data-editar-escola data-id="1" aria-label="Editar">Editar</button>
-
-        </div>
-
-    </app-lista>
+    <app-lista placeholder="Pesquisar escola"></app-lista>
 
 </div>
 
@@ -84,6 +60,10 @@
             <label for="categoria_administrativa" class="form-label">Categoria</label>
             <select class="form-input" id="categoria_administrativa" name="categoria_administrativa" required>
                 <option>Selecione uma categoria</option>
+                <option value="" selected disabled>Selecione uma categoria</option>
+                    <option value="Escola Municipal">Escola Municipal</option>
+                    <option value="Escola Estadual">Escola Estadual</option>
+                    <option value="Privada">Privada</option>
             </select>
         </div>  
         </div>
@@ -171,6 +151,9 @@
                     <label for="editarCategoriaEscola" class="form-label">Categoria</label>
                     <select class="form-input" id="editarCategoriaEscola" name="categoria_administrativa" required>
                         <option value="" selected disabled>Selecione uma categoria</option>
+                            <option value="Escola Municipal">Escola Municipal</option>
+                            <option value="Escola Estadual">Escola Estadual</option>
+                            <option value="Privada">Privada</option>
                     </select>
                 </div>
 
