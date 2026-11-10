@@ -5,7 +5,6 @@ class EscolaValidator
     public function validarCadastroEscola(array $dados)
     {
         $this->validarNome($dados);
-        $this->validarSenha($dados);
         $this->validarCategoriaAdministrativa($dados);
     }
 
@@ -17,16 +16,7 @@ class EscolaValidator
             );
         }
     }
-
-    private function validarSenha(array $dados): void
-    {
-        if (empty($dados['senha'] ?? '')) {
-            throw new InvalidArgumentException(
-                'Informe uma senha.'
-            );
-        }
-    }
-
+    
     private function validarCategoriaAdministrativa(array $dados): void
     {
         if (!in_array($dados['categoria_administrativa'], ['Escola Municipal', 'Escola Estadual', 'Privada'], true ?? '')) {
