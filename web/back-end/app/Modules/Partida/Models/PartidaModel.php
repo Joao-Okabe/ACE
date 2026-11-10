@@ -169,7 +169,6 @@ class Partida extends Model
         $stmt = $this->pdo->prepare("
             SELECT
                 p.*,
-                ip.dt_partida,
                 ip.inicio_em,
                 ip.fim_em,
                 ip.local_partida,
