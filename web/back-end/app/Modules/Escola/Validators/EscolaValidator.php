@@ -5,7 +5,6 @@ class EscolaValidator
     public function validarCadastroEscola(array $dados)
     {
         $this->validarNome($dados);
-        $this->validarEmail($dados);
         $this->validarSenha($dados);
         $this->validarCategoriaAdministrativa($dados);
     }
@@ -15,18 +14,6 @@ class EscolaValidator
         if (empty(trim($dados['nome'] ?? ''))) {
             throw new InvalidArgumentException(
                 'Informe o nome do(a) aluno(a).'
-            );
-        }
-    }
-
-    private function validarEmail(array $dados): void
-    {
-        if (
-            empty($dados['email']) ||
-            !filter_var($dados['email'], FILTER_VALIDATE_EMAIL)
-        ) {
-            throw new InvalidArgumentException(
-                'Informe um e-mail válido.'
             );
         }
     }

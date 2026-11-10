@@ -69,14 +69,12 @@ class EscolaService
             $this->pdo->beginTransaction();
 
             $this->escolaModel->cadastrar([
-
                 'nome' => $dados['nome'],
                 'telefone' => $this->normalizador->normalizarCampoNulo($dados['telefone'] ?? null),
                 'cep' => $this->normalizador->normalizarCampoNulo($dados['cep'] ?? null),
                 'numero' => $this->normalizador->normalizarCampoNulo($dados['numero'] ?? null),
                 'categoria_administrativa' => $dados['categoria_administrativa'],
                 'img_logo' => $caminhoPublico
-
             ]);
 
             $this->pdo->commit();
