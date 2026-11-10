@@ -185,7 +185,7 @@ class Router
             $method === 'POST'
             && in_array(
                 $uri,
-                ['/login', '/api/auth/login', '/api/auth/cadastro', '/api/usuarios'],
+                ['/login', '/api/auth/login', '/api/usuarios'],
                 true
             )
         ) || (

@@ -16,7 +16,7 @@ export const authService = {
         });
     },
     cadastrar(dados) {
-        return apiFetch("/auth/cadastro", {
+        return apiFetch("/usuarios", {
             method: "POST",
             body: dados
         });

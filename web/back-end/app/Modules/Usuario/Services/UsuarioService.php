@@ -39,8 +39,10 @@ class UsuarioService
 
             $this->pdo->beginTransaction();
 
-            // tratar upload de foto_perfil (opcional)
-            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil']);
+            // Tratar upload de foto_perfil (opcional).
+            $caminhoPublicoFoto = $this->salvarFoto(
+                $_FILES['foto_perfil'] ?? null
+            );
 
             $idUsuario = $this->usuarioModel->cadastrar([
                 'nm_usuario' => $dados['nm_usuario'],
