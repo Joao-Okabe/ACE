@@ -53,15 +53,6 @@ class EscolaService
 
         $this->escolaValidator->validarCadastroEscola($dados);
 
-        if ($this->usuarioModel->buscarPorEmail($dados['email']) !== null) {
-            throw new Exception("Já existe um usuário cadastrado com este e-mail.");
-        }
-
-        $senhaHash = password_hash(
-            $dados['senha'],
-            PASSWORD_DEFAULT
-        );
-
         $caminhoPublico = $this->salvarLogo($dados['img_logo_upload'] ?? null, true);
 
         try {

@@ -597,3 +597,5 @@ CREATE TABLE tipo_notificacao (
     descricao TEXT
 );
 
+COMMIT;
+

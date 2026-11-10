@@ -363,7 +363,7 @@ class Partida extends Model
             SELECT :partida, vti.cd_usuario, vti.cd_time, 'INTEGRANTE'
             FROM vinculo_time_integrante vti
             WHERE vti.ativo = TRUE AND vti.cd_time = :time
-            ON CONFLICT (cd_partida, cd_usuario) DO NOTHING
+            ON CONFLICT (cd_partida, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmt = $this->pdo->prepare($sql);
 
@@ -372,17 +372,19 @@ class Partida extends Model
             SELECT :partida, vtt.cd_usuario, vtt.cd_time, 'TECNICO'
             FROM vinculo_tecnico_time vtt
             WHERE vtt.ativo = TRUE AND vtt.cd_time = :time
-            ON CONFLICT (cd_partida, cd_usuario) DO NOTHING
+            ON CONFLICT (cd_partida, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmtTecnicos = $this->pdo->prepare($sqlTecnicos);
 
         $sqlResponsaveis = "
             INSERT INTO participante_partida (cd_partida, cd_usuario, cd_time, origem)
             SELECT :partida, r.cd_usuario, rt.cd_time, 'RESPONSAVEL'
-            FROM responsavel_time rt
+            FROM vinculo_time_responsavel rt
             JOIN responsavel r ON r.cd_responsavel = rt.cd_responsavel
-            WHERE rt.cd_time = :time
-            ON CONFLICT (cd_partida, cd_usuario) DO NOTHING
+            WHERE rt.ativo = TRUE
+              AND r.ativo = TRUE
+              AND rt.cd_time = :time
+            ON CONFLICT (cd_partida, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmtResponsaveis = $this->pdo->prepare($sqlResponsaveis);
 
@@ -400,7 +402,7 @@ class Partida extends Model
             SELECT :competicao, vti.cd_usuario, vti.cd_time
             FROM vinculo_time_integrante vti
             WHERE vti.ativo = TRUE AND vti.cd_time = :time
-            ON CONFLICT (cd_competicao, cd_usuario) DO NOTHING
+            ON CONFLICT (cd_competicao, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmt = $this->pdo->prepare($sql);
 
@@ -409,17 +411,19 @@ class Partida extends Model
             SELECT :competicao, vtt.cd_usuario, vtt.cd_time
             FROM vinculo_tecnico_time vtt
             WHERE vtt.ativo = TRUE AND vtt.cd_time = :time
-            ON CONFLICT (cd_competicao, cd_usuario) DO NOTHING
+            ON CONFLICT (cd_competicao, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmtTecnicos = $this->pdo->prepare($sqlTecnicos);
 
         $sqlResponsaveis = "
             INSERT INTO participante_competicao (cd_competicao, cd_usuario, cd_time)
             SELECT :competicao, r.cd_usuario, rt.cd_time
-            FROM responsavel_time rt
+            FROM vinculo_time_responsavel rt
             JOIN responsavel r ON r.cd_responsavel = rt.cd_responsavel
-            WHERE rt.cd_time = :time
-            ON CONFLICT (cd_competicao, cd_usuario) DO NOTHING
+            WHERE rt.ativo = TRUE
+              AND r.ativo = TRUE
+              AND rt.cd_time = :time
+            ON CONFLICT (cd_competicao, cd_usuario, cd_time, origem) DO NOTHING
         ";
         $stmtResponsaveis = $this->pdo->prepare($sqlResponsaveis);
 
