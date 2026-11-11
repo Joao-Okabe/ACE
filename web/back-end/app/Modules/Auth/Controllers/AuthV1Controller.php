@@ -66,7 +66,9 @@ class AuthV1Controller
     {
         $dados = $this->corpoJson();
 
-        if (!is_array($dados) || empty($dados['refresh_token']) || !is_string($dados['refresh_token'])) {
+        $refreshToken = $dados['refresh_token'] ?? null;
+
+        if (!is_string($refreshToken) || trim($refreshToken) === '') {
             Response::json([
                 'sucesso' => false,
                 'mensagem' => 'Informe um refresh_token válido.'
@@ -75,13 +77,26 @@ class AuthV1Controller
         }
 
         try {
-            $tokens = $this->refreshService()->renovar($dados['refresh_token']);
-            Response::json(['sucesso' => true, ...$tokens]);
+            $tokens = $this->refreshService()->renovar($refreshToken);
+
+            Response::json([
+                'sucesso' => true,
+                ...$tokens
+            ]);
         } catch (DomainException $e) {
-            Response::json(['sucesso' => false, 'mensagem' => $e->getMessage()], 401);
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 401);
         } catch (Throwable $e) {
             error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível renovar a sessão.'], 500);
+
+            Response::json(
+                [
+                    'sucesso' => false,
+                    'mensagem' => 'Não foi possível renovar a sessão.'
+                ],
+                500);
         }
     }
 
