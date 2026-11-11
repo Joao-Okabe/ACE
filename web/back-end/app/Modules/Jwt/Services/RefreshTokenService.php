@@ -10,9 +10,13 @@ class RefreshTokenService
     public function __construct()
     {
         $this->pdo = Database::connect();
-        $this->model = new RefreshTokenModel();
+        $this->model = new RefreshTokenModel($this->pdo);
         $this->jwt = new JwtService();
-        $this->ttl = max(86400, (int) ($_ENV['JWT_REFRESH_TTL'] ?? 604800));
+
+        $this->ttl = max(
+            86400,
+            (int) ($_ENV['JWT_REFRESH_TTL'] ?? 604800)
+        );
     }
 
     public function emitir(int $idUsuario): array

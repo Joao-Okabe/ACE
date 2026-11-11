@@ -155,10 +155,14 @@ class Router
         if ($ehApiV1) {
 
             // Login mobile é a única rota pública desta versão.
-            $rotaPublicaV1 = (
-                $method === 'POST'
-                && $uri === '/api/v1/auth/login'
-            );
+            $rotasPublicasV1 = [
+                '/api/v1/auth/login',
+                '/api/v1/auth/refresh',
+                '/api/v1/auth/logout'
+            ];
+
+            $rotaPublicaV1 = $method === 'POST'
+                && in_array($uri, $rotasPublicasV1, true);
 
             if (!$rotaPublicaV1) {
                 if (!JwtMiddleware::autenticar()) {
@@ -220,7 +224,6 @@ class Router
         $controllerInstance = new $controller();
         $controllerInstance->$metodo(...$parametros);
     }
-
 
     private function rotaPublica(
         string $method,

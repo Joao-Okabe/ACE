@@ -1,0 +1,6 @@
+curl -i -X POST "$API/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ferraz@gmail.com",
+    "senha": "12345678"
+  }'

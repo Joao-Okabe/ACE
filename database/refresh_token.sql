@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS refresh_token (
     usado_em TIMESTAMPTZ,
     revogado_em TIMESTAMPTZ,
     substituido_por_hash CHAR(64),
-
     CONSTRAINT ck_refresh_token_hash
         CHECK (token_hash ~ '^[a-f0-9]{64}$'),
     CONSTRAINT ck_refresh_token_substituido

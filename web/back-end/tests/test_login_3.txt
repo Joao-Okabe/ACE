@@ -1,0 +1,2 @@
+curl -i "$API/api/v1/auth/me" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"

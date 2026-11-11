@@ -4,9 +4,9 @@ class RefreshTokenModel
 {
     private PDO $pdo;
 
-    public function __construct()
+    public function __construct(PDO $pdo)
     {
-        $this->pdo = Database::connect();
+        $this->pdo = $pdo;
     }
 
     public function criar(
