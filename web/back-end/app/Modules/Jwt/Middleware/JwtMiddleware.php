@@ -10,7 +10,11 @@ class JwtMiddleware
 
         if (
             !is_string($cabecalho) ||
-            !preg_match('/^Bearer\s+(.+)$/i', trim($cabecalho), $matches)
+            !preg_match(
+                '/^Bearer\s+([^\s]+)$/i',
+                trim($cabecalho),
+                $matches
+            )
         ) {
             Response::json([
                 'sucesso' => false,
@@ -22,13 +26,17 @@ class JwtMiddleware
 
         try {
             $jwtService = new JwtService();
-            $payload = $jwtService->validar(trim($matches[1]));
+
+            $payload = $jwtService->validar(
+                trim($matches[1])
+            );
 
             $idUsuario = (int) $payload->sub;
 
             $usuarioModel = new Usuario();
             $papelModel = new Papel();
 
+            // A consulta já filtra usuários inativos.
             $usuario = $usuarioModel->buscar($idUsuario);
 
             if ($usuario === null) {
@@ -40,19 +48,24 @@ class JwtMiddleware
                 return false;
             }
 
+            // Os papéis são sempre consultados no banco.
+            $papeis = $papelModel->listarPapeis($idUsuario);
+
             AuthContext::definir([
                 'id' => (int) $usuario['cd_usuario'],
                 'nome' => $usuario['nm_usuario'],
                 'nm_usuario' => $usuario['nm_usuario'],
                 'email' => $usuario['email'],
                 'foto_perfil' => $usuario['path_ft_usuario'] ?? null,
-                'papeis' => $papelModel->listarPapeis($idUsuario)
+                'papeis' => $papeis
             ]);
 
             return true;
 
         } catch (Throwable $e) {
-            error_log(__METHOD__ . ': ' . $e->getMessage());
+            error_log(
+                __METHOD__ . ': ' . $e->getMessage()
+            );
 
             AuthContext::limpar();
 

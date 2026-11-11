@@ -13,6 +13,7 @@ class Autoloader
                 __DIR__ . '/../Modules/*/Models',
                 __DIR__ . '/../Modules/*/Services',
                 __DIR__ . '/../Modules/*/Validators',
+                __DIR__ . '/../Modules/*/Middleware',
                 __DIR__ . '/../Middleware',
                 __DIR__,
             ];
