@@ -1,2 +1,6 @@
-curl -i "$API/api/v1/auth/me" \
-  -H "Authorization: Bearer $ACCESS_TOKEN"
+NOVO_REFRESH_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhY2UtYXBpIiwiYXVkIjoiYWNlLW1vYmlsZSIsImlhdCI6MTc5NDQ5NzU0NCwibmJmIjoxNzk0NDk3NTQ0LCJleHAiOjE3OTQ0OTg0NDQsInN1YiI6IjMiLCJqdGkiOiI2NTkyOWFiYzI5ZGQwNDgyNWU5MjQ3MjZlNjU0ZjcwZiJ9.jyOD0jxgtIUaZpF8aKgrRBL_Sg-K4gaVA5njmdwqaRw"
+
+curl -i -X POST "$API/api/v1/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg token "$NOVO_REFRESH_TOKEN" \
+    '{refresh_token: $token}')"

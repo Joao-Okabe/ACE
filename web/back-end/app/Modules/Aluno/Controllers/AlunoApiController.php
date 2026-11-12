@@ -35,23 +35,23 @@ class AlunoApiController
                 $alunos = $this->service()->listar($filtros);
             } else {
                 // Diretores só podem consultar alunos da própria escola.
-                $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+                $idUsuario = AuthContext::id() ?? 0;
 
                 $vinculoModel = new VinculoUsuarioEscola();
 
-                $idEscola = $vinculoModel->escolaAtualPorPapeis(
+                $escolas = $vinculoModel->escolasAtivasPorPapeis(
                     $idUsuario,
                     ['DIR']
                 );
 
-                if ($idEscola === null || $idEscola <= 0) {
+                if ($escolas === []) {
                     Response::json([
                         'sucesso' => false,
                         'mensagem' => 'Nenhuma escola autorizada foi encontrada.'
                     ], 403);
                 }
 
-                $filtros['escola'] = $idEscola;
+                $filtros['escolas'] = $escolas;
 
                 $alunos = $this->service()->listar($filtros);
             }

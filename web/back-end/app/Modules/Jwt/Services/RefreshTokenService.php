@@ -56,7 +56,33 @@ class RefreshTokenService
         $this->pdo->beginTransaction();
 
         try {
-            $registro = $this->model->buscarPorHashComBloqueio($hash);
+            /*
+             * 1. Busca inicial sem bloqueio para descobrir
+             *    a família à qual o token pertence.
+             */
+            $inicial = $this->model->buscarPorHash($hash);
+
+            if ($inicial === null) {
+                $this->pdo->commit();
+
+                throw new DomainException(
+                    'Refresh token inválido ou expirado.'
+                );
+            }
+
+            /*
+             * 2. Bloqueia a família.
+             *    Operações concorrentes da mesma família
+             *    precisam aguardar a liberação deste bloqueio.
+             */
+            $this->model->bloquearFamilia($inicial['familia']);
+
+            /*
+             * 3. Busca novamente o registro, agora com
+             *    bloqueio de linha.
+             */
+            $registro = $this->model
+                ->buscarPorHashComBloqueio($hash);
 
             if ($registro === null) {
                 $this->pdo->commit();
@@ -66,8 +92,14 @@ class RefreshTokenService
                 );
             }
 
+            /*
+             * 4. Detecta reutilização.
+             *    A família inteira é revogada.
+             */
             if ($registro['revogado_em'] !== null) {
-                $this->model->revogarFamilia($registro['familia']);
+                $this->model->revogarFamilia(
+                    $registro['familia']
+                );
 
                 $this->pdo->commit();
 
@@ -76,6 +108,9 @@ class RefreshTokenService
                 );
             }
 
+            /*
+             * 5. Verifica expiração.
+             */
             if (strtotime($registro['expira_em']) <= time()) {
                 $this->model->revogarPorHash($hash);
 
@@ -86,6 +121,9 @@ class RefreshTokenService
                 );
             }
 
+            /*
+             * 6. Gera e registra o novo refresh token.
+             */
             $novoRefresh = $this->novoToken();
             $novoHash = hash('sha256', $novoRefresh);
 
@@ -101,12 +139,19 @@ class RefreshTokenService
                 $this->dataExpiracao()
             );
 
-            $this->pdo->commit();
-
-            return $this->resposta(
+            /*
+             * 7. Gera a resposta antes do commit.
+             *    Se a geração do JWT falhar, a transação
+             *    será revertida e o refresh anterior continuará válido.
+             */
+            $resposta = $this->resposta(
                 (int) $registro['cd_usuario'],
                 $novoRefresh
             );
+
+            $this->pdo->commit();
+
+            return $resposta;
 
         } catch (DomainException $e) {
             if ($this->pdo->inTransaction()) {
@@ -138,22 +183,37 @@ class RefreshTokenService
 
         try {
             /*
-             * O bloqueio serializa o logout com a renovação
-             * que utiliza o mesmo refresh token.
+             * 1. Busca inicial para descobrir a família.
              */
-            $registro = $this->model->buscarPorHashComBloqueio($hash);
+            $inicial = $this->model->buscarPorHash($hash);
 
-            if ($registro === null) {
-                // Logout idempotente para tokens desconhecidos.
+            if ($inicial === null) {
                 $this->pdo->commit();
                 return;
             }
 
             /*
-             * Revoga todos os tokens da família, incluindo
-             * um possível token filho criado por uma renovação.
+             * 2. Bloqueia a família antes de bloquear registros.
              */
-            $this->model->revogarFamilia($registro['familia']);
+            $this->model->bloquearFamilia($inicial['familia']);
+
+            /*
+             * 3. Confirma o estado atual do token.
+             */
+            $registro = $this->model
+                ->buscarPorHashComBloqueio($hash);
+
+            if ($registro === null) {
+                $this->pdo->commit();
+                return;
+            }
+
+            /*
+             * 4. Revoga todos os tokens da família.
+             */
+            $this->model->revogarFamilia(
+                $registro['familia']
+            );
 
             $this->pdo->commit();
 

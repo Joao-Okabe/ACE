@@ -18,6 +18,8 @@ class VinculoUsuarioEscola extends Model
                 :escola,
                 :papel
             )
+            ON CONFLICT (cd_usuario, cd_escola, cd_papel)
+            DO UPDATE SET ativo = TRUE
         ");
 
         $stmt->execute([
@@ -25,6 +27,26 @@ class VinculoUsuarioEscola extends Model
             ':escola' => $idEscola,
             ':papel' => $idPapel
         ]);
+    }
+
+    public function possuiVinculoAtivo(int $idUsuario, int $idEscola, int $idPapel): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT 1
+            FROM vinculo_usuario_escola
+            WHERE cd_usuario = :usuario
+              AND cd_escola = :escola
+              AND cd_papel = :papel
+              AND ativo = TRUE
+            LIMIT 1'
+        );
+        $stmt->execute([
+            ':usuario' => $idUsuario,
+            ':escola' => $idEscola,
+            ':papel' => $idPapel,
+        ]);
+
+        return $stmt->fetchColumn() !== false;
     }
 
     public function listarVinculo(int $idUsuario): array
@@ -74,6 +96,27 @@ class VinculoUsuarioEscola extends Model
         $escola = $stmt->fetchColumn();
 
         return $escola === false ? null : (int) $escola;
+    }
+
+    public function escolasAtivasPorPapeis(int $idUsuario, array $papeis): array
+    {
+        if ($idUsuario <= 0 || $papeis === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($papeis), '?'));
+        $stmt = $this->pdo->prepare(
+            "SELECT DISTINCT v.cd_escola
+            FROM vinculo_usuario_escola v
+            INNER JOIN papel p ON p.cd_papel = v.cd_papel
+            WHERE v.cd_usuario = ?
+              AND p.nm_papel IN ($placeholders)
+              AND v.ativo = TRUE
+            ORDER BY v.cd_escola"
+        );
+        $stmt->execute(array_merge([$idUsuario], $papeis));
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function vincularTimeEscola(int $idTime, int $idEscola): void

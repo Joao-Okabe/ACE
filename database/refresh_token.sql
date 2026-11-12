@@ -33,3 +33,50 @@ ALTER TABLE refresh_token
     ADD COLUMN revogado_em TIMESTAMPTZ,
     ADD COLUMN usado_em TIMESTAMPTZ,
     ADD COLUMN substituido_por_hash CHAR(64);
+
+SELECT
+    conname AS nome,
+    contype AS tipo,
+    pg_get_constraintdef(oid) AS definicao
+FROM pg_constraint
+WHERE conrelid = 'refresh_token'::regclass;
+
+SELECT
+    indexname,
+    indexdef
+FROM pg_indexes
+WHERE tablename = 'refresh_token';
+
+SELECT
+    familia,
+    COUNT(*) AS total_tokens,
+    COUNT(*) FILTER (
+        WHERE revogado_em IS NULL
+          AND expira_em > CURRENT_TIMESTAMP
+    ) AS tokens_ativos,
+    COUNT(*) FILTER (
+        WHERE usado_em IS NOT NULL
+    ) AS tokens_consumidos,
+    COUNT(*) FILTER (
+        WHERE revogado_em IS NOT NULL
+    ) AS tokens_revogados,
+    MAX(expira_em) AS ultima_expiracao,
+    CASE
+        WHEN BOOL_OR(
+            revogado_em IS NULL
+            AND expira_em > CURRENT_TIMESTAMP
+        )
+        THEN 'ATIVA'
+        WHEN MAX(expira_em) > CURRENT_TIMESTAMP
+        THEN 'REVOGADA'
+        ELSE 'EXPIRADA'
+    END AS situacao_familia,
+    CASE
+        WHEN MAX(expira_em) <= CURRENT_TIMESTAMP - INTERVAL '30 days'
+        THEN 'ELEGIVEL_PARA_EXCLUSAO'
+
+        ELSE 'PRESERVAR'
+    END AS retencao
+FROM refresh_token
+GROUP BY familia
+ORDER BY MAX(criado_em) DESC;

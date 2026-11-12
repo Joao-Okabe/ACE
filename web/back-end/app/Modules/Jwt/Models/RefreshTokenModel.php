@@ -30,6 +30,52 @@ class RefreshTokenModel
         ]);
     }
 
+    /**
+     * Busca o token sem bloquear a linha.
+     * Utilizado inicialmente para descobrir a família.
+     */
+    public function buscarPorHash(string $hash): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                cd_refresh_token,
+                cd_usuario,
+                token_hash,
+                familia,
+                expira_em,
+                revogado_em
+            FROM refresh_token
+            WHERE token_hash = :hash
+        ");
+
+        $stmt->execute([':hash' => $hash]);
+
+        $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $registro ?: null;
+    }
+
+    /**
+     * Bloqueia todas as operações cooperantes da mesma família
+     * durante a transação atual.
+     */
+    public function bloquearFamilia(string $familia): void
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT pg_advisory_xact_lock(
+                hashtextextended(:familia, 0)
+            )
+        ");
+
+        $stmt->execute([
+            ':familia' => $familia,
+        ]);
+    }
+
+    /**
+     * Busca e bloqueia a linha do refresh token.
+     * Deve ser chamado somente depois de bloquear a família.
+     */
     public function buscarPorHashComBloqueio(string $hash): ?array
     {
         $stmt = $this->pdo->prepare("
@@ -46,6 +92,7 @@ class RefreshTokenModel
         ");
 
         $stmt->execute([':hash' => $hash]);
+
         $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $registro ?: null;
@@ -68,7 +115,9 @@ class RefreshTokenModel
         ]);
 
         if ($stmt->rowCount() !== 1) {
-            throw new RuntimeException('Não foi possível rotacionar o refresh token.');
+            throw new RuntimeException(
+                'Não foi possível rotacionar o refresh token.'
+            );
         }
     }
 
@@ -76,19 +125,31 @@ class RefreshTokenModel
     {
         $stmt = $this->pdo->prepare("
             UPDATE refresh_token
-            SET revogado_em = COALESCE(revogado_em, CURRENT_TIMESTAMP)
+            SET revogado_em = COALESCE(
+                revogado_em,
+                CURRENT_TIMESTAMP
+            )
             WHERE familia = :familia
         ");
-        $stmt->execute([':familia' => $familia]);
+
+        $stmt->execute([
+            ':familia' => $familia,
+        ]);
     }
 
     public function revogarPorHash(string $hash): void
     {
         $stmt = $this->pdo->prepare("
             UPDATE refresh_token
-            SET revogado_em = COALESCE(revogado_em, CURRENT_TIMESTAMP)
+            SET revogado_em = COALESCE(
+                revogado_em,
+                CURRENT_TIMESTAMP
+            )
             WHERE token_hash = :hash
         ");
-        $stmt->execute([':hash' => $hash]);
+
+        $stmt->execute([
+            ':hash' => $hash,
+        ]);
     }
 }

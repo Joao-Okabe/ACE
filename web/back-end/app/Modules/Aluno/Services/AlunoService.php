@@ -57,11 +57,16 @@ class AlunoService
 
     public function cadastrar(array $dados): void
     {
+        $idUsuarioAtual = AuthContext::id();
+        if (!$idUsuarioAtual) {
+            throw new Exception('Usuário não autenticado.');
+        }
+
         $idUsuarioExistente = (int) ($dados['cd_usuario'] ?? 0);
         $usuarioExistente = null;
 
         if ($idUsuarioExistente > 0) {
-            $papeis = $_SESSION['usuario']['papeis'] ?? [];
+            $papeis = AuthContext::papeis();
             if (!in_array('DIR', $papeis, true)) {
                 throw new Exception('Somente diretor pode vincular usuário existente.');
             }
@@ -74,6 +79,7 @@ class AlunoService
             if ($this->alunoModel->existePorUsuario($idUsuarioExistente)) {
                 throw new Exception('Este usuário já está cadastrado como aluno.');
             }
+            $this->alunoValidator->validarRa($dados);
         } else {
             $this->alunoValidator->validarCadastroAluno($dados);
         }
@@ -90,10 +96,13 @@ class AlunoService
             throw new Exception('ID do papel ALUNO inválido.');
         }
 
+        $caminhoPublicoFoto = null;
         try {
             // Valida o upload ANTES de abrir a transação, para que uma
             // foto inválida não dispare rollback desnecessário.
-            $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil'] ?? null);
+            if ($idUsuarioExistente <= 0) {
+                $caminhoPublicoFoto = $this->salvarFoto($_FILES['foto_perfil'] ?? null);
+            }
 
             $this->pdo->beginTransaction();
 
@@ -103,8 +112,7 @@ class AlunoService
                 throw new Exception('Selecione a escola do aluno.');
             }
 
-            $idUsuarioAtual = (int) ($_SESSION['usuario']['id'] ?? 0);
-            if (!$this->vinculoEscolaUsuarioModel->usuarioPodeGerenciarEscola($idUsuarioAtual, $idEscola)) {
+            if (!Permissoes::podeGerenciarEscola($idEscola)) {
                 throw new Exception('Você não tem permissão para cadastrar aluno nesta escola.');
             }
 
@@ -116,6 +124,17 @@ class AlunoService
                     'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
                     'foto_perfil' => $caminhoPublicoFoto
                 ]);
+
+            if (
+                $idUsuarioExistente > 0
+                && $this->vinculoEscolaUsuarioModel->possuiVinculoAtivo(
+                    $idUsuario,
+                    $idEscola,
+                    $papelAlunoId
+                )
+            ) {
+                throw new Exception('Este usuário já está vinculado como aluno nesta escola.');
+            }
 
             // Vincula usuário à escola com o papel ALUNO
             $this->vinculoEscolaUsuarioModel->vincularPapelEscola(
@@ -137,11 +156,13 @@ class AlunoService
 
             $this->pdo->commit();
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
 
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
+
+            $this->removerFotoUploadLocal($caminhoPublicoFoto);
 
             throw $e;
 
@@ -191,47 +212,39 @@ class AlunoService
             );
         }
 
-        $this->pdo->beginTransaction();
-
+        $caminhoPublicoFoto = null;
+        $fotoAnterior = (string) ($aluno['foto_perfil'] ?? '');
         try {
             // Validação dos campos enviados na atualização.
             $this->alunoValidator->validarAtualizacaoAluno($dados);
 
             $arquivo = $_FILES['foto_perfil'] ?? null;
-            $caminhoPublicoFoto = null;
-
             if ($arquivo !== null && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                // Guarda o caminho da foto atual para remover após o commit.
-                $fotoAnterior = (string) ($aluno['foto_perfil'] ?? '');
-
                 $caminhoPublicoFoto = $this->salvarFoto($arquivo);
+            }
+
+            $this->pdo->beginTransaction();
+
+            if ($caminhoPublicoFoto !== null) {
 
                 $this->usuarioModel->atualizarFotoPerfil((int) $aluno['cd_usuario'], $caminhoPublicoFoto);
-
-                // Remove o arquivo antigo somente após a troca bem-sucedida
-                // (e se for um upload local, não um asset padrão).
-                if (
-                    $fotoAnterior !== ''
-                    && $fotoAnterior !== '/img/perfil.jpg'
-                    && str_starts_with($fotoAnterior, '/uploads/')
-                ) {
-                    $caminhoAntigo = __DIR__ . '/../../../../public' . $fotoAnterior;
-                    if (is_file($caminhoAntigo)) {
-                        @unlink($caminhoAntigo);
-                    }
-                }
             }
 
             $this->usuarioModel->atualizarNome((int) $aluno['cd_usuario'], (string) $dados['nome']);
             $this->alunoModel->atualizar($id, $dados);
 
             $this->pdo->commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
 
+            $this->removerFotoUploadLocal($caminhoPublicoFoto);
             throw $e;
+        }
+
+        if ($caminhoPublicoFoto !== null && $fotoAnterior !== $caminhoPublicoFoto) {
+            $this->removerFotoUploadLocal($fotoAnterior);
         }
     }
 
@@ -319,6 +332,26 @@ class AlunoService
         chmod($destino, 0644);
 
         return '/uploads/' . $nome;
+    }
+
+    private function removerFotoUploadLocal(?string $caminhoPublico): void
+    {
+        if (
+            $caminhoPublico === null
+            || !preg_match('#^/uploads/[A-Za-z0-9_.-]+$#', $caminhoPublico)
+        ) {
+            return;
+        }
+
+        $pasta = realpath(__DIR__ . '/../../../../public/uploads');
+        if ($pasta === false) {
+            return;
+        }
+
+        $arquivo = realpath($pasta . DIRECTORY_SEPARATOR . basename($caminhoPublico));
+        if ($arquivo !== false && dirname($arquivo) === $pasta && is_file($arquivo)) {
+            @unlink($arquivo);
+        }
     }
 
 }

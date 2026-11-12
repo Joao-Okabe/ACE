@@ -16,7 +16,9 @@ class Filtro
 			$onde[] = 'a.cd_usuario IN (
 				SELECT up.cd_usuario
 				FROM vinculo_usuario_escola up
+				INNER JOIN papel p ON p.cd_papel = up.cd_papel
 				WHERE up.cd_escola = :cd_escola
+					AND p.nm_papel = \'ALU\'
 					AND up.ativo = TRUE
 			)';
 			$parametros[':cd_escola'] = (int) $filtros['escola'];

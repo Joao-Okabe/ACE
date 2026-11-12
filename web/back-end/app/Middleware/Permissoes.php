@@ -40,17 +40,14 @@ class Permissoes
             return true;
         }
 
-        // Diretor somente pode gerenciar sua própria escola.
+        // Considere todos os vínculos ativos do diretor, não apenas o mais recente.
         if (self::temPapel('DIR')) {
             $vinculoModel = new VinculoUsuarioEscola();
-
-            $escolaDiretor = $vinculoModel->escolaAtualPorPapeis(
+            return $vinculoModel->isUsuarioComPapeis(
                 $idUsuario,
+                $idEscola,
                 ['DIR']
             );
-
-            return $escolaDiretor !== null
-                && (int) $escolaDiretor === $idEscola;
         }
 
         return false;
@@ -100,6 +97,13 @@ class Permissoes
 
         if (self::temPapel('ADM')) {
             return (int) ($dados['escola'] ?? 0);
+        }
+
+        $idEscolaSolicitada = (int) ($dados['escola'] ?? 0);
+        if ($idEscolaSolicitada > 0) {
+            return self::podeGerenciarEscola($idEscolaSolicitada)
+                ? $idEscolaSolicitada
+                : 0;
         }
 
         $idUsuario = AuthContext::id();

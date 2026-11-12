@@ -9,7 +9,6 @@ class VinculoTimeService
     public function __construct()
     {
         $this->pdo = Database::connect();
-
         $this->vinculoTimeModel = new VinculoTime();
     }
 
@@ -29,7 +28,7 @@ class VinculoTimeService
 
             $this->pdo->commit();
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
 
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
@@ -51,18 +50,20 @@ class VinculoTimeService
 
     public function usuarioPodeGerenciarTime(int $idTime, ?int $idUsuario = null): bool
     {
-        $idUsuario ??= (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idUsuario ??= AuthContext::id();
 
-        if ($idUsuario <= 0 || $idTime <= 0) {
+        if (!$idUsuario || $idUsuario <= 0 || $idTime <= 0) {
             return false;
         }
 
-        // O papel ADM é tratado na camada de permissões (mesma lógica de podeGerenciarEscola)
         if (Permissoes::temPapel('ADM')) {
             return true;
         }
 
-        return $this->vinculoTimeModel->usuarioPodeGerenciarTime($idUsuario, $idTime);
+        return $this->vinculoTimeModel->usuarioPodeGerenciarTime(
+            $idUsuario,
+            $idTime
+        );
     }
 
     public function exigirPermissaoGerenciarTime(int $idTime): void
@@ -108,7 +109,7 @@ class VinculoTimeService
 
             $this->pdo->commit();
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
 
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
@@ -134,7 +135,7 @@ class VinculoTimeService
             $this->pdo->beginTransaction();
             $this->vinculoTimeModel->removerTimeIntegrante($idUsuario, $idTime);
             $this->pdo->commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
@@ -153,7 +154,7 @@ class VinculoTimeService
             $this->pdo->beginTransaction();
             $this->vinculoTimeModel->tornarCapitao($idUsuario, $idTime);
             $this->pdo->commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
@@ -167,7 +168,16 @@ class VinculoTimeService
             throw new Exception('Integrante ou time inválido.');
         }
 
-        $this->vinculoTimeModel->removerCapitao($idUsuario, $idTime);
+        try {
+            $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->removerCapitao($idUsuario, $idTime);
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
     }
 
     public function listarAlunosTime(int $idTime): array
@@ -196,7 +206,7 @@ class VinculoTimeService
 
             $this->pdo->commit();
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
 
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
@@ -216,26 +226,27 @@ class VinculoTimeService
             throw new Exception('Apenas 5 jogadores podem ser titulares.');
         }
 
-        $vinculos = $this->vinculoTimeModel->listarVinculosTime($idTime);
-        $mapa = [];
-        foreach ($vinculos as $vinculo) {
-            $mapa[(int) $vinculo['cd_usuario']] = (int) $vinculo['cd_vinculo_time_integrante'];
-        }
-
-        $titulares = [];
-        foreach ($idUsuariosTitulares as $idUsuario) {
-            $idUsuario = (int) $idUsuario;
-            if ($idUsuario <= 0) {
-                continue;
-            }
-            if (!isset($mapa[$idUsuario])) {
-                throw new Exception('Integrante não pertence a este time.');
-            }
-            $titulares[$mapa[$idUsuario]] = true;
-        }
-
         try {
             $this->pdo->beginTransaction();
+
+            $this->vinculoTimeModel->bloquearTime($idTime);
+            $vinculos = $this->vinculoTimeModel->listarVinculosTime($idTime);
+            $mapa = [];
+            foreach ($vinculos as $vinculo) {
+                $mapa[(int) $vinculo['cd_usuario']] = (int) $vinculo['cd_vinculo_time_integrante'];
+            }
+
+            $titulares = [];
+            foreach ($idUsuariosTitulares as $idUsuario) {
+                $idUsuario = (int) $idUsuario;
+                if ($idUsuario <= 0) {
+                    continue;
+                }
+                if (!isset($mapa[$idUsuario])) {
+                    throw new Exception('Integrante não pertence a este time.');
+                }
+                $titulares[$mapa[$idUsuario]] = true;
+            }
 
             $this->vinculoTimeModel->limparEscalacao($idTime);
 
@@ -245,7 +256,7 @@ class VinculoTimeService
 
             $this->pdo->commit();
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }

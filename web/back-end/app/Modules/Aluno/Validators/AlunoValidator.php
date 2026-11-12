@@ -5,6 +5,7 @@ class AlunoValidator
     public function validarCadastroAluno(array $dados): void
     {
         $this->validarNome($dados);
+        $this->validarRa($dados);
         $this->validarEmail($dados);
         $this->validarSenha($dados);
         $this->validarDataNascimento($dados);
@@ -18,6 +19,7 @@ class AlunoValidator
         // Na atualização a senha não é alterada por este fluxo;
         // os demais campos seguem as mesmas regras do cadastro.
         $this->validarNome($dados);
+        $this->validarRa($dados);
         $this->validarDataNascimento($dados);
         $this->validarSexo($dados);
         $this->validarTelefone($dados);
@@ -37,6 +39,16 @@ class AlunoValidator
         if (mb_strlen($nome) > 150) {
             throw new InvalidArgumentException(
                 'O nome deve ter no máximo 150 caracteres.'
+            );
+        }
+    }
+
+    public function validarRa(array $dados): void
+    {
+        $ra = trim((string) ($dados['ra'] ?? ''));
+        if ($ra === '' || mb_strlen($ra) > 20) {
+            throw new InvalidArgumentException(
+                'Informe um RA com até 20 caracteres.'
             );
         }
     }

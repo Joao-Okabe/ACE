@@ -66,7 +66,9 @@ class AuthV1Controller
     {
         $dados = $this->corpoJson();
 
-        $refreshToken = $dados['refresh_token'] ?? null;
+        $refreshToken = is_array($dados)
+            ? ($dados['refresh_token'] ?? null)
+            : null;
 
         if (!is_string($refreshToken) || trim($refreshToken) === '') {
             Response::json([

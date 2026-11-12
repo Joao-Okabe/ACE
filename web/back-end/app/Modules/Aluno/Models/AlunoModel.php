@@ -83,11 +83,14 @@ class Aluno extends Model
             u.nm_usuario,
             u.nm_usuario AS nome,
             u.path_ft_usuario,
+            u.path_ft_usuario AS foto_perfil,
             (
                 SELECT e.nm_escola
                 FROM vinculo_usuario_escola up
+                INNER JOIN papel p ON p.cd_papel = up.cd_papel
                 INNER JOIN escola e ON e.cd_escola = up.cd_escola
                 WHERE up.cd_usuario = a.cd_usuario
+                    AND p.nm_papel = 'ALU'
                     AND up.ativo = TRUE
                 ORDER BY up.criado_em DESC
                 LIMIT 1
@@ -96,7 +99,9 @@ class Aluno extends Model
             (
                 SELECT up.cd_escola
                 FROM vinculo_usuario_escola up
+                INNER JOIN papel p ON p.cd_papel = up.cd_papel
                 WHERE up.cd_usuario = a.cd_usuario
+                    AND p.nm_papel = 'ALU'
                     AND up.ativo = TRUE
                 ORDER BY up.criado_em DESC
                 LIMIT 1
@@ -106,6 +111,33 @@ class Aluno extends Model
             ON u.cd_usuario = a.cd_usuario";
 
         $filtrosSql = $this->filtro->filtrosAluno($filtros);
+
+        if (!empty($filtros['escolas']) && is_array($filtros['escolas'])) {
+            $escolas = array_values(array_unique(array_filter(
+                array_map('intval', $filtros['escolas']),
+                static fn (int $id): bool => $id > 0
+            )));
+
+            if ($escolas === []) {
+                return [];
+            }
+
+            $placeholders = [];
+            foreach ($escolas as $i => $idEscola) {
+                $placeholder = ':escola_permitida_' . $i;
+                $placeholders[] = $placeholder;
+                $filtrosSql['parametros'][$placeholder] = $idEscola;
+            }
+
+            $filtrosSql['onde'][] = 'a.cd_usuario IN (
+                SELECT up.cd_usuario
+                FROM vinculo_usuario_escola up
+                INNER JOIN papel p ON p.cd_papel = up.cd_papel
+                WHERE up.cd_escola IN (' . implode(',', $placeholders) . ')
+                  AND p.nm_papel = \'ALU\'
+                  AND up.ativo = TRUE
+            )';
+        }
 
         if (!empty($filtrosSql['onde'])) {
             $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
@@ -128,11 +160,14 @@ class Aluno extends Model
             u.email,
             u.nm_usuario AS nome,
             u.path_ft_usuario,
+            u.path_ft_usuario AS foto_perfil,
             (
                 SELECT e.nm_escola
                 FROM vinculo_usuario_escola up
+                INNER JOIN papel p ON p.cd_papel = up.cd_papel
                 INNER JOIN escola e ON e.cd_escola = up.cd_escola
                 WHERE up.cd_usuario = a.cd_usuario
+                    AND p.nm_papel = 'ALU'
                     AND up.ativo = TRUE
                 ORDER BY up.criado_em DESC
                 LIMIT 1
@@ -165,7 +200,9 @@ class Aluno extends Model
         $stmt = $this->pdo->prepare(
             "SELECT cd_escola
             FROM vinculo_usuario_escola
+            INNER JOIN papel p ON p.cd_papel = vinculo_usuario_escola.cd_papel
             WHERE cd_usuario = :cd_usuario
+            AND p.nm_papel = 'ALU'
             AND ativo = TRUE
             ORDER BY criado_em DESC
             LIMIT 1"

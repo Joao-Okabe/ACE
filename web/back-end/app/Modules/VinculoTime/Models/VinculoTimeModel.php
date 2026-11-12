@@ -152,12 +152,7 @@ class VinculoTime extends Model{
 
     public function tornarCapitao(int $idUsuario, int $idTime): void
     {
-        // Bloqueia o time durante a verificação e a atualização para evitar duas nomeações simultâneas.
-        $stmt = $this->pdo->prepare('SELECT cd_time FROM time WHERE cd_time = :cd_time FOR UPDATE');
-        $stmt->execute([':cd_time' => $idTime]);
-        if (!$stmt->fetchColumn()) {
-            throw new Exception('Time não encontrado.');
-        }
+        $this->bloquearTime($idTime);
 
         $stmt = $this->pdo->prepare(
             'SELECT 1 FROM vinculo_time_integrante WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE'
@@ -180,6 +175,18 @@ class VinculoTime extends Model{
              WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE'
         );
         $stmt->execute([':cd_usuario' => $idUsuario, ':cd_time' => $idTime]);
+    }
+
+    public function bloquearTime(int $idTime): void
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT cd_time FROM time WHERE cd_time = :cd_time FOR UPDATE'
+        );
+        $stmt->execute([':cd_time' => $idTime]);
+
+        if (!$stmt->fetchColumn()) {
+            throw new Exception('Time não encontrado.');
+        }
     }
 
     public function removerCapitao(int $idUsuario, int $idTime): void
