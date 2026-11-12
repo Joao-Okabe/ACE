@@ -1,30 +1,30 @@
-
 import { escolaService } from "../../services/escolaService.js";
 
+import "./cadastrar.js";
+import "./editar.js";
+
+// COMPONENTE DE LISTAGEM
 class AppLista extends HTMLElement {
     connectedCallback() {
         if (this.inicializado) return;
         this.inicializado = true;
 
-        // Guarda os itens definidos no HTML da página
+        // Guarda os itens definidos no HTML
         const itens = document.createDocumentFragment();
 
         while (this.firstChild) {
             itens.appendChild(this.firstChild);
         }
 
-        // Estrutura reutilizável da listagem
+        // Estrutura da listagem
         this.innerHTML = `
             <div class="listagem-card">
                 <div class="filtros lista-filtros">
 
                     <div class="campo-busca">
-                        <input
-                            type="search"
-                            class="lista-pesquisa"
+                        <input type="search" class="lista-pesquisa"
                             placeholder="${this.getAttribute("placeholder") || "Pesquisar"}"
-                            aria-label="Pesquisar na lista"
-                        >
+                            aria-label="Pesquisar na lista">
                     </div>
 
                     <select class="campo-filtro lista-ordenacao" aria-label="Ordenar lista">
@@ -50,7 +50,7 @@ class AppLista extends HTMLElement {
         const botaoBuscar = this.querySelector(".lista-buscar");
         const ordenacao = this.querySelector(".lista-ordenacao");
 
-        // Pesquisa pelos textos de cada item
+        // Pesquisa
         const filtrarItens = () => {
             const termo = pesquisa.value.trim().toLocaleLowerCase("pt-BR");
 
@@ -68,7 +68,7 @@ class AppLista extends HTMLElement {
             }
         });
 
-        // Ordena os itens pelo nome
+        // Ordenação
         ordenacao.addEventListener("change", () => {
             const ordem = ordenacao.value;
 
@@ -93,15 +93,19 @@ class AppLista extends HTMLElement {
     }
 }
 
-customElements.define("app-lista", AppLista);
+if (!customElements.get("app-lista")) {
+    customElements.define("app-lista", AppLista);
+}
 
-
-//LISTAR ESCOLAS
+// LISTAR ESCOLAS
 async function carregarEscolas() {
     try {
         const escolas = await escolaService.listar();
 
         console.log("Escolas recebidas:", escolas);
+
+        console.table(escolas);
+console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
 
         const lista = document.querySelector("app-lista");
         const conteudo = lista?.querySelector(".lista-conteudo");
@@ -124,7 +128,7 @@ async function carregarEscolas() {
             brasao.classList.add("lista-brasao");
 
             const imagem = document.createElement("img");
-            imagem.src = "/assets/img/brasao.jpg";
+            imagem.src = escola.img_logo || "/assets/img/brasao.jpg";
             imagem.alt = "";
 
             brasao.appendChild(imagem);
@@ -133,7 +137,7 @@ async function carregarEscolas() {
             info.classList.add("lista-info");
 
             const nome = document.createElement("h2");
-            nome.textContent = escola.nome || "Nome não informado";
+            nome.textContent = escola.nome || escola.nm_escola || "Nome não informado";
 
             const detalhes = document.createElement("div");
             detalhes.classList.add("lista-detalhes");
@@ -163,7 +167,7 @@ async function carregarEscolas() {
             botaoEditar.textContent = "Editar";
             botaoEditar.setAttribute(
                 "aria-label",
-                `Editar ${escola.nome}`
+                `Editar ${escola.nome || escola.nm_escola || "escola"}`
             );
 
             item.append(link, botaoEditar);
@@ -176,165 +180,3 @@ async function carregarEscolas() {
 }
 
 carregarEscolas();
-
-
-//MODAL DE CADASTRAR ESCOLA
-const btnAbrir = document.querySelector("#abrirModalEscola");
-const modal = document.querySelector(
-    'app-modal[titulo="Cadastrar escola"]'
-);
-
-if (btnAbrir && modal) {
-    btnAbrir.addEventListener("click", () => {
-        modal.abrir();
-    });
-}
-
-
-//MODAL DE EDIÇÃO DE ESCOLA
-const modalEditarEscola = document.querySelector(
-    'app-modal[titulo="Editar escola"]'
-);
-
-const listaEscolas = document.querySelector("app-lista");
-
-// Delegação de eventos para os botões criados dinamicamente
-if (listaEscolas) {
-    listaEscolas.addEventListener("click", async (evento) => {
-
-        const botao = evento.target.closest("[data-editar-escola]");
-
-        if (!botao) return;
-
-        if (!modalEditarEscola) {
-            console.error("Modal de edição não encontrado.");
-            return;
-        }
-
-        const idEscola = botao.dataset.id;
-
-        try {
-            // Busca os dados completos da escola
-            const escola = await escolaService.buscarPorId(idEscola);
-
-            console.log("Dados da escola selecionada:", escola);
-
-            // Preenche os campos do formulário
-            const formulario = modalEditarEscola.querySelector(
-                "#form-editar-escola"
-            );
-
-            if (!formulario) {
-                console.error("Formulário de edição não encontrado.");
-                return;
-            }
-
-            formulario.querySelector("#editarIdEscola").value =
-                escola.cd_escola ?? "";
-
-            formulario.querySelector("#editarNomeEscola").value =
-                escola.nm_escola ?? escola.nome ?? "";
-
-            formulario.querySelector("#editarCategoriaEscola").value =
-                escola.categoria_administrativa ?? "";
-
-            formulario.querySelector("#editarEmailEscola").value =
-                escola.email ?? "";
-
-            formulario.querySelector("#editarTelefoneEscola").value =
-                escola.telefone ?? "";
-
-            formulario.querySelector("#editarCepEscola").value =
-                escola.cep ?? "";
-
-            formulario.querySelector("#editarNumeroEscola").value =
-                escola.numero ?? "";
-
-            // Guarda o caminho atual do brasão, se houver
-            const campoBrasao = formulario.querySelector(
-                "[name='path_brasao']"
-            );
-
-            if (campoBrasao) {
-                campoBrasao.value = escola.path_brasao ?? escola.img_logo ?? "";
-            }
-
-            // Abre o modal
-            modalEditarEscola.abrir();
-
-        } catch (erro) {
-            console.error("Erro ao buscar escola:", erro);
-        }
-    });
-}
-
-
-
-//Salvar alterações
-const formularioEditarEscola = document.querySelector(
-    "#form-editar-escola"
-);
-
-if (formularioEditarEscola) {
-    formularioEditarEscola.addEventListener("submit", async (evento) => {
-        evento.preventDefault();
-
-        const idEscola = formularioEditarEscola
-            .querySelector("#editarIdEscola").value;
-
-        if (!idEscola) {
-            console.error("ID da escola não encontrado.");
-            alert("Não foi possível identificar a escola.");
-            return;
-        }
-
-        // Captura os dados do formulário
-        const dados = {
-            nome: formularioEditarEscola
-                .querySelector("#editarNomeEscola").value.trim(),
-
-            email: formularioEditarEscola
-                .querySelector("#editarEmailEscola").value.trim(),
-
-            telefone: formularioEditarEscola
-                .querySelector("#editarTelefoneEscola").value.trim(),
-
-            cep: formularioEditarEscola
-                .querySelector("#editarCepEscola").value.trim(),
-
-            numero: formularioEditarEscola
-                .querySelector("#editarNumeroEscola").value.trim(),
-
-            categoria_administrativa: formularioEditarEscola
-                .querySelector("#editarCategoriaEscola").value
-            };
-
-        const botaoSalvar = formularioEditarEscola.querySelector(
-            'button[type="submit"]'
-        );
-
-        try {
-            botaoSalvar.disabled = true;
-            botaoSalvar.textContent = "Salvando...";
-
-            console.log("Dados enviados para atualização:", dados);
-
-            // Atualiza a escola pela API
-            await escolaService.atualizar(idEscola, dados);
-
-            alert("Escola atualizada com sucesso!");
-
-            // Atualiza a página e a listagem
-            window.location.reload();
-
-        } catch (erro) {
-            console.error("Erro ao atualizar escola:", erro);
-
-            alert(erro.message || "Não foi possível atualizar a escola.");
-
-        } finally {
-            botaoSalvar.disabled = false;
-            botaoSalvar.textContent = "Salvar alterações";
-        }
-    });
-}

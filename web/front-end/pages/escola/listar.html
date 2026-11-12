@@ -59,26 +59,16 @@
         <div class="campo-form">
             <label for="categoria_administrativa" class="form-label">Categoria</label>
             <select class="form-input" id="categoria_administrativa" name="categoria_administrativa" required>
-                <option>Selecione uma categoria</option>
                 <option value="" selected disabled>Selecione uma categoria</option>
-                    <option value="Escola Municipal">Escola Municipal</option>
-                    <option value="Escola Estadual">Escola Estadual</option>
-                    <option value="Privada">Privada</option>
+                <option value="Escola Municipal">Escola Municipal</option>
+                <option value="Escola Estadual">Escola Estadual</option>
+                <option value="Privada">Privada</option>
             </select>
         </div>  
         </div>
         </div>
 
         <div class="row">
-        <div class="campo-form col-md-6">
-            <label for="emailEscola" class="form-label">E-mail da escola</label>
-            <input class="form-control form-input" type="email" id="emailEscola" name="email" placeholder="Digite o e-mail da escola" required>
-        </div>
-
-        <div class="campo-form col-md-6">
-            <label for="senhaEscola" class="form-label">Senha</label>
-            <input class="form-control form-input" type="password" id="senhaEscola" name="senha" placeholder="Digite uma senha" required>
-        </div>
 
         <div class="campo-form col-md-6">
             <label for="telefoneEscola" class="form-label">Telefone</label>
@@ -87,7 +77,7 @@
 
         <div class="campo-form col-md-6">
             <label for="cepEscola" class="form-label">CEP</label>
-            <input class="form-control form-input" type="text" id="cepEscola" name="cep" placeholder="00000-000" required>
+            <input class="form-control form-input" type="text" id="cepEscola" name="cep" placeholder="00000-000" maxlength="9" inputmode="numeric" required>
         </div>
 
         <div class="campo-form col-md-6">
@@ -112,7 +102,7 @@
 
         <div class="campo-form col-md-6">
             <label for="ufEscola" class="form-label">UF</label>
-            <input class="form-control form-input" type="text" id="ufEscola" name="uf" placeholder="Ex: SP" required>
+            <input class="form-control form-input" type="text" id="ufEscola" name="uf" placeholder="Ex: SP" maxlength="2" required>
         </div>
         </div>
 
@@ -133,7 +123,7 @@
 
             <div class="form-imagem">
                 <label for="editar_img_logo" class="seletor-imagem">
-                    <img src="/assets/img/brasao.jpg" alt="" class="icone-camera">
+                    <img src="/assets/img/brasao.jpg" alt="" class="icone-camera" id="editarPreviewBrasao">
                     <span class="imagem-adicionar" aria-hidden="true">+</span>
                 </label>
 
@@ -161,12 +151,6 @@
         </div>
 
         <div class="row">
-
-            <div class="campo-form col-md-6">
-                <label for="editarEmailEscola" class="form-label">E-mail da escola</label>
-                <input class="form-control form-input" type="email" id="editarEmailEscola" name="email" placeholder="Digite o e-mail da escola" required>
-            </div>
-
             <div class="campo-form col-md-6">
                 <label for="editarTelefoneEscola" class="form-label">Telefone</label>
                 <input class="form-control form-input" type="tel" id="editarTelefoneEscola" name="telefone" placeholder="(00) 00000-0000">
