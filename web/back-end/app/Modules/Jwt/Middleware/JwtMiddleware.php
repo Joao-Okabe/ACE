@@ -24,6 +24,12 @@ class JwtMiddleware
             return false;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Validação do JWT
+        |--------------------------------------------------------------------------
+        */
+
         try {
             $jwtService = new JwtService();
 
@@ -31,6 +37,39 @@ class JwtMiddleware
                 trim($matches[1])
             );
 
+        } catch (UnexpectedValueException $e) {
+            AuthContext::limpar();
+
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Token inválido ou expirado.'
+            ], 401);
+
+            return false;
+
+        } catch (Throwable $e) {
+            error_log(
+                __METHOD__ . ' - Erro na configuração ou validação JWT: '
+                . $e->getMessage()
+            );
+
+            AuthContext::limpar();
+
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Erro interno na autenticação.'
+            ], 500);
+
+            return false;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Consulta do usuário e seus papéis
+        |--------------------------------------------------------------------------
+        */
+
+        try {
             $idUsuario = (int) $payload->sub;
 
             $usuarioModel = new Usuario();
@@ -64,15 +103,16 @@ class JwtMiddleware
 
         } catch (Throwable $e) {
             error_log(
-                __METHOD__ . ': ' . $e->getMessage()
+                __METHOD__ . ' - Erro ao consultar usuário: '
+                . $e->getMessage()
             );
 
             AuthContext::limpar();
 
             Response::json([
                 'sucesso' => false,
-                'mensagem' => 'Token inválido ou expirado.'
-            ], 401);
+                'mensagem' => 'Não foi possível autenticar o usuário.'
+            ], 500);
 
             return false;
         }

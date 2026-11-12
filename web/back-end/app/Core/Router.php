@@ -19,6 +19,11 @@ class Router
         $this->addRoute('PUT', $uri, $action);
     }
 
+    public function patch(string $uri, array|callable $action): void
+    {
+        $this->addRoute('PATCH', $uri, $action);
+    }
+
     public function delete(string $uri, array|callable $action): void
     {
         $this->addRoute('DELETE', $uri, $action);
@@ -91,18 +96,26 @@ class Router
             || str_starts_with($uri, '/api/');
     }
 
+    private function ehApiV1(string $uri): bool
+    {
+        return $uri === '/api/v1'
+            || str_starts_with($uri, '/api/v1/');
+    }
+
     public function dispatch(): void
     {
         AuthContext::limpar();
 
         $uri = parse_url(
-            $_SERVER['REQUEST_URI'],
+            $_SERVER['REQUEST_URI'] ?? '/',
             PHP_URL_PATH
         );
 
-        $method = strtoupper($_SERVER['REQUEST_METHOD']);
+        $method = strtoupper(
+            $_SERVER['REQUEST_METHOD'] ?? 'GET'
+        );
 
-        if (!is_string($uri)) {
+        if (!is_string($uri) || $uri === '') {
             $uri = '/';
         }
 
@@ -112,18 +125,27 @@ class Router
         }
 
         $ehApi = $this->ehApi($uri);
-        $ehApiV1 = str_starts_with($uri, '/api/v1/');
+        $ehApiV1 = $this->ehApiV1($uri);
 
-        // Trata preflight CORS OPTIONS.
+        /*
+        |--------------------------------------------------------------------------
+        | Preflight
+        |--------------------------------------------------------------------------
+        */
+
         if ($method === 'OPTIONS') {
             http_response_code(204);
             exit;
         }
 
-        // 1. Procura a rota para o método solicitado.
+        /*
+        |--------------------------------------------------------------------------
+        | Localização da rota
+        |--------------------------------------------------------------------------
+        */
+
         $rota = $this->encontrarRota($method, $uri);
 
-        // 2. Verifica se o caminho existe com outro método.
         if ($rota === null) {
             $permitidos = $this->metodosPermitidos($uri);
 
@@ -139,7 +161,6 @@ class Router
                 return;
             }
 
-            // 3. Caminho inexistente: 404.
             Response::json([
                 'sucesso' => false,
                 'mensagem' => 'Endpoint não encontrado.'
@@ -147,14 +168,15 @@ class Router
 
             return;
         }
-        
+
         /*
-         * 4. Autenticação e proteção das APIs.
-         */
+        |--------------------------------------------------------------------------
+        | Autenticação e proteção das APIs
+        |--------------------------------------------------------------------------
+        */
 
         if ($ehApiV1) {
-
-            // Login mobile é a única rota pública desta versão.
+            // Rotas públicas da autenticação JWT.
             $rotasPublicasV1 = [
                 '/api/v1/auth/login',
                 '/api/v1/auth/refresh',
@@ -169,10 +191,12 @@ class Router
                     return;
                 }
             }
-
         } else {
+            /*
+             * Web e API legada:
+             * mantêm CSRF e autenticação por sessão.
+             */
 
-            // Proteção CSRF das rotas existentes.
             $rotaSemCsrf = $method === 'POST'
                 && in_array(
                     $uri,
@@ -191,7 +215,6 @@ class Router
                 Csrf::exigirToken();
             }
 
-            // Autenticação por sessão.
             if (
                 !$this->rotaPublica($method, $uri)
                 && empty($_SESSION['usuario']['id'])
@@ -210,8 +233,12 @@ class Router
             }
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Execução da rota
+        |--------------------------------------------------------------------------
+        */
 
-        // 5. Executa a ação da rota.
         [$action, $parametros] = $rota;
 
         if (is_callable($action)) {
@@ -240,7 +267,14 @@ class Router
             $method === 'GET'
             && in_array(
                 $uri,
-                ['/', '/api', '/api/status', '/login', '/logout', '/api/csrf'],
+                [
+                    '/',
+                    '/api',
+                    '/api/status',
+                    '/login',
+                    '/logout',
+                    '/api/csrf'
+                ],
                 true
             )
         );

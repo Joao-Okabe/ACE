@@ -104,20 +104,51 @@ class AuthV1Controller
     {
         $dados = $this->corpoJson();
 
-        try {
-            $refresh = is_array($dados) && is_string($dados['refresh_token'] ?? null)
-                ? $dados['refresh_token']
-                : null;
+        if (
+            !is_array($dados) ||
+            !isset($dados['refresh_token']) ||
+            !is_string($dados['refresh_token'])
+        ) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Informe um refresh_token válido.'
+            ], 400);
 
-            $this->refreshService()->revogar($refresh);
+            return;
+        }
+
+        $refreshToken = trim($dados['refresh_token']);
+
+        if ($refreshToken === '') {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Informe um refresh_token válido.'
+            ], 400);
+
+            return;
+        }
+
+        try {
+            $this->refreshService()->revogar($refreshToken);
 
             Response::json([
                 'sucesso' => true,
-                'mensagem' => 'Sessão encerrada. O refresh token foi revogado.'
+                'mensagem' => 'Sessão encerrada com sucesso.'
             ]);
+
+        } catch (InvalidArgumentException $e) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 400);
+
         } catch (Throwable $e) {
             error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível encerrar a sessão.'], 500);
+
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Não foi possível encerrar a sessão.'
+            ], 500);
         }
     }
 

@@ -18,6 +18,28 @@ loadEnv(dirname(__DIR__) . '/.env');
 
 /*
 |--------------------------------------------------------------------------
+| Identificação da rota
+|--------------------------------------------------------------------------
+*/
+
+$uri = parse_url(
+    $_SERVER['REQUEST_URI'] ?? '/',
+    PHP_URL_PATH
+);
+
+if (!is_string($uri) || $uri === '') {
+    $uri = '/';
+}
+
+if ($uri !== '/') {
+    $uri = rtrim($uri, '/');
+}
+
+$ehApiV1 = $uri === '/api/v1'
+    || str_starts_with($uri, '/api/v1/');
+
+/*
+|--------------------------------------------------------------------------
 | CORS
 |--------------------------------------------------------------------------
 */
@@ -37,8 +59,10 @@ if ($origem !== '') {
     if (in_array($origem, $origensPermitidas, true)) {
         header("Access-Control-Allow-Origin: {$origem}");
 
-        // Necessário para as rotas antigas que utilizam sessão.
-        header('Access-Control-Allow-Credentials: true');
+        // Cookies somente para web e API legada.
+        if (!$ehApiV1) {
+            header('Access-Control-Allow-Credentials: true');
+        }
 
         header(
             'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS'
@@ -67,21 +91,28 @@ if (strtoupper($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
 |--------------------------------------------------------------------------
 | Sessão PHP
 |--------------------------------------------------------------------------
+|
+| A API V1 utiliza exclusivamente autenticação JWT.
+| Web e API legada continuam utilizando sessão.
+|
 */
 
-$params = session_get_cookie_params();
+if (!$ehApiV1) {
+    $params = session_get_cookie_params();
 
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => $params['path'] ?? '/',
-    'domain' => $params['domain'] ?? '',
-    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Lax'
-]);
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => $params['path'] ?? '/',
+        'domain' => $params['domain'] ?? '',
+        'secure' => !empty($_SERVER['HTTPS'])
+            && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 }
 
 /*

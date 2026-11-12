@@ -28,3 +28,8 @@ CREATE INDEX IF NOT EXISTS idx_refresh_token_familia
 
 CREATE INDEX IF NOT EXISTS idx_refresh_token_expira
     ON refresh_token (expira_em);
+
+ALTER TABLE refresh_token
+    ADD COLUMN revogado_em TIMESTAMPTZ,
+    ADD COLUMN usado_em TIMESTAMPTZ,
+    ADD COLUMN substituido_por_hash CHAR(64);

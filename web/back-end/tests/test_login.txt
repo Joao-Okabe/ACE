@@ -1,8 +1,7 @@
-❯ export API="http://localhost:8000" 
-
-  LOGIN_RESPONSE=$(curl -sS -X POST "$API/api/v1/auth/login" \
+LOGIN_RESPONSE=$(curl -sS -X POST "$API/api/v1/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "ferraz@gmail.com",
-    "senha": "12345678"
-  }')
+  -d '{"email":"ferraz@gmail.com","senha":"12345678"}')
+
+REFRESH_ANTIGO=$(echo "$LOGIN_RESPONSE" | jq -r '.refresh_token // empty')
+
+echo "Refresh recebido: $([ -n "$REFRESH_ANTIGO" ] && echo SIM || echo NÃO)"

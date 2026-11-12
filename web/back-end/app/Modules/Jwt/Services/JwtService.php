@@ -5,6 +5,9 @@ use Firebase\JWT\Key;
 
 class JwtService
 {
+    private const TTL_MINIMO = 60;
+    private const TTL_MAXIMO = 900;
+
     private string $secret;
     private string $issuer;
     private string $audience;
@@ -15,7 +18,13 @@ class JwtService
         $this->secret = $_ENV['JWT_SECRET'] ?? '';
         $this->issuer = $_ENV['JWT_ISSUER'] ?? 'ace-api';
         $this->audience = $_ENV['JWT_AUDIENCE'] ?? 'ace-mobile';
-        $this->ttl = max(60, (int) ($_ENV['JWT_TTL'] ?? 900));
+
+        $ttlConfigurado = (int) ($_ENV['JWT_TTL'] ?? 900);
+
+        $this->ttl = min(
+            self::TTL_MAXIMO,
+            max(self::TTL_MINIMO, $ttlConfigurado)
+        );
 
         if (strlen($this->secret) < 64) {
             throw new RuntimeException(
@@ -72,7 +81,6 @@ class JwtService
 
         $agora = time();
 
-        // Verifica a existência dos claims obrigatórios.
         $claimsObrigatorios = [
             'iss',
             'aud',
@@ -91,7 +99,6 @@ class JwtService
             }
         }
 
-        // Verifica emissor e audiência.
         if (
             !is_string($dados->iss) ||
             $dados->iss !== $this->issuer ||
@@ -103,7 +110,6 @@ class JwtService
             );
         }
 
-        // Verifica os tipos dos timestamps.
         if (
             !is_int($dados->iat) ||
             !is_int($dados->nbf) ||
@@ -114,7 +120,6 @@ class JwtService
             );
         }
 
-        // Verifica a validade temporal.
         if (
             $dados->iat > $agora ||
             $dados->nbf > $agora ||
@@ -126,7 +131,16 @@ class JwtService
             );
         }
 
-        // Verifica o identificador do usuário.
+        // Impede access tokens com duração superior a 15 minutos,
+        // inclusive tokens emitidos antes desta alteração.
+        if (
+            ($dados->exp - $dados->iat) > self::TTL_MAXIMO
+        ) {
+            throw new UnexpectedValueException(
+                'Duração máxima do token excedida.'
+            );
+        }
+
         if (
             !is_string($dados->sub) ||
             !ctype_digit($dados->sub) ||
@@ -137,7 +151,6 @@ class JwtService
             );
         }
 
-        // Verifica o identificador único do token.
         if (
             !is_string($dados->jti) ||
             !preg_match('/^[a-f0-9]{32}$/', $dados->jti)
