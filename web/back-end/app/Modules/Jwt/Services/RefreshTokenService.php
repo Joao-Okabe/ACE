@@ -121,6 +121,14 @@ class RefreshTokenService
                 );
             }
 
+            // A refresh nunca reativa uma conta que foi desativada após o login.
+            $usuario = (new Usuario())->buscar((int) $registro['cd_usuario']);
+            if ($usuario === null) {
+                $this->model->revogarFamilia($registro['familia']);
+                $this->pdo->commit();
+                throw new DomainException('Refresh token inválido ou expirado.');
+            }
+
             /*
              * 6. Gera e registra o novo refresh token.
              */

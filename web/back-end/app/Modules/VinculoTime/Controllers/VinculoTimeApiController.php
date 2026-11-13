@@ -486,22 +486,18 @@ class VinculoTimeApiController
 
         $dados = $this->lerCorpo();
 
-        // Aceita tanto uma lista JSON quanto um array de checkbox
-        // de formulário (titulares[]).
         $titulares = $dados['titulares'] ?? [];
 
-        if (!is_array($titulares)) {
+        if (!is_array($titulares) || !array_is_list($titulares)) {
             Response::json([
                 'sucesso' => false,
-                'mensagem' => 'A lista de titulares é inválida.'
+                'mensagem' => 'titulares deve ser uma lista de IDs, por exemplo [12, 15].'
             ], 400);
         }
 
-        $idsTitulares = array_map('intval', array_keys($titulares));
-
         try {
             $this->service()->exigirPermissaoGerenciarTime($idTime);
-            $this->service()->salvarEscalacao($idTime, $idsTitulares);
+            $this->service()->salvarEscalacao($idTime, $titulares);
 
             Response::json([
                 'sucesso' => true,

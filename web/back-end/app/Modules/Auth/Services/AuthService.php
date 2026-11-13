@@ -38,7 +38,7 @@ class AuthService
         // Bloqueia usuários inativos antes de validar a senha,
         // cobrindo também o caso de senha nula/vazia no banco.
         if (!isset($usuario['ativo']) || (bool) $usuario['ativo'] !== true) {
-            throw new DomainException('Usuário inativo. Contate o administrador.');
+            throw new DomainException($mensagemCredenciais);
         }
 
         if (

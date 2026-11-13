@@ -18,6 +18,7 @@ class VinculoTimeService
         int $idTime
     )
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         try {
             $this->pdo->beginTransaction();
 
@@ -97,6 +98,7 @@ class VinculoTimeService
         bool $capitao = false
     )
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idUsuario <= 0) {
             throw new Exception('Aluno inválido.');
         }
@@ -132,6 +134,7 @@ class VinculoTimeService
 
     public function removerTimeIntegrante(int $idUsuario, int $idTime): void
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idUsuario <= 0 || $idTime <= 0) {
             throw new Exception('Integrante ou time inválido.');
         }
@@ -151,6 +154,7 @@ class VinculoTimeService
 
     public function tornarCapitao(int $idUsuario, int $idTime): void
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idUsuario <= 0 || $idTime <= 0) {
             throw new Exception('Integrante ou time inválido.');
         }
@@ -169,6 +173,7 @@ class VinculoTimeService
 
     public function removerCapitao(int $idUsuario, int $idTime): void
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idUsuario <= 0 || $idTime <= 0) {
             throw new Exception('Integrante ou time inválido.');
         }
@@ -197,6 +202,7 @@ class VinculoTimeService
 
     public function vincularTecnicoTime (int $idUsuario, int $idTime) 
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idUsuario <= 0) {
             throw new Exception('Usuário inválido.');
         }
@@ -223,12 +229,25 @@ class VinculoTimeService
 
     public function salvarEscalacao(int $idTime, array $idUsuariosTitulares): void
     {
+        $this->exigirPermissaoGerenciarTime($idTime);
         if ($idTime <= 0) {
             throw new Exception('Time inválido.');
         }
 
         if (count($idUsuariosTitulares) > 5) {
             throw new Exception('Apenas 5 jogadores podem ser titulares.');
+        }
+
+        $idsValidados = [];
+        foreach ($idUsuariosTitulares as $idUsuario) {
+            if (!(is_int($idUsuario) || (is_string($idUsuario) && ctype_digit($idUsuario)))) {
+                throw new InvalidArgumentException('Cada titular deve ser um ID inteiro positivo.');
+            }
+            $idUsuario = (int) $idUsuario;
+            if ($idUsuario <= 0 || isset($idsValidados[$idUsuario])) {
+                throw new InvalidArgumentException('A lista de titulares contém IDs inválidos ou repetidos.');
+            }
+            $idsValidados[$idUsuario] = true;
         }
 
         try {
@@ -242,11 +261,7 @@ class VinculoTimeService
             }
 
             $titulares = [];
-            foreach ($idUsuariosTitulares as $idUsuario) {
-                $idUsuario = (int) $idUsuario;
-                if ($idUsuario <= 0) {
-                    continue;
-                }
+            foreach (array_keys($idsValidados) as $idUsuario) {
                 if (!isset($mapa[$idUsuario])) {
                     throw new Exception('Integrante não pertence a este time.');
                 }
@@ -269,12 +284,4 @@ class VinculoTimeService
         }
     }
 
-    public function tornarTitular (int $idIntegrante) 
-    {
-        if ($idIntegrante <= 0) {
-            throw new Exception('Integrante inválido.');
-        }
-
-        $this->vinculoTimeModel->inserirEscalacao($idIntegrante, true);
-    }
 }
