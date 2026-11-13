@@ -8,7 +8,6 @@ class Esporte extends Model
             SELECT * FROM esporte
         "); 
 
-        $esporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $esporte?: null;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -105,6 +105,14 @@ $router->delete(
     '/api/escolas/{id}',
     [EscolaApiController::class, 'destroy']
 );
+
+/*
+    Rotas de esportes
+*/
+$router->get(
+    '/api/esportes',
+    [EsporteApiController::class, 'index']
+);
 /*
     Rotas de times
     1. listar todos
