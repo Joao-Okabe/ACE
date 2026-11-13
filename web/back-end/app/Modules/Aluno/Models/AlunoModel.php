@@ -49,6 +49,35 @@ class Aluno extends Model
         return $stmt->fetchColumn() !== false;
     }
 
+    public function buscarPorUsuario(int $idUsuario): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT cd_aluno, ativo FROM aluno WHERE cd_usuario = :usuario');
+        $stmt->execute([':usuario' => $idUsuario]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function reativar(int $id, array $dados): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE aluno SET
+            ra = :ra,
+            data_nascimento = :data_nascimento,
+            sexo = :sexo,
+            telefone = :telefone,
+            cep = :cep,
+            ativo = TRUE,
+            atualizado_em = CURRENT_TIMESTAMP
+            WHERE cd_aluno = :id");
+        $stmt->execute([
+            ':ra' => $dados['ra'] ?? null,
+            ':data_nascimento' => $dados['data_nascimento'] ?? null,
+            ':sexo' => $dados['sexo'] ?? null,
+            ':telefone' => $dados['telefone'] ?? null,
+            ':cep' => $dados['cep'] ?? null,
+            ':id' => $id,
+        ]);
+    }
+
     // Atualizar Aluno
     public function atualizar(int $id, array $dados): void
     {
@@ -76,6 +105,18 @@ class Aluno extends Model
     // v = vinculoapp/Models/AlunoModel.php
     public function listar(array $filtros = []): array
     {
+        $filtroSubqueryEscola = '';
+        if (isset($filtros['escolas']) && is_array($filtros['escolas'])) {
+            $idsEscola = array_values(array_unique(array_filter(
+                array_map('intval', $filtros['escolas']),
+                static fn (int $id): bool => $id > 0
+            )));
+            if ($idsEscola === []) {
+                return [];
+            }
+            $filtroSubqueryEscola = ' AND up.cd_escola IN (' . implode(',', $idsEscola) . ')';
+        }
+
         $sql = 
         "SELECT
             a.*,
@@ -92,6 +133,7 @@ class Aluno extends Model
                 WHERE up.cd_usuario = a.cd_usuario
                     AND p.nm_papel = 'ALU'
                     AND up.ativo = TRUE
+                    {$filtroSubqueryEscola}
                 ORDER BY up.criado_em DESC
                 LIMIT 1
             ) AS escola,
@@ -103,12 +145,19 @@ class Aluno extends Model
                 WHERE up.cd_usuario = a.cd_usuario
                     AND p.nm_papel = 'ALU'
                     AND up.ativo = TRUE
+                    {$filtroSubqueryEscola}
                 ORDER BY up.criado_em DESC
                 LIMIT 1
             ) AS cd_escola
         FROM aluno a
         INNER JOIN usuario u
-            ON u.cd_usuario = a.cd_usuario";
+            ON u.cd_usuario = a.cd_usuario
+        WHERE a.ativo = TRUE AND u.ativo = TRUE
+          AND EXISTS (
+            SELECT 1 FROM vinculo_usuario_escola vue
+            INNER JOIN papel p ON p.cd_papel = vue.cd_papel AND p.nm_papel = 'ALU'
+            WHERE vue.cd_usuario = a.cd_usuario AND vue.ativo = TRUE
+          )";
 
         $filtrosSql = $this->filtro->filtrosAluno($filtros);
 
@@ -140,14 +189,23 @@ class Aluno extends Model
         }
 
         if (!empty($filtrosSql['onde'])) {
-            $sql .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
+            $sql .= ' AND ' . implode(' AND ', $filtrosSql['onde']);
         }
 
         $ordem = $this->filtro->ordem($filtros);
         $sql .= " ORDER BY a.cd_aluno {$ordem}";
 
+        $limite = max(1, min(100, (int) ($filtros['limite'] ?? 50)));
+        $offset = max(0, (int) ($filtros['offset'] ?? 0));
+        $sql .= ' LIMIT :limite OFFSET :offset';
+
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($filtrosSql['parametros']);
+        foreach ($filtrosSql['parametros'] as $nome => $valor) {
+            $stmt->bindValue($nome, $valor, is_int($valor) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -174,7 +232,7 @@ class Aluno extends Model
             ) AS escola
         FROM aluno a
         INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario
-        WHERE a.cd_aluno = :id");
+        WHERE a.cd_aluno = :id AND a.ativo = TRUE AND u.ativo = TRUE");
 
         $stmt->execute([
             ':id' => $id
@@ -197,28 +255,53 @@ class Aluno extends Model
 
     public function obterEscolaDoAluno(int $idUsuario): ?int
     {
+        $escolas = $this->listarEscolasAtivasDoAluno($idUsuario);
+        return count($escolas) === 1 ? $escolas[0] : null;
+    }
+
+    public function listarEscolasAtivasDoAluno(int $idUsuario): array
+    {
+        return array_map('intval', array_column($this->listarEscolasAtivasDoAlunoComNome($idUsuario), 'cd_escola'));
+    }
+
+    public function listarEscolasAtivasDoAlunoComNome(int $idUsuario): array
+    {
         $stmt = $this->pdo->prepare(
-            "SELECT cd_escola
-            FROM vinculo_usuario_escola
-            INNER JOIN papel p ON p.cd_papel = vinculo_usuario_escola.cd_papel
-            WHERE cd_usuario = :cd_usuario
+            "SELECT DISTINCT vue.cd_escola, e.nm_escola
+            FROM vinculo_usuario_escola vue
+            INNER JOIN escola e ON e.cd_escola = vue.cd_escola AND e.ativa = TRUE
+            INNER JOIN papel p ON p.cd_papel = vue.cd_papel
+            WHERE vue.cd_usuario = :cd_usuario
             AND p.nm_papel = 'ALU'
-            AND ativo = TRUE
-            ORDER BY criado_em DESC
-            LIMIT 1"
+            AND vue.ativo = TRUE
+            ORDER BY vue.cd_escola"
         );
 
         $stmt->execute([
             ':cd_usuario' => $idUsuario
         ]);
 
-        $idEscola = $stmt->fetchColumn();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-        if ($idEscola === false) {
-            return null;
+    public function desativar(int $id): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE aluno SET ativo = FALSE WHERE cd_aluno = :id');
+        $stmt->execute([':id' => $id]);
+        if ($stmt->rowCount() !== 1) {
+            throw new RuntimeException('Aluno não encontrado.');
         }
+    }
 
-        return (int) $idEscola ?: null;
+    public function possuiAlunoAtivoNaEscola(int $idUsuario, int $idEscola): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT EXISTS (
+            SELECT 1 FROM vinculo_usuario_escola vue
+            INNER JOIN papel p ON p.cd_papel = vue.cd_papel AND p.nm_papel = 'ALU'
+            WHERE vue.cd_usuario = :usuario AND vue.cd_escola = :escola AND vue.ativo = TRUE
+        )");
+        $stmt->execute([':usuario' => $idUsuario, ':escola' => $idEscola]);
+        return (bool) $stmt->fetchColumn();
     }
 
 }

@@ -112,18 +112,61 @@ class Usuario extends Model
         return $usuario ?: null;
     }
 
-    public function listarDisponiveisParaAluno(): array
+    public function listarDisponiveisParaAluno(array $escolas = []): array
     {
-        $stmt = $this->pdo->query(
-            "SELECT u.cd_usuario, u.nm_usuario, u.email
+        $sql = "SELECT DISTINCT u.cd_usuario, u.nm_usuario, u.email
             FROM usuario u
-            LEFT JOIN aluno a ON a.cd_usuario = u.cd_usuario
-            WHERE u.ativo = TRUE
-              AND a.cd_usuario IS NULL
-            ORDER BY u.nm_usuario"
-        );
+            WHERE u.ativo = TRUE";
+        $parametros = [];
+        if ($escolas !== []) {
+            $escolas = array_values(array_unique(array_filter(array_map('intval', $escolas), static fn (int $id): bool => $id > 0)));
+            if ($escolas === []) {
+                return [];
+            }
+            $placeholders = [];
+            foreach ($escolas as $i => $idEscola) {
+                $placeholder = ':escola_' . $i;
+                $placeholders[] = $placeholder;
+                $parametros[$placeholder] = $idEscola;
+            }
+            $placeholdersComVinculoAluno = [];
+            foreach ($escolas as $i => $idEscola) {
+                $placeholder = ':escola_aluno_' . $i;
+                $placeholdersComVinculoAluno[] = $placeholder;
+                $parametros[$placeholder] = $idEscola;
+            }
+            $sql .= ' AND EXISTS (
+                SELECT 1 FROM vinculo_usuario_escola vue
+                WHERE vue.cd_usuario = u.cd_usuario
+                  AND vue.cd_escola IN (' . implode(',', $placeholdersComVinculoAluno) . ')
+                  AND vue.ativo = TRUE
+            ) AND NOT EXISTS (
+                SELECT 1 FROM vinculo_usuario_escola vue
+                INNER JOIN papel p ON p.cd_papel = vue.cd_papel AND p.nm_papel = \'ALU\'
+                WHERE vue.cd_usuario = u.cd_usuario
+                  AND vue.cd_escola IN (' . implode(',', $placeholders) . ')
+                  AND vue.ativo = TRUE
+            )';
+        } else {
+            $sql .= " AND NOT EXISTS (
+                SELECT 1 FROM aluno a
+                INNER JOIN vinculo_usuario_escola vue ON vue.cd_usuario = a.cd_usuario AND vue.ativo = TRUE
+                INNER JOIN papel p ON p.cd_papel = vue.cd_papel AND p.nm_papel = 'ALU'
+                WHERE a.cd_usuario = u.cd_usuario AND a.ativo = TRUE
+            )";
+        }
+        $sql .= ' ORDER BY u.nm_usuario';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parametros);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function possuiVinculoEscolarAtivo(int $idUsuario, int $idEscola): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT 1 FROM vinculo_usuario_escola WHERE cd_usuario = :usuario AND cd_escola = :escola AND ativo = TRUE LIMIT 1');
+        $stmt->execute([':usuario' => $idUsuario, ':escola' => $idEscola]);
+        return $stmt->fetchColumn() !== false;
     }
 
     //Atualiza Senha

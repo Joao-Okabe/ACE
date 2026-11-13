@@ -67,6 +67,29 @@ class Competicao extends Model
         return $competicao ?: null;
     }
 
+    public function usuarioPodeVisualizar(int $idUsuario, int $idCompeticao): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT EXISTS (
+            SELECT 1 FROM competicao c
+            WHERE c.cd_competicao = :competicao
+              AND (
+                c.visibilidade = 'PUBLICA'
+                OR c.cd_criador = :criador
+                OR EXISTS (
+                    SELECT 1 FROM participante_competicao pc
+                    WHERE pc.cd_competicao = c.cd_competicao
+                      AND pc.cd_usuario = :participante
+                )
+              )
+        )");
+        $stmt->execute([
+            ':competicao' => $idCompeticao,
+            ':criador' => $idUsuario,
+            ':participante' => $idUsuario,
+        ]);
+        return (bool) $stmt->fetchColumn();
+    }
+
     //Lista COMPETIÇÕES
     public function listar(array $filtros): array
     {
@@ -83,6 +106,20 @@ class Competicao extends Model
             FROM competicao c";
 
         $filtrosSql = $this->filtro->filtrosCompeticao($filtros);
+
+        if (isset($filtros['usuario'])) {
+            $filtrosSql['onde'][] = "(
+                c.visibilidade = 'PUBLICA'
+                OR c.cd_criador = :usuario_visibilidade
+                OR EXISTS (
+                    SELECT 1 FROM participante_competicao pc
+                    WHERE pc.cd_competicao = c.cd_competicao
+                      AND pc.cd_usuario = :usuario_participante
+                )
+            )";
+            $filtrosSql['parametros'][':usuario_visibilidade'] = (int) $filtros['usuario'];
+            $filtrosSql['parametros'][':usuario_participante'] = (int) $filtros['usuario'];
+        }
 
         if (!empty($filtrosSql['onde'])) {
             $stmt .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);

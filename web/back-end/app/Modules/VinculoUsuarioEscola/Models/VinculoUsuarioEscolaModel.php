@@ -49,6 +49,34 @@ class VinculoUsuarioEscola extends Model
         return $stmt->fetchColumn() !== false;
     }
 
+    public function desativarPapelAluno(int $idUsuario): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE vinculo_usuario_escola vue
+            SET ativo = FALSE
+            FROM papel p
+            WHERE p.cd_papel = vue.cd_papel
+              AND p.nm_papel = 'ALU'
+              AND vue.cd_usuario = :usuario
+              AND vue.ativo = TRUE");
+        $stmt->execute([':usuario' => $idUsuario]);
+    }
+
+    public function desativarPapelAlunoNaEscola(int $idUsuario, int $idEscola): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE vinculo_usuario_escola vue
+            SET ativo = FALSE
+            FROM papel p
+            WHERE p.cd_papel = vue.cd_papel
+              AND p.nm_papel = 'ALU'
+              AND vue.cd_usuario = :usuario
+              AND vue.cd_escola = :escola
+              AND vue.ativo = TRUE");
+        $stmt->execute([':usuario' => $idUsuario, ':escola' => $idEscola]);
+        if ($stmt->rowCount() !== 1) {
+            throw new RuntimeException('Vínculo de aluno não encontrado nesta escola.');
+        }
+    }
+
     public function listarVinculo(int $idUsuario): array
     {
         $stmt = $this->pdo->prepare("
@@ -108,6 +136,7 @@ class VinculoUsuarioEscola extends Model
         $stmt = $this->pdo->prepare(
             "SELECT DISTINCT v.cd_escola
             FROM vinculo_usuario_escola v
+            INNER JOIN escola e ON e.cd_escola = v.cd_escola AND e.ativa = TRUE
             INNER JOIN papel p ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = ?
               AND p.nm_papel IN ($placeholders)
@@ -239,8 +268,14 @@ class VinculoUsuarioEscola extends Model
 
     public function escolaGerenciavelPorUsuario(int $idUsuario): ?int
     {
+        $escolas = $this->escolasGerenciaveisPorUsuario($idUsuario);
+        return count($escolas) === 1 ? $escolas[0] : null;
+    }
+
+    public function escolasGerenciaveisPorUsuario(int $idUsuario): array
+    {
         $stmt = $this->pdo->prepare(
-            "SELECT escola.cd_escola
+            "SELECT DISTINCT escola.cd_escola
             FROM (
                 SELECT vue.cd_escola
                 FROM vinculo_usuario_escola vue
@@ -263,7 +298,7 @@ class VinculoUsuarioEscola extends Model
                 WHERE r.cd_usuario = :usuario_responsavel
                   AND vte.ativo = TRUE
             ) escola
-            LIMIT 1"
+            ORDER BY escola.cd_escola"
         );
 
         $stmt->execute([
@@ -272,7 +307,6 @@ class VinculoUsuarioEscola extends Model
             ':usuario_responsavel' => $idUsuario,
         ]);
 
-        $escola = $stmt->fetchColumn();
-        return $escola === false ? null : (int) $escola;
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 }

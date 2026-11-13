@@ -57,12 +57,14 @@ class Permissoes
     {
         $alunoService = new AlunoService();
 
-        $idEscola = $alunoService->obterEscolaDoAluno($id);
-
-        if (
-            $idEscola === null ||
-            !self::podeGerenciarEscola($idEscola)
-        ) {
+        $escolasAluno = $alunoService->obterEscolasDoAluno($id);
+        $idUsuario = AuthContext::id();
+        $escolasGerenciaveis = [];
+        if ($idUsuario !== null && self::temPapel('DIR')) {
+            $vinculoModel = new VinculoUsuarioEscola();
+            $escolasGerenciaveis = $vinculoModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        }
+        if (!self::temPapel('ADM') && array_intersect($escolasAluno, $escolasGerenciaveis) === []) {
             throw new Exception(
                 'Você não tem permissão para gerenciar este aluno.'
             );

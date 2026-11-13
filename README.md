@@ -238,6 +238,10 @@ As rotas estão declaradas em `web/back-end/routes/api.php`. Os recursos encontr
 | `/api/auth/logout` | POST para encerramento de sessão |
 | `/api/csrf` | GET para obter token CSRF |
 | `/api/times/{id}/integrantes` | POST para vincular e DELETE para remover integrante |
+
+### API V1 para clientes externos
+
+As rotas `/api/v1/auth/login`, `/api/v1/auth/me`, `/api/v1/auth/refresh` e `/api/v1/auth/logout` usam Bearer JWT, sem sessão PHP. O contrato atualizado está em [`web/back-end/openapi.yaml`](web/back-end/openapi.yaml). O cliente deve agrupar renovações simultâneas em uma única chamada (*single-flight*), pois um refresh token consumido não pode ser reutilizado.
 | `/api/times/{id}/integrantes/{idUsuario}/capitao` | PUT para definir capitão e DELETE para remover a condição |
 | `/api/times/{id}/responsaveis` | POST para vincular responsável |
 | `/api/times/{id}/tecnicos` | POST para vincular técnico |

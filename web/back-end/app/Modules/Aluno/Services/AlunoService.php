@@ -76,9 +76,6 @@ class AlunoService
                 throw new Exception('Usuário selecionado não encontrado.');
             }
 
-            if ($this->alunoModel->existePorUsuario($idUsuarioExistente)) {
-                throw new Exception('Este usuário já está cadastrado como aluno.');
-            }
             $this->alunoValidator->validarRa($dados);
         } else {
             $this->alunoValidator->validarCadastroAluno($dados);
@@ -116,6 +113,13 @@ class AlunoService
                 throw new Exception('Você não tem permissão para cadastrar aluno nesta escola.');
             }
 
+            if (
+                $idUsuarioExistente > 0
+                && !$this->usuarioModel->possuiVinculoEscolarAtivo($idUsuarioExistente, $idEscola)
+            ) {
+                throw new Exception('O usuário selecionado não possui vínculo ativo com esta escola.');
+            }
+
             $idUsuario = $idUsuarioExistente > 0
                 ? $idUsuarioExistente
                 : $this->usuarioModel->cadastrar([
@@ -124,6 +128,13 @@ class AlunoService
                     'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
                     'foto_perfil' => $caminhoPublicoFoto
                 ]);
+
+            if (
+                $idUsuarioExistente > 0
+                && $this->alunoModel->possuiAlunoAtivoNaEscola($idUsuario, $idEscola)
+            ) {
+                throw new Exception('Este usuário já está vinculado como aluno nesta escola.');
+            }
 
             if (
                 $idUsuarioExistente > 0
@@ -143,7 +154,7 @@ class AlunoService
                 $papelAlunoId
             );
 
-            $this->alunoModel->cadastrar([
+            $dadosAluno = [
                 'usuario' => $idUsuario,
                 'escola' => $dados['escola'] ?? null,
                 'nome' => $dados['nome'],
@@ -152,7 +163,13 @@ class AlunoService
                 'sexo' => $dados['sexo'] ?? null,
                 'telefone' => $this->normalizadorCampo->normalizarCampoNulo($dados['telefone'] ?? null),
                 'cep' => $this->normalizadorCampo->normalizarCampoNulo($dados['cep'] ?? null),
-            ]);
+            ];
+            $alunoExistente = $this->alunoModel->buscarPorUsuario($idUsuario);
+            if ($alunoExistente !== null) {
+                $this->alunoModel->reativar((int) $alunoExistente['cd_aluno'], $dadosAluno);
+            } else {
+                $this->alunoModel->cadastrar($dadosAluno);
+            }
 
             $this->pdo->commit();
 
@@ -172,13 +189,39 @@ class AlunoService
     // Lista todos os alunos
     public function listar(array $filtros = []): array
     {
+        if (Permissoes::temPapel('ADM')) {
+            return $this->alunoModel->listar($filtros);
+        }
+        if (!Permissoes::temPapel('DIR')) {
+            throw new DomainException('Você não tem permissão para listar alunos.');
+        }
+        $idUsuario = AuthContext::id();
+        $escolasAutorizadas = $idUsuario === null ? [] : $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        if ($escolasAutorizadas === []) {
+            return [];
+        }
+        if (isset($filtros['escolas']) && is_array($filtros['escolas'])) {
+            $escolasAutorizadas = array_values(array_intersect($escolasAutorizadas, array_map('intval', $filtros['escolas'])));
+        }
+        if ($escolasAutorizadas === []) {
+            return [];
+        }
+        $filtros['escolas'] = $escolasAutorizadas;
         return $this->alunoModel->listar($filtros);
     }
 
     // Lista usuários disponiveis para se tornarem alunos
     public function listarUsuariosDisponiveis(): array
     {
-        return $this->usuarioModel->listarDisponiveisParaAluno();
+        if (Permissoes::temPapel('ADM')) {
+            return $this->usuarioModel->listarDisponiveisParaAluno();
+        }
+        if (!Permissoes::temPapel('DIR')) {
+            throw new DomainException('Você não tem permissão para listar usuários disponíveis.');
+        }
+        $idUsuario = AuthContext::id();
+        $escolas = $idUsuario === null ? [] : $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        return $escolas === [] ? [] : $this->usuarioModel->listarDisponiveisParaAluno($escolas);
     }
 
     // Busca alunos com base no seu cd
@@ -188,6 +231,21 @@ class AlunoService
 
         if ($aluno === null) {
             throw new Exception("Aluno(a) não encontrado(a).");
+        }
+
+        $this->exigirAcessoAoAluno($aluno);
+
+        if (!Permissoes::temPapel('ADM')) {
+            $idUsuario = AuthContext::id() ?? 0;
+            $escolasDiretor = $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+            $escolasAluno = $this->alunoModel->listarEscolasAtivasDoAlunoComNome((int) $aluno['cd_usuario']);
+            $escolasVisiveis = array_values(array_filter(
+                $escolasAluno,
+                static fn (array $escola): bool => in_array((int) $escola['cd_escola'], $escolasDiretor, true)
+            ));
+            $aluno['escolas_vinculadas'] = $escolasVisiveis;
+            $aluno['cd_escola'] = count($escolasVisiveis) === 1 ? (int) $escolasVisiveis[0]['cd_escola'] : null;
+            $aluno['escola'] = count($escolasVisiveis) === 1 ? $escolasVisiveis[0]['nm_escola'] : null;
         }
 
         return $aluno;
@@ -202,15 +260,7 @@ class AlunoService
             throw new Exception('Aluno não encontrado.');
         }
 
-        $idEscola = $this->obterEscolaDoAluno($id);
-        if (
-            $idEscola === null
-            || !Permissoes::podeGerenciarEscola($idEscola)
-        ) {
-            throw new Exception(
-                'Você não tem permissão para editar este aluno.'
-            );
-        }
+        $this->exigirAcessoAoAluno($aluno);
 
         $caminhoPublicoFoto = null;
         $fotoAnterior = (string) ($aluno['foto_perfil'] ?? '');
@@ -249,10 +299,61 @@ class AlunoService
     }
 
     //Remove Aluno
-    public function remover(int $id): void
+    public function remover(int $id, ?int $idEscola = null): void
     {
-        $this->permissoes->exigirPermissaoGerenciarAluno($id);
-        $this->alunoModel->remover($id);
+        $aluno = $this->alunoModel->buscar($id);
+        if ($aluno === null) {
+            throw new Exception('Aluno não encontrado.');
+        }
+
+        $idUsuario = AuthContext::id();
+        if ($idUsuario === null) {
+            throw new DomainException('Autenticação necessária.');
+        }
+        if (Permissoes::temPapel('ADM')) {
+            try {
+                $this->pdo->beginTransaction();
+                $this->alunoModel->desativar($id);
+                $this->vinculoEscolaUsuarioModel->desativarPapelAluno((int) $aluno['cd_usuario']);
+                $this->pdo->commit();
+            } catch (Throwable $e) {
+                if ($this->pdo->inTransaction()) {
+                    $this->pdo->rollBack();
+                }
+                throw $e;
+            }
+            return;
+        }
+        if (!Permissoes::temPapel('DIR')) {
+            throw new DomainException('Você não tem permissão para remover este aluno.');
+        }
+
+        $escolasDiretor = $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        $escolasAluno = $this->alunoModel->listarEscolasAtivasDoAluno((int) $aluno['cd_usuario']);
+        $escolasGerenciadasDoAluno = array_values(array_intersect($escolasDiretor, $escolasAluno));
+        if ($escolasGerenciadasDoAluno === []) {
+            throw new DomainException('Você não tem permissão para remover este aluno.');
+        }
+        if ($idEscola === null) {
+            if (count($escolasGerenciadasDoAluno) !== 1) {
+                throw new InvalidArgumentException('Informe escola quando o aluno possuir mais de um vínculo escolar autorizado.');
+            }
+            $idEscola = $escolasGerenciadasDoAluno[0];
+        }
+        if (!in_array($idEscola, $escolasGerenciadasDoAluno, true)) {
+            throw new DomainException('Você não tem permissão para remover este aluno desta escola.');
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+            $this->vinculoEscolaUsuarioModel->desativarPapelAlunoNaEscola((int) $aluno['cd_usuario'], $idEscola);
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
     }
 
     // Retorna o id da escola em que o aluno está vinculado (vínculo ativo), ou null
@@ -271,6 +372,31 @@ class AlunoService
         }
 
         return $this->alunoModel->obterEscolaDoAluno($cdUsuario);
+    }
+
+    public function obterEscolasDoAluno(int $idAluno): array
+    {
+        $aluno = $this->alunoModel->buscar($idAluno);
+        if ($aluno === null) {
+            return [];
+        }
+        return $this->alunoModel->listarEscolasAtivasDoAluno((int) $aluno['cd_usuario']);
+    }
+
+    private function exigirAcessoAoAluno(array $aluno): void
+    {
+        if (Permissoes::temPapel('ADM')) {
+            return;
+        }
+        if (!Permissoes::temPapel('DIR')) {
+            throw new DomainException('Você não tem permissão para acessar este aluno.');
+        }
+        $idUsuario = AuthContext::id();
+        $escolasDiretor = $idUsuario === null ? [] : $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        $escolasAluno = $this->alunoModel->listarEscolasAtivasDoAluno((int) $aluno['cd_usuario']);
+        if (array_intersect($escolasDiretor, $escolasAluno) === []) {
+            throw new DomainException('Você não tem permissão para acessar este aluno.');
+        }
     }
 
 
@@ -322,7 +448,7 @@ class AlunoService
             throw new Exception('Não foi possível criar a pasta de uploads.');
         }
 
-        $nome = uniqid('IMG_', true) . '.' . $tiposPermitidos[$tipo];
+        $nome = 'IMG_' . bin2hex(random_bytes(16)) . '.' . $tiposPermitidos[$tipo];
         $destino = $pasta . DIRECTORY_SEPARATOR . $nome;
 
         if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {

@@ -1,8 +1,5 @@
 <?php
-/*
-    autenticar();
-        ->  realiza login e salva os dados em $_SESSION
-*/
+/* Valida as credenciais e devolve a identidade; quem chama decide o transporte. */
 class AuthService
 {
     private Auth $authModel;

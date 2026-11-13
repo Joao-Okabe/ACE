@@ -28,7 +28,12 @@ class AlunoApiController
         }
 
         try {
-            $filtros = [];
+            $filtros = [
+                'nome' => isset($_GET['nome']) ? trim((string) $_GET['nome']) : '',
+                'ordem' => isset($_GET['ordem']) ? strtoupper((string) $_GET['ordem']) : 'ASC',
+                'limite' => isset($_GET['limite']) ? (int) $_GET['limite'] : 50,
+                'offset' => isset($_GET['offset']) ? (int) $_GET['offset'] : 0,
+            ];
 
             // Administradores podem consultar todos os alunos.
             if (Permissoes::temPapel('ADM')) {
@@ -82,30 +87,6 @@ class AlunoApiController
         try {
             $service = $this->service();
 
-            // O administrador pode consultar qualquer aluno.
-            if (!Permissoes::temPapel('ADM')) {
-                // Apenas diretores podem consultar alunos
-                // e somente quando pertencem à sua escola.
-                if (!Permissoes::temPapel('DIR')) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Você não tem permissão para consultar este aluno.'
-                    ], 403);
-                }
-
-                $idEscola = $service->obterEscolaDoAluno($id);
-
-                if (
-                    $idEscola === null
-                    || !Permissoes::podeGerenciarEscola($idEscola)
-                ) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Você não tem permissão para consultar este aluno.'
-                    ], 403);
-                }
-            }
-
             $aluno = $service->buscar($id);
 
             Response::json([
@@ -113,6 +94,12 @@ class AlunoApiController
                 'dados' => $aluno
             ]);
         } catch (Throwable $e) {
+            if ($e instanceof DomainException) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Aluno não encontrado.'
+                ], 404);
+            }
             if ($e->getMessage() === 'Aluno(a) não encontrado(a).') {
                 Response::json([
                     'sucesso' => false,
@@ -309,7 +296,8 @@ class AlunoApiController
         }
 
         try {
-            $this->service()->remover($id);
+            $idEscola = isset($_GET['escola']) ? (int) $_GET['escola'] : null;
+            $this->service()->remover($id, $idEscola);
 
             Response::json([
                 'sucesso' => true,
@@ -317,6 +305,13 @@ class AlunoApiController
             ]);
         } catch (Throwable $e) {
             $mensagem = $e->getMessage();
+
+            if ($e instanceof InvalidArgumentException) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => $mensagem
+                ], 422);
+            }
 
             if ($mensagem === 'Aluno não encontrado.') {
                 Response::json([

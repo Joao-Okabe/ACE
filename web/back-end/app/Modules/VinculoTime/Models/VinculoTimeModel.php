@@ -7,6 +7,11 @@ class VinculoTime extends Model{
         int $idTime
     )
     {
+        $stmt = $this->pdo->prepare('SELECT 1 FROM responsavel WHERE cd_responsavel = :responsavel AND ativo = TRUE');
+        $stmt->execute([':responsavel' => $idResponsavel]);
+        if (!$stmt->fetchColumn()) {
+            throw new InvalidArgumentException('Responsável inexistente ou inativo.');
+        }
         $stmt = $this->pdo->prepare(
             "INSERT INTO vinculo_time_responsavel(
                 cd_responsavel,
@@ -106,6 +111,22 @@ class VinculoTime extends Model{
         bool $capitao = false
     )
     {
+        if ($numeroCamisa !== null && $numeroCamisa <= 0) {
+            throw new InvalidArgumentException('Número de camisa inválido.');
+        }
+        if (!$this->integranteElegivelParaTime($idUsuario, $idTime)) {
+            throw new InvalidArgumentException('O aluno não possui vínculo ativo com a escola deste time.');
+        }
+        if (!$this->funcaoPertenceAoTime($idFuncaoIntegrante, $idTime)) {
+            throw new InvalidArgumentException('A função não corresponde ao esporte deste time.');
+        }
+        if ($capitao) {
+            $stmt = $this->pdo->prepare('SELECT 1 FROM vinculo_time_integrante WHERE cd_time = :time AND ativo = TRUE AND capitao = TRUE LIMIT 1');
+            $stmt->execute([':time' => $idTime]);
+            if ($stmt->fetchColumn()) {
+                throw new DomainException('O time já possui um capitão.');
+            }
+        }
         $stmt = $this->pdo->prepare(
             "INSERT INTO vinculo_time_integrante(
                 cd_usuario,
@@ -139,15 +160,22 @@ class VinculoTime extends Model{
     public function removerTimeIntegrante(int $idUsuario, int $idTime): void
     {
         $stmt = $this->pdo->prepare(
-            "DELETE FROM vinculo_time_integrante
+            "UPDATE vinculo_time_integrante
+            SET ativo = FALSE
             WHERE cd_usuario = :cd_usuario
-              AND cd_time = :cd_time"
+              AND cd_time = :cd_time
+              AND ativo = TRUE"
         );
 
         $stmt->execute([
             ':cd_usuario' => $idUsuario,
             ':cd_time' => $idTime
         ]);
+        if ($stmt->rowCount() !== 1) {
+            throw new RuntimeException('Integrante não encontrado neste time.');
+        }
+        $stmt = $this->pdo->prepare('UPDATE escalacao_time SET ativo = FALSE WHERE cd_vinculo_time_integrante IN (SELECT cd_vinculo_time_integrante FROM vinculo_time_integrante WHERE cd_usuario = :usuario AND cd_time = :time) AND ativo = TRUE');
+        $stmt->execute([':usuario' => $idUsuario, ':time' => $idTime]);
     }
 
     public function tornarCapitao(int $idUsuario, int $idTime): void
@@ -180,7 +208,7 @@ class VinculoTime extends Model{
     public function bloquearTime(int $idTime): void
     {
         $stmt = $this->pdo->prepare(
-            'SELECT cd_time FROM time WHERE cd_time = :cd_time FOR UPDATE'
+            'SELECT cd_time FROM time WHERE cd_time = :cd_time AND ativo = TRUE FOR UPDATE'
         );
         $stmt->execute([':cd_time' => $idTime]);
 
@@ -189,8 +217,33 @@ class VinculoTime extends Model{
         }
     }
 
+    public function integranteElegivelParaTime(int $idUsuario, int $idTime): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT EXISTS (
+            SELECT 1
+            FROM aluno a
+            INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario AND u.ativo = TRUE
+            INNER JOIN vinculo_usuario_escola vue ON vue.cd_usuario = a.cd_usuario AND vue.ativo = TRUE
+            INNER JOIN papel p ON p.cd_papel = vue.cd_papel AND p.nm_papel = 'ALU'
+            INNER JOIN vinculo_time_escola vte ON vte.cd_escola = vue.cd_escola AND vte.ativo = TRUE
+            WHERE a.cd_usuario = :usuario
+              AND a.ativo = TRUE
+              AND vte.cd_time = :time
+        )");
+        $stmt->execute([':usuario' => $idUsuario, ':time' => $idTime]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    private function funcaoPertenceAoTime(int $idFuncao, int $idTime): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT 1 FROM funcao_integrante fi INNER JOIN time t ON t.cd_esporte = fi.cd_esporte WHERE fi.cd_funcao_integrante = :funcao AND t.cd_time = :time AND t.ativo = TRUE');
+        $stmt->execute([':funcao' => $idFuncao, ':time' => $idTime]);
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function removerCapitao(int $idUsuario, int $idTime): void
     {
+        $this->bloquearTime($idTime);
         $stmt = $this->pdo->prepare(
             'UPDATE vinculo_time_integrante SET capitao = FALSE
              WHERE cd_usuario = :cd_usuario AND cd_time = :cd_time AND ativo = TRUE AND capitao = TRUE'
@@ -353,6 +406,11 @@ class VinculoTime extends Model{
 
     public function vincularTecnicoTime (int $idUsuario, int $idTime ) 
     {
+        $stmt = $this->pdo->prepare('SELECT 1 FROM usuario WHERE cd_usuario = :usuario AND ativo = TRUE');
+        $stmt->execute([':usuario' => $idUsuario]);
+        if (!$stmt->fetchColumn()) {
+            throw new InvalidArgumentException('Técnico inexistente ou inativo.');
+        }
         $stmt = $this->pdo->prepare(
             "INSERT INTO vinculo_tecnico_time (
                 cd_usuario,

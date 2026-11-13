@@ -21,6 +21,7 @@ class VinculoTimeService
         $this->exigirPermissaoGerenciarTime($idTime);
         try {
             $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->bloquearTime($idTime);
 
             $this->vinculoTimeModel->vincularTimeResponsavel(
                 $idResponsavel,
@@ -105,6 +106,7 @@ class VinculoTimeService
 
         try {
             $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->bloquearTime($idTime);
 
             $this->vinculoTimeModel->vincularTimeIntegrante(
                 $idUsuario,
@@ -141,6 +143,7 @@ class VinculoTimeService
 
         try {
             $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->bloquearTime($idTime);
             $this->vinculoTimeModel->removerTimeIntegrante($idUsuario, $idTime);
             $this->pdo->commit();
         } catch (Throwable $e) {
@@ -209,6 +212,7 @@ class VinculoTimeService
 
         try {
             $this->pdo->beginTransaction();
+            $this->vinculoTimeModel->bloquearTime($idTime);
 
             $this->vinculoTimeModel->vincularTecnicoTime(
                 $idUsuario,
@@ -237,6 +241,8 @@ class VinculoTimeService
         if (count($idUsuariosTitulares) > 5) {
             throw new Exception('Apenas 5 jogadores podem ser titulares.');
         }
+
+        // Uma lista vazia é válida: deixa todos os integrantes ativos como reservas.
 
         $idsValidados = [];
         foreach ($idUsuariosTitulares as $idUsuario) {

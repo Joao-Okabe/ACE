@@ -67,7 +67,7 @@ class CompeticaoService
             }
         }
 
-        $idCriador = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idCriador = AuthContext::id() ?? 0;
         if ($idCriador <= 0) {
             throw new Exception('Usuário não autenticado.');
         }
@@ -103,6 +103,11 @@ class CompeticaoService
 
     public function listar(array $filtros = []): array
     {
+        $idUsuario = AuthContext::id();
+        if ($idUsuario === null) {
+            return [];
+        }
+        $filtros['usuario'] = $idUsuario;
         return $this->competicaoModel->listar($filtros);
     }
 
@@ -111,6 +116,11 @@ class CompeticaoService
         $competicao = $this->competicaoModel->buscar($id);
 
         if ($competicao === null) {
+            throw new Exception('Competição não encontrada.');
+        }
+
+        $idUsuario = AuthContext::id() ?? 0;
+        if (!$this->competicaoModel->usuarioPodeVisualizar($idUsuario, $id)) {
             throw new Exception('Competição não encontrada.');
         }
 
@@ -142,7 +152,7 @@ class CompeticaoService
     public function exigirPermissao(array $competicao): void
     {
         $idEscola = (int) ($competicao['cd_escola'] ?? 0);
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idUsuario = AuthContext::id() ?? 0;
         $idCriador = (int) ($competicao['cd_criador'] ?? 0);
 
         if ($idCriador === $idUsuario || $this->permissoes->temPapelAdm($idUsuario)) {
@@ -156,11 +166,13 @@ class CompeticaoService
 
     private function resolverEscolaCompeticao(array $dados, int $idUsuario): int
     {
-        $papeis = $_SESSION['usuario']['papeis'] ?? [];
-        if (in_array('ADM', $papeis, true)) {
+        if (Permissoes::temPapel('ADM')) {
             $idEscola = (int) ($dados['cd_escola'] ?? 0);
         } else {
-            $idEscola = (int) ($this->vinculoEscolaModel->escolaGerenciavelPorUsuario($idUsuario) ?? 0);
+            $idEscola = (int) ($dados['cd_escola'] ?? 0);
+            if ($idEscola <= 0) {
+                $idEscola = (int) ($this->vinculoEscolaModel->escolaGerenciavelPorUsuario($idUsuario) ?? 0);
+            }
         }
 
         if ($idEscola <= 0 || !$this->vinculoEscolaModel->usuarioPodeGerenciarEscola($idUsuario, $idEscola)) {
@@ -194,18 +206,21 @@ class CompeticaoService
 
     public function buscarPeriodoInscricao(int $idCompeticao): ?array
     {
+        $this->buscar($idCompeticao);
         return $this->competicaoModel->buscarPeriodoInscricao($idCompeticao);
     }
 
     //Lista as etapas de uma competição
     public function listarEtapas(int $idCompeticao): array
     {
+        $this->buscar($idCompeticao);
         return $this->etapaCompeticaoModel->listarPorCompeticao($idCompeticao);
     }
 
     //Busca uma etapa específica da competição
     public function buscarEtapa(int $idEtapa, int $idCompeticao): array
     {
+        $this->buscar($idCompeticao);
         $etapa = $this->etapaCompeticaoModel->buscarPorCompeticao($idEtapa, $idCompeticao);
 
         if ($etapa === null) {
@@ -280,11 +295,13 @@ class CompeticaoService
 
     public function listarTimesInscritos(int $idCompeticao): array
     {
+        $this->buscar($idCompeticao);
         return $this->competicaoModel->listarTimesInscritos($idCompeticao);
     }
 
     public function listarTimesDisponiveisInscricao(int $idCompeticao): array
     {
+        $this->buscar($idCompeticao);
         return $this->competicaoModel->listarTimesDisponiveisInscricao($idCompeticao);
     }
 
@@ -319,7 +336,7 @@ class CompeticaoService
 
     public function podeGerenciar(array $competicao): bool
     {
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $idUsuario = AuthContext::id() ?? 0;
         $idCriador = (int) ($competicao['cd_criador'] ?? 0);
 
         if ($idCriador === $idUsuario || $this->permissoes->temPapelAdm($idUsuario)) {
@@ -336,6 +353,7 @@ class CompeticaoService
 
     public function listarChaveamento(int $idCompeticao): array
     {
+        $this->buscar($idCompeticao);
         return $this->confrontoModel->listarChaveamento($idCompeticao);
     }
 

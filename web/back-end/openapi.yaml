@@ -1,0 +1,183 @@
+openapi: 3.1.0
+info:
+  title: ACE API V1
+  version: 1.0.0
+  description: >-
+    Contrato das rotas V1 implementadas. A API V1 usa Bearer JWT e não usa
+    sessão PHP. O cliente deve serializar refresh concorrentes em single-flight:
+    chamadas simultâneas aguardam uma única renovação do refresh token.
+servers:
+  - url: /api/v1
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      summary: Autentica e emite access e refresh tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, senha]
+              properties:
+                email: { type: string, format: email }
+                senha: { type: string, minLength: 1 }
+      responses:
+        '200':
+          description: Autenticado. Access token expira em até 900 segundos; refresh token em 604800 segundos.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token_type: { type: string, const: Bearer }
+                          access_token: { type: string }
+                          expires_in: { type: integer, maximum: 900 }
+                          refresh_token: { type: string }
+                          refresh_expires_in: { type: integer, maximum: 604800 }
+                          user: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /auth/me:
+    get:
+      operationId: currentUser
+      summary: Retorna a identidade autenticada e papéis atuais
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Identidade autenticada
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/refresh:
+    post:
+      operationId: refreshTokens
+      summary: Consome o refresh token e emite um novo par rotacionado
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string, minLength: 80, maxLength: 200 }
+      responses:
+        '200':
+          description: Novo par de tokens
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/Tokens' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /auth/logout:
+    post:
+      operationId: logout
+      summary: Revoga a família associada ao refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string, minLength: 80, maxLength: 200 }
+      responses:
+        '200':
+          description: Família revogada; chamada idempotente para token desconhecido
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalError' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Success:
+      type: object
+      required: [success, data, message]
+      properties:
+        success: { type: boolean, const: true }
+        data: {}
+        message: { type: string }
+    Error:
+      type: object
+      required: [success, error]
+      properties:
+        success: { type: boolean, const: false }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            details: { type: object }
+    Tokens:
+      type: object
+      required: [token_type, access_token, expires_in, refresh_token, refresh_expires_in]
+      properties:
+        token_type: { type: string, const: Bearer }
+        access_token: { type: string }
+        expires_in: { type: integer, maximum: 900 }
+        refresh_token: { type: string }
+        refresh_expires_in: { type: integer, maximum: 604800 }
+    User:
+      type: object
+      required: [id, roles]
+      properties:
+        id: { type: integer }
+        name: { type: [string, 'null'] }
+        email: { type: [string, 'null'], format: email }
+        profile_photo: { type: [string, 'null'] }
+        roles:
+          type: array
+          items: { type: string }
+  responses:
+    BadRequest:
+      description: Corpo malformado ou JSON inválido
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Credencial, Bearer ou refresh token inválido/expirado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ValidationError:
+      description: Campos de autenticação inválidos
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: Erro interno sem detalhes técnicos
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

@@ -16,10 +16,7 @@ class JwtMiddleware
                 $matches
             )
         ) {
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Token de autenticação não informado.'
-            ], 401);
+            Response::error('UNAUTHENTICATED', 'Autenticação necessária.', 401);
 
             return false;
         }
@@ -40,10 +37,7 @@ class JwtMiddleware
         } catch (UnexpectedValueException $e) {
             AuthContext::limpar();
 
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Token inválido ou expirado.'
-            ], 401);
+            Response::error('UNAUTHENTICATED', 'Token inválido ou expirado.', 401);
 
             return false;
 
@@ -55,10 +49,7 @@ class JwtMiddleware
 
             AuthContext::limpar();
 
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Erro interno na autenticação.'
-            ], 500);
+            Response::error('INTERNAL_ERROR', 'Não foi possível autenticar a requisição.', 500);
 
             return false;
         }
@@ -79,10 +70,7 @@ class JwtMiddleware
             $usuario = $usuarioModel->buscar($idUsuario);
 
             if ($usuario === null) {
-                Response::json([
-                    'sucesso' => false,
-                    'mensagem' => 'Usuário inexistente ou inativo.'
-                ], 401);
+                Response::error('UNAUTHENTICATED', 'Token inválido ou expirado.', 401);
 
                 return false;
             }
@@ -109,10 +97,7 @@ class JwtMiddleware
 
             AuthContext::limpar();
 
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Não foi possível autenticar o usuário.'
-            ], 500);
+            Response::error('INTERNAL_ERROR', 'Não foi possível autenticar a requisição.', 500);
 
             return false;
         }

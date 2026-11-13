@@ -29,10 +29,11 @@ CREATE INDEX IF NOT EXISTS idx_refresh_token_familia
 CREATE INDEX IF NOT EXISTS idx_refresh_token_expira
     ON refresh_token (expira_em);
 
+-- Compatibilidade com instalações que criaram a tabela antes da rotação.
 ALTER TABLE refresh_token
-    ADD COLUMN revogado_em TIMESTAMPTZ,
-    ADD COLUMN usado_em TIMESTAMPTZ,
-    ADD COLUMN substituido_por_hash CHAR(64);
+    ADD COLUMN IF NOT EXISTS revogado_em TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS usado_em TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS substituido_por_hash CHAR(64);
 
 SELECT
     conname AS nome,
