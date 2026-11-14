@@ -142,6 +142,82 @@ $router->delete(
     [TimeApiController::class, 'destroy']
 );
 /*
+    Rotas de competições
+    1. listar competições visíveis ao usuário
+    2. consultar uma competição
+    3. cadastrar competição
+    4. atualizar competição
+    5. excluir competição
+*/
+$router->get(
+    '/api/competicoes',
+    [CompeticaoControllerApi::class, 'listar']
+);
+$router->get(
+    '/api/competicoes/{id}',
+    [CompeticaoControllerApi::class, 'show']
+);
+$router->post(
+    '/api/competicoes',
+    [CompeticaoControllerApi::class, 'store']
+);
+$router->put(
+    '/api/competicoes/{id}',
+    [CompeticaoControllerApi::class, 'update']
+);
+$router->delete(
+    '/api/competicoes/{id}',
+    [CompeticaoControllerApi::class, 'remover']
+);
+$router->get(
+    '/api/competicoes/opcoes/criacao',
+    [CompeticaoControllerApi::class, 'criar']
+);
+$router->get(
+    '/api/competicoes/{id}/editar',
+    [CompeticaoControllerApi::class, 'edit']
+);
+$router->get(
+    '/api/competicoes/{id}/visualizar',
+    [CompeticaoControllerApi::class, 'visualizar']
+);
+$router->get(
+    '/api/competicoes/{id}/etapas',
+    [CompeticaoControllerApi::class, 'editEtapa']
+);
+$router->post(
+    '/api/competicoes/{id}/etapas',
+    [CompeticaoControllerApi::class, 'storeEtapa']
+);
+$router->get(
+    '/api/competicoes/{id}/etapas/nova',
+    [CompeticaoControllerApi::class, 'createEtapa']
+);
+$router->put(
+    '/api/competicoes/{id}/etapas/{idEtapa}',
+    [CompeticaoControllerApi::class, 'updateEtapa']
+);
+$router->post(
+    '/api/competicoes/{id}/chaveamento',
+    [CompeticaoControllerApi::class, 'gerarChaveamento']
+);
+$router->get(
+    '/api/competicoes/{id}/inscricao',
+    [CompeticaoControllerApi::class, 'editInscricao']
+);
+$router->post(
+    '/api/competicoes/{id}/inscricao',
+    [CompeticaoControllerApi::class, 'criarInscricao']
+);
+$router->post(
+    '/api/competicoes/{id}/inscricao/times',
+    [CompeticaoControllerApi::class, 'inscreverTime']
+);
+$router->delete(
+    '/api/competicoes/{id}/inscricao/times/{idTime}',
+    [CompeticaoControllerApi::class, 'removerTimeInscrito']
+);
+/*
     Rotas de autenticação
     1. login (autentica e inicia sessão)
     2. me (dados do usuário logado)
