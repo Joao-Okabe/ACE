@@ -41,6 +41,10 @@ $router->post(
     '/api/alunos',
     [AlunoApiController::class, 'store']
 );
+$router->post(
+    '/api/alunos/{id}',
+    [AlunoApiController::class, 'update']
+);
 $router->put(
     '/api/alunos/{id}',
     [AlunoApiController::class, 'update']
@@ -96,6 +100,10 @@ $router->get(
 $router->post(
     '/api/escolas',
     [EscolaApiController::class, 'store']
+);
+$router->post(
+    '/api/escolas/{id}',
+    [EscolaApiController::class, 'update']
 );
 $router->put(
     '/api/escolas/{id}',

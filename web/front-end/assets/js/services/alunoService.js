@@ -32,7 +32,7 @@ export const alunoService = {
 
     atualizar(id, dados){
         return apiFetch(`${BASE_URL}/${validarId(id)}`,{
-            method: "PUT",
+            method: "POST",
             body: dados
         });
     },

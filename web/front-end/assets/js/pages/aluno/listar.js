@@ -31,6 +31,10 @@ class AppLista extends HTMLElement {
                         <option value="nome-desc">Nome (Z–A)</option>
                     </select>
 
+                    <select class="campo-filtro lista-escola" aria-label="Filtrar por escola">
+                        <option value="">Todas as escolas</option>
+                    </select>
+
                     <button type="button" class="custom-btn custom-btn-primary lista-buscar">
                         Buscar
                     </button>
@@ -46,22 +50,31 @@ class AppLista extends HTMLElement {
         const pesquisa = this.querySelector(".lista-pesquisa");
         const botaoBuscar = this.querySelector(".lista-buscar");
         const ordenacao = this.querySelector(".lista-ordenacao");
+        const filtroEscola = this.querySelector(".lista-escola");
 
         const filtrarItens = () => {
-            const termo = pesquisa.value.trim().toLocaleLowerCase("pt-BR");
+    const termo = pesquisa.value.trim().toLocaleLowerCase("pt-BR");
+    const escolaSelecionada = filtroEscola?.value || "";
 
-            this.querySelectorAll(".lista-item").forEach((item) => {
-                item.hidden = !item.textContent
-                    .toLocaleLowerCase("pt-BR")
-                    .includes(termo);
-            });
-        };
+    this.querySelectorAll(".lista-item").forEach((item) => {
+        const correspondePesquisa = item.textContent
+            .toLocaleLowerCase("pt-BR")
+            .includes(termo);
 
+        const correspondeEscola =
+            !escolaSelecionada ||
+            item.dataset.escola === escolaSelecionada;
+
+        item.hidden = !correspondePesquisa || !correspondeEscola;
+    });
+};
         botaoBuscar.addEventListener("click", filtrarItens);
 
         pesquisa.addEventListener("keydown", (evento) => {
             if (evento.key === "Enter") filtrarItens();
         });
+
+        filtroEscola?.addEventListener("change", filtrarItens);
 
         ordenacao.addEventListener("change", () => {
             const ordem = ordenacao.value;
@@ -117,6 +130,21 @@ async function carregarEscolas() {
     try {
         const escolas = await escolaService.listar();
 
+        const filtroEscola = lista.querySelector(".lista-escola");
+
+if (filtroEscola) {
+    filtroEscola.innerHTML = '<option value="">Todas as escolas</option>';
+
+    escolas
+        .filter(escola => escola.ativa === true || escola.ativa === 1)
+        .forEach(escola => {
+            const opcao = document.createElement("option");
+            opcao.value = escola.cd_escola;
+            opcao.textContent = escola.nome;
+            filtroEscola.appendChild(opcao);
+        });
+}
+
         [seletorEscolaCadastro, seletorEscolaEdicao].forEach((seletor) => {
             if (!seletor) return;
 
@@ -162,6 +190,7 @@ async function carregarAlunos() {
         alunos.forEach((aluno) => {
             const item = document.createElement("div");
             item.className = "lista-item";
+            item.dataset.escola = String(aluno.cd_escola ?? "");
 
             const link = document.createElement("a");
             link.href = `visualizar.html?id=${encodeURIComponent(aluno.cd_aluno)}`;
@@ -244,6 +273,7 @@ lista?.addEventListener("click", async (evento) => {
 
     try {
         const aluno = await alunoService.buscarPorId(id);
+        console.log("Dados recebidos do aluno:", aluno);
 
         formularioEdicao.reset();
 
@@ -261,6 +291,8 @@ lista?.addEventListener("click", async (evento) => {
         document.getElementById("editarSexoAluno").value = aluno.sexo || "";
         document.getElementById("editarTelefoneAluno").value = aluno.telefone || "";
         document.getElementById("editarCepAluno").value = aluno.cep || "";
+
+        seletorEscolaEdicao.value = String(aluno.cd_escola ?? "");
 
         modalEditar.abrir();
 
@@ -320,14 +352,25 @@ formularioEdicao?.addEventListener("submit", async (evento) => {
     const id = document.getElementById("editarIdAluno").value;
     const botao = formularioEdicao.querySelector('button[type="submit"]');
 
-    const dados = {
-        nome: document.getElementById("editarNomeAluno").value.trim(),
-        ra: document.getElementById("editarRaAluno").value.trim(),
-        data_nascimento: document.getElementById("editarDataNascimentoAluno").value,
-        sexo: document.getElementById("editarSexoAluno").value,
-        telefone: document.getElementById("editarTelefoneAluno").value.replace(/\D/g, ""),
-        cep: document.getElementById("editarCepAluno").value.replace(/\D/g, "")
-    };
+    const dados = new FormData(formularioEdicao);
+
+dados.set(
+    "telefone",
+    document.getElementById("editarTelefoneAluno").value.replace(/\D/g, "")
+);
+
+dados.set(
+    "cep",
+    document.getElementById("editarCepAluno").value.replace(/\D/g, "")
+);
+
+const foto = document.getElementById("editar_img_aluno").files[0];
+
+dados.delete("img");
+
+if (foto) {
+    dados.append("foto_perfil", foto);
+}
 
     try {
         botao.disabled = true;

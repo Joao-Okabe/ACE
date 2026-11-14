@@ -29,6 +29,22 @@ class VinculoUsuarioEscola extends Model
         ]);
     }
 
+    public function desativarVinculosPapel(int $idUsuario, int $idPapel): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE vinculo_usuario_escola
+            SET ativo = FALSE
+            WHERE cd_usuario = :usuario
+                AND cd_papel = :papel
+                AND ativo = TRUE
+        ");
+
+        $stmt->execute([
+            ':usuario' => $idUsuario,
+            ':papel' => $idPapel
+        ]);
+    }
+
     public function possuiVinculoAtivo(int $idUsuario, int $idEscola, int $idPapel): bool
     {
         $stmt = $this->pdo->prepare(

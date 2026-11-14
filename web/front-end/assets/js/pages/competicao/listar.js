@@ -58,24 +58,28 @@ class AppLista extends HTMLElement {
         });
 
         // Ordena os itens pelo texto do nome
-        ordenacao.addEventListener("change", () => {
-            const ordem = ordenacao.value;
+        // Ordenação dos itens
+ordenacao.addEventListener("change", () => {
+    const ordem = ordenacao.value;
 
-            if (!ordem) return;
+    const listaItens = [
+        ...conteudo.querySelectorAll(".lista-item")
+    ];
 
-            const listaItens = [...conteudo.querySelectorAll(".lista-item")];
+    listaItens.sort((a, b) => {
+        const nomeA =
+            a.querySelector(".lista-info h2")?.textContent.trim() || "";
 
-            listaItens.sort((a, b) => {
-                const nomeA = a.querySelector(".lista-info h2")?.textContent.trim() || "";
-                const nomeB = b.querySelector(".lista-info h2")?.textContent.trim() || "";
+        const nomeB =
+            b.querySelector(".lista-info h2")?.textContent.trim() || "";
 
-                return ordem === "nome-asc"
-                    ? nomeA.localeCompare(nomeB, "pt-BR")
-                    : nomeB.localeCompare(nomeA, "pt-BR");
-            });
+        return nomeA.localeCompare(nomeB, "pt-BR", {
+            sensitivity: "base"
+        }) * (ordem === "nome-desc" ? -1 : 1);
+    });
 
-            listaItens.forEach((item) => conteudo.appendChild(item));
-        });
+    listaItens.forEach(item => conteudo.appendChild(item));
+});
     }
 }
 

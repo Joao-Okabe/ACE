@@ -229,7 +229,17 @@ class Aluno extends Model
                     AND up.ativo = TRUE
                 ORDER BY up.criado_em DESC
                 LIMIT 1
-            ) AS escola
+            ) AS escola,
+            (
+                SELECT up.cd_escola
+                FROM vinculo_usuario_escola up
+                INNER JOIN papel p ON p.cd_papel = up.cd_papel
+                WHERE up.cd_usuario = a.cd_usuario
+                    AND p.nm_papel = 'ALU'
+                    AND up.ativo = TRUE
+                ORDER BY up.criado_em DESC
+                LIMIT 1
+            ) AS cd_escola
         FROM aluno a
         INNER JOIN usuario u ON u.cd_usuario = a.cd_usuario
         WHERE a.cd_aluno = :id AND a.ativo = TRUE AND u.ativo = TRUE");

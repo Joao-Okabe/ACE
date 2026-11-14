@@ -269,6 +269,10 @@
     transition: background 0.3s ease;
 }
 
+.lista-item[hidden] {
+    display: none !important;
+}
+
 .lista-item:hover {
     background: var(--fundo-lista);
 }

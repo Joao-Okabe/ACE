@@ -1,11 +1,14 @@
 class AppBar extends HTMLElement {
     connectedCallback() {
+        this.atualizarUsuario();
+        }
+    atualizarUsuario() {
         const usuario = window.usuarioLogado || {};
         const nome = usuario.nome || usuario.nm_usuario || "Usuário";
         const email = usuario.email || "—";
-        const foto = usuario.foto || "/assets/img/no-prof-pic.png";
-        const papelUsuario = typeof usuario.papel === "object"
-            ? usuario.papel?.codigo || usuario.papel?.sigla || usuario.papel?.nome
+        const foto = usuario.foto_perfil || usuario.foto || "/assets/img/no-prof-pic.png";
+        const papelUsuario = Array.isArray(usuario.papeis)
+            ? usuario.papeis[0] || "Usuário"
             : usuario.papel || usuario.nm_papel || usuario.cd_papel || usuario.role || "Usuário";
         const papeis = {
             ADM: "Administrador",

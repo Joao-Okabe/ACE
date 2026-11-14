@@ -281,7 +281,15 @@ class AlunoService
             }
 
             $this->usuarioModel->atualizarNome((int) $aluno['cd_usuario'], (string) $dados['nome']);
-            $this->alunoModel->atualizar($id, $dados);
+            $this->alunoModel->atualizar($id, $dados);$novaEscola = (int) ($dados['escola'] ?? $idEscola);
+
+            if ($novaEscola !== $idEscola) {
+                $papelAluno = $this->papelModel->buscarPapelPorNome('ALU');
+                $papelAlunoId = (int) $papelAluno['cd_papel'];
+
+                $this->vinculoEscolaUsuarioModel->desativarVinculosPapel((int) $aluno['cd_usuario'],$papelAlunoId);
+                $this->vinculoEscolaUsuarioModel->vincularPapelEscola((int) $aluno['cd_usuario'],$novaEscola,$papelAlunoId);
+            }
 
             $this->pdo->commit();
         } catch (Throwable $e) {

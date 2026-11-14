@@ -112,34 +112,39 @@ if (formularioEditarEscola) {
             return;
         }
 
-        const dados = {
-            nome: formularioEditarEscola
-                .querySelector("#editarNomeEscola").value.trim(),
+       const dados = new FormData();
 
-            telefone: formularioEditarEscola
-                .querySelector("#editarTelefoneEscola").value.trim(),
+dados.append(
+    "nome",
+    formularioEditarEscola.querySelector("#editarNomeEscola").value.trim()
+);
 
-            cep: formularioEditarEscola
-                .querySelector("#editarCepEscola").value.trim(),
+dados.append(
+    "telefone",
+    formularioEditarEscola.querySelector("#editarTelefoneEscola").value.trim()
+);
 
-            logradouro: formularioEditarEscola
-                .querySelector("#editarLogradouroEscola").value.trim(),
+dados.append(
+    "cep",
+    formularioEditarEscola.querySelector("#editarCepEscola").value.trim()
+);
 
-            numero: formularioEditarEscola
-                .querySelector("#editarNumeroEscola").value.trim(),
+dados.append(
+    "numero",
+    formularioEditarEscola.querySelector("#editarNumeroEscola").value.trim()
+);
 
-            bairro: formularioEditarEscola
-                .querySelector("#editarBairroEscola").value.trim(),
+dados.append(
+    "categoria_administrativa",
+    formularioEditarEscola.querySelector("#editarCategoriaEscola").value
+);
 
-            cidade: formularioEditarEscola
-                .querySelector("#editarCidadeEscola").value.trim(),
+const arquivoLogo = formularioEditarEscola
+    .querySelector("#editar_img_logo")?.files[0];
 
-            uf: formularioEditarEscola
-                .querySelector("#editarUfEscola").value.trim(),
-
-            categoria_administrativa: formularioEditarEscola
-                .querySelector("#editarCategoriaEscola").value
-        };
+if (arquivoLogo) {
+    dados.append("img_logo_upload", arquivoLogo);
+}
 
         const botaoSalvar = formularioEditarEscola.querySelector(
             'button[type="submit"]'
