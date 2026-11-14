@@ -15,18 +15,7 @@ class AlunoApiController
 
     public function index(): void
     {
-        // O Router já exige autenticação.
-        // Aqui verificamos a autorização para listar alunos.
-        if (
-            !Permissoes::temPapel('ADM')
-            && !Permissoes::temPapel('DIR')
-        ) {
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Você não tem permissão para listar alunos.'
-            ], 403);
-        }
-
+        // O Router exige autenticação; qualquer usuário autenticado pode listar alunos.
         try {
             $filtros = [
                 'nome' => isset($_GET['nome']) ? trim((string) $_GET['nome']) : '',
@@ -35,31 +24,9 @@ class AlunoApiController
                 'offset' => isset($_GET['offset']) ? (int) $_GET['offset'] : 0,
             ];
 
-            // Administradores podem consultar todos os alunos.
-            if (Permissoes::temPapel('ADM')) {
-                $alunos = $this->service()->listar($filtros);
-            } else {
-                // Diretores só podem consultar alunos da própria escola.
-                $idUsuario = AuthContext::id() ?? 0;
+            $alunos = $this->service()->listar($filtros);
 
-                $vinculoModel = new VinculoUsuarioEscola();
-
-                $escolas = $vinculoModel->escolasAtivasPorPapeis(
-                    $idUsuario,
-                    ['DIR']
-                );
-
-                if ($escolas === []) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Nenhuma escola autorizada foi encontrada.'
-                    ], 403);
-                }
-
-                $filtros['escolas'] = $escolas;
-
-                $alunos = $this->service()->listar($filtros);
-            }
+            
 
             Response::json([
                 'sucesso' => true,
@@ -84,6 +51,13 @@ class AlunoApiController
             ], 400);
         }
 
+        if (!Permissoes::estaLogado()) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Autenticação necessária.'
+            ], 401);
+        }
+
         try {
             $service = $this->service();
 
@@ -94,12 +68,6 @@ class AlunoApiController
                 'dados' => $aluno
             ]);
         } catch (Throwable $e) {
-            if ($e instanceof DomainException) {
-                Response::json([
-                    'sucesso' => false,
-                    'mensagem' => 'Aluno não encontrado.'
-                ], 404);
-            }
             if ($e->getMessage() === 'Aluno(a) não encontrado(a).') {
                 Response::json([
                     'sucesso' => false,
@@ -203,6 +171,16 @@ class AlunoApiController
             ], 400);
         }
 
+        if (
+            !Permissoes::temPapel('ADM')
+            && !Permissoes::temPapel('DIR')
+        ) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Você não tem permissão para editar alunos.'
+            ], 403);
+        }
+
         $contentType = strtolower(
             $_SERVER['CONTENT_TYPE'] ?? ''
         );
@@ -222,16 +200,7 @@ class AlunoApiController
         }
 
         try {
-            if (
-                !Permissoes::temPapel('ADM')
-                && !Permissoes::temPapel('DIR')
-            ) {
-                Response::json([
-                    'sucesso' => false,
-                    'mensagem' => 'Você não tem permissão para editar alunos.'
-                ], 403);
-            }
-
+            // O serviço confirma que o diretor gerencia ao menos uma escola do aluno.
             $this->service()->atualizar($id, $dados);
 
             Response::json([

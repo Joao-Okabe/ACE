@@ -24,6 +24,12 @@ class Response
         array $dados,
         int $status = 200
     ): void {
+        // Evita que espaços acidentais emitidos ao carregar arquivos PHP
+        // corrompam o JSON ou enviem os cabeçalhos antes da resposta.
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
+
         http_response_code($status);
 
         header('Content-Type: application/json; charset=utf-8');

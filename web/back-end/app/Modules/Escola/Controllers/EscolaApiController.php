@@ -15,46 +15,9 @@ class EscolaApiController
 
     public function index(): void
     {
-        // O Router já exige autenticação.
-        // Aqui verificamos a autorização para listar escolas.
-        if (
-            !Permissoes::temPapel('ADM')
-            && !Permissoes::temPapel('DIR')
-        ) {
-            Response::json([
-                'sucesso' => false,
-                'mensagem' => 'Você não tem permissão para listar escolas.'
-            ], 403);
-        }
-
+        // O Router exige autenticação; qualquer usuário autenticado pode listar escolas.
         try {
-            $filtros = [];
-
-            // Administradores podem consultar todas as escolas.
-            if (Permissoes::temPapel('ADM')) {
-                $escolas = $this->service()->listar($filtros);
-            } else {
-                // Diretores só podem consultar a própria escola.
-                $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-
-                $vinculoModel = new VinculoUsuarioEscola();
-
-                $idEscola = $vinculoModel->escolaAtualPorPapeis(
-                    $idUsuario,
-                    ['DIR']
-                );
-
-                if ($idEscola === null || $idEscola <= 0) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Nenhuma escola autorizada foi encontrada.'
-                    ], 403);
-                }
-
-                $filtros['escola'] = $idEscola;
-
-                $escolas = $this->service()->listar($filtros);
-            }
+            $escolas = $this->service()->listar();
 
             Response::json([
                 'sucesso' => true,
@@ -80,25 +43,7 @@ class EscolaApiController
         }
 
         try {
-            // O administrador pode consultar qualquer escola.
-            if (!Permissoes::temPapel('ADM')) {
-                // Apenas diretores podem consultar escolas
-                // e somente a própria escola.
-                if (!Permissoes::temPapel('DIR')) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Você não tem permissão para consultar esta escola.'
-                    ], 403);
-                }
-
-                if (!Permissoes::podeGerenciarEscola($id)) {
-                    Response::json([
-                        'sucesso' => false,
-                        'mensagem' => 'Você não tem permissão para consultar esta escola.'
-                    ], 403);
-                }
-            }
-
+            // O Router exige autenticação; qualquer usuário autenticado pode consultar escolas.
             $escola = $this->service()->buscar($id);
 
             Response::json([
@@ -216,6 +161,16 @@ class EscolaApiController
             ], 400);
         }
 
+        if (
+            !Permissoes::temPapel('ADM')
+            && !Permissoes::temPapel('DIR')
+        ) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Você não tem permissão para editar escolas.'
+            ], 403);
+        }
+
         $contentType = strtolower(
             $_SERVER['CONTENT_TYPE'] ?? ''
         );
@@ -314,11 +269,24 @@ class EscolaApiController
             ], 400);
         }
 
-        // Somente o administrador exclui escolas.
-        if (!Permissoes::temPapel('ADM')) {
+        // Somente administradores e diretores podem excluir escolas.
+        if (
+            !Permissoes::temPapel('ADM')
+            && !Permissoes::temPapel('DIR')
+        ) {
             Response::json([
                 'sucesso' => false,
                 'mensagem' => 'Você não tem permissão para excluir escolas.'
+            ], 403);
+        }
+
+        if (
+            !Permissoes::temPapel('ADM')
+            && !Permissoes::podeGerenciarEscola($id)
+        ) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'Você não tem permissão para excluir esta escola.'
             ], 403);
         }
 

@@ -225,8 +225,6 @@ class AlunoController
 
         try {
             $aluno = $this->service()->buscar($id);
-            // Somente ADM ou diretor da escola do aluno pode visualizar.
-            (new Permissoes())->exigirPermissaoGerenciarAluno($id);
         } catch (Exception $e) {
             http_response_code(403);
             echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');

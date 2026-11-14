@@ -1,4 +1,5 @@
 import { escolaService } from "../../services/escolaService.js";
+import { authService } from "../../services/authService.js";
 
 import "./cadastrar.js";
 import "./editar.js";
@@ -101,6 +102,7 @@ if (!customElements.get("app-lista")) {
 // LISTAR ESCOLAS
 async function carregarEscolas() {
     try {
+        window.usuarioLogado = window.usuarioLogado || await authService.me();
         const escolas = await escolaService.listar();
 
         console.log("Escolas recebidas:", escolas);
@@ -171,7 +173,12 @@ console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
                 `Editar ${escola.nome || escola.nm_escola || "escola"}`
             );
 
-            item.append(link, botaoEditar);
+            if (window.usuarioLogado?.papeis?.some((papel) => ["ADM", "DIR"].includes(papel))) {
+                item.append(link, botaoEditar);
+            } else {
+                item.appendChild(link);
+            }
+
             conteudo.appendChild(item);
         });
 

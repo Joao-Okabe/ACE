@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// Captura qualquer saída acidental de arquivos carregados antes do JSON.
+ob_start();
+
 /**
  * Ponto de entrada da API REST (Back-end).
  */

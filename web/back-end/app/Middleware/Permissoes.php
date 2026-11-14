@@ -1,4 +1,3 @@
-
 <?php
 
 class Permissoes
@@ -55,6 +54,16 @@ class Permissoes
 
     public static function exigirPermissaoGerenciarAluno(int $id): void
     {
+        if (self::temPapel('ADM')) {
+            return;
+        }
+
+        if (!self::temPapel('DIR')) {
+            throw new Exception(
+                'Você não tem permissão para gerenciar este aluno.'
+            );
+        }
+
         $alunoService = new AlunoService();
 
         $escolasAluno = $alunoService->obterEscolasDoAluno($id);

@@ -1,5 +1,6 @@
 import { alunoService } from "../../services/alunoService.js";
 import { escolaService } from "../../services/escolaService.js";
+import { authService } from "../../services/authService.js";
 
 // COMPONENTE DE LISTAGEM
 class AppLista extends HTMLElement {
@@ -128,6 +129,7 @@ function exibirMensagem(conteudo, mensagem) {
 // CARREGAR ESCOLAS NOS SELETORES
 async function carregarEscolas() {
     try {
+        window.usuarioLogado = window.usuarioLogado || await authService.me();
         const escolas = await escolaService.listar();
 
         const filtroEscola = lista.querySelector(".lista-escola");
@@ -178,6 +180,7 @@ async function carregarAlunos() {
     exibirMensagem(conteudo, "Carregando alunos...");
 
     try {
+        window.usuarioLogado = window.usuarioLogado || await authService.me();
         const alunos = await alunoService.listar();
 
         conteudo.innerHTML = "";
@@ -248,7 +251,12 @@ async function carregarAlunos() {
                 `Editar ${aluno.nome || "aluno"}`
             );
 
-            item.append(link, botaoEditar);
+            if (window.usuarioLogado?.papeis?.some((papel) => ["ADM", "DIR"].includes(papel))) {
+                item.append(link, botaoEditar);
+            } else {
+                item.appendChild(link);
+            }
+
             conteudo.appendChild(item);
         });
 

@@ -189,24 +189,7 @@ class AlunoService
     // Lista todos os alunos
     public function listar(array $filtros = []): array
     {
-        if (Permissoes::temPapel('ADM')) {
-            return $this->alunoModel->listar($filtros);
-        }
-        if (!Permissoes::temPapel('DIR')) {
-            throw new DomainException('Você não tem permissão para listar alunos.');
-        }
-        $idUsuario = AuthContext::id();
-        $escolasAutorizadas = $idUsuario === null ? [] : $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
-        if ($escolasAutorizadas === []) {
-            return [];
-        }
-        if (isset($filtros['escolas']) && is_array($filtros['escolas'])) {
-            $escolasAutorizadas = array_values(array_intersect($escolasAutorizadas, array_map('intval', $filtros['escolas'])));
-        }
-        if ($escolasAutorizadas === []) {
-            return [];
-        }
-        $filtros['escolas'] = $escolasAutorizadas;
+        // A rota já exige autenticação; todos os usuários autenticados podem consultar alunos.
         return $this->alunoModel->listar($filtros);
     }
 
@@ -233,20 +216,9 @@ class AlunoService
             throw new Exception("Aluno(a) não encontrado(a).");
         }
 
-        $this->exigirAcessoAoAluno($aluno);
-
-        if (!Permissoes::temPapel('ADM')) {
-            $idUsuario = AuthContext::id() ?? 0;
-            $escolasDiretor = $this->vinculoEscolaUsuarioModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
-            $escolasAluno = $this->alunoModel->listarEscolasAtivasDoAlunoComNome((int) $aluno['cd_usuario']);
-            $escolasVisiveis = array_values(array_filter(
-                $escolasAluno,
-                static fn (array $escola): bool => in_array((int) $escola['cd_escola'], $escolasDiretor, true)
-            ));
-            $aluno['escolas_vinculadas'] = $escolasVisiveis;
-            $aluno['cd_escola'] = count($escolasVisiveis) === 1 ? (int) $escolasVisiveis[0]['cd_escola'] : null;
-            $aluno['escola'] = count($escolasVisiveis) === 1 ? $escolasVisiveis[0]['nm_escola'] : null;
-        }
+        // Consulta do cadastro é permitida a qualquer usuário autenticado.
+        // As operações de alteração/remoção validam o acesso separadamente.
+        $aluno['escolas_vinculadas'] = $this->alunoModel->listarEscolasAtivasDoAlunoComNome((int) $aluno['cd_usuario']);
 
         return $aluno;
     }
@@ -262,6 +234,7 @@ class AlunoService
 
         $this->exigirAcessoAoAluno($aluno);
 
+        $idEscola = $this->obterEscolaDoAluno($id);
         $caminhoPublicoFoto = null;
         $fotoAnterior = (string) ($aluno['foto_perfil'] ?? '');
         try {
