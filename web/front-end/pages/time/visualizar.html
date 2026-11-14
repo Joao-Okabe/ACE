@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
+
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    
+    <title>Visualizar time</title>
+</head>
+<body>
+    <app-bar></app-bar>
+    <app-sidebar></app-sidebar>
+
+    <div class="content">
+        <!-- CABEÇALHO -->
+        <div class="visu-box mt-4">
+            <div class="header-visualizar">
+                <div class="visu-perfil">
+                    <img id="brasaoEscola" src="/assets/img/escudo.jpg" alt="Brasão da escola">
+                </div>
+                <div>
+                    <h1 class="page-title page-title--large" id="nomeTime">Carregando time...</h1>
+                    <p class="section-description">Visualize e gerencie as informações do time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAINEL PRINCIPAL -->
+        <div class="row visu-painel">
+            <!-- MENU LATERAL -->
+            <div class="col-12 col-md-4 col-lg-3">
+                <nav class="visu-menu" aria-label="Menu do time">
+                    <button type="button" class="visu-menu-item active" data-aba="integrantes" aria-selected="true">Integrantes</button>
+                    <button type="button" class="visu-menu-item" data-aba="tecnico" aria-selected="false">Técnico</button>
+                    <button type="button" class="visu-menu-item" data-aba="responsaveis" aria-selected="false">Responsáveis</button>
+                    <button type="button" class="visu-menu-item" data-aba="escalacao" aria-selected="false">Escalação</button>
+                    <button type="button" class="visu-menu-item" data-aba="partidas" aria-selected="false">Partidas</button>
+                    <button type="button" class="visu-menu-item" data-aba="gerenciamento" aria-selected="false">Gerenciamento</button>
+                </nav>
+            </div>
+
+            <!-- CONTEÚDO -->
+            <div class="col-12 col-md-8 col-lg-9">
+                <main class="visu-box visu-painel-conteudo">
+
+                    <!-- ABA INTEGRANTES -->
+                    <section class="visu-secao" id="integrantes" role="tabpanel">
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Integrantes</h2>
+                                <p class="section-description">Pessoas que fazem parte deste time.</p>
+                            </div>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante">+ Adicionar integrante</button>
+                        </div>
+                        <div id="mensagensIntegrantes" aria-live="polite"></div>
+                        <div class="row g-3" id="listaIntegrantes">
+                            <!-- Os integrantes vão ser listados aqui pela API -->
+                        </div>
+                    </section>
+
+                    <!-- ABA RESPONSÁVEIS -->
+                    <section class="visu-secao" id="responsaveis" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Responsáveis</h2>
+                                <p class="section-description">Responsáveis vinculados ao time.</p>
+                            </div>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalResponsavel">+ Adicionar responsável</button>
+                        </div>
+                        <div id="mensagensResponsaveis" aria-live="polite"></div>
+                        <div class="visu-cards" id="listaResponsaveis">
+                            <p class="section-description">Carregando responsáveis...</p>
+                        </div>
+                    </section>
+
+                    <!-- ABA TÉCNICO -->
+                    <section class="visu-secao" id="tecnico" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Técnico</h2>
+                                <p class="section-description">Técnico responsável pela orientação do time.</p>
+                            </div>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalTecnico">Gerenciar técnico</button>
+                        </div>
+                        <div class="visu-cards" id="listaTecnico">
+                            <p class="section-description">Carregando técnico...</p>
+                        </div>
+                    </section>
+
+                    <!-- ABA PARTIDAS -->
+                    <section class="visu-secao" id="partidas" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Partidas</h2>
+                                <p class="section-description">Acompanhe os jogos disputados e agendados pelo time.</p>
+                            </div>
+                        </div>
+                        <div id="mensagensPartidas" aria-live="polite"></div>
+                        <div class="partidas-lista" id="listaPartidas">
+
+                            <!-- PARTIDA AGENDADA -->
+                            <article class="partida-card">
+                                <div class="partida-topo">
+                                    <span class="partida-data">12 NOV 2026 · 15:30</span>
+                                    <span class="partida-status agendada">Agendada</span>
+                                </div>
+                                <div class="partida-confronto">
+                                    <div class="partida-time">
+                                        <img src="/assets/img/escudo.jpg" alt="Escudo do ACE">
+                                        <h3>ACE</h3>
+                                    </div>
+                                    <div class="partida-placar">
+                                        <strong>VS</strong>
+                                    </div>
+                                    <div class="partida-time">
+                                        <img src="/assets/img/escudo.jpg" alt="Escudo do adversário">
+                                        <h3>Fênix</h3>
+                                    </div>
+                                </div>
+                                <div class="partida-rodape">
+                                    <span>
+                                        <i class="partida-icone"></i>
+                                        Ginásio Municipal
+                                    </span>
+                                    <span>Campeonato Escolar</span>
+                                </div>
+                            </article>
+
+                            <!-- PARTIDA FINALIZADA -->
+                            <article class="partida-card">
+                                <div class="partida-topo">
+                                    <span class="partida-data">08 NOV 2026 · 14:00</span>
+                                    <span class="partida-status finalizada">Finalizada</span>
+                                </div>
+                                <div class="partida-confronto">
+                                    <div class="partida-time">
+                                        <img src="/assets/img/escudo.jpg" alt="Escudo do ACE">
+                                        <h3>ACE</h3>
+                                    </div>
+                                    <div class="partida-placar">
+                                        <strong>3</strong>
+                                        <span>×</span>
+                                        <strong>1</strong>
+                                    </div>
+                                    <div class="partida-time">
+                                        <img src="/assets/img/escudo.jpg" alt="Escudo do adversário">
+                                        <h3>Fênix</h3>
+                                    </div>
+                                </div>
+                                <div class="partida-rodape">
+                                    <span>
+                                        <i class="partida-icone"></i>
+                                        Ginásio Municipal
+                                    </span>
+                                    <span>Campeonato Escolar</span>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- ABA ESCALAÇÃO -->
+                    <section class="visu-secao" id="escalacao" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Escalação</h2>
+                                <p class="section-description">Visualize e gerencie a formação dos jogadores em campo.</p>
+                            </div>
+                        </div>
+
+                        <div class="escalacao-layout">
+                            <!-- CAMPO DE FUTSAL -->
+                            <div class="card-escalacao">
+                                <div class="campo-futsal" id="campoEscalacao">
+                                    <div class="jogador pivo" id="jogador-pivo">
+                                        <img src="/assets/img/no-prof-pic.png" alt="Foto do pivô">
+                                        <span>Nome do jogador</span>
+                                        <small>Pivô</small>
+                                    </div>
+                                    <div class="jogador ala-esquerda" id="jogador-ala-esquerda">
+                                        <img src="/assets/img/no-prof-pic.png" alt="Foto do ala esquerdo">
+                                        <span>Nome do jogador</span>
+                                        <small>Ala-esquerda</small>
+                                    </div>
+                                    <div class="jogador ala-direita" id="jogador-ala-direita">
+                                        <img src="/assets/img/no-prof-pic.png" alt="Foto do ala direito">
+                                        <span>Nome do jogador</span>
+                                        <small>Ala-direita</small>
+                                    </div>
+                                    <div class="jogador fixo" id="jogador-fixo">
+                                        <img src="/assets/img/no-prof-pic.png" alt="Foto do fixo">
+                                        <span>Nome do jogador</span>
+                                        <small>Fixo</small>
+                                    </div>
+                                    <div class="jogador goleiro" id="jogador-goleiro">
+                                        <img src="/assets/img/no-prof-pic.png" alt="Foto do goleiro">
+                                        <span>Nome do jogador</span>
+                                        <small>Goleiro</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- POSIÇÕES -->
+                            <div class="card-posicoes">
+                                <div class="mb-3">
+                                    <h3 class="section-title">Integrantes por função</h3>
+                                    <p class="section-description">Selecione os jogadores titulares de cada posição.</p>
+                                </div>
+                                <form id="formEscalacao">
+                                    <!-- OS SELETORES SERÃO GERADOS PELO JAVASCRIPT -->
+                                    <div id="listaFuncoesEscalacao">
+                                        <p class="section-description">Carregando funções...</p>
+                                    </div>
+                                    <button type="submit" class="custom-btn custom-btn-primary" id="salvarEscalacao">Salvar escalação</button>
+                                </form>
+                                <div id="mensagemEscalacao" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ABA GERENCIAMENTO -->
+                    <section class="visu-secao" id="gerenciamento" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Gerenciamento</h2>
+                                <p class="section-description">Gerencie as configurações e a composição do time.</p>
+                            </div>
+                        </div>
+                        <div class="visu-cards"></div>
+                    </section>
+
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADICIONAR INTEGRANTE -->
+    <app-modal titulo="Adicionar integrante">
+        <form id="formAdicionarIntegrante">
+            <div class="mb-3">
+                <label for="integranteAluno">Aluno</label>
+                <select class="form-select" id="integranteAluno" name="cd_usuario" required>
+                    <option value="">Selecione um aluno</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="integranteFuncao">Função no time</label>
+                <select class="form-select" id="integranteFuncao" name="cd_funcao_integrante" required>
+                    <option value="">Selecione uma função</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="integranteCamisa">Número da camisa</label>
+                <input type="number" class="form-control" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="integranteCapitao" name="capitao">
+                <label class="form-check-label" for="integranteCapitao">Definir como capitão</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Adicionar integrante</button>
+            </div>
+        </form>
+    </app-modal>
+
+    <!-- MODAL ADICIONAR RESPONSÁVEL -->
+    <app-modal titulo="Adicionar responsável">
+        <form id="formAdicionarResponsavel">
+            <div class="mb-3">
+                <label for="selectResponsavel">Responsável</label>
+                <select class="form-select" id="selectResponsavel" name="cd_responsavel" required>
+                    <option value="">Selecione um responsável</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Adicionar responsável</button>
+            </div>
+        </form>
+    </app-modal>
+
+    <!-- MODAL ADICIONAR TÉCNICO -->
+    <app-modal titulo="Adicionar técnico">
+        <form id="formAdicionarTecnico">
+            <div class="mb-3">
+                <label for="selectTecnico">Técnico</label>
+                <select class="form-select" id="selectTecnico" name="cd_usuario" required>
+                    <option value="">Selecione um técnico</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Adicionar técnico</button>
+            </div>
+        </form>
+    </app-modal>
+
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/time/visualizar.js"></script>
+</body>
+</html>

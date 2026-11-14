@@ -159,7 +159,7 @@
 .lista-conteudo {
     display: flex;
     flex-direction: column;
-        border: 1px solid var(--borda-lista);
+    border: 1px solid var(--borda-lista);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -275,29 +275,6 @@
 
 .lista-item:hover .lista-seta {
     transform: translateX(4px);
-}
-
-
-.lista-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.status-ativa {
-    background: #e5f5e9;
-    color: #23733a;
-}
-
-.status-inativa {
-    background: #fbe8e6;
-    color: #a32d24;
 }
 
 /* Botão editar */

@@ -83,6 +83,11 @@ class VinculoTimeService
         return $this->vinculoTimeModel->listarTecnicosTime($idTime);
     }
 
+    public function listarTecnicosDisponiveis(int $idTime): array
+    {
+        return $this->vinculoTimeModel->listarTecnicosDisponiveis($idTime);
+    }
+
     public function vincularTimeIntegrante
     (
         int $idUsuario,

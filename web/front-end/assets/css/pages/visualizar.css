@@ -1,1283 +1,6 @@
-.header-visualizar {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 9px;
-}
+@import url("./modulos/time.css");
+@import url("./modulos/competicao.css");
 
-.visu-title {
-    font-weight: bold;
-    font-size: 23px;
-    color: var(--azul-principal);
-}
-
-.page-title {
-    color: var(--azul-principal);
-    font-weight: 700;
-    font-size: 15px;
-    margin: 0;
-}
-
-.page-title--large { /*usado em competição*/
-    font-size: 30px;
-} 
-.info-section {
-    width: 100%;
-}
-
-.section-title {
-    margin-bottom: 15px;
-    color: var(--azul-principal);
-
-    font-weight: 600;
-}
-
-.visu-perfil {
-    width: 150px;
-    height: 150px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 3px solid var(--azul-principal);
-    border-radius: 50%;
-    background-color: var(--fundo-form);
-}
-
-.visu-perfil img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 50%;
-}
-
-
-/* Grade dos cards de informações */
-.visu-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-}
-
-/* Cards */
-.visu-grid .visu-box {
-    min-width: 0;
-    padding: 24px;
-    border-radius: 18px;
-    background: var(--branco);
-    box-shadow: var(--shadow-sm);
-}
-
-/* Card de endereço ocupando a largura toda */
-.visu-grid .visu-box--full {
-    grid-column: 1 / -1;
-}
-
-/* Espaçamento interno das informações */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .visu-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .visu-grid .visu-box--full {
-        grid-column: auto;
-    }
-
-    .visu-grid .visu-box {
-        padding: 18px;
-    }
-}
-
-
-/* Card de identificação da escola */
-.visu-identificacao {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-}
-
-/* Imagem do brasão */
-.visu-perfil {
-    width: 150px;
-    height: 150px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.visu-perfil img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* Informações ao lado do brasão */
-.visu-identificacao-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
-}
-
-/* Nome da escola e status */
-.visu-nome-status {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.visu-nome-status h2 {
-    margin: 0;
-}
-
-/* Categoria administrativa */
-.visu-identificacao-info .info-section {
-    margin: 0;
-}
-
-.visu-identificacao-info .section-title {
-    margin-bottom: 6px;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .visu-identificacao {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 18px;
-    }
-
-    .visu-identificacao-info {
-        width: 100%;
-        align-items: center;
-    }
-
-    .visu-nome-status {
-        justify-content: center;
-    }
-}
-
-#botaoStatusEscola {
-    min-height: 34px;
-    padding: 0 12px;
-    font-size: 13px;
-    border-radius: 8px;
-    align-self: flex-start;
-}
-
-@media (max-width: 768px) {
-    #botaoStatusEscola {
-        align-self: center;
-    }
-}
-
-#botaoStatusAluno {
-    min-height: 34px;
-    padding: 0 12px;
-    font-size: 13px;
-    border-radius: 8px;
-    align-self: flex-start;
-}
-
-@media (max-width: 768px) {
-    #botaoStatusEscola {
-        align-self: center;
-    }
-}
-
-
-/* Espaçamento entre os cards da página */
-.content > .visu-box {
-    margin-bottom: 24px;
-}
-
-/* Evita que o último card tenha margem desnecessária */
-.content > .visu-box:last-of-type {
-    margin-bottom: 0;
-}
-
-
-/* =========================
-   BOTÕES DA VISUALIZAÇÃO
-========================= */
-
-.visu-acoes {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-/* Estilo base */
-.visu-acoes .custom-btn,
-.section-header .custom-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 40px;
-    padding: 10px 18px;
-
-    border: 2px solid transparent;
-    border-radius: 10px;
-
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.2;
-    text-align: center;
-    text-decoration: none;
-    white-space: nowrap;
-
-    cursor: pointer;
-    transition:
-        background-color 0.3s ease,
-        color 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
-        transform 0.3s ease;
-}
-
-/* Botões azuis: Partidas e Técnico */
-.visu-acoes .btn-secundario {
-    color: var(--azul-principal);
-    background-color: transparent;
-    border-color: var(--azul-principal);
-}
-
-.visu-acoes .btn-secundario:hover {
-    color: var(--bege-principal);
-    background-color: var(--azul-principal);
-    box-shadow: 0 4px 10px rgba(24, 24, 71, 0.18);
-    transform: translateY(-2px);
-}
-
-/* Botões laranja: Escalação e adicionar */
-.visu-acoes .btn-laranja,
-.section-header .btn-laranja {
-    color: #fff;
-    background-color: var(--laranja-principal);
-    border-color: var(--laranja-principal);
-}
-
-.visu-acoes .btn-laranja:hover,
-.section-header .btn-laranja:hover {
-    color: #fff;
-    background-color: #d93d12;
-    border-color: #d93d12;
-    box-shadow: 0 4px 10px rgba(244, 78, 28, 0.22);
-    transform: translateY(-2px);
-}
-
-/* Foco para navegação por teclado */
-.visu-acoes .custom-btn:focus-visible,
-.section-header .custom-btn:focus-visible {
-    outline: 3px solid var(--laranja-principal);
-    outline-offset: 3px;
-}
-
-/* Cabeçalho das seções */
-.section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.section-header .section-title {
-    margin: 0 0 6px;
-}
-
-.section-description {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.5;
-    opacity: 0.8;
-}
-
-/* Estado desabilitado */
-.visu-acoes .custom-btn:disabled,
-.section-header .custom-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .visu-acoes {
-        justify-content: center;
-        width: 100%;
-    }
-
-    .visu-acoes .custom-btn {
-        flex: 1 1 auto;
-    }
-
-    .section-header {
-        align-items: stretch;
-    }
-
-    .section-header .custom-btn {
-        width: 100%;
-        white-space: normal;
-    }
-}
-
-/* Respeita a preferência por movimento reduzido */
-@media (prefers-reduced-motion: reduce) {
-    .visu-acoes .custom-btn,
-    .section-header .custom-btn {
-        transition: none;
-    }
-
-    .visu-acoes .custom-btn:hover,
-    .section-header .custom-btn:hover {
-        transform: none;
-    }
-}
-
-
-
-
-/* Layout do menu e painel */
-.visu-painel {
-    margin-top: 24px;
-    row-gap: 20px;
-}
-
-.visu-painel > div {
-    min-width: 0;
-}
-
-/* Menu lateral */
-.visu-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-    background: var(--branco);
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-}
-
-.visu-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    min-height: 48px;
-    padding: 12px 14px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--azul-principal);
-    font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.visu-menu-item:hover {
-    background: var(--bege-principal);
-}
-
-.visu-menu-item.active {
-    color: #fff;
-    background: var(--azul-principal);
-}
-
-.visu-menu-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    flex-shrink: 0;
-    font-size: 18px;
-}
-
-.visu-menu-seta {
-    margin-left: auto;
-    font-size: 22px;
-    line-height: 1;
-}
-
-/* Foco acessível */
-.visu-menu-item:focus-visible {
-    outline: 3px solid var(--laranja-principal);
-    outline-offset: 3px;
-}
-
-/* Card de conteúdo à direita */
-.visu-painel-conteudo {
-    min-width: 0;
-    min-height: 340px;
-    padding: 28px;
-}
-
-.visu-secao-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.visu-secao-header .section-title {
-    margin: 0 0 8px;
-}
-
-.section-description {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.6;
-    opacity: 0.8;
-}
-
-.visu-secao[hidden] {
-    display: none !important;
-}
-
-/* Conteúdo das listas */
-.visu-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 0;
-}
-
-.visu-lista-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px;
-    border: 1px solid rgba(24, 24, 71, 0.12);
-    border-radius: 12px;
-    background: var(--branco);
-}
-
-.visu-lista-item img {
-    width: 52px;
-    height: 52px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.visu-lista-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.visu-lista-info h3 {
-    margin: 0 0 5px;
-    color: var(--azul-principal);
-    font-size: 15px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-.visu-lista-info p {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.visu-subsecao {
-    margin-top: 24px;
-}
-
-.visu-subtitulo {
-    margin: 0 0 14px;
-    color: var(--azul-principal);
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.visu-mensagem {
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-/* Botões de ação no painel */
-.visu-secao-header .custom-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    padding: 10px 16px;
-    border: 2px solid var(--laranja-principal);
-    border-radius: 9px;
-    background: var(--branco);
-    color: var(--laranja-principal);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.visu-secao-header .custom-btn:hover {
-    background: var(--laranja-principal);
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.visu-secao-header .custom-btn:focus-visible {
-    outline: 3px solid var(--azul-principal);
-    outline-offset: 3px;
-}
-
-/* Responsividade */
-@media (max-width: 767px) {
-    .visu-menu {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 16px;
-    }
-
-    .visu-menu-item {
-        gap: 8px;
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .visu-menu-seta {
-        display: none;
-    }
-
-    .visu-painel-conteudo {
-        min-height: 260px;
-        padding: 20px;
-    }
-
-    .visu-secao-header {
-        align-items: stretch;
-    }
-
-    .visu-secao-header .custom-btn {
-        width: 100%;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .visu-menu-item,
-    .visu-secao-header .custom-btn {
-        transition: none;
-    }
-}
-
-
-
-
-
-
-
-/* ========================================
-   CARDS DO TIME
-======================================== */
-
-.visu-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-width: 0;
-}
-
-.time-card {
-    min-width: 0;
-    padding: 20px;
-    border: 1px solid rgba(24, 24, 71, 0.12);
-    border-radius: 12px;
-    background: var(--branco, #fff);
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(24, 24, 71, 0.04));
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.time-card:hover {
-    border-color: rgba(244, 78, 28, 0.4);
-    box-shadow: 0 4px 14px rgba(24, 24, 71, 0.07);
-}
-
-/* ========================================
-   CARD DE PARTIDA
-======================================== */
-
-.partida-card-topo,
-.partida-card-rodape {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.partida-card-topo {
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(24, 24, 71, 0.1);
-}
-
-.partida-status,
-.pessoa-tag {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 5px 10px;
-    border-radius: 20px;
-    background: var(--bege-principal, #F1E4D1);
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.partida-data {
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    opacity: 0.75;
-}
-
-.partida-confronto {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 16px;
-    padding: 24px 0;
-}
-
-.partida-time {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    overflow-wrap: anywhere;
-}
-
-.partida-escudo {
-    width: 58px;
-    height: 58px;
-    object-fit: contain;
-    border: 2px solid var(--azul-principal);
-    border-radius: 50px;
-}
-
-.partida-placar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--azul-principal, #181847);
-    font-size: 25px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.partida-x {
-    color: var(--laranja-principal, #F44E1C);
-    font-size: 18px;
-}
-
-.partida-card-rodape {
-    padding-top: 14px;
-    border-top: 1px solid rgba(24, 24, 71, 0.1);
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-/* ========================================
-   CARDS DE PESSOAS
-======================================== */
-
-.pessoa-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.pessoa-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 58px;
-    height: 58px;
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: 50%;
-    background: var(--bege-principal, #F1E4D1);
-    border: 2px solid var(--azul-principal);
-    border-radius: 50px;
-    
-}
-
-.pessoa-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.pessoa-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.pessoa-info h3 {
-    margin: 0 0 6px;
-    color: var(--azul-principal, #181847);
-    font-size: 15px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-.pessoa-info p {
-    margin: 0 0 9px;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.5;
-    opacity: 0.75;
-    overflow-wrap: anywhere;
-}
-
-.pessoa-acao {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--laranja-principal, #F44E1C);
-    font-size: 30px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.pessoa-acao:hover {
-    background: var(--bege-principal, #F1E4D1);
-}
-
-.pessoa-acao:focus-visible {
-    outline: 3px solid var(--laranja-principal, #F44E1C);
-    outline-offset: 3px;
-}
-
-/* ========================================
-   RESPONSIVIDADE
-======================================== */
-
-@media (max-width: 575px) {
-    .time-card {
-        padding: 16px;
-    }
-
-    .partida-confronto {
-        gap: 8px;
-        padding: 20px 0;
-    }
-
-    .partida-escudo {
-        width: 38px;
-        height: 38px;
-    }
-
-    .partida-time {
-        font-size: 11px;
-    }
-
-    .partida-placar {
-        gap: 7px;
-        font-size: 20px;
-    }
-
-    .partida-card-rodape {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .pessoa-card {
-        gap: 12px;
-    }
-
-    .pessoa-avatar {
-        width: 46px;
-        height: 46px;
-    }
-
-    .pessoa-info h3 {
-        font-size: 14px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .time-card {
-        transition: none;
-    }
-}
-
-
-
-/* ========================================
-   ABA ESCALAÇÃO
-======================================== */
-
-.escalacao-conteudo {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: 20px;
-    align-items: start;
-}
-
-.escalacao-card {
-    min-width: 0;
-    padding: 24px;
-    border: 1px solid rgba(24, 24, 71, 0.12);
-    border-radius: 12px;
-    background: var(--branco, #fff);
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(24, 24, 71, 0.04));
-}
-
-.escalacao-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 22px;
-}
-
-.escalacao-card-titulo {
-    margin: 0 0 7px;
-    color: var(--azul-principal, #181847);
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.escalacao-card-descricao {
-    margin: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0.7;
-}
-
-/* IMAGEM */
-
-.escalacao-imagem-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    overflow: hidden;
-    border: 1px dashed rgba(24, 24, 71, 0.22);
-    border-radius: 10px;
-    background: var(--bege-principal, #F1E4D1);
-}
-
-.escalacao-imagem {
-    display: block;
-    width: 100%;
-    max-height: 480px;
-    object-fit: contain;
-}
-
-.escalacao-imagem[hidden] {
-    display: none !important;
-}
-
-.escalacao-vazio {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    padding: 35px 24px;
-    text-align: center;
-}
-
-.escalacao-vazio[hidden] {
-    display: none !important;
-}
-
-.escalacao-vazio-icone {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 18px;
-    border-radius: 16px;
-    background: var(--branco, #fff);
-    font-size: 30px;
-}
-
-.escalacao-vazio h4 {
-    margin: 0 0 10px;
-    color: var(--azul-principal, #181847);
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.escalacao-vazio p {
-    max-width: 300px;
-    margin: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.7;
-    opacity: 0.75;
-}
-
-/* INFORMAÇÕES */
-
-.escalacao-informacoes {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.escalacao-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    min-width: 0;
-    padding: 16px;
-    border-radius: 10px;
-    background: var(--bege-principal, #F1E4D1);
-}
-
-.escalacao-info-label {
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.75;
-}
-
-.escalacao-info-item strong {
-    color: var(--azul-principal, #181847);
-    font-size: 15px;
-    overflow-wrap: anywhere;
-}
-
-.escalacao-status {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 11px;
-    border-radius: 20px;
-    background: rgba(244, 78, 28, 0.12);
-    color: var(--laranja-principal, #F44E1C);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.escalacao-status[hidden] {
-    display: none !important;
-}
-
-/* TITULARES E RESERVAS */
-
-.escalacao-jogadores {
-    margin-top: 26px;
-}
-
-.escalacao-subtitulo {
-    margin: 0 0 14px;
-    color: var(--azul-principal, #181847);
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.escalacao-subtitulo-reservas {
-    margin-top: 24px;
-}
-
-.escalacao-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 0;
-}
-
-.escalacao-jogador {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-    padding: 12px;
-    border: 1px solid rgba(24, 24, 71, 0.1);
-    border-radius: 10px;
-}
-
-.escalacao-jogador-foto {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--bege-principal, #F1E4D1);
-    object-fit: cover;
-}
-
-.escalacao-jogador-info {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 0;
-}
-
-.escalacao-jogador-info strong {
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    overflow-wrap: anywhere;
-}
-
-.escalacao-jogador-info span {
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.7;
-}
-
-.escalacao-texto-vazio {
-    margin: 0;
-    padding: 14px;
-    border-radius: 8px;
-    background: rgba(24, 24, 71, 0.04);
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-/* RESPONSIVIDADE */
-
-@media (max-width: 900px) {
-    .escalacao-conteudo {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .escalacao-imagem-container {
-        min-height: 240px;
-    }
-}
-
-@media (max-width: 575px) {
-    .escalacao-card {
-        padding: 17px;
-    }
-
-    .escalacao-card-titulo {
-        font-size: 16px;
-    }
-
-    .escalacao-informacoes {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .escalacao-imagem-container {
-        min-height: 200px;
-    }
-}
-
-
-
-
-/* ========================================
-   VISUALIZAÇÃO DA COMPETIÇÃO
-======================================== */
-.competicao-layout {
-    display: grid;
-    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
-    align-items: start;
-    gap: 20px;
-}
-.competicao-menu-lateral {
-    min-width: 0;
-}
-.competicao-menu-lateral .visu-menu {
-    position: sticky;
-    top: 20px;
-}
-.competicao-layout .visu-painel-conteudo {
-    min-width: 0;
-    min-height: 400px;
-    margin-top: 0;
-    padding: 28px;
-    border-radius: 16px;
-    background: var(--branco);
-    box-shadow: var(--shadow-sm);
-}
-.competicao-layout .visu-secao {
-    min-width: 0;
-}
-.competicao-layout .visu-secao[hidden] {
-    display: none !important;
-}
-/* ========================================
-   INFORMAÇÕES DA COMPETIÇÃO
-======================================== */
-.competicao-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-.competicao-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    min-width: 0;
-    padding: 18px;
-    border-radius: 10px;
-    background: var(--bege-principal);
-}
-.competicao-info-item span {
-    color: var(--azul-principal);
-    font-size: 13px;
-    opacity: 0.75;
-}
-.competicao-info-item strong {
-    color: var(--azul-principal);
-    font-size: 15px;
-    overflow-wrap: anywhere;
-}
-.competicao-info-item--full {
-    grid-column: 1 / -1;
-}
-.competicao-info-bloco {
-    margin-bottom: 26px;
-}
-.competicao-subsecao {
-    margin-top: 28px;
-}
-.competicao-subsecao .visu-secao-header {
-    margin-bottom: 16px;
-}
-.competicao-layout .visu-subtitulo {
-    margin: 0 0 14px;
-    color: var(--azul-principal);
-    font-size: 16px;
-    font-weight: 700;
-}
-/* ========================================
-   FORMULÁRIO DE INSCRIÇÃO
-======================================== */
-.competicao-form {
-    display: flex;
-    align-items: end;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-.competicao-form-campo {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 180px;
-}
-.competicao-form-campo label {
-    color: var(--azul-principal);
-    font-size: 13px;
-    font-weight: 600;
-}
-.competicao-form-campo select {
-    width: 100%;
-    min-height: 44px;
-    padding: 10px 12px;
-    border: 1px solid rgba(24, 24, 71, 0.2);
-    border-radius: 9px;
-    background: var(--branco);
-    color: var(--azul-principal);
-    font: inherit;
-}
-.competicao-form-campo select:focus-visible {
-    outline: 3px solid var(--laranja-principal);
-    outline-offset: 2px;
-}
-.competicao-form .custom-btn {
-    min-height: 44px;
-}
-.competicao-form .custom-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-/* ========================================
-   GERENCIAMENTO
-======================================== */
-.competicao-gerenciar-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.competicao-gerenciar-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 18px;
-    border: 1px solid rgba(24, 24, 71, 0.12);
-    border-radius: 12px;
-    background: var(--branco);
-    color: var(--azul-principal);
-    text-decoration: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-.competicao-gerenciar-item:hover {
-    border-color: var(--laranja-principal);
-    background: var(--bege-principal);
-}
-.competicao-gerenciar-item > div {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
-}
-.competicao-gerenciar-item strong {
-    font-size: 14px;
-    font-weight: 700;
-}
-.competicao-gerenciar-item span {
-    font-size: 12px;
-    opacity: 0.75;
-}
-.competicao-gerenciar-seta {
-    color: var(--laranja-principal);
-    font-size: 26px !important;
-    font-weight: 600;
-}
-.competicao-gerenciar-item:focus-visible {
-    outline: 3px solid var(--laranja-principal);
-    outline-offset: 3px;
-}
-/* ========================================
-   MENSAGENS
-======================================== */
 .mensagem-sucesso,
 .mensagem-erro {
     margin-bottom: 18px;
@@ -1286,52 +9,144 @@
     font-size: 13px;
     line-height: 1.5;
 }
+
 .mensagem-sucesso {
     background: rgba(40, 150, 90, 0.12);
     color: #17643a;
 }
+
 .mensagem-erro {
     background: rgba(220, 53, 69, 0.1);
     color: #a52232;
 }
-.competicao-layout .visu-mensagem {
-    margin: 0;
-    padding: 16px;
-    border-radius: 9px;
-    background: var(--bege-principal);
+
+
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+.header-visualizar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ========================================
+   IDENTIFICAÇÃO DA ESCOLA
+======================================== */
+
+.visu-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.visu-perfil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 3px solid var(--azul-principal);
+    border-radius: 50%;
+}
+
+.visu-perfil img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.visu-identificacao-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.visu-nome-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+
+
+.visu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.visu-box--full {
+    grid-column: 1 / -1;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.section-title{
     color: var(--azul-principal);
 }
+.info-section {
+    min-width: 0;
+}
+
+.info-section p {
+    overflow-wrap: anywhere;
+}
+
+.value-info {
+    margin: 0;
+}
+
+/* ========================================
+   MENSAGEM
+======================================== */
+
+.visu-mensagem {
+    margin: 12px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 /* ========================================
    RESPONSIVIDADE
 ======================================== */
-@media (max-width: 767px) {
-    .competicao-layout {
+
+@media (max-width: 768px) {
+    .visu-identificacao {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .visu-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .visu-box--full {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 575px) {
+    .visu-perfil img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .info-grid {
         grid-template-columns: minmax(0, 1fr);
         gap: 14px;
     }
-    .competicao-menu-lateral .visu-menu {
-        position: static;
-    }
-    .competicao-layout .visu-painel-conteudo {
-        min-height: 280px;
-        padding: 20px;
-    }
-    .competicao-info-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    .competicao-info-item--full {
-        grid-column: auto;
-    }
-    .competicao-form {
-        align-items: stretch;
+
+    .visu-nome-status {
+        align-items: flex-start;
         flex-direction: column;
-    }
-    .competicao-form .custom-btn {
-        width: 100%;
-    }
-}
-@media (prefers-reduced-motion: reduce) {
-    .competicao-gerenciar-item {
-        transition: none;
     }
 }

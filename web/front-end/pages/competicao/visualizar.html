@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <title>Visualizar competição</title>
+</head>
+<body>
+    <app-bar></app-bar>
+    <app-sidebar></app-sidebar>
+
+    <div class="content">
+        <div class="visu-box mt-4">
+            <div class="header-visualizar">
+                <a href="/competicoes/listar" class="btn-voltar" aria-label="Voltar">
+                    <img src="/assets/img/icon.svg" alt="">
+                </a>
+                <div>
+                    <h1 class="page-title page-title--large" id="nomeCompeticao">Carregando competição...</h1>
+                    <p class="section-description">Visualize e gerencie as informações da competição.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row visu-painel">
+            <!-- MENU LATERAL -->
+            <div class="col-12 col-md-4 col-lg-3">
+                <nav class="visu-menu" aria-label="Menu da competição">
+                    <button type="button" class="visu-menu-item active" data-aba="inscricao" aria-selected="true">
+                        Inscrição
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="localedata" aria-selected="false">
+                        Local e datas
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="times" aria-selected="false">
+                        Times inscritos
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="arbitros" aria-selected="false">
+                        Árbitros
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="chaveamento" aria-selected="false">
+                        Chaveamento
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="etapas" aria-selected="false">
+                        Etapas
+                    </button>
+                    <button type="button" class="visu-menu-item" data-aba="gerir" aria-selected="false" data-gerenciar>
+                        Gerenciamento
+                    </button>
+                </nav>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9">
+                <main class="visu-box visu-painel-conteudo">
+
+                    <!-- ABA DE INSCRIÇÃO -->
+                    <section class="visu-secao" id="inscricao" role="tabpanel">
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Inscrição</h2>
+                                <p class="section-description">Gerencie as inscrições dos times participantes.</p>
+                            </div>
+                        </div>
+
+                        <div id="mensagensInscricao" aria-live="polite"></div>
+
+                        <div class="competicao-info-bloco">
+                            <h3 class="visu-subtitulo">Período de inscrição</h3>
+                            <div class="competicao-info-grid">
+                                <div class="competicao-info-item">
+                                    <span>Data de início</span>
+                                    <strong id="inicioInscricao">Não definida</strong>
+                                </div>
+                                <div class="competicao-info-item">
+                                    <span>Data de encerramento</span>
+                                    <strong id="fimInscricao">Não definida</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="competicao-subsecao">
+                            <div class="visu-secao-header">
+                                <div>
+                                    <h3 class="visu-subtitulo">Inscrever time</h3>
+                                    <p class="section-description">Selecione um time disponível para participar.</p>
+                                </div>
+                            </div>
+
+                            <form id="formInscreverTime" class="competicao-form">
+                                <div class="competicao-form-campo">
+                                    <label for="timeDisponivel">Time</label>
+                                    <select id="timeDisponivel" name="id_time" required>
+                                        <option value="">Selecione um time</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="custom-btn btn-laranja" id="botaoInscreverTime">
+                                    Inscrever time
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Times inscritos</h3>
+                            <div class="visu-cards" id="listaTimesInscritos"></div>
+                            <p class="visu-mensagem" id="mensagemTimesInscritos">Nenhum time inscrito até o momento.</p>
+                        </div>
+                    </section>
+
+                    <!-- ABA DE LOCAL E DATAS -->
+                    <section class="visu-secao" id="localedata" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Local e datas</h2>
+                                <p class="section-description">Confira quando e onde acontecerá a competição.</p>
+                            </div>
+                        </div>
+
+                        <div class="competicao-info-grid">
+                            <div class="competicao-info-item">
+                                <span>Data de início</span>
+                                <strong id="dataInicio">Não definida</strong>
+                            </div>
+                            <div class="competicao-info-item">
+                                <span>Data de encerramento</span>
+                                <strong id="dataFim">Não definida</strong>
+                            </div>
+                            <div class="competicao-info-item competicao-info-item--full">
+                                <span>Local</span>
+                                <strong id="localCompeticao">Não definido</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ABA DE TIMES -->
+                    <section class="visu-secao" id="times" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Times inscritos</h2>
+                                <p class="section-description">Confira os times participantes desta competição.</p>
+                            </div>
+                        </div>
+                        <div class="visu-cards" id="listaTimesCompeticao"></div>
+                        <p class="visu-mensagem" id="mensagemTimesCompeticao">Nenhum time inscrito até o momento.</p>
+                    </section>
+
+                    <!-- ABA DE ÁRBITROS -->
+                    <section class="visu-secao" id="arbitros" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Árbitros</h2>
+                                <p class="section-description">Confira os árbitros responsáveis pela competição.</p>
+                            </div>
+                        </div>
+                        <div class="visu-cards" id="listaArbitros"></div>
+                        <p class="visu-mensagem" id="mensagemArbitros">Nenhum árbitro cadastrado até o momento.</p>
+                    </section>
+
+                    <!-- ABA DE CHAVEAMENTO -->
+                    <section class="visu-secao" id="chaveamento" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Chaveamento</h2>
+                                <p class="section-description">Confira os confrontos e as fases da competição.</p>
+                            </div>
+                        </div>
+                        <div class="chaveamento" id="chaveamento-container"></div>
+                        <p class="visu-mensagem" id="mensagemChaveamento">O chaveamento ainda não foi gerado.</p>
+                    </section>
+
+                    <!-- ABA DE ETAPAS -->
+                    <section class="visu-secao" id="etapas" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Etapas</h2>
+                                <p class="section-description">Confira as etapas cadastradas nesta competição.</p>
+                            </div>
+                        </div>
+                        <div class="visu-cards" id="listaEtapas"></div>
+                        <p class="visu-mensagem" id="mensagemEtapas">Esta competição ainda não possui etapas cadastradas.</p>
+                    </section>
+
+                    <!-- ABA DE GERENCIAMENTO -->
+                    <section class="visu-secao" id="gerir" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Gerenciar competição</h2>
+                                <p class="section-description">Acesse as opções de edição e gerenciamento.</p>
+                            </div>
+                        </div>
+
+                        <div class="competicao-gerenciar-lista">
+                            <a href="#" id="editarCompeticao" class="competicao-gerenciar-item">
+                                <div>
+                                    <strong>Informações da competição</strong>
+                                    <span>Editar nome e demais informações.</span>
+                                </div>
+                                <span class="competicao-gerenciar-seta">›</span>
+                            </a>
+
+                            <a href="#" id="editarInscricao" class="competicao-gerenciar-item">
+                                <div>
+                                    <strong>Período de inscrição</strong>
+                                    <span>Alterar as datas de inscrição.</span>
+                                </div>
+                                <span class="competicao-gerenciar-seta">›</span>
+                            </a>
+
+                            <a href="#" id="editarLocalDatas" class="competicao-gerenciar-item">
+                                <div>
+                                    <strong>Locais e datas</strong>
+                                    <span>Editar o local e o período da competição.</span>
+                                </div>
+                                <span class="competicao-gerenciar-seta">›</span>
+                            </a>
+
+                            <a href="#" id="editarEtapas" class="competicao-gerenciar-item">
+                                <div>
+                                    <strong>Etapas da competição</strong>
+                                    <span>Editar as etapas cadastradas.</span>
+                                </div>
+                                <span class="competicao-gerenciar-seta">›</span>
+                            </a>
+                        </div>
+                    </section>
+
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/competicao/visualizar.js"></script>
+</body>
+</html>

@@ -47,9 +47,11 @@
     </app-lista>
 </div>
 
+
 <!-- Modal de cadastro -->
 <app-modal titulo="Cadastrar time">
     <form id="form-time">
+
         <div class="form-identificacao">
 
             <div class="form-imagem">
@@ -57,66 +59,121 @@
                     <img src="/assets/img/escudo.jpg" alt="" class="icone-camera">
                     <span class="imagem-adicionar" aria-hidden="true">+</span>
                 </label>
-                <input type="file" accept="image/jpeg,image/png,image/webp" name="path_escudo" id="escudoTime" hidden>
+
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    name="path_escudo"
+                    id="escudoTime"
+                    hidden
+                >
             </div>
 
             <div class="form-campos-principais">
+
                 <div class="campo-form">
                     <label for="nomeTime" class="form-label">Nome do time</label>
-                    <input class="form-control form-input" type="text" id="nomeTime" name="nm_time" placeholder="Digite o nome do time" required>
+                    <input
+                        class="form-control form-input"
+                        type="text"
+                        id="nomeTime"
+                        name="nm_time"
+                        placeholder="Digite o nome do time"
+                        required
+                    >
                 </div>
-           
 
-                <div class="campo-form col-md-6" id="campoEscolaTime">
+                <div class="campo-form">
                     <label for="escolaTime" class="form-label">Escola</label>
                     <select class="form-input" id="escolaTime" name="cd_escola" required>
                         <option value="" selected disabled>Selecione uma escola</option>
                     </select>
                 </div>
 
-                <div class="campo-form col-md-6">
+                <div class="campo-form">
                     <label for="esporteTime" class="form-label">Esporte</label>
                     <select class="form-input" id="esporteTime" name="cd_esporte" required>
                         <option value="" selected disabled>Selecione um esporte</option>
                     </select>
                 </div>
-             </div>
 
-             <div class="modal-footer">
-                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
-                <button type="submit" class="custom-btn custom-btn-primary"> Cadastrar </button> 
             </div>
-            
         </div>
+
+        <div class="modal-footer">
+            <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
+                Cancelar
+            </button>
+
+            <button type="submit" class="custom-btn custom-btn-primary">
+                Cadastrar
+            </button>
+        </div>
+
     </form>
 </app-modal>
 
-<!-- Modal de edição -->
+
+
+<!-- Modal de editar -->
 <app-modal titulo="Editar time">
     <form id="form-editar-time">
+
         <input type="hidden" id="editarIdTime" name="cd_time">
+
         <div class="form-identificacao">
+
             <div class="form-imagem">
                 <label for="editarEscudoTime" class="seletor-imagem">
-                    <img src="/assets/img/escudo.jpg" alt="" class="icone-camera">
+                    <img
+                        src="/assets/img/escudo.jpg"
+                        alt=""
+                        class="icone-camera"
+                        id="editarPreviewEscudo"
+                    >
                     <span class="imagem-adicionar" aria-hidden="true">+</span>
                 </label>
-                <input type="file" accept="image/jpeg,image/png,image/webp" name="path_escudo" id="editarEscudoTime" hidden>
-            </div>
-            <div class="form-campos-principais">
-                <div class="campo-form">
-                    <label for="editarNomeTime" class="form-label">Nome do time</label>
-                    <input class="form-control form-input" type="text" id="editarNomeTime" name="nm_time" placeholder="Digite o nome do time" required>
-                </div>
+
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    name="path_escudo"
+                    id="editarEscudoTime"
+                    hidden
+                >
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
-                <button type="submit" class="custom-btn custom-btn-primary"> Confirmar </button> 
+            <div class="form-campos-principais">
+
+                <div class="campo-form">
+                    <label for="editarNomeTime" class="form-label">Nome do time</label>
+                    <input
+                        class="form-control form-input"
+                        type="text"
+                        id="editarNomeTime"
+                        name="nm_time"
+                        placeholder="Digite o nome do time"
+                        required
+                    >
+                </div>
+
             </div>
+
         </div>
+
+        <div class="modal-footer">
+            <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
+                Cancelar
+            </button>
+
+            <button type="submit" class="custom-btn custom-btn-primary">
+                Confirmar
+            </button>
+        </div>
+
     </form>
 </app-modal>
+
 
 <script type="module" src="/assets/js/main.js"></script>
 <script type="module" src="/assets/js/pages/time/listar.js"></script>

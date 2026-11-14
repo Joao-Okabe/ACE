@@ -197,6 +197,36 @@ $router->put(
     [VinculoTimeApiController::class, 'salvarEscalacao']
 );
 
+$router->get(
+    '/api/times/{id}/integrantes',
+    [VinculoTimeApiController::class, 'listarIntegrantes']
+);
+
+$router->get(
+    '/api/times/{id}/funcoes',
+    [VinculoTimeApiController::class, 'listarFuncoesIntegrante']
+);
+
+$router->get(
+    '/api/times/{id}/responsaveis',
+    [VinculoTimeApiController::class, 'listarResponsaveis']
+);
+
+$router->get(
+    '/api/times/{id}/responsaveis/disponiveis',
+    [VinculoTimeApiController::class, 'listarResponsaveisDisponiveis']
+);
+
+$router->get(
+    '/api/times/{id}/tecnicos',
+    [VinculoTimeApiController::class, 'listarTecnicos']
+);
+
+$router->get(
+    '/api/times/{id}/tecnicos/disponiveis',
+    [VinculoTimeApiController::class, 'listarTecnicosDisponiveis']
+);
+
 // Zona de Teste!!!!!!!1
 $authV1 = new AuthV1Controller();
 

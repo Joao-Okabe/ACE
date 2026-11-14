@@ -1,0 +1,273 @@
+/* ========================================
+   LAYOUT DA COMPETIÇÃO
+======================================== */
+
+.competicao-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+}
+
+.competicao-menu-lateral {
+    min-width: 0;
+}
+
+.competicao-menu-lateral .visu-menu {
+    position: sticky;
+    top: 20px;
+}
+
+.competicao-layout .visu-painel-conteudo {
+    min-width: 0;
+    min-height: 400px;
+    margin-top: 0;
+    padding: 28px;
+    border-radius: 16px;
+    background: var(--branco);
+    box-shadow: var(--shadow-sm);
+}
+
+.competicao-layout .visu-secao {
+    min-width: 0;
+}
+
+.competicao-layout .visu-secao[hidden] {
+    display: none !important;
+}
+
+/* ========================================
+   INFORMAÇÕES DA COMPETIÇÃO
+======================================== */
+
+.competicao-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.competicao-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+    padding: 18px;
+    border-radius: 10px;
+    background: var(--bege-principal);
+}
+
+.competicao-info-item span {
+    color: var(--azul-principal);
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+.competicao-info-item strong {
+    color: var(--azul-principal);
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+
+.competicao-info-item--full {
+    grid-column: 1 / -1;
+}
+
+.competicao-info-bloco {
+    margin-bottom: 26px;
+}
+
+.competicao-subsecao {
+    margin-top: 28px;
+}
+
+.competicao-subsecao .visu-secao-header {
+    margin-bottom: 16px;
+}
+
+.competicao-layout .visu-subtitulo {
+    margin: 0 0 14px;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* ========================================
+   FORMULÁRIO DE INSCRIÇÃO
+======================================== */
+
+.competicao-form {
+    display: flex;
+    align-items: end;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.competicao-form-campo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+}
+
+.competicao-form-campo label {
+    color: var(--azul-principal);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.competicao-form-campo select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(24, 24, 71, 0.2);
+    border-radius: 9px;
+    background: var(--branco);
+    color: var(--azul-principal);
+    font: inherit;
+}
+
+.competicao-form-campo select:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+
+.competicao-form .custom-btn {
+    min-height: 44px;
+}
+
+.competicao-form .custom-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   GERENCIAMENTO
+======================================== */
+
+.competicao-gerenciar-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.competicao-gerenciar-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid rgba(24, 24, 71, 0.12);
+    border-radius: 12px;
+    background: var(--branco);
+    color: var(--azul-principal);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.competicao-gerenciar-item:hover {
+    border-color: var(--laranja-principal);
+    background: var(--bege-principal);
+}
+
+.competicao-gerenciar-item > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.competicao-gerenciar-item strong {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.competicao-gerenciar-item span {
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+.competicao-gerenciar-seta {
+    color: var(--laranja-principal);
+    font-size: 26px !important;
+    font-weight: 600;
+}
+
+.competicao-gerenciar-item:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+/* ========================================
+   MENSAGENS
+======================================== */
+
+.mensagem-sucesso,
+.mensagem-erro {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.mensagem-sucesso {
+    background: rgba(40, 150, 90, 0.12);
+    color: #17643a;
+}
+
+.mensagem-erro {
+    background: rgba(220, 53, 69, 0.1);
+    color: #a52232;
+}
+
+.competicao-layout .visu-mensagem {
+    margin: 0;
+    padding: 16px;
+    border-radius: 9px;
+    background: var(--bege-principal);
+    color: var(--azul-principal);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 767px) {
+    .competicao-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .competicao-menu-lateral .visu-menu {
+        position: static;
+    }
+
+    .competicao-layout .visu-painel-conteudo {
+        min-height: 280px;
+        padding: 20px;
+    }
+
+    .competicao-info-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .competicao-info-item--full {
+        grid-column: auto;
+    }
+
+    .competicao-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .competicao-form .custom-btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .competicao-gerenciar-item {
+        transition: none;
+    }
+}

@@ -184,8 +184,8 @@ class TimeApiController
 
             $dados['path_escudo'] = null;
         } else {
-            $dados = $_POST;
-            $dados['path_escudo'] = $_FILES['path_escudo'] ?? null;
+            [$dados, $arquivos] = request_parse_body();
+            $dados['path_escudo'] = $arquivos['path_escudo'] ?? null;
         }
 
         try {

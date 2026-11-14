@@ -390,4 +390,48 @@ class VinculoTime extends Model{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function listarTecnicosDisponiveis(int $idTime): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT
+                u.cd_usuario,
+                u.nm_usuario,
+                u.email
+            FROM usuario u
+            INNER JOIN vinculo_usuario_escola vue
+                ON vue.cd_usuario = u.cd_usuario
+            INNER JOIN vinculo_time_escola vte
+                ON vte.cd_escola = vue.cd_escola
+            WHERE vte.cd_time = :cd_time
+                AND vte.ativo = TRUE
+                AND vue.ativo = TRUE
+                AND u.ativo = TRUE
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM vinculo_tecnico_time vtt
+                    WHERE vtt.cd_usuario = u.cd_usuario
+                        AND vtt.cd_time = :cd_time_excluir
+                        AND vtt.ativo = TRUE
+                    )
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM vinculo_usuario_escola vue_aluno
+                    INNER JOIN papel p
+                        ON p.cd_papel = vue_aluno.cd_papel
+                    WHERE vue_aluno.cd_usuario = u.cd_usuario
+                        AND vue_aluno.cd_escola = vte.cd_escola
+                        AND vue_aluno.ativo = TRUE
+                        AND p.nm_papel = 'ALU'
+                    )
+                ORDER BY u.nm_usuario
+            ");
+
+        $stmt->execute([
+            ':cd_time' => $idTime,
+            ':cd_time_excluir' => $idTime
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

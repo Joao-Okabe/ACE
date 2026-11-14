@@ -37,6 +37,174 @@ class VinculoTimeApiController
         return $_POST;
     }
 
+    public function listarIntegrantes(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $integrantes = $this->service()->listarIntegrantesTime($idTime);
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $integrantes
+            ]);
+        } catch (Throwable $e) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function listarResponsaveis(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $responsaveis = $this->service()->listarResponsaveisTime($idTime);
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $responsaveis
+            ]);
+        } catch (Throwable $e) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 422);
+        }
+    }   
+
+
+    public function listarResponsaveisDisponiveis(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+
+            $responsaveis = $this->service()->listarResponsaveis();
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $responsaveis
+            ]);
+        } catch (Throwable $e) {
+            $mensagem = $e->getMessage();
+
+            if (str_contains(mb_strtolower($mensagem), 'permissão')) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => $mensagem
+                ], 403);
+            }
+
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $mensagem
+            ], 422);
+        }
+    }
+
+
+    public function listarTecnicos(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $tecnicos = $this->service()->listarTecnicosTime($idTime);
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $tecnicos
+            ]);
+        } catch (Throwable $e) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function listarTecnicosDisponiveis(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $this->service()->exigirPermissaoGerenciarTime($idTime);
+
+            $tecnicos = $this->service()->listarTecnicosDisponiveis($idTime);
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $tecnicos
+            ]);
+        } catch (Throwable $e) {
+            $mensagem = $e->getMessage();
+
+            if (str_contains(mb_strtolower($mensagem), 'permissão')) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => $mensagem
+                ], 403);
+            }
+
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $mensagem
+            ], 422);
+        }
+    }
+
+    public function listarFuncoesIntegrante(int $idTime): void
+    {
+        if ($idTime <= 0) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => 'ID do time inválido.'
+            ], 400);
+        }
+
+        try {
+            $funcoes = $this->service()->listarFuncoesIntegranteTime($idTime);
+
+            Response::json([
+                'sucesso' => true,
+                'dados' => $funcoes
+            ]);
+        } catch (Throwable $e) {
+            Response::json([
+                'sucesso' => false,
+                'mensagem' => $e->getMessage()
+            ], 422);
+        }
+    }
+
     public function vincularResponsavel(int $idTime): void
     {
         if ($idTime <= 0) {
