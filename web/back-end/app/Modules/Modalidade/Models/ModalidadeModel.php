@@ -8,7 +8,6 @@ class Modalidade extends Model
             SELECT * FROM modalidade
         "); 
 
-        $modalidade = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $modalidade?: null;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

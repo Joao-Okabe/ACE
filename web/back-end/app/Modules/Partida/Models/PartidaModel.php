@@ -207,9 +207,21 @@ class Partida extends Model
     public function listarVisiveis(int $idUsuario, array $filtros = []): array
     {
         $sql = "
-            SELECT DISTINCT p.cd_partida
+            SELECT DISTINCT
+                p.*,
+                ip.inicio_em,
+                ip.fim_em,
+                ip.local_partida,
+                ip.observacoes,
+                c.nm_competicao,
+                e.nm_esporte,
+                m.sexo,
+                m.categoria
             FROM partida p
+            LEFT JOIN info_partida ip ON ip.cd_partida = p.cd_partida
             LEFT JOIN competicao c ON c.cd_competicao = p.cd_competicao
+            LEFT JOIN esporte e ON e.cd_esporte = COALESCE(p.cd_esporte, c.cd_esporte)
+            LEFT JOIN modalidade m ON m.cd_modalidade = COALESCE(p.cd_modalidade, c.cd_modalidade)
             WHERE
                 -- Primeiro: o usuário precisa ter acesso à competição-pai.
                 (
@@ -221,12 +233,46 @@ class Partida extends Model
                         WHERE pc.cd_competicao = c.cd_competicao
                           AND pc.cd_usuario = :usuario_participante_competicao
                     )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM usuario_papel up
+                        JOIN papel papel_adm ON papel_adm.cd_papel = up.cd_papel
+                        WHERE up.cd_usuario = :usuario_administrador_competicao
+                          AND up.ativo = TRUE
+                          AND papel_adm.nm_papel = 'ADM'
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM vinculo_usuario_escola vue
+                        JOIN papel papel_dir ON papel_dir.cd_papel = vue.cd_papel
+                        WHERE vue.cd_usuario = :usuario_diretor_competicao
+                          AND vue.cd_escola = c.cd_escola
+                          AND vue.ativo = TRUE
+                          AND papel_dir.nm_papel = 'DIR'
+                    )
                 )
                 -- Segundo: também precisa ter acesso à própria partida.
                 AND (
                     p.visibilidade = 'PUBLICA'
                     OR p.cd_criador = :usuario_criador_partida
                     OR c.cd_criador = :usuario_criador_da_competicao
+                    OR EXISTS (
+                        SELECT 1
+                        FROM usuario_papel up
+                        JOIN papel papel_adm ON papel_adm.cd_papel = up.cd_papel
+                        WHERE up.cd_usuario = :usuario_administrador_partida
+                          AND up.ativo = TRUE
+                          AND papel_adm.nm_papel = 'ADM'
+                    )
+                    OR EXISTS (
+                        SELECT 1
+                        FROM vinculo_usuario_escola vue
+                        JOIN papel papel_dir ON papel_dir.cd_papel = vue.cd_papel
+                        WHERE vue.cd_usuario = :usuario_diretor_partida
+                          AND vue.cd_escola = c.cd_escola
+                          AND vue.ativo = TRUE
+                          AND papel_dir.nm_papel = 'DIR'
+                    )
                     OR EXISTS (
                         SELECT 1 FROM participante_partida pp
                         WHERE pp.cd_partida = p.cd_partida
@@ -238,8 +284,12 @@ class Partida extends Model
         $params = [
             ':usuario_criador_competicao' => $idUsuario,
             ':usuario_participante_competicao' => $idUsuario,
+            ':usuario_administrador_competicao' => $idUsuario,
+            ':usuario_diretor_competicao' => $idUsuario,
             ':usuario_criador_partida' => $idUsuario,
             ':usuario_criador_da_competicao' => $idUsuario,
+            ':usuario_administrador_partida' => $idUsuario,
+            ':usuario_diretor_partida' => $idUsuario,
             ':usuario_participante_partida' => $idUsuario,
         ];
 
@@ -258,17 +308,80 @@ class Partida extends Model
             $params[':visibilidade'] = $filtros['visibilidade'];
         }
 
-        $sql .= " ORDER BY p.cd_partida DESC";
+        if (!empty($filtros['hoje'])) {
+            $sql .= " AND p.inicio_agendado::date = CURRENT_DATE";
+        }
+
+        if (!empty($filtros['futuros'])) {
+            $sql .= " AND p.inicio_agendado >= CURRENT_TIMESTAMP AND p.status = 'AGENDADA'";
+        }
+
+        if (!empty($filtros['de'])) {
+            $sql .= ' AND p.inicio_agendado >= :inicio_de';
+            $params[':inicio_de'] = $filtros['de'];
+        }
+
+        if (!empty($filtros['ate'])) {
+            $sql .= ' AND p.inicio_agendado <= :inicio_ate';
+            $params[':inicio_ate'] = $filtros['ate'];
+        }
+
+        if (!empty($filtros['cd_time'])) {
+            $sql .= ' AND EXISTS (SELECT 1 FROM vinculo_partida_time filtro_vpt WHERE filtro_vpt.cd_partida = p.cd_partida AND filtro_vpt.cd_time = :cd_time)';
+            $params[':cd_time'] = (int) $filtros['cd_time'];
+        }
+
+        if (!empty($filtros['local'])) {
+            $sql .= ' AND ip.local_partida ILIKE :local_partida';
+            $params[':local_partida'] = '%' . $filtros['local'] . '%';
+        }
+
+        $sql .= " ORDER BY p.inicio_agendado ASC NULLS LAST, p.cd_partida DESC";
+        $limite = null;
+        if (isset($filtros['limite'])) {
+            $limite = max(1, min(100, (int) $filtros['limite']));
+            $sql .= ' LIMIT :limite';
+        }
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
+        }
+        if ($limite !== null) {
+            $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        $partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $partidas = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $id) {
-            $partida = $this->buscar((int) $id);
-            if ($partida !== null) {
-                $partidas[] = $partida;
-            }
+        if ($partidas === []) {
+            return [];
+        }
+
+        $placeholders = [];
+        $ids = [];
+        foreach ($partidas as $indice => $partida) {
+            $nome = ':partida_' . $indice;
+            $placeholders[] = $nome;
+            $ids[$nome] = (int) $partida['cd_partida'];
+            $partidas[$indice]['times'] = [];
+        }
+
+        $stmtTimes = $this->pdo->prepare("
+            SELECT vpt.cd_partida, t.cd_time, t.nm_time, vpt.mandante
+            FROM vinculo_partida_time vpt
+            JOIN time t ON t.cd_time = vpt.cd_time
+            WHERE vpt.cd_partida IN (" . implode(', ', $placeholders) . ")
+            ORDER BY vpt.cd_partida, vpt.mandante DESC, t.nm_time
+        ");
+        $stmtTimes->execute($ids);
+        $indicePorPartida = [];
+        foreach ($partidas as $indice => $partida) {
+            $indicePorPartida[(int) $partida['cd_partida']] = $indice;
+        }
+        foreach ($stmtTimes->fetchAll(PDO::FETCH_ASSOC) as $time) {
+            $indice = $indicePorPartida[(int) $time['cd_partida']];
+            unset($time['cd_partida']);
+            $partidas[$indice]['times'][] = $time;
         }
 
         return $partidas;
@@ -302,7 +415,11 @@ class Partida extends Model
             // A privacidade da competição sempre prevalece.
             if ($competicao['visibilidade'] === 'PRIVADA'
                 && !$ehCriadorCompeticao
-                && !$participaCompeticao) {
+                && !$participaCompeticao
+                && !(new Competicao())->usuarioPodeVisualizar(
+                    $idUsuario,
+                    (int) $partida['cd_competicao']
+                )) {
                 return false;
             }
         }
@@ -325,44 +442,11 @@ class Partida extends Model
             SELECT EXISTS (
                 SELECT 1 FROM participante_partida
                 WHERE cd_partida = :partida AND cd_usuario = :usuario
-            ) OR EXISTS (
-                SELECT 1
-                FROM vinculo_partida_time vpt
-                JOIN vinculo_time_integrante vti
-                  ON vti.cd_time = vpt.cd_time
-                 AND vti.cd_usuario = :usuario_integrante
-                 AND vti.ativo = TRUE
-                WHERE vpt.cd_partida = :partida_integrante
-            ) OR EXISTS (
-                SELECT 1
-                FROM vinculo_partida_time vpt
-                JOIN vinculo_tecnico_time vtt
-                  ON vtt.cd_time = vpt.cd_time
-                 AND vtt.cd_usuario = :usuario_tecnico
-                 AND vtt.ativo = TRUE
-                WHERE vpt.cd_partida = :partida_tecnico
-            ) OR EXISTS (
-                SELECT 1
-                FROM vinculo_partida_time vpt
-                JOIN vinculo_time_responsavel vtr
-                  ON vtr.cd_time = vpt.cd_time
-                 AND vtr.ativo = TRUE
-                JOIN responsavel r
-                  ON r.cd_responsavel = vtr.cd_responsavel
-                 AND r.cd_usuario = :usuario_responsavel
-                 AND r.ativo = TRUE
-                WHERE vpt.cd_partida = :partida_responsavel
             )
         ");
         $stmt->execute([
             ':partida' => $idPartida,
             ':usuario' => $idUsuario,
-            ':usuario_integrante' => $idUsuario,
-            ':partida_integrante' => $idPartida,
-            ':usuario_tecnico' => $idUsuario,
-            ':partida_tecnico' => $idPartida,
-            ':usuario_responsavel' => $idUsuario,
-            ':partida_responsavel' => $idPartida,
         ]);
 
         return (bool) $stmt->fetchColumn();

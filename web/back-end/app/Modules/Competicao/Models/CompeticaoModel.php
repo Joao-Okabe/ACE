@@ -80,12 +80,31 @@ class Competicao extends Model
                     WHERE pc.cd_competicao = c.cd_competicao
                       AND pc.cd_usuario = :participante
                 )
+                OR EXISTS (
+                    SELECT 1
+                    FROM usuario_papel up
+                    JOIN papel p ON p.cd_papel = up.cd_papel
+                    WHERE up.cd_usuario = :administrador
+                      AND up.ativo = TRUE
+                      AND p.nm_papel = 'ADM'
+                )
+                OR EXISTS (
+                    SELECT 1
+                    FROM vinculo_usuario_escola vue
+                    JOIN papel p ON p.cd_papel = vue.cd_papel
+                    WHERE vue.cd_usuario = :diretor
+                      AND vue.cd_escola = c.cd_escola
+                      AND vue.ativo = TRUE
+                      AND p.nm_papel = 'DIR'
+                )
               )
         )");
         $stmt->execute([
             ':competicao' => $idCompeticao,
             ':criador' => $idUsuario,
             ':participante' => $idUsuario,
+            ':administrador' => $idUsuario,
+            ':diretor' => $idUsuario,
         ]);
         return (bool) $stmt->fetchColumn();
     }
@@ -93,11 +112,14 @@ class Competicao extends Model
     //Lista COMPETIÇÕES
     public function listar(array $filtros): array
     {
-        $stmt = "
+        $sql = "
             SELECT
                 c.cd_competicao,
                 c.cd_criador,
                 c.nm_competicao,
+                c.cd_modalidade,
+                c.status,
+                c.visibilidade,
                 c.criado_em,
                 c.inicio_em,
                 c.fim_em,
@@ -116,20 +138,68 @@ class Competicao extends Model
                     WHERE pc.cd_competicao = c.cd_competicao
                       AND pc.cd_usuario = :usuario_participante
                 )
+                OR EXISTS (
+                    SELECT 1
+                    FROM usuario_papel up
+                    JOIN papel p ON p.cd_papel = up.cd_papel
+                    WHERE up.cd_usuario = :usuario_administrador
+                      AND up.ativo = TRUE
+                      AND p.nm_papel = 'ADM'
+                )
+                OR EXISTS (
+                    SELECT 1
+                    FROM vinculo_usuario_escola vue
+                    JOIN papel p ON p.cd_papel = vue.cd_papel
+                    WHERE vue.cd_usuario = :usuario_diretor
+                      AND vue.cd_escola = c.cd_escola
+                      AND vue.ativo = TRUE
+                      AND p.nm_papel = 'DIR'
+                )
             )";
             $filtrosSql['parametros'][':usuario_visibilidade'] = (int) $filtros['usuario'];
             $filtrosSql['parametros'][':usuario_participante'] = (int) $filtros['usuario'];
+            $filtrosSql['parametros'][':usuario_administrador'] = (int) $filtros['usuario'];
+            $filtrosSql['parametros'][':usuario_diretor'] = (int) $filtros['usuario'];
         }
 
-        if (!empty($filtrosSql['onde'])) {
-            $stmt .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
+        if (!empty($filtros['status'])) {
+            $filtrosSql['onde'][] = 'c.status = :status_competicao';
+            $filtrosSql['parametros'][':status_competicao'] = $filtros['status'];
+        }
+        if (!empty($filtros['modalidade_id'])) {
+            $filtrosSql['onde'][] = 'c.cd_modalidade = :modalidade_competicao';
+            $filtrosSql['parametros'][':modalidade_competicao'] = (int) $filtros['modalidade_id'];
+        }
+        if (!empty($filtros['de'])) {
+            $filtrosSql['onde'][] = '(c.fim_em IS NULL OR c.fim_em >= :de_competicao)';
+            $filtrosSql['parametros'][':de_competicao'] = $filtros['de'];
+        }
+        if (!empty($filtros['ate'])) {
+            $filtrosSql['onde'][] = '(c.inicio_em IS NULL OR c.inicio_em <= :ate_competicao)';
+            $filtrosSql['parametros'][':ate_competicao'] = $filtros['ate'];
         }
 
+        $pagina = max(1, (int) ($filtros['pagina'] ?? 1));
+        $porPagina = min(100, max(1, (int) ($filtros['per_page'] ?? 30)));
+        $sql .= !empty($filtrosSql['onde'])
+            ? ' WHERE ' . implode(' AND ', $filtrosSql['onde'])
+            : '';
         $ordem = $this->filtro->ordem($filtros);
-        $stmt .= " ORDER BY c.cd_competicao {$ordem}";
+        $sql .= " ORDER BY c.cd_competicao {$ordem}";
 
-        $stmt = $this->pdo->prepare($stmt);
-        $stmt->execute($filtrosSql['parametros']);
+        if (!empty($filtros['paginado'])) {
+            $sql .= ' LIMIT :limite OFFSET :deslocamento';
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($filtrosSql['parametros'] as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
+        }
+        if (!empty($filtros['paginado'])) {
+            $stmt->bindValue(':limite', $porPagina + 1, PDO::PARAM_INT);
+            $stmt->bindValue(':deslocamento', ($pagina - 1) * $porPagina, PDO::PARAM_INT);
+        }
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

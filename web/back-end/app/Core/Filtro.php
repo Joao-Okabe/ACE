@@ -36,7 +36,7 @@ class Filtro
 		$parametros = [];
 
 		if (!empty($filtros['nome'])) {
-			$onde[] = 'e.nome ILIKE :nome';
+			$onde[] = 'e.nm_escola ILIKE :nome';
 			$parametros[':nome'] = '%' . $filtros['nome'] . '%';
 		}
 
@@ -62,12 +62,7 @@ class Filtro
 		}
 
 		if (!empty($filtros['escola'])) {
-			$onde[] = 'c.cd_criador IN (
-				SELECT v.cd_usuario
-				FROM vinculo_usuario_escola v
-				WHERE v.cd_escola = :cd_escola_competicao
-					AND v.ativo = TRUE
-			)';
+			$onde[] = 'c.cd_escola = :cd_escola_competicao';
 			$parametros[':cd_escola_competicao'] = (int) $filtros['escola'];
 		}
 

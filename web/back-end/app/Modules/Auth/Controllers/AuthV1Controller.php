@@ -108,4 +108,22 @@ class AuthV1Controller
             'roles' => $usuario['papeis'] ?? [],
         ]);
     }
+
+    public function solicitarRecuperacao(): void
+    {
+        Response::error(
+            'NOT_IMPLEMENTED',
+            'A recuperação de senha ainda não possui armazenamento e envio configurados no ACE.',
+            501
+        );
+    }
+
+    public function confirmarRecuperacao(): void
+    {
+        Response::error(
+            'NOT_IMPLEMENTED',
+            'A confirmação de recuperação de senha ainda não possui fluxo configurado no ACE.',
+            501
+        );
+    }
 }

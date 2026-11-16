@@ -54,6 +54,7 @@ class Escola extends Model
                 telefone = :telefone,
                 cep = :cep,
                 numero = :numero,
+                email = :email,
                 categoria_administrativa = :categoria,
                 path_brasao = :img_logo
             WHERE cd_escola = :id
@@ -64,6 +65,7 @@ class Escola extends Model
             ':telefone' => $dados['telefone'],
             ':cep' => $dados['cep'],
             ':numero' => $dados['numero'],
+            ':email' => $dados['email'] ?? null,
             ':categoria' => $dados['categoria_administrativa'],
             ':img_logo' => $dados['img_logo'] ?? null,
             ':id' => $id

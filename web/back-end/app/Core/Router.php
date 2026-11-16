@@ -180,11 +180,15 @@ class Router
             $rotasPublicasV1 = [
                 '/api/v1/auth/login',
                 '/api/v1/auth/refresh',
-                '/api/v1/auth/logout'
+                '/api/v1/auth/logout',
+                '/api/v1/auth/recuperacao/solicitar',
+                '/api/v1/auth/recuperacao/confirmar',
+                '/api/v1/saude'
             ];
 
-            $rotaPublicaV1 = $method === 'POST'
-                && in_array($uri, $rotasPublicasV1, true);
+            $rotaPublicaV1 = in_array($uri, $rotasPublicasV1, true)
+                && (($method === 'POST' && $uri !== '/api/v1/saude')
+                    || ($method === 'GET' && $uri === '/api/v1/saude'));
 
             if (!$rotaPublicaV1) {
                 if (!JwtMiddleware::autenticar()) {

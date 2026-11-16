@@ -21,6 +21,7 @@ services:
       - ${API_PORT:-8000}:80
     volumes:
       - ./web/back-end:/var/www/html:rw
+      - uploads:/var/www/html/public/uploads
       - ./.env:/var/www/html/.env:ro
     env_file:
       - .env
@@ -55,3 +56,4 @@ services:
 
 volumes:
   pgdata:
+  uploads:

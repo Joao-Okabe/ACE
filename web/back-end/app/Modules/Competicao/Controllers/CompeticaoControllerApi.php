@@ -45,6 +45,157 @@ class CompeticaoControllerApi
         $this->index();
     }
 
+    public function indexV1(): void
+    {
+        $pagina = isset($_GET['pagina'])
+            ? $this->parametroInteiro('pagina', 1, 1, 100000)
+            : $this->parametroInteiro('page', 1, 1, 100000);
+        $porPagina = isset($_GET['limite'])
+            ? $this->parametroInteiro('limite', 20, 1, 100)
+            : $this->parametroInteiro('per_page', 20, 1, 100);
+        $nome = $_GET['busca'] ?? $_GET['nome'] ?? '';
+        $ordemParametro = $_GET['ordem'] ?? 'DESC';
+        $ordem = is_string($ordemParametro) ? strtoupper($ordemParametro) : '';
+        if (!is_string($nome) || !in_array($ordem, ['ASC', 'DESC'], true)) {
+            Response::error('VALIDATION_ERROR', 'Parâmetro de consulta inválido.', 400);
+        }
+
+        $escolaFiltro = isset($_GET['escolaId'])
+            ? $this->parametroInteiro('escolaId', 1, 1, PHP_INT_MAX)
+            : (isset($_GET['escola'])
+                ? $this->parametroInteiro('escola', 1, 1, PHP_INT_MAX)
+                : null);
+        $filtros = [
+            'nome' => trim($nome),
+            'escola' => $escolaFiltro,
+            'status' => isset($_GET['status']) && is_string($_GET['status']) ? strtoupper($_GET['status']) : null,
+            'modalidade_id' => isset($_GET['modalidadeId'])
+                ? $this->parametroInteiro('modalidadeId', 1, 1, PHP_INT_MAX)
+                : null,
+            'de' => isset($_GET['de']) && is_string($_GET['de']) ? $_GET['de'] : null,
+            'ate' => isset($_GET['ate']) && is_string($_GET['ate']) ? $_GET['ate'] : null,
+            'ordem' => $ordem,
+            'pagina' => $pagina,
+            'per_page' => $porPagina,
+            'paginado' => true,
+        ];
+
+        try {
+            $itens = $this->service()->listar($filtros);
+            $temProxima = count($itens) > $porPagina;
+            if ($temProxima) {
+                array_pop($itens);
+            }
+            Response::success([
+                'items' => $itens,
+                'page' => $pagina,
+                'per_page' => $porPagina,
+                'has_more' => $temProxima,
+            ], 'Competições listadas.');
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível listar as competições.', 500);
+        }
+    }
+
+    public function showV1(int $id): void
+    {
+        $this->show($id);
+    }
+
+    public function classificacaoV1(int $id): void
+    {
+        if ($id <= 0) {
+            Response::error('VALIDATION_ERROR', 'ID da competição inválido.', 400);
+        }
+        try {
+            Response::success($this->buscarClassificacao($id), 'Classificação consultada.');
+        } catch (Throwable $e) {
+            if ($e->getMessage() === 'Competição não encontrada.') {
+                Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível consultar a classificação.', 500);
+        }
+    }
+
+    public function tabelaV1(int $id): void
+    {
+        try {
+            $dados = [
+                'classificacao' => $this->buscarClassificacao($id),
+                'chaveamento' => $this->service()->listarChaveamento($id),
+            ];
+            Response::success($dados, 'Tabela da competição consultada.');
+        } catch (Throwable $e) {
+            if ($e->getMessage() === 'Competição não encontrada.') {
+                Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível consultar a tabela.', 500);
+        }
+    }
+
+    public function inscricaoMobileV1(int $id): void
+    {
+        $dados = $this->lerDadosRequisicao();
+        $idTime = (int) ($dados['timeId'] ?? $dados['cd_time'] ?? 0);
+        if ($idTime <= 0) {
+            Response::error('VALIDATION_ERROR', 'Informe um ID inteiro de time.', 400);
+        }
+        try {
+            $this->service()->inscreverTime($id, $idTime);
+            Response::success(null, 'Time inscrito na competição.');
+        } catch (Throwable $e) {
+            $status = str_contains(mb_strtolower($e->getMessage()), 'permissão') ? 403 : 422;
+            Response::error($status === 403 ? 'FORBIDDEN' : 'VALIDATION_ERROR', $e->getMessage(), $status);
+        }
+    }
+
+    private function buscarClassificacao(int $id): array
+    {
+        $this->service()->buscar($id);
+        $stmt = Database::connect()->prepare("
+            SELECT
+                g.cd_grupo,
+                g.nm_grupo,
+                cg.posicao,
+                cg.cd_time,
+                t.nm_time,
+                COALESCE(
+                    jsonb_object_agg(mc.nm_metrica_classificacao, est.valor)
+                        FILTER (WHERE mc.cd_metrica_classificacao IS NOT NULL),
+                    '{}'::jsonb
+                ) AS estatisticas
+            FROM etapa_competicao ec
+            JOIN grupo_competicao g ON g.cd_etapa_competicao = ec.cd_etapa_competicao
+            JOIN classificacao_grupo cg ON cg.cd_grupo = g.cd_grupo
+            JOIN time t ON t.cd_time = cg.cd_time
+            LEFT JOIN estatistica_classificacao est
+                ON est.cd_classificacao_grupo = cg.cd_classificacao_grupo
+            LEFT JOIN metrica_classificacao mc
+                ON mc.cd_metrica_classificacao = est.cd_metrica_classificacao
+            WHERE ec.cd_competicao = :competicao
+            GROUP BY ec.cd_etapa_competicao, g.cd_grupo, g.nm_grupo, cg.posicao,
+                     cg.cd_time, t.nm_time, g.ordem
+            ORDER BY ec.ordem, g.ordem NULLS LAST, cg.posicao
+        ");
+        $stmt->execute([':competicao' => $id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function parametroInteiro(string $nome, int $padrao, int $minimo, int $maximo): int
+    {
+        if (!isset($_GET[$nome])) {
+            return $padrao;
+        }
+        $valor = filter_var($_GET[$nome], FILTER_VALIDATE_INT);
+        if ($valor === false || $valor < $minimo || $valor > $maximo) {
+            Response::error('VALIDATION_ERROR', "Parâmetro {$nome} inválido.", 400);
+        }
+        return (int) $valor;
+    }
+
     public function show(int $id): void
     {
         if ($id <= 0) {

@@ -11,10 +11,11 @@ class PartidaService
         $this->partidaModel = new Partida();
     }
 
-    public function criar(array $dados, int $idCriador): int
+    public function criar(array $dados): int
     {
+        $idCriador = AuthContext::id() ?? 0;
         if ($idCriador <= 0) {
-            throw new InvalidArgumentException('Criador inválido.');
+            throw new RuntimeException('Usuário não autenticado.');
         }
 
         $idCompeticao = !empty($dados['cd_competicao']) ? (int) $dados['cd_competicao'] : null;
@@ -79,6 +80,12 @@ class PartidaService
 
             if ($idCompeticao !== null) {
                 $this->validarCompeticao($idCompeticao);
+                $competicaoService = new CompeticaoService();
+                $competicao = (new Competicao())->buscar($idCompeticao);
+                if ($competicao === null) {
+                    throw new DomainException('Competição não encontrada.');
+                }
+                $competicaoService->exigirPermissao($competicao);
 
                 if (!$this->partidaModel->validarTimesCompeticao($idCompeticao, $idsTimes)) {
                     throw new DomainException('As duas equipes precisam estar inscritas na competição.');
@@ -89,6 +96,12 @@ class PartidaService
                 }
 
                 $this->validarEsporteDosTimes($idsTimes, $idEsporte);
+
+                foreach ($idsTimes as $idTime) {
+                    if (!Permissoes::podeGerenciarTime($idTime)) {
+                        throw new DomainException('Você não tem permissão para gerenciar as duas equipes desta partida avulsa.');
+                    }
+                }
             }
 
             $partida = [
@@ -163,7 +176,8 @@ class PartidaService
 
         if ($competicao['visibilidade'] === 'PRIVADA'
             && (int) $competicao['cd_criador'] !== $idUsuario
-            && !$this->partidaModel->usuarioParticipaCompeticao($idUsuario, $idCompeticao)) {
+            && !$this->partidaModel->usuarioParticipaCompeticao($idUsuario, $idCompeticao)
+            && !(new Competicao())->usuarioPodeVisualizar($idUsuario, $idCompeticao)) {
             throw new RuntimeException('Você não tem permissão para acessar esta competição.');
         }
     }

@@ -5,6 +5,12 @@ class Dashboard extends Model
     // Conta alunos vinculados às mesmas escolas do usuário requisitante.
     public function qtAluno(int $idUsuario): int
     {
+        if (Permissoes::temPapel('ADM')) {
+            return (int) $this->pdo->query(
+                'SELECT COUNT(DISTINCT cd_aluno) FROM aluno WHERE ativo = TRUE'
+            )->fetchColumn();
+        }
+
         $stmt = $this->pdo->prepare("
             SELECT COUNT(DISTINCT a.cd_aluno) AS total
             FROM aluno a
@@ -15,6 +21,8 @@ class Dashboard extends Model
                 ON vr.cd_escola = va.cd_escola
                 AND vr.cd_usuario = :usuario
                 AND vr.ativo = TRUE
+            INNER JOIN papel pr
+                ON pr.cd_papel = vr.cd_papel AND pr.nm_papel = 'DIR'
             WHERE a.ativo = TRUE
         ");
 
@@ -27,6 +35,12 @@ class Dashboard extends Model
 
     public function qtTime(int $idUsuario): int
     {
+        if (Permissoes::temPapel('ADM')) {
+            return (int) $this->pdo->query(
+                'SELECT COUNT(DISTINCT cd_time) FROM time WHERE ativo = TRUE'
+            )->fetchColumn();
+        }
+
         $stmt = $this->pdo->prepare("
             SELECT COUNT(DISTINCT t.cd_time) AS total
             FROM time t
@@ -37,6 +51,8 @@ class Dashboard extends Model
                 ON vu.cd_escola = vt.cd_escola
                 AND vu.cd_usuario = :usuario
                 AND vu.ativo = TRUE
+            INNER JOIN papel p
+                ON p.cd_papel = vu.cd_papel AND p.nm_papel = 'DIR'
             WHERE t.ativo = TRUE
         ");
 

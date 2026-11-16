@@ -124,6 +124,7 @@ class EscolaService
                 'telefone' => $this->normalizador->normalizarCampoNulo($dados['telefone'] ?? null),
                 'cep' => $this->normalizador->normalizarCampoNulo($dados['cep'] ?? null),
                 'numero' => $this->normalizador->normalizarCampoNulo($dados['numero'] ?? null),
+                'email' => $this->normalizador->normalizarCampoNulo($dados['email'] ?? null),
                 'categoria_administrativa' => $dados['categoria_administrativa'] ?? null,
                 'img_logo' => $novoLogo ?? $escola['img_logo'],
             ]

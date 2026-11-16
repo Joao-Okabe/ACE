@@ -55,6 +55,22 @@ class RefreshTokenModel
         return $registro ?: null;
     }
 
+    public function familiaAtiva(string $familia): bool
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT EXISTS (
+                SELECT 1
+                FROM refresh_token
+                WHERE familia = :familia
+                  AND revogado_em IS NULL
+                  AND expira_em > CURRENT_TIMESTAMP
+            )
+        ");
+        $stmt->execute([':familia' => $familia]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
     /**
      * Bloqueia todas as operações cooperantes da mesma família
      * durante a transação atual.

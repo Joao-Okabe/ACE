@@ -34,6 +34,13 @@ class JwtMiddleware
                 trim($matches[1])
             );
 
+            $refreshTokenModel = new RefreshTokenModel(Database::connect());
+            if (!$refreshTokenModel->familiaAtiva($payload->sid)) {
+                throw new UnexpectedValueException(
+                    'Sessão revogada ou expirada.'
+                );
+            }
+
         } catch (UnexpectedValueException $e) {
             AuthContext::limpar();
 

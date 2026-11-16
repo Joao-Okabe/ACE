@@ -33,6 +33,117 @@ class EscolaApiController
         }
     }
 
+    public function indexV1(): void
+    {
+        $busca = $_GET['busca'] ?? '';
+        if (!is_string($busca)) {
+            Response::error('VALIDATION_ERROR', 'Parâmetro busca inválido.', 400);
+        }
+        try {
+            Response::success(
+                $this->service()->listar(['nome' => trim($busca)]),
+                'Escolas listadas.'
+            );
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível listar escolas.', 500);
+        }
+    }
+
+    public function perfilV1(): void
+    {
+        $idEscola = $this->escolaDoUsuarioAtual();
+        if ($idEscola <= 0) {
+            Response::error('FORBIDDEN', 'Usuário sem escola vinculada para este perfil.', 403);
+        }
+        $this->showV1($idEscola);
+    }
+
+    public function atualizarPerfilV1(): void
+    {
+        $idEscola = $this->escolaDoUsuarioAtual();
+        if ($idEscola <= 0 || !Permissoes::podeGerenciarEscola($idEscola)) {
+            Response::error('FORBIDDEN', 'Sem permissão para editar o perfil escolar.', 403);
+        }
+        $dados = $this->lerJsonV1();
+        $dados = array_intersect_key($dados, array_flip([
+            'nome', 'telefone', 'cep', 'numero', 'email', 'categoria_administrativa',
+        ]));
+        try {
+            $this->service()->atualizar($idEscola, $dados);
+            Response::success($this->service()->buscar($idEscola), 'Perfil escolar atualizado.');
+        } catch (Throwable $e) {
+            $status = str_contains(mb_strtolower($e->getMessage()), 'permissão') ? 403 : 422;
+            Response::error($status === 403 ? 'FORBIDDEN' : 'VALIDATION_ERROR', $e->getMessage(), $status);
+        }
+    }
+
+    public function showV1(int $id): void
+    {
+        if ($id <= 0) {
+            Response::error('VALIDATION_ERROR', 'ID da escola inválido.', 400);
+        }
+        if (!Permissoes::temPapel('ADM') && !Permissoes::podeGerenciarEscola($id)) {
+            Response::error('NOT_FOUND', 'Escola não encontrada.', 404);
+        }
+        try {
+            $escola = $this->service()->buscar($id);
+            Response::success([
+                'id' => (int) $escola['cd_escola'],
+                'nome' => $escola['nome'] ?? $escola['nm_escola'] ?? null,
+                'email' => $escola['email'] ?? null,
+                'telefone' => $escola['telefone'] ?? null,
+                'numero' => $escola['numero'] ?? null,
+                'cep' => $escola['cep'] ?? null,
+                'categoria_administrativa' => $escola['categoria_administrativa'] ?? null,
+                'logo' => $escola['img_logo'] ?? $escola['path_brasao'] ?? null,
+                'ativa' => $escola['ativa'] ?? null,
+            ], 'Escola consultada.');
+        } catch (Throwable $e) {
+            if ($e->getMessage() === 'Escola não encontrada.') {
+                Response::error('NOT_FOUND', 'Escola não encontrada.', 404);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível consultar a escola.', 500);
+        }
+    }
+
+    public function buscarPorCodigoV1(string $codigo): void
+    {
+        Response::error(
+            'NOT_IMPLEMENTED',
+            'O schema ACE não possui código de unidade escolar para esta consulta.',
+            501
+        );
+    }
+
+    public function rankingV1(): void
+    {
+        Response::error(
+            'NOT_IMPLEMENTED',
+            'O ACE não possui uma regra consolidada de ranking de escolas.',
+            501
+        );
+    }
+
+    private function escolaDoUsuarioAtual(): int
+    {
+        $idUsuario = AuthContext::id();
+        if ($idUsuario === null || !Permissoes::temPapel('DIR')) {
+            return 0;
+        }
+        return (new VinculoUsuarioEscola())->escolaAtualPorPapeis($idUsuario, ['DIR']) ?? 0;
+    }
+
+    private function lerJsonV1(): array
+    {
+        $dados = json_decode(file_get_contents('php://input'), true);
+        if (!is_array($dados) || json_last_error() !== JSON_ERROR_NONE) {
+            Response::error('BAD_REQUEST', 'O corpo contém JSON inválido.', 400);
+        }
+        return $dados;
+    }
+
     public function show(int $id): void
     {
         if ($id <= 0) {

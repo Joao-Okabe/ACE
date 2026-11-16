@@ -39,11 +39,11 @@ class JwtService
         }
     }
 
-    public function gerar(int $idUsuario): string
+    public function gerar(int $idUsuario, string $familia): string
     {
-        if ($idUsuario <= 0) {
+        if ($idUsuario <= 0 || !$this->familiaValida($familia)) {
             throw new InvalidArgumentException(
-                'ID de usuário inválido.'
+                'Identidade de sessão inválida.'
             );
         }
 
@@ -56,7 +56,8 @@ class JwtService
             'nbf' => $agora,
             'exp' => $agora + $this->ttl,
             'sub' => (string) $idUsuario,
-            'jti' => bin2hex(random_bytes(16))
+            'jti' => bin2hex(random_bytes(16)),
+            'sid' => $familia,
         ];
 
         return JWT::encode(
@@ -88,7 +89,8 @@ class JwtService
             'nbf',
             'exp',
             'sub',
-            'jti'
+            'jti',
+            'sid'
         ];
 
         foreach ($claimsObrigatorios as $claim) {
@@ -160,7 +162,21 @@ class JwtService
             );
         }
 
+        if (!is_string($dados->sid) || !$this->familiaValida($dados->sid)) {
+            throw new UnexpectedValueException(
+                'Identificador de sessão inválido.'
+            );
+        }
+
         return $dados;
+    }
+
+    private function familiaValida(string $familia): bool
+    {
+        return preg_match(
+            '/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i',
+            $familia
+        ) === 1;
     }
 
     public function getTtl(): int

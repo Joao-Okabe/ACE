@@ -40,7 +40,7 @@ class RefreshTokenService
             $this->dataExpiracao()
         );
 
-        return $this->resposta($idUsuario, $refresh);
+        return $this->resposta($idUsuario, $refresh, $familia);
     }
 
     public function renovar(string $refreshToken): array
@@ -154,7 +154,8 @@ class RefreshTokenService
              */
             $resposta = $this->resposta(
                 (int) $registro['cd_usuario'],
-                $novoRefresh
+                $novoRefresh,
+                $registro['familia']
             );
 
             $this->pdo->commit();
@@ -236,11 +237,12 @@ class RefreshTokenService
 
     private function resposta(
         int $idUsuario,
-        string $refreshToken
+        string $refreshToken,
+        string $familia
     ): array {
         return [
             'token_type' => 'Bearer',
-            'access_token' => $this->jwt->gerar($idUsuario),
+            'access_token' => $this->jwt->gerar($idUsuario, $familia),
             'expires_in' => $this->jwt->getTtl(),
             'refresh_token' => $refreshToken,
             'refresh_expires_in' => $this->ttl,
