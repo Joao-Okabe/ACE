@@ -184,11 +184,17 @@ class PartidaController
             $stmt = $pdo->prepare('UPDATE partida SET inicio_agendado = :inicio WHERE cd_partida = :id');
             $stmt->execute([':inicio' => $inicio, ':id' => $id]);
             $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, inicio_em)
-                VALUES (:id, :inicio) ON CONFLICT (cd_partida)
-                DO UPDATE SET inicio_em = EXCLUDED.inicio_em
+                INSERT INTO info_partida (cd_partida, dt_partida, inicio_em)
+                VALUES (:id, :data_partida, :inicio) ON CONFLICT (cd_partida)
+                DO UPDATE SET
+                    dt_partida = EXCLUDED.dt_partida,
+                    inicio_em = EXCLUDED.inicio_em
             ");
-            $stmt->execute([':id' => $id, ':inicio' => $inicio]);
+            $stmt->execute([
+                ':id' => $id,
+                ':data_partida' => substr($inicio, 0, 10),
+                ':inicio' => $inicio,
+            ]);
         }, 'Calendário da partida atualizado.');
     }
 
@@ -201,11 +207,18 @@ class PartidaController
         }
         $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $local): void {
             $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, local_partida)
-                VALUES (:id, :local) ON CONFLICT (cd_partida)
+                INSERT INTO info_partida (cd_partida, dt_partida, local_partida)
+                SELECT :id_insert, COALESCE(inicio_agendado::date, CURRENT_DATE), :local
+                FROM partida
+                WHERE cd_partida = :id_partida
+                ON CONFLICT (cd_partida)
                 DO UPDATE SET local_partida = EXCLUDED.local_partida
             ");
-            $stmt->execute([':id' => $id, ':local' => trim($local)]);
+            $stmt->execute([
+                ':id_insert' => $id,
+                ':id_partida' => $id,
+                ':local' => trim($local),
+            ]);
         }, 'Local da partida atualizado.');
     }
 
@@ -220,8 +233,8 @@ class PartidaController
                 throw new DomainException('Somente partidas agendadas podem ser iniciadas.');
             }
             $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, inicio_em)
-                VALUES (:id, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida)
+                INSERT INTO info_partida (cd_partida, dt_partida, inicio_em)
+                VALUES (:id, CURRENT_DATE, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida)
                 DO UPDATE SET inicio_em = COALESCE(info_partida.inicio_em, EXCLUDED.inicio_em)
             ");
             $stmt->execute([':id' => $id]);
@@ -279,7 +292,7 @@ class PartidaController
             }
             $pdo->prepare("UPDATE partida SET status = 'FINALIZADA' WHERE cd_partida = :id")
                 ->execute([':id' => $id]);
-            $stmt = $pdo->prepare('INSERT INTO info_partida (cd_partida, fim_em) VALUES (:id, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida) DO UPDATE SET fim_em = EXCLUDED.fim_em');
+            $stmt = $pdo->prepare('INSERT INTO info_partida (cd_partida, dt_partida, fim_em) VALUES (:id, CURRENT_DATE, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida) DO UPDATE SET fim_em = EXCLUDED.fim_em');
             $stmt->execute([':id' => $id]);
             if ($placarCasa !== $placarVisitante) {
                 $vencedor = (int) $times[$placarCasa > $placarVisitante ? 0 : 1]['cd_time'];
