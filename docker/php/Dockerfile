@@ -21,6 +21,11 @@ RUN printf '%s\n' \
     '    AllowOverride All' \
     '    Require all granted' \
     '</Directory>' \
+    'Alias /uploads/ /var/www/html/storage/upload/' \
+    '<Directory /var/www/html/storage/upload>' \
+    '    Options -Indexes' \
+    '    Require all granted' \
+    '</Directory>' \
     > /etc/apache2/conf-available/app.conf \
     && a2enconf app
 

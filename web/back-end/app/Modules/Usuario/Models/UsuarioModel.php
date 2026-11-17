@@ -67,6 +67,8 @@ class Usuario extends Model
                 u.nm_usuario,
                 u.email,
                 u.path_ft_usuario,
+                u.path_ft_usuario AS foto_perfil,
+                u.path_ft_usuario AS imagem,
                 u.ativo
             FROM usuario u";
 
@@ -114,7 +116,10 @@ class Usuario extends Model
 
     public function listarDisponiveisParaAluno(array $escolas = []): array
     {
-        $sql = "SELECT DISTINCT u.cd_usuario, u.nm_usuario, u.email
+        $sql = "SELECT DISTINCT u.cd_usuario, u.nm_usuario, u.email,
+                u.path_ft_usuario,
+                u.path_ft_usuario AS foto_perfil,
+                u.path_ft_usuario AS imagem
             FROM usuario u
             WHERE u.ativo = TRUE";
         $parametros = [];

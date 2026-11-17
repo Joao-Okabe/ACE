@@ -162,7 +162,7 @@ class EscolaService
             throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
         }
 
-        $pastaUploads = __DIR__ . '/../../../../public/uploads';
+        $pastaUploads = __DIR__ . '/../../../../storage/upload';
 
         if (!is_dir($pastaUploads) && !mkdir($pastaUploads, 0755, true) && !is_dir($pastaUploads)) {
             throw new Exception('Não foi possível criar a pasta de uploads.');

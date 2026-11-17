@@ -111,7 +111,7 @@ ACE/
     │   ├── config/
     │   ├── public/              # ponto de entrada e arquivos públicos
     │   ├── routes/
-    │   ├── storage/uploads/     # arquivos enviados
+    │   ├── storage/upload/      # arquivos enviados
     │   └── tests/
     └── front-end/
         └── assets/

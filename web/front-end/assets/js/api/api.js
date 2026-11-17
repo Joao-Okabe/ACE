@@ -10,6 +10,39 @@ export class ApiError extends Error{
     }
 }
 
+function normalizarCamposImagem(valor) {
+    if (Array.isArray(valor)) {
+        return valor.map(normalizarCamposImagem);
+    }
+
+    if (!valor || typeof valor !== "object") {
+        return valor;
+    }
+
+    const item = { ...valor };
+    const imagem =
+        item.imagem ??
+        item.logo ??
+        item.img_logo ??
+        item.path_brasao ??
+        item.path_escudo ??
+        item.path_ft_usuario ??
+        item.foto_perfil ??
+        item.profile_photo ??
+        null;
+
+    if (typeof imagem === "string" && imagem.trim() !== "") {
+        if (!item.imagem) item.imagem = imagem;
+        if (!item.img_logo && !item.path_brasao) item.img_logo = imagem;
+        if (!item.path_escudo) item.path_escudo = imagem;
+        if (!item.path_ft_usuario && !item.foto_perfil) item.path_ft_usuario = imagem;
+        if (!item.foto_perfil) item.foto_perfil = imagem;
+        if (!item.logo) item.logo = imagem;
+    }
+
+    return item;
+}
+
 let csrfTokenPromise = null;
 
 async function obterCsrfToken() {
@@ -107,7 +140,8 @@ export async function apiFetch(endpoint, options = {}){
     }
     // Retorna os dados recebidos da api (se o backend envelopou em { sucesso, dados }, desempacota dados)
     if (dados && typeof dados === "object" && "dados" in dados) {
-        return dados.dados;
+        return normalizarCamposImagem(dados.dados);
     }
-    return dados;
+
+    return normalizarCamposImagem(dados);
 }

@@ -17,11 +17,12 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     restart: unless-stopped
+    command: sh -c "chown -R www-data:www-data /var/www/html/storage/upload && apache2-foreground"
     ports:
       - ${API_PORT:-8000}:80
     volumes:
       - ./web/back-end:/var/www/html:rw
-      - uploads:/var/www/html/public/uploads
+      - ./web/back-end/storage/upload:/var/www/html/storage/upload
       - ./.env:/var/www/html/.env:ro
     env_file:
       - .env
@@ -56,4 +57,3 @@ services:
 
 volumes:
   pgdata:
-  uploads:

@@ -84,6 +84,8 @@ class Escola extends Model
                 e.numero,
                 e.categoria_administrativa,
                 e.path_brasao AS img_logo,
+                e.path_brasao AS path_brasao,
+                e.path_brasao AS imagem,
                 e.criada_em,
                 e.ativa
             FROM escola e";

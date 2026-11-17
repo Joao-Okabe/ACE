@@ -41,6 +41,7 @@ class Time extends Model
                 t.cd_time,
                 t.nm_time,
                 t.path_escudo,
+                t.path_escudo AS imagem,
                 t.ativo,
                 t.criado_em,
                 t.atualizado_em
@@ -107,7 +108,10 @@ class Time extends Model
     public function listarTime()
     {
         $stmt = $this->pdo->query("
-            SELECT * FROM time
+            SELECT
+                t.*,
+                t.path_escudo AS imagem
+            FROM time t
         "); 
 
         $time = $stmt->fetchAll(PDO::FETCH_ASSOC);

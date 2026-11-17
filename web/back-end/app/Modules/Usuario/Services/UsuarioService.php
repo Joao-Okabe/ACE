@@ -181,7 +181,7 @@ class UsuarioService
             throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
         }
 
-        $pasta = __DIR__ . '/../../../../public/uploads';
+        $pasta = __DIR__ . '/../../../../storage/upload';
         if (!is_dir($pasta) && !mkdir($pasta, 0755, true) && !is_dir($pasta)) {
             throw new Exception('Não foi possível criar a pasta de uploads.');
         }
