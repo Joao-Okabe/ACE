@@ -215,7 +215,7 @@ class EliminatoriaDuplaService
             );
         }
 
-        if ($etapa['nm_tipo_etapa'] !== 'ELIMINATORIA') {
+        if (!in_array($etapa['nm_tipo_etapa'], ['MATA_MATA', 'ELIMINATORIA'], true)) {
             throw new RuntimeException(
                 'A etapa informada não é uma etapa eliminatória.'
             );

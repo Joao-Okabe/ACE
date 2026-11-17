@@ -45,10 +45,14 @@ class Partida extends Model
         $stmt = $this->pdo->prepare("
             INSERT INTO info_partida (
                 cd_partida,
+                dt_partida,
+                inicio_em,
                 local_partida,
                 observacoes
             ) VALUES (
                 :cd_partida,
+                :dt_partida,
+                :inicio_em,
                 :local_partida,
                 :observacoes
             )
@@ -56,6 +60,8 @@ class Partida extends Model
 
         $stmt->execute([
             ':cd_partida' => $idPartida,
+            ':dt_partida' => $dados['dt_partida'],
+            ':inicio_em' => $dados['inicio_em'],
             ':local_partida' => $dados['local_partida'],
             ':observacoes' => $dados['observacoes'],
         ]);
@@ -169,6 +175,7 @@ class Partida extends Model
         $stmt = $this->pdo->prepare("
             SELECT
                 p.*,
+                ip.dt_partida,
                 ip.inicio_em,
                 ip.fim_em,
                 ip.local_partida,
@@ -209,6 +216,7 @@ class Partida extends Model
         $sql = "
             SELECT DISTINCT
                 p.*,
+                ip.dt_partida,
                 ip.inicio_em,
                 ip.fim_em,
                 ip.local_partida,

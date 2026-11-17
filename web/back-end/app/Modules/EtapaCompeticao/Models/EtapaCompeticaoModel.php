@@ -79,7 +79,7 @@ class EtapaCompeticao extends Model
             INNER JOIN tipo_etapa te
                 ON te.cd_tipo_etapa = ec.cd_tipo_etapa
             WHERE ec.cd_competicao = :competicao
-              AND te.nm_tipo_etapa = 'ELIMINATORIA'
+              AND te.nm_tipo_etapa IN ('MATA_MATA', 'ELIMINATORIA')
             ORDER BY ec.ordem
             LIMIT 1
         ");
@@ -124,6 +124,20 @@ class EtapaCompeticao extends Model
         return (int) $stmt->fetchColumn();
     }
 
+    public function renomear(int $idEtapa, string $nome): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE etapa_competicao
+            SET nm_etapa = :nome
+            WHERE cd_etapa_competicao = :etapa
+        ");
+
+        $stmt->execute([
+            ':nome' => $nome,
+            ':etapa' => $idEtapa,
+        ]);
+    }
+
     public function buscarTipoPorNome(string $nomeTipo): ?int
     {
         $stmt = $this->pdo->prepare("
@@ -133,6 +147,24 @@ class EtapaCompeticao extends Model
         ");
 
         $stmt->execute([':nome' => $nomeTipo]);
+
+        $id = $stmt->fetchColumn();
+
+        return $id === false ? null : (int) $id;
+    }
+
+    public function buscarTipoEliminatoria(): ?int
+    {
+        $stmt = $this->pdo->query("
+            SELECT cd_tipo_etapa
+            FROM tipo_etapa
+            WHERE nm_tipo_etapa IN ('MATA_MATA', 'ELIMINATORIA')
+            ORDER BY CASE nm_tipo_etapa
+                WHEN 'MATA_MATA' THEN 0
+                ELSE 1
+            END
+            LIMIT 1
+        ");
 
         $id = $stmt->fetchColumn();
 

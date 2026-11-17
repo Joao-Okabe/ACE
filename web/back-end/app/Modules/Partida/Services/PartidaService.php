@@ -19,6 +19,10 @@ class PartidaService
         }
 
         $idCompeticao = !empty($dados['cd_competicao']) ? (int) $dados['cd_competicao'] : null;
+        if ($idCompeticao === null) {
+            throw new InvalidArgumentException('Toda partida precisa pertencer a uma competição.');
+        }
+
         $idConfronto = !empty($dados['cd_confronto']) ? (int) $dados['cd_confronto'] : null;
         $visibilidade = strtoupper(trim($dados['visibilidade'] ?? 'PUBLICA'));
 
