@@ -1,16 +1,63 @@
 import 'package:intl/intl.dart';
 
 Map<String, dynamic> asMap(Object? value) {
-  if (value is Map<String, dynamic>) return value;
-  if (value is Map) {
-    return value.map((key, item) => MapEntry(key.toString(), item));
+  final result = value is Map<String, dynamic>
+      ? Map<String, dynamic>.from(value)
+      : value is Map
+      ? value.map((key, item) => MapEntry(key.toString(), item))
+      : <String, dynamic>{};
+  result.putIfAbsent(
+    'id',
+    () =>
+        result['cd_aluno'] ??
+        result['cd_time'] ??
+        result['cd_escola'] ??
+        result['cd_competicao'] ??
+        result['cd_partida'] ??
+        result['cd_modalidade'] ??
+        result['cd_esporte'] ??
+        result['aluno_id'] ??
+        result['time_id'] ??
+        result['escola_id'],
+  );
+  result.putIfAbsent(
+    'nome',
+    () =>
+        result['name'] ??
+        result['nm_usuario'] ??
+        result['nm_time'] ??
+        result['nm_escola'] ??
+        result['nm_competicao'] ??
+        result['nm_esporte'] ??
+        result['nm_modalidade'],
+  );
+  result.putIfAbsent('competicao', () => result['nm_competicao']);
+  if (result['nome'] == null && result['categoria'] != null) {
+    final sexo = result['sexo']?.toString();
+    result['nome'] = sexo == null || sexo.isEmpty
+        ? result['categoria']
+        : '${result['categoria']} • $sexo';
   }
-  return <String, dynamic>{};
+  final teams = result['times'];
+  if (teams is List) {
+    final parsedTeams = teams.whereType<Map>().map(asMap).toList();
+    final home = parsedTeams.where((team) => boolOf(team, ['mandante']));
+    final away = parsedTeams.where((team) => !boolOf(team, ['mandante']));
+    final homeTeam = home.isEmpty ? null : home.first;
+    final awayTeam = away.isEmpty ? null : away.first;
+    result.putIfAbsent('time_casa', () => homeTeam?['nome']);
+    result.putIfAbsent('time_casa_id', () => homeTeam?['id']);
+    result.putIfAbsent('time_visitante', () => awayTeam?['nome']);
+    result.putIfAbsent('time_visitante_id', () => awayTeam?['id']);
+  }
+  return result;
 }
 
 List<Map<String, dynamic>> asList(Object? value, {String key = 'itens'}) {
   Object? source = value;
-  if (source is Map && source.containsKey(key)) source = source[key];
+  if (source is Map) {
+    source = source[key] ?? source['items'] ?? source['itens'];
+  }
   if (source is List) return source.map(asMap).toList();
   return const [];
 }

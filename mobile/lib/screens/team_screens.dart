@@ -18,15 +18,10 @@ class _TeamListScreenState extends State<TeamListScreen> {
   bool _loading = true;
   Object? _error;
   List<Map<String, dynamic>> _items = [];
-  List<Map<String, dynamic>> _modalities = [];
-  List<Map<String, dynamic>> _categories = [];
-  String? _modalityId;
-  String? _categoryId;
 
   @override
   void initState() {
     super.initState();
-    _loadFilters();
     _load();
   }
 
@@ -34,21 +29,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
   void dispose() {
     _search.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadFilters() async {
-    try {
-      final results = await Future.wait([
-        AppScope.read(context).client.get('/modalidades'),
-        AppScope.read(context).client.get('/categorias'),
-      ]);
-      if (mounted) {
-        setState(() {
-          _modalities = asList(results[0]);
-          _categories = asList(results[1]);
-        });
-      }
-    } catch (_) {}
   }
 
   Future<void> _load() async {
@@ -60,13 +40,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
       _items = asList(
         await AppScope.read(context).client.get(
           '/times',
-          query: {
-            'busca': _search.text,
-            'modalidadeId': _modalityId,
-            'categoriaId': _categoryId,
-            'pagina': 1,
-            'limite': 100,
-          },
+          query: {'busca': _search.text, 'pagina': 1, 'limite': 100},
         ),
       );
     } catch (error) {
@@ -95,51 +69,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
           SearchBarField(
             controller: _search,
             onSubmitted: (_) => _load(),
-            hint: 'Buscar time ou escola',
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  initialValue: _modalityId,
-                  decoration: const InputDecoration(labelText: 'Modalidade'),
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('Todas')),
-                    ..._modalities.map(
-                      (item) => DropdownMenuItem(
-                        value: textOf(item, ['id']),
-                        child: Text(textOf(item, ['nome'])),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() => _modalityId = value);
-                    _load();
-                  },
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  initialValue: _categoryId,
-                  decoration: const InputDecoration(labelText: 'Categoria'),
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('Todas')),
-                    ..._categories.map(
-                      (item) => DropdownMenuItem(
-                        value: textOf(item, ['id']),
-                        child: Text(textOf(item, ['nome'])),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() => _categoryId = value);
-                    _load();
-                  },
-                ),
-              ),
-            ],
+            hint: 'Buscar time',
           ),
           const SizedBox(height: 16),
           if (_items.isEmpty)
@@ -197,7 +127,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                             ),
                             const SizedBox(height: 3),
                             Text(
-                              '${textOf(team, ['modalidade'])} • ${textOf(team, ['categoria'])}',
+                              'Esporte ${textOf(team, ['cd_esporte'])}',
                               style: TextStyle(
                                 color: Theme.of(
                                   context,
@@ -206,7 +136,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                             ),
                             const SizedBox(height: 7),
                             Text(
-                              '${intOf(team, ['atletas'])} atletas • ${intOf(team, ['titulares'])} titulares',
+                              'Toque para ver o elenco',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Theme.of(context).colorScheme.primary,
@@ -258,13 +188,9 @@ class TeamFormScreen extends StatefulWidget {
 class _TeamFormScreenState extends State<TeamFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
-  final _coach = TextEditingController();
   final _schoolId = TextEditingController();
-  List<Map<String, dynamic>> _modalities = [];
-  List<Map<String, dynamic>> _categories = [];
-  String? _modalityId;
-  String? _categoryId;
-  bool _active = true;
+  List<Map<String, dynamic>> _sports = [];
+  String? _sportId;
   bool _busy = false;
 
   @override
@@ -272,18 +198,14 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
     super.initState();
     final data = widget.initialData ?? {};
     _name.text = textOf(data, ['nome'], fallback: '');
-    _coach.text = textOf(data, ['treinador', 'tecnico'], fallback: '');
     _schoolId.text = textOf(data, ['escola_id'], fallback: '');
-    _modalityId = data['modalidade_id']?.toString();
-    _categoryId = data['categoria_id']?.toString();
-    _active = data['ativo'] != false;
+    _sportId = data['cd_esporte']?.toString();
     _loadOptions();
   }
 
   @override
   void dispose() {
     _name.dispose();
-    _coach.dispose();
     _schoolId.dispose();
     super.dispose();
   }
@@ -291,13 +213,11 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
   Future<void> _loadOptions() async {
     try {
       final results = await Future.wait([
-        AppScope.read(context).client.get('/modalidades'),
-        AppScope.read(context).client.get('/categorias'),
+        AppScope.read(context).client.get('/esportes'),
       ]);
       if (mounted) {
         setState(() {
-          _modalities = asList(results[0]);
-          _categories = asList(results[1]);
+          _sports = asList(results[0]);
         });
       }
     } catch (error) {
@@ -310,11 +230,11 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
     final session = AppScope.read(context);
     final body = <String, Object?>{
       'nome': _name.text.trim(),
-      'tecnico': _coach.text.trim(),
-      'modalidadeId': _modalityId,
-      'categoriaId': _categoryId,
-      'ativo': _active,
-      if (session.profile != 'ESCOLA') 'escolaId': _schoolId.text.trim(),
+      if (!widget.editing) 'esporteId': _sportId,
+      if (!widget.editing &&
+          (!session.hasAnyProfile({'ESCOLA'}) ||
+              session.hasAnyProfile({'ADMINISTRADOR'})))
+        'escola': _schoolId.text.trim(),
     };
     setState(() => _busy = true);
     try {
@@ -362,20 +282,14 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
                 validator: requiredField,
               ),
               const SizedBox(height: 12),
-              AppTextFormField(
-                controller: _coach,
-                label: 'Técnico / responsável',
-                prefixIcon: Icons.person_outline,
-              ),
-              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                initialValue: _modalityId,
+                initialValue: _sportId,
                 decoration: const InputDecoration(
-                  labelText: 'Modalidade *',
-                  helperText: 'Campo obrigatório',
+                  labelText: 'Esporte *',
+                  helperText: 'Campo obrigatório no ACE',
                   prefixIcon: Icon(Icons.sports),
                 ),
-                items: _modalities
+                items: _sports
                     .map(
                       (item) => DropdownMenuItem(
                         value: textOf(item, ['id']),
@@ -383,48 +297,29 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
                       ),
                     )
                     .toList(),
-                validator: (value) =>
-                    value == null ? 'Selecione a modalidade' : null,
-                onChanged: (value) => setState(() => _modalityId = value),
+                validator: (value) => value == null && !widget.editing
+                    ? 'Selecione o esporte'
+                    : null,
+                onChanged: widget.editing
+                    ? null
+                    : (value) => setState(() => _sportId = value),
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: _categoryId,
-                decoration: const InputDecoration(
-                  labelText: 'Categoria *',
-                  helperText: 'Campo obrigatório',
-                  prefixIcon: Icon(Icons.category_outlined),
-                ),
-                items: _categories
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: textOf(item, ['id']),
-                        child: Text(textOf(item, ['nome'])),
-                      ),
-                    )
-                    .toList(),
-                validator: (value) =>
-                    value == null ? 'Selecione a categoria' : null,
-                onChanged: (value) => setState(() => _categoryId = value),
-              ),
-              if (session.profile != 'ESCOLA') ...[
+              if ((!session.hasAnyProfile({'ESCOLA'}) ||
+                      session.hasAnyProfile({'ADMINISTRADOR'})) &&
+                  !widget.editing) ...[
                 const SizedBox(height: 12),
                 AppTextFormField(
                   controller: _schoolId,
                   label: 'ID da escola',
                   prefixIcon: Icons.school_outlined,
                   required: true,
-                  validator: requiredField,
+                  validator: (value) =>
+                      int.tryParse(value?.trim() ?? '') != null
+                      ? null
+                      : 'Informe um ID de escola válido',
                 ),
               ],
               const SizedBox(height: 12),
-              SwitchListTile.adaptive(
-                value: _active,
-                onChanged: (value) => setState(() => _active = value),
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Time ativo'),
-                subtitle: const Text('Times inativos não aparecem nas listas.'),
-              ),
               const SizedBox(height: 18),
               FilledButton.icon(
                 onPressed: _busy ? null : _save,
@@ -451,7 +346,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
   bool _loading = true;
   Object? _error;
   Map<String, dynamic> _team = {};
-  Map<String, dynamic> _performance = {};
 
   bool get _canEdit =>
       AppScope.read(context).hasAnyProfile({'ESCOLA', 'ADMINISTRADOR'});
@@ -468,12 +362,9 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        AppScope.read(context).client.get('/times/${widget.teamId}'),
-        AppScope.read(context).client.get('/times/${widget.teamId}/ranking'),
-      ]);
-      _team = asMap(results[0]);
-      _performance = asMap(asMap(results[1])['desempenho']);
+      _team = asMap(
+        await AppScope.read(context).client.get('/times/${widget.teamId}'),
+      );
     } catch (error) {
       _error = error;
     } finally {
@@ -694,12 +585,12 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${textOf(_team, ['modalidade'])} • ${textOf(_team, ['categoria'])}',
+                                'Esporte ${textOf(_team, ['cd_esporte'])}',
                                 style: const TextStyle(color: Colors.white70),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                textOf(_team, ['escola']),
+                                'Elenco do time',
                                 style: const TextStyle(color: Colors.white70),
                               ),
                             ],
@@ -709,31 +600,6 @@ class _TeamDetailScreenState extends State<TeamDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: .9,
-                    children: [
-                      MetricCard(
-                        label: 'Jogos',
-                        value: intOf(_performance, ['jogos']),
-                        icon: Icons.sports_soccer,
-                      ),
-                      MetricCard(
-                        label: 'Vitórias',
-                        value: intOf(_performance, ['vitorias']),
-                        icon: Icons.emoji_events_outlined,
-                      ),
-                      MetricCard(
-                        label: 'Empates',
-                        value: intOf(_performance, ['empates']),
-                        icon: Icons.balance,
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 20),
                   SectionHeader(
                     title: 'Elenco',
@@ -929,9 +795,7 @@ class _AthletePickerScreenState extends State<AthletePickerScreen> {
                     ),
                     title: Text(textOf(item, ['nome'])),
                     subtitle: Text(
-                      textOf(item, [
-                        'matricula',
-                      ], fallback: textOf(item, ['email'])),
+                      textOf(item, ['ra'], fallback: textOf(item, ['email'])),
                     ),
                     trailing: const Icon(Icons.add_circle_outline),
                     onTap: () => Navigator.pop(context, item),
@@ -961,7 +825,6 @@ class TeamAthleteFormScreen extends StatefulWidget {
 class _TeamAthleteFormScreenState extends State<TeamAthleteFormScreen> {
   late final TextEditingController _number;
   late final TextEditingController _position;
-  String _role = 'JOGADOR';
   bool _starter = false;
   bool _busy = false;
 
@@ -974,7 +837,6 @@ class _TeamAthleteFormScreenState extends State<TeamAthleteFormScreen> {
     _position = TextEditingController(
       text: textOf(widget.athlete, ['posicao'], fallback: ''),
     );
-    _role = textOf(widget.athlete, ['funcao'], fallback: 'JOGADOR');
     _starter = boolOf(widget.athlete, ['titular']);
   }
 
@@ -986,12 +848,15 @@ class _TeamAthleteFormScreenState extends State<TeamAthleteFormScreen> {
   }
 
   Future<void> _save() async {
+    if (_position.text.trim().isEmpty) {
+      showFailure(context, 'Informe uma função cadastrada para o esporte.');
+      return;
+    }
     setState(() => _busy = true);
     final athleteId = textOf(widget.athlete, ['aluno_id', 'id']);
     final body = <String, Object?>{
       'numeroCamisa': int.tryParse(_number.text),
-      'posicao': _position.text.trim(),
-      'funcao': _role,
+      'funcao': _position.text.trim(),
       'titular': _starter,
     };
     try {
@@ -1058,19 +923,6 @@ class _TeamAthleteFormScreenState extends State<TeamAthleteFormScreen> {
               prefixIcon: Icons.place_outlined,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _role,
-              decoration: const InputDecoration(
-                labelText: 'Função',
-                prefixIcon: Icon(Icons.assignment_ind_outlined),
-              ),
-              items: const [
-                DropdownMenuItem(value: 'JOGADOR', child: Text('Jogador')),
-                DropdownMenuItem(value: 'GOLEIRO', child: Text('Goleiro')),
-                DropdownMenuItem(value: 'RESERVA', child: Text('Reserva')),
-              ],
-              onChanged: (value) => setState(() => _role = value ?? 'JOGADOR'),
-            ),
             SwitchListTile.adaptive(
               value: _starter,
               onChanged: (value) => setState(() => _starter = value),

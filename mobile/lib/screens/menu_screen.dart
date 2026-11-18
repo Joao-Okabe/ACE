@@ -102,7 +102,7 @@ class _MenuScreenState extends State<MenuScreen> {
         const SizedBox(height: 22),
         const SectionHeader(title: 'Minha conta'),
         const SizedBox(height: 10),
-        if (profile == 'ESCOLA')
+        if (session.hasAnyProfile({'DIR'}))
           _MenuTile(
             icon: Icons.school_outlined,
             title: 'Perfil da escola',

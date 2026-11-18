@@ -908,10 +908,13 @@ class _ScheduleMatchScreenState extends State<ScheduleMatchScreen> {
     super.initState();
     _dateTime =
         DateTime.tryParse(
-          widget.match['data_hora']?.toString() ?? '',
+          (widget.match['inicio_agendado'] ?? widget.match['data_hora'])
+                  ?.toString() ??
+              '',
         )?.toLocal() ??
         DateTime.now().add(const Duration(days: 1));
-    _locationId = widget.match['local_id']?.toString();
+    _locationId = (widget.match['local_partida'] ?? widget.match['local'])
+        ?.toString();
     _loadLocations();
   }
 
@@ -958,15 +961,18 @@ class _ScheduleMatchScreenState extends State<ScheduleMatchScreen> {
 
   Future<void> _save() async {
     setState(() => _busy = true);
+    final client = AppScope.read(context).client;
     try {
-      await AppScope.read(context).client.put(
+      await client.put(
         '/partidas/${textOf(widget.match, ['id'])}/calendario',
-        body: {
-          'dataHora': _dateTime.toIso8601String(),
-          'localId': _locationId,
-          'motivo': _reason.text.trim(),
-        },
+        body: {'dataHora': _dateTime.toIso8601String()},
       );
+      if (_locationId?.trim().isNotEmpty == true) {
+        await client.put(
+          '/partidas/${textOf(widget.match, ['id'])}/local',
+          body: {'local': _locationId!.trim()},
+        );
+      }
       if (!mounted) return;
       showSuccess(context, 'Calendário atualizado.');
       Navigator.pop(context, true);
@@ -1013,10 +1019,8 @@ class _ScheduleMatchScreenState extends State<ScheduleMatchScreen> {
               items: _locations
                   .map(
                     (item) => DropdownMenuItem(
-                      value: textOf(item, ['id']),
-                      child: Text(
-                        '${textOf(item, ['nome'])} • ${textOf(item, ['cidade'])}',
-                      ),
+                      value: textOf(item, ['nome', 'local_partida']),
+                      child: Text(textOf(item, ['nome', 'local_partida'])),
                     ),
                   )
                   .toList(),
