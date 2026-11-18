@@ -222,6 +222,8 @@ O banco utiliza PostgreSQL e possui entidades relacionadas a:
 
 A definição principal está em `database/script.sql`; triggers estão em `database/triggers.sql`; dados iniciais ficam em `database/seeds/`.
 
+Os rankings individuais guardam cada valor com atleta, time, partida, esporte e métrica. Após atualizar um banco existente, aplique `database/migrations/20261118_estatistica_atleta_partida.sql` e depois execute `database/seeds/17.metrica_atleta.sql` para carregar as métricas iniciais por esporte. As APIs de consulta são `/api/rankings/atletas` e `/api/v1/rankings/atletas`; informe `esporteId`, `metricaId` e `escopo` (`geral`, `esporte`, `escola` ou `competicao`). Para registrar dados da partida use `PUT /api/v1/partidas/{id}/estatisticas-atletas` com atleta, time e valores por `metricaId`. A classificação sempre permanece separada por time, mesmo quando o atleta participou de mais de uma equipe.
+
 Para inspeção e administração visual do PostgreSQL, pode-se utilizar o DBeaver Community ou outra ferramenta compatível.
 
 ## API REST

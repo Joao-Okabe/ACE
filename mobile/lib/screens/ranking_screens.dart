@@ -87,20 +87,26 @@ class _RankingListState extends State<RankingList> {
   List<Map<String, dynamic>> _items = [];
   List<Map<String, dynamic>> _competitions = [];
   List<Map<String, dynamic>> _modalities = [];
+  List<Map<String, dynamic>> _sports = [];
+  List<Map<String, dynamic>> _schools = [];
+  List<Map<String, dynamic>> _metrics = [];
   String? _competitionId;
   String? _modalityId;
+  String? _sportId;
+  String? _schoolId;
+  String? _metricId;
+  String _scope = 'geral';
 
   @override
   void initState() {
     super.initState();
     _loadFilters();
-    _load();
   }
 
   String get _path => switch (widget.type) {
     RankingType.schools => '/rankings/escolas',
     RankingType.teams => '/rankings/equipes',
-    RankingType.individual => '/rankings/individual',
+    RankingType.individual => '/rankings/atletas',
   };
 
   Future<void> _loadFilters() async {
@@ -110,13 +116,37 @@ class _RankingListState extends State<RankingList> {
           context,
         ).client.get('/competicoes', query: {'limite': 100}),
         AppScope.read(context).client.get('/modalidades'),
+        AppScope.read(context).client.get('/esportes'),
+        AppScope.read(context).client.get('/escolas'),
       ]);
       if (mounted) {
         setState(() {
           _competitions = asList(results[0]);
           _modalities = asList(results[1]);
+          _sports = asList(results[2]);
+          _schools = asList(results[3]);
+          if (_sports.isNotEmpty)
+            _sportId = textOf(_sports.first, ['cd_esporte', 'id']);
         });
       }
+    } catch (_) {}
+    await _loadMetrics();
+    await _load();
+  }
+
+  Future<void> _loadMetrics() async {
+    if (_sportId == null) return;
+    try {
+      final values = await AppScope.read(
+        context,
+      ).client.get('/esportes/$_sportId/metricas-atleta');
+      if (mounted)
+        setState(() {
+          _metrics = asList(values);
+          _metricId = _metrics.isEmpty
+              ? null
+              : textOf(_metrics.first, ['id', 'cd_metrica_atleta']);
+        });
     } catch (_) {}
   }
 
@@ -126,12 +156,26 @@ class _RankingListState extends State<RankingList> {
       _error = null;
     });
     try {
+      if (widget.type == RankingType.individual &&
+          (_sportId == null ||
+              _metricId == null ||
+              (_scope == 'escola' && _schoolId == null) ||
+              (_scope == 'competicao' && _competitionId == null))) {
+        _items = [];
+        return;
+      }
       _items = asList(
         await AppScope.read(context).client.get(
           _path,
           query: {
             'competicaoId': _competitionId,
             'modalidadeId': _modalityId,
+            'esporteId': _sportId,
+            'escolaId': _scope == 'escola' ? _schoolId : null,
+            'escopo': _scope,
+            'metricaId': widget.type == RankingType.individual
+                ? _metricId
+                : null,
             'limite': 100,
           },
         ),
@@ -153,6 +197,97 @@ class _RankingListState extends State<RankingList> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
         children: [
           DropdownButtonFormField<String>(
+            initialValue: _sportId,
+            decoration: const InputDecoration(
+              labelText: 'Esporte',
+              prefixIcon: Icon(Icons.sports),
+            ),
+            items: _sports
+                .map(
+                  (item) => DropdownMenuItem(
+                    value: textOf(item, ['cd_esporte', 'id']),
+                    child: Text(textOf(item, ['nm_esporte', 'nome'])),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) async {
+              setState(() {
+                _sportId = value;
+                _metricId = null;
+              });
+              await _loadMetrics();
+              await _load();
+            },
+          ),
+          if (widget.type == RankingType.individual) ...[
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              initialValue: _metricId,
+              decoration: const InputDecoration(
+                labelText: 'Métrica',
+                prefixIcon: Icon(Icons.query_stats),
+              ),
+              items: _metrics
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: textOf(item, ['id', 'cd_metrica_atleta']),
+                      child: Text(textOf(item, ['nome'])),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() => _metricId = value);
+                _load();
+              },
+            ),
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              initialValue: _scope,
+              decoration: const InputDecoration(
+                labelText: 'Escopo',
+                prefixIcon: Icon(Icons.filter_alt_outlined),
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'geral',
+                  child: Text('Geral no esporte'),
+                ),
+                DropdownMenuItem(value: 'esporte', child: Text('Esporte')),
+                DropdownMenuItem(value: 'escola', child: Text('Escola')),
+                DropdownMenuItem(
+                  value: 'competicao',
+                  child: Text('Competição'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() => _scope = value ?? 'geral');
+                _load();
+              },
+            ),
+            if (_scope == 'escola') ...[
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                initialValue: _schoolId,
+                decoration: const InputDecoration(
+                  labelText: 'Escola',
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+                items: _schools
+                    .map(
+                      (item) => DropdownMenuItem(
+                        value: textOf(item, ['cd_escola', 'id']),
+                        child: Text(textOf(item, ['nm_escola', 'nome'])),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() => _schoolId = value);
+                  _load();
+                },
+              ),
+            ],
+          ],
+          DropdownButtonFormField<String>(
             initialValue: _competitionId,
             decoration: const InputDecoration(
               labelText: 'Competição',
@@ -165,8 +300,8 @@ class _RankingListState extends State<RankingList> {
               ),
               ..._competitions.map(
                 (item) => DropdownMenuItem(
-                  value: textOf(item, ['id']),
-                  child: Text(textOf(item, ['nome'])),
+                  value: textOf(item, ['id', 'cd_competicao']),
+                  child: Text(textOf(item, ['nome', 'nm_competicao'])),
                 ),
               ),
             ],
@@ -249,9 +384,9 @@ class _RankingCard extends StatelessWidget {
       RankingType.teams =>
         '${textOf(data, ['escola'])} • ${intOf(data, ['jogos'])} jogos',
       RankingType.individual =>
-        '${textOf(data, ['escola'])} • ${intOf(data, ['partidas'])} partidas',
+        '${textOf(data, ['time'])} • ${intOf(data, ['jogos'])} partidas',
     };
-    final points = intOf(data, ['pontos']);
+    final points = intOf(data, ['pontos', 'valor']);
     return Semantics(
       label: '$positionº lugar. $title. $points pontos. $subtitle.',
       button: type != RankingType.schools,
@@ -312,7 +447,7 @@ class _RankingCard extends StatelessWidget {
                   if (type == RankingType.individual) ...[
                     const SizedBox(height: 5),
                     Text(
-                      '${intOf(data, ['assistencias'])} assistências • Nota ${doubleOf(data, ['media_nota']).toStringAsFixed(1)}',
+                      '${textOf(data, ['metrica_nome', 'metrica'])}: ${doubleOf(data, ['valor']).toStringAsFixed(0)}',
                       style: TextStyle(color: scheme.primary, fontSize: 12),
                     ),
                   ],
@@ -331,7 +466,9 @@ class _RankingCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'pontos',
+                  type == RankingType.individual
+                      ? textOf(data, ['metrica_nome'], fallback: 'métrica')
+                      : 'pontos',
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,
