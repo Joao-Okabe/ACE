@@ -1,0 +1,353 @@
+
+/* ========================================
+   CHAVEAMENTO ACE
+======================================== */
+
+.chaveamento-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.chaveamento-header h3 {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.chaveamento-header p {
+    margin: 4px 0 0;
+}
+
+/* ========================================
+   ÁREA DO CHAVEAMENTO
+======================================== */
+
+.chaveamento {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 20px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   ESTRUTURA
+======================================== */
+
+.bracket {
+    --partida-w: 190px;
+    --partida-h: 60px;
+    --conexao-w: 36px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+}
+
+/* ========================================
+   COLUNAS DAS RODADAS
+======================================== */
+
+.bracket-coluna {
+    flex: 0 0 var(--partida-w);
+    width: var(--partida-w);
+}
+
+/* ========================================
+   CONEXÕES - ELIMINATÓRIA SIMPLES
+======================================== */
+
+.bracket-conexoes {
+    position: relative;
+    flex: 0 0 var(--conexao-w);
+    width: var(--conexao-w);
+    height: 100%;
+    min-height: 76px;
+    overflow: visible;
+}
+
+.conexao {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+.conexao .entrada-1,
+.conexao .entrada-2,
+.conexao .saida,
+.conexao .vertical {
+    position: absolute;
+    background: var(--azul-principal);
+    box-sizing: border-box;
+}
+
+.conexao .entrada-1,
+.conexao .entrada-2,
+.conexao .saida {
+    height: 2px;
+}
+
+.conexao .entrada-1 {
+    left: 0;
+    top: calc(var(--entrada-1) - 1px);
+    width: calc(50% + 1px);
+}
+
+.conexao .entrada-2 {
+    left: 0;
+    top: calc(var(--entrada-2) - 1px);
+    width: calc(50% + 1px);
+}
+
+.conexao .saida {
+    right: 0;
+    top: calc(var(--saida-y) - 1px);
+    width: calc(50% + 1px);
+}
+
+.conexao .vertical {
+    left: calc(50% - 1px);
+    top: var(--entrada-1);
+    width: 2px;
+    height: var(--vertical-h);
+}
+
+/* ========================================
+   ELIMINATÓRIA DUPLA
+======================================== */
+
+.bracket-dupla {
+    position: relative;
+    width: 1356px;
+    min-width: 1356px;
+    height: 1250px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Camada das conexões */
+
+.bracket-dupla .bracket-conexoes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1;
+}
+
+.bracket-dupla .entrada-1,
+.bracket-dupla .entrada-2,
+.bracket-dupla .saida,
+.bracket-dupla .vertical {
+    position: absolute;
+    background: var(--azul-principal);
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.bracket-dupla .entrada-1,
+.bracket-dupla .entrada-2,
+.bracket-dupla .saida {
+    height: 2px;
+}
+
+.bracket-dupla .vertical {
+    width: 2px;
+}
+
+/* Colunas */
+
+.bracket-dupla .bracket-coluna {
+    position: absolute;
+    top: 0;
+    width: 190px;
+    height: 1250px;
+    flex: none;
+    z-index: 2;
+}
+
+/* Rodadas */
+
+.bracket-dupla .round {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 190px;
+    height: 100%;
+}
+
+/* Partidas */
+
+.bracket-dupla .partida {
+    position: absolute;
+    left: 0;
+    width: 190px;
+    height: 60px;
+}
+
+.bracket-dupla .round-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 8px 5px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 3;
+}
+/* ========================================
+   TÍTULOS DAS RODADAS
+======================================== */
+
+.round-title {
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--laranja-principal);
+    font-size: 18px;
+    font-weight: bolder;
+    text-align: center;
+    margin: 0;
+    margin-bottom: 20px;
+    padding: 4px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--azul-principal);
+}
+
+/* ========================================
+   ÁREA DAS PARTIDAS
+======================================== */
+
+.round {
+    position: relative;
+    width: 100%;
+    height: 1280px;
+}
+
+/* ========================================
+   CARD DA PARTIDA
+======================================== */
+
+.partida {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--bege-principal);
+    border: 2px solid var(--azul-principal);
+    border-radius: 12px;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 3px 8px rgba(24, 24, 71, 0.08);
+}
+
+/* ========================================
+   TIMES
+======================================== */
+
+.time {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 28px;
+    padding: 0 10px;
+    gap: 6px;
+    color: var(--azul-principal);
+    font-size: 13px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.time + .time {
+    border-top: 2px solid var(--azul-principal);
+}
+
+.time img {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--azul-principal);
+}
+
+.time span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 900px) {
+    .chaveamento {
+        padding: 16px 6px;
+    }
+
+    .bracket {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+/* ========================================
+   SISTEMA SUÍÇO
+======================================== */
+
+.bracket-suico {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 24px;
+    width: max-content;
+    min-width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.bracket-suico .coluna-suica {
+    position: relative;
+    flex: 0 0 260px;
+    width: 260px;
+}
+
+.bracket-suico .round-title {
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+.bracket-suico .round {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: auto;
+}
+
+.bracket-suico .partida {
+    position: relative;
+    flex: 0 0 60px;
+    width: 100%;
+}

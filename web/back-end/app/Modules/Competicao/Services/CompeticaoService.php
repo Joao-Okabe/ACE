@@ -379,60 +379,79 @@ class CompeticaoService
         }
 
         $formato = $this->formatoModel->buscarPorCompeticao($idCompeticao);
-        $nmFormato = $formato['nm_formato'] ?? null;
+
+        $nomeFormato = mb_strtolower(trim($formato['nm_formato'] ?? ''));
 
         $formatos = [
-            'ELIMINATORIA_SIMPLES' => 'MATA_MATA',
-            'ELIMINATORIA_DUPLA' => 'MATA_MATA',
-            'GRUPOS_ELIMINATORIA' => 'GRUPOS',
-            'SUICO' => 'GRUPOS',
+            'eliminatória simples' => 'ELIMINATORIA_SIMPLES',
+            'eliminatória dupla' => 'ELIMINATORIA_DUPLA',
+            'fase de grupo + eliminatória' => 'GRUPOS_ELIMINATORIA',
+            'sistema suiço' => 'SUICO',
         ];
 
-        if (!is_string($nmFormato) || !isset($formatos[$nmFormato])) {
-            throw new Exception('O formato da competição não é reconhecido.');
+        $nmFormato = $formatos[$nomeFormato] ?? 'ELIMINATORIA_SIMPLES';
+
+        if ($nmFormato === 'GRUPOS_ELIMINATORIA' || $nmFormato === 'SUICO') {
+            // Etapa de grupos (também usada pelo sistema suíço).
+            $etapa = $this->etapaCompeticaoModel->buscarPorCompeticaoETipo(
+                $idCompeticao,
+                'GRUPOS'
+            );
+
+            if ($etapa === null) {
+                $cdTipoEtapa = $this->etapaCompeticaoModel->buscarTipoPorNome('GRUPOS');
+
+                if ($cdTipoEtapa === null) {
+                    throw new Exception('Tipo de etapa de grupos não cadastrado.');
+                }
+
+                $cdEtapa = $this->etapaCompeticaoModel->criar([
+                    'cd_competicao' => $idCompeticao,
+                    'cd_tipo_etapa' => $cdTipoEtapa,
+                    'nm_etapa' => 'GRUPOS',
+                    'ordem' => 1,
+                    'descricao' => $nmFormato === 'SUICO'
+                        ? 'Etapa de grupos do sistema suíço da competição.'
+                        : 'Etapa de grupos da competição.',
+                ]);
+            } else {
+                $cdEtapa = (int) $etapa['cd_etapa_competicao'];
+            }
+
+            if ($nmFormato === 'SUICO') {
+                (new SuicoService())->gerar($idCompeticao, $cdEtapa);
+            } else {
+                (new FaseDeGrupoService())->gerar($idCompeticao, $cdEtapa);
+            }
+
+            return;
         }
 
-        $tipoEtapa = $formatos[$nmFormato];
-        $etapa = $tipoEtapa === 'GRUPOS'
-            ? $this->etapaCompeticaoModel->buscarPorCompeticaoETipo($idCompeticao, 'GRUPOS')
-            : $this->etapaCompeticaoModel->buscarEliminatoriaPorCompeticao($idCompeticao);
+        // Padrão: eliminatória simples (e ELIMINATORIA_DUPLA usa a mesma etapa).
+        $etapa = $this->etapaCompeticaoModel->buscarEliminatoriaPorCompeticao($idCompeticao);
 
         if ($etapa === null) {
-            $cdTipoEtapa = $tipoEtapa === 'GRUPOS'
-                ? $this->etapaCompeticaoModel->buscarTipoPorNome('GRUPOS')
-                : $this->etapaCompeticaoModel->buscarTipoEliminatoria();
+            $cdTipoEtapa = $this->etapaCompeticaoModel->buscarTipoPorNome('ELIMINATORIA');
 
             if ($cdTipoEtapa === null) {
-                throw new Exception('O tipo de etapa exigido pelo formato não está cadastrado.');
+                throw new Exception('Tipo de etapa eliminatória não cadastrado.');
             }
 
             $cdEtapa = $this->etapaCompeticaoModel->criar([
                 'cd_competicao' => $idCompeticao,
                 'cd_tipo_etapa' => $cdTipoEtapa,
-                'nm_etapa' => $nmFormato,
+                'nm_etapa' => 'ELIMINATORIA',
                 'ordem' => 1,
-                'descricao' => 'Etapa do formato ' . $nmFormato . '.',
+                'descricao' => 'Etapa de eliminatória da competição.',
             ]);
         } else {
             $cdEtapa = (int) $etapa['cd_etapa_competicao'];
-            if ($etapa['nm_etapa'] !== $nmFormato) {
-                $this->etapaCompeticaoModel->renomear($cdEtapa, $nmFormato);
-            }
         }
 
-        switch ($nmFormato) {
-            case 'ELIMINATORIA_SIMPLES':
-                (new EliminatoriaSimplesService())->gerar($idCompeticao, $cdEtapa);
-                return;
-            case 'ELIMINATORIA_DUPLA':
-                (new EliminatoriaDuplaService())->gerar($idCompeticao, $cdEtapa);
-                return;
-            case 'GRUPOS_ELIMINATORIA':
-                (new FaseDeGrupoService())->gerar($idCompeticao, $cdEtapa);
-                return;
-            case 'SUICO':
-                (new SuicoService())->gerar($idCompeticao, $cdEtapa);
-                return;
+        if ($nmFormato === 'ELIMINATORIA_DUPLA') {
+            (new EliminatoriaDuplaService())->gerar($idCompeticao, $cdEtapa);
+        } else {
+            (new EliminatoriaSimplesService())->gerar($idCompeticao, $cdEtapa);
         }
     }
 }
