@@ -86,7 +86,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
           SearchBarField(
             controller: _search,
             onSubmitted: (_) => _load(),
-            hint: 'Buscar por nome, e-mail ou CPF',
+            hint: 'Buscar por nome ou e-mail',
           ),
           const SizedBox(height: 16),
           if (_items.isEmpty)
@@ -94,11 +94,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
               title: 'Nenhum atleta encontrado',
               message: 'Cadastre o primeiro atleta da escola.',
               icon: Icons.directions_run,
-              action: FilledButton.icon(
-                onPressed: _openForm,
-                icon: const Icon(Icons.add),
-                label: const Text('Cadastrar atleta'),
-              ),
+              action: AppScope.of(context).hasAnyProfile({'DIR', 'ADM'})
+                  ? FilledButton.icon(
+                      onPressed: _openForm,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Cadastrar atleta'),
+                    )
+                  : null,
             )
           else
             ..._items.map((student) {
@@ -161,10 +163,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
                               runSpacing: 4,
                               children: [
                                 if (textOf(student, [
-                                  'matricula',
+                                  'ra',
                                 ], fallback: '').isNotEmpty)
                                   Text(
-                                    'Matrícula ${textOf(student, ['matricula'])}',
+                                    'RA ${textOf(student, ['ra', 'matricula'])}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Theme.of(
@@ -225,7 +227,6 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _phone = TextEditingController();
-  final _cpf = TextEditingController();
   final _birth = TextEditingController();
   final _registration = TextEditingController();
   final _password = TextEditingController();
@@ -254,18 +255,27 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
     _name.text = textOf(data, ['nome'], fallback: '');
     _email.text = textOf(data, ['email'], fallback: '');
     _phone.text = textOf(data, ['telefone'], fallback: '');
-    _cpf.text = textOf(data, ['cpf'], fallback: '');
     _birth.text = data['data_nascimento'] == null
         ? ''
         : formatDate(data['data_nascimento']);
-    _registration.text = textOf(data, ['matricula'], fallback: '');
+    _registration.text = textOf(data, ['ra', 'matricula'], fallback: '');
     _schoolId.text = textOf(data, [
+      'cd_escola',
       'escola_id',
       'escolaId',
     ], fallback: AppScope.read(context).schoolId ?? '');
-    _schoolCode.text = textOf(data, ['escola_codigo'], fallback: '');
-    _schoolName.text = textOf(data, ['escola_nome'], fallback: '');
-    _gender = data['genero']?.toString();
+    _schoolCode.text = textOf(data, [
+      'cd_escola',
+      'escola_id',
+      'escolaId',
+    ], fallback: '');
+    _schoolName.text = textOf(data, ['escola_nome', 'escola'], fallback: '');
+    _gender = switch (data['sexo']?.toString().toUpperCase()) {
+      'M' => 'MASCULINO',
+      'F' => 'FEMININO',
+      'O' => 'OUTRO',
+      _ => data['genero']?.toString(),
+    };
     final photo = data['foto_base64']?.toString();
     if (photo != null && photo.isNotEmpty) {
       _photoBytes = base64Decode(photo);
@@ -274,33 +284,32 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   }
 
   Future<void> _lookupSchool(String value) async {
-    final code = digitsOnly(value);
-    if (code != value) {
+    final id = digitsOnly(value);
+    if (id != value) {
       _schoolCode.value = TextEditingValue(
-        text: code,
-        selection: TextSelection.collapsed(offset: code.length),
+        text: id,
+        selection: TextSelection.collapsed(offset: id.length),
       );
     }
     setState(() {
-      _schoolId.clear();
+      _schoolId.text = id;
       _schoolName.clear();
-      _lookingUpSchool = code.length == 3;
+      _lookingUpSchool = id.isNotEmpty && int.tryParse(id) != null;
     });
-    if (code.length != 3) return;
+    if (id.isEmpty || int.tryParse(id) == null) return;
     try {
       final school = asMap(
-        await AppScope.read(context).client.get('/escolas/codigo/$code'),
+        await AppScope.read(context).client.get('/escolas/$id'),
       );
-      if (!mounted || _schoolCode.text != code) return;
+      if (!mounted || _schoolCode.text != id) return;
       setState(() {
-        _schoolId.text = textOf(school, ['id'], fallback: '');
         _schoolName.text = textOf(school, ['nome'], fallback: '');
       });
     } catch (_) {
-      if (!mounted || _schoolCode.text != code) return;
-      setState(() => _schoolName.text = 'Código não encontrado');
+      if (!mounted || _schoolCode.text != id) return;
+      setState(() => _schoolName.text = 'Escola não encontrada');
     } finally {
-      if (mounted && _schoolCode.text == code) {
+      if (mounted && _schoolCode.text == id) {
         setState(() => _lookingUpSchool = false);
       }
     }
@@ -381,7 +390,6 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       _name,
       _email,
       _phone,
-      _cpf,
       _birth,
       _registration,
       _password,
@@ -426,19 +434,35 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       'nome': _name.text.trim(),
       'email': _email.text.trim(),
       'telefone': _phone.text.trim(),
-      'cpf': digitsOnly(_cpf.text),
-      'dataNascimento': _isoBirth(),
-      'matricula': _registration.text.trim(),
-      'genero': _gender,
-      if (_photoBytes != null) 'fotoBase64': base64Encode(_photoBytes!),
-      if (_photoBytes != null) 'fotoMimeType': _photoMimeType,
-      if (session.profile != 'ESCOLA') 'escolaId': _schoolId.text.trim(),
-      if (!widget.editing && _password.text.isNotEmpty) 'senha': _password.text,
+      'ra': _registration.text.trim(),
+      'data_nascimento': _isoBirth(),
+      'sexo': switch (_gender) {
+        'MASCULINO' => 'M',
+        'FEMININO' => 'F',
+        'OUTRO' => 'O',
+        _ => null,
+      },
+      if (session.hasAnyProfile({'ADM'})) 'escola': _schoolId.text.trim(),
+      if (!widget.editing) 'senha': _password.text,
     };
     setState(() => _busy = true);
     try {
       final response = widget.editing
           ? await session.client.put('/alunos/${widget.studentId}', body: body)
+          : _photoBytes != null
+          ? await session.client.postMultipart(
+              '/alunos',
+              fields: {
+                for (final entry in body.entries)
+                  if (entry.value != null) entry.key: entry.value.toString(),
+              },
+              files: {'foto_perfil': _photoBytes!},
+              fileNames: {
+                'foto_perfil': _photoMimeType == 'image/png'
+                    ? 'perfil.png'
+                    : 'perfil.jpg',
+              },
+            )
           : await session.client.post('/alunos', body: body);
       if (!mounted) return;
       final data = asMap(response);
@@ -498,13 +522,15 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                         children: [
                           Semantics(
                             button: true,
-                            enabled: !_busy,
+                            enabled: !_busy && !widget.editing,
                             label: _photoBytes == null
                                 ? 'Adicionar foto do atleta'
                                 : 'Alterar foto do atleta',
                             hint: 'Escolha uma imagem ou use a câmera',
                             child: InkWell(
-                              onTap: _busy ? null : _showPhotoOptions,
+                              onTap: _busy || widget.editing
+                                  ? null
+                                  : _showPhotoOptions,
                               borderRadius: BorderRadius.circular(64),
                               child: CircleAvatar(
                                 radius: 58,
@@ -528,7 +554,9 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                           ),
                           const SizedBox(height: 8),
                           TextButton.icon(
-                            onPressed: _busy ? null : _showPhotoOptions,
+                            onPressed: _busy || widget.editing
+                                ? null
+                                : _showPhotoOptions,
                             icon: const Icon(Icons.camera_alt_outlined),
                             label: Text(
                               _photoBytes == null
@@ -576,17 +604,6 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     ),
                     const SizedBox(height: 12),
                     AppTextFormField(
-                      controller: _cpf,
-                      label: 'CPF',
-                      keyboardType: TextInputType.number,
-                      prefixIcon: Icons.badge_outlined,
-                      required: true,
-                      validator: (value) => digitsOnly(value ?? '').length == 11
-                          ? null
-                          : 'Informe 11 dígitos',
-                    ),
-                    const SizedBox(height: 12),
-                    AppTextFormField(
                       controller: _birth,
                       label: 'Data de nascimento',
                       readOnly: true,
@@ -599,8 +616,15 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     const SizedBox(height: 12),
                     AppTextFormField(
                       controller: _registration,
-                      label: 'Matrícula',
+                      label: 'RA *',
                       prefixIcon: Icons.numbers,
+                      required: true,
+                      validator: (value) {
+                        final ra = value?.trim() ?? '';
+                        if (ra.isEmpty) return 'Informe o RA';
+                        if (ra.length > 20) return 'Use até 20 caracteres';
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
@@ -625,30 +649,27 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                       ],
                       onChanged: (value) => setState(() => _gender = value),
                     ),
-                    if (session.profile != 'ESCOLA') ...[
+                    if (session.hasAnyProfile({'ADM'})) ...[
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _schoolCode,
                         keyboardType: TextInputType.number,
-                        maxLength: 3,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         onChanged: _lookupSchool,
                         validator: (value) {
-                          if (value == null ||
-                              !RegExp(r'^\d{3}$').hasMatch(value)) {
-                            return 'Informe os 3 dígitos do código da escola';
+                          if (value == null || int.tryParse(value) == null) {
+                            return 'Informe o ID da escola';
                           }
                           if (_schoolId.text.isEmpty) {
-                            return 'Código de escola não encontrado';
+                            return 'Informe um ID de escola válido';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          labelText: 'Código da escola *',
-                          helperText: 'Campo obrigatório',
-                          hintText: 'Ex.: 023',
+                          labelText: 'ID da escola *',
+                          helperText: 'Use o ID cadastrado no ACE',
                           prefixIcon: const Icon(Icons.school_outlined),
                           suffixIcon: _lookingUpSchool
                               ? const Padding(
@@ -678,14 +699,18 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                       const SectionHeader(
                         title: 'Acesso ao aplicativo',
                         subtitle:
-                            'A senha é opcional. Se deixada vazia, o sistema gera uma senha temporária.',
+                            'A API exige uma senha com pelo menos 8 caracteres.',
                       ),
                       const SizedBox(height: 14),
                       AppTextFormField(
                         controller: _password,
-                        label: 'Senha inicial (opcional)',
+                        label: 'Senha inicial *',
                         obscureText: true,
                         prefixIcon: Icons.lock_outline,
+                        required: true,
+                        validator: (value) => (value?.length ?? 0) >= 8
+                            ? null
+                            : 'Informe pelo menos 8 caracteres',
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -763,7 +788,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen>
       appBar: AppBar(
         title: const Text('Perfil do atleta'),
         actions: [
-          if (AppScope.of(context).hasAnyProfile({'ESCOLA', 'ADMINISTRADOR'}) &&
+          if (AppScope.of(context).hasAnyProfile({'DIR', 'ADM'}) &&
               _student.isNotEmpty)
             IconButton(
               tooltip: 'Editar perfil do atleta',
@@ -863,18 +888,13 @@ class _ProfileTab extends StatelessWidget {
                   icon: Icons.phone_outlined,
                 ),
                 KeyValueRow(
-                  label: 'CPF',
-                  value: textOf(student, ['cpf']),
-                  icon: Icons.badge_outlined,
-                ),
-                KeyValueRow(
                   label: 'Nascimento',
                   value: formatDate(student['data_nascimento']),
                   icon: Icons.cake_outlined,
                 ),
                 KeyValueRow(
                   label: 'Matrícula',
-                  value: textOf(student, ['matricula']),
+                  value: textOf(student, ['ra', 'matricula']),
                   icon: Icons.numbers,
                 ),
                 KeyValueRow(

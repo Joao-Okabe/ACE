@@ -17,12 +17,7 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _phone = TextEditingController();
-  final _street = TextEditingController();
   final _number = TextEditingController();
-  final _complement = TextEditingController();
-  final _district = TextEditingController();
-  final _city = TextEditingController();
-  final _state = TextEditingController();
   final _zip = TextEditingController();
 
   bool _loading = true;
@@ -38,18 +33,7 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
 
   @override
   void dispose() {
-    for (final controller in [
-      _name,
-      _email,
-      _phone,
-      _street,
-      _number,
-      _complement,
-      _district,
-      _city,
-      _state,
-      _zip,
-    ]) {
+    for (final controller in [_name, _email, _phone, _number, _zip]) {
       controller.dispose();
     }
     super.dispose();
@@ -76,12 +60,7 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
     _name.text = textOf(school, ['nome'], fallback: '');
     _email.text = textOf(school, ['email'], fallback: '');
     _phone.text = textOf(school, ['telefone'], fallback: '');
-    _street.text = textOf(school, ['logradouro'], fallback: '');
     _number.text = textOf(school, ['numero'], fallback: '');
-    _complement.text = textOf(school, ['complemento'], fallback: '');
-    _district.text = textOf(school, ['bairro'], fallback: '');
-    _city.text = textOf(school, ['cidade'], fallback: '');
-    _state.text = textOf(school, ['estado'], fallback: '');
     _zip.text = textOf(school, ['cep'], fallback: '');
   }
 
@@ -96,12 +75,7 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
             'nome': _name.text.trim(),
             'email': _email.text.trim(),
             'telefone': _phone.text.trim(),
-            'logradouro': _street.text.trim(),
             'numero': _number.text.trim(),
-            'complemento': _complement.text.trim(),
-            'bairro': _district.text.trim(),
-            'cidade': _city.text.trim(),
-            'estado': _state.text.trim().toUpperCase(),
             'cep': _zip.text.trim(),
           },
         ),
@@ -164,54 +138,11 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 22),
-                      const SectionHeader(title: 'Endereço'),
+                      const SectionHeader(
+                        title: 'Dados de endereço disponíveis',
+                      ),
                       const SizedBox(height: 16),
-                      AppTextFormField(
-                        controller: _street,
-                        label: 'Logradouro',
-                        prefixIcon: Icons.location_on_outlined,
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: AppTextFormField(
-                              controller: _number,
-                              label: 'Número',
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: AppTextFormField(
-                              controller: _complement,
-                              label: 'Complemento',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      AppTextFormField(controller: _district, label: 'Bairro'),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: AppTextFormField(
-                              controller: _city,
-                              label: 'Cidade',
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: AppTextFormField(
-                              controller: _state,
-                              label: 'UF',
-                              maxLength: 2,
-                              textCapitalization: TextCapitalization.characters,
-                            ),
-                          ),
-                        ],
-                      ),
+                      AppTextFormField(controller: _number, label: 'Número'),
                       const SizedBox(height: 12),
                       AppTextFormField(
                         controller: _zip,
