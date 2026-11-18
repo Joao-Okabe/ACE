@@ -6,14 +6,14 @@ app-modal {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 99999;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
     background-color: rgb(24 24 71 / 55%);
+    isolation: isolate;
 }
-
 .modal-overlay.ativo {
     display: flex;
 }

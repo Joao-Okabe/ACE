@@ -1,5 +1,7 @@
 @import url("./modulos/time.css");
 @import url("./modulos/competicao.css");
+@import url("./modulos/chaveamento.css");
+
 
 .mensagem-sucesso,
 .mensagem-erro {
@@ -149,4 +151,48 @@
         align-items: flex-start;
         flex-direction: column;
     }
+}
+
+/* ABAS SUPERIORES DA COMPETIÇÃO */
+.visu-painel-conteudo {
+    position: relative;
+    z-index: auto;
+    border: 1px solid #D8D8E0;
+    border-radius: 12px;
+    padding: 24px;
+}
+.visu-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    gap: 8px;
+    border: none !important;
+    margin-bottom: -1px;
+    padding-left: 20px;
+}
+
+.visu-menu .visu-menu-item {
+    flex: 1 1 0 !important;
+    min-width: 0;
+    width: auto !important;
+    display: block !important;
+    text-align: center;
+    white-space: nowrap;
+    padding: 12px 6px;
+    border: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: #181847 !important;
+    font-weight: 500;
+}
+
+.visu-menu .visu-menu-item.active {
+    background: #181847 !important;
+    color: #ffffff !important;
+}
+
+.visu-menu .visu-menu-item:hover:not(.active) {
+    background: #F1E4D1 !important;
+    color: #181847 !important;
 }

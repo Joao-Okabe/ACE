@@ -412,6 +412,12 @@
     margin-top: 8px;
 }
 
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .form-check-input {
     width: 30px;
     height: 30px;
@@ -438,4 +444,43 @@
     color: var(--azul-principal);
     font-weight: 600;
     cursor: pointer;
+}
+
+
+/* MENSAGENS DE FEEDBACK */
+.mensagem-feedback {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+.mensagem-feedback i {
+    font-size: 17px;
+    flex-shrink: 0;
+}
+.mensagem-sucesso {
+    color: #237a4b;
+    background: #eaf7ef;
+    border: 1px solid #bce5ca;
+}
+.mensagem-erro {
+    color: #b83232;
+    background: #fff0f0;
+    border: 1px solid #f2c5c5;
+}
+.mensagem-info {
+    color: #245b91;
+    background: #edf5fc;
+    border: 1px solid #c8def2;
+}
+
+.icone-mensagem {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }

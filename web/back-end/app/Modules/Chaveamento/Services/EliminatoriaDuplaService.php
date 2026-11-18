@@ -172,7 +172,7 @@ class EliminatoriaDuplaService
 
             $this->criarGranFinal(
                 $rodadaGranFinal,
-                end($confrontos),
+                end($perdedoresPorRodada[count($perdedoresPorRodada) - 1]),
                 $cdVencedorRepescagem
             );
 
@@ -579,14 +579,14 @@ class EliminatoriaDuplaService
                         $perdedores[$indice + 1]
                     );
                 }
-            } elseif ($indiceRodada % 2 === 0) {
+            } elseif ($indiceRodada % 2 === 1) {
                 /*
                     Rodada par: vencedor da repescagem anterior
                     × perdedor que desce da chave de vencedores.
                 */
-                $perdedores = $perdedoresPorRodada[
-                    ($indiceRodada / 2) + 1
-                ];
+                $indicePerdedores = intdiv($indiceRodada + 1, 2);
+
+                $perdedores = $perdedoresPorRodada[$indicePerdedores];
 
                 for (
                     $indice = 0;

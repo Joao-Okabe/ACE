@@ -34,7 +34,7 @@
         <!-- PAINEL PRINCIPAL -->
         <div class="row visu-painel">
             <!-- MENU LATERAL -->
-            <div class="col-12 col-md-4 col-lg-3">
+            <div class="col-12">
                 <nav class="visu-menu" aria-label="Menu do time">
                     <button type="button" class="visu-menu-item active" data-aba="integrantes" aria-selected="true">Integrantes</button>
                     <button type="button" class="visu-menu-item" data-aba="tecnico" aria-selected="false">Técnico</button>
@@ -46,7 +46,7 @@
             </div>
 
             <!-- CONTEÚDO -->
-            <div class="col-12 col-md-8 col-lg-9">
+            <div class="col-12">
                 <main class="visu-box visu-painel-conteudo">
 
                     <!-- ABA INTEGRANTES -->
@@ -59,7 +59,7 @@
                             <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante">+ Adicionar integrante</button>
                         </div>
                         <div id="mensagensIntegrantes" aria-live="polite"></div>
-                        <div class="row g-3" id="listaIntegrantes">
+                        <div class="times-inscritos-grid" id="listaIntegrantes">
                             <!-- Os integrantes vão ser listados aqui pela API -->
                         </div>
                     </section>
@@ -243,20 +243,20 @@
     <app-modal titulo="Adicionar integrante">
         <form id="formAdicionarIntegrante">
             <div class="mb-3">
-                <label for="integranteAluno">Aluno</label>
-                <select class="form-select" id="integranteAluno" name="cd_usuario" required>
+                <label for="integranteAluno" class="form-label">Aluno</label>
+                <select class="form-input" id="integranteAluno" name="cd_usuario" required>
                     <option value="">Selecione um aluno</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="integranteFuncao">Função no time</label>
-                <select class="form-select" id="integranteFuncao" name="cd_funcao_integrante" required>
+                <label for="integranteFuncao" class="form-label">Função no time</label>
+                <select class="form-input" id="integranteFuncao" name="cd_funcao_integrante" required>
                     <option value="">Selecione uma função</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="integranteCamisa">Número da camisa</label>
-                <input type="number" class="form-control" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
+                <label for="integranteCamisa" class="form-label">Número da camisa</label>
+                <input type="number" class="form-input" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
             </div>
             <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="integranteCapitao" name="capitao">
@@ -268,6 +268,42 @@
             </div>
         </form>
     </app-modal>
+
+
+    <!-- MODAL EDITAR INTEGRANTE -->
+    <app-modal titulo="Editar integrante">
+        <form id="formEditarIntegrante">
+            <input type="hidden" id="editarIntegranteId">
+
+            <div class="mb-3">
+                <label for="editarIntegranteNome">Aluno</label>
+                <input type="text" class="form-control" id="editarIntegranteNome" disabled>
+            </div>
+
+            <div class="mb-3">
+                <label for="editarIntegranteFuncao">Função no time</label>
+                <select class="form-select" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
+                    <option value="">Selecione uma função</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="editarIntegranteCamisa">Número da camisa</label>
+                <input type="number" class="form-control" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="editarIntegranteCapitao" name="capitao">
+                <label class="form-check-label" for="editarIntegranteCapitao">Definir como capitão</label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Salvar alterações</button>
+            </div>
+        </form>
+    </app-modal>
+
 
     <!-- MODAL ADICIONAR RESPONSÁVEL -->
     <app-modal titulo="Adicionar responsável">
