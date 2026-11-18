@@ -363,6 +363,49 @@ class PartidaController
         }, 'Resultado publicado.');
     }
 
+    public function registrarEstatisticasAtletasV1(int $id): void
+    {
+        $dados = $this->lerJsonV1();
+        $atletas = $dados['atletas'] ?? null;
+        if (!is_array($atletas) || $atletas === []) {
+            Response::error('VALIDATION_ERROR', 'Informe atletas com alunoId, timeId e métricas.', 400);
+        }
+        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $atletas): void {
+            $stmt = $pdo->prepare('SELECT COALESCE(p.cd_esporte, c.cd_esporte) FROM partida p LEFT JOIN competicao c ON c.cd_competicao = p.cd_competicao WHERE p.cd_partida = :id');
+            $stmt->execute([':id' => $id]);
+            $esporteId = (int) $stmt->fetchColumn();
+            if ($esporteId <= 0) throw new DomainException('A partida não possui esporte associado.');
+            $participante = $pdo->prepare('SELECT 1 FROM participante_partida WHERE cd_partida = :partida AND cd_usuario = :usuario AND cd_time = :time LIMIT 1');
+            $aluno = $pdo->prepare('SELECT cd_usuario FROM aluno WHERE cd_aluno = :aluno AND ativo = TRUE');
+            $metrica = $pdo->prepare('SELECT 1 FROM metrica_atleta WHERE cd_metrica_atleta = :metrica AND cd_esporte = :esporte');
+            $salvar = $pdo->prepare('INSERT INTO estatistica_atleta_partida (cd_partida, cd_usuario, cd_time, cd_esporte, cd_metrica_atleta, valor) VALUES (:partida, :usuario, :time, :esporte, :metrica, :valor) ON CONFLICT (cd_partida, cd_usuario, cd_time, cd_metrica_atleta) DO UPDATE SET valor = EXCLUDED.valor, atualizado_em = CURRENT_TIMESTAMP');
+            $pdo->beginTransaction();
+            foreach ($atletas as $registro) {
+                if (!is_array($registro) || !isset($registro['alunoId'], $registro['timeId']) || !is_array($registro['metricas'] ?? null)) {
+                    throw new DomainException('Cada atleta deve conter alunoId, timeId e uma lista de métricas.');
+                }
+                $alunoId = filter_var($registro['alunoId'], FILTER_VALIDATE_INT);
+                $timeId = filter_var($registro['timeId'], FILTER_VALIDATE_INT);
+                if ($alunoId === false || $alunoId <= 0 || $timeId === false || $timeId <= 0) throw new DomainException('ID de aluno ou time inválido.');
+                $aluno->execute([':aluno' => $alunoId]);
+                $usuarioId = $aluno->fetchColumn();
+                if ($usuarioId === false) throw new DomainException('Atleta não encontrado.');
+                $participante->execute([':partida' => $id, ':usuario' => (int) $usuarioId, ':time' => $timeId]);
+                if (!$participante->fetchColumn()) throw new DomainException('O atleta não está inscrito como participante desse time na partida.');
+                foreach ($registro['metricas'] as $dadoMetrica) {
+                    if (!is_array($dadoMetrica) || !isset($dadoMetrica['metricaId'], $dadoMetrica['valor'])) throw new DomainException('Cada métrica deve conter metricaId e valor.');
+                    $metricaId = filter_var($dadoMetrica['metricaId'], FILTER_VALIDATE_INT);
+                    $valor = filter_var($dadoMetrica['valor'], FILTER_VALIDATE_FLOAT);
+                    if ($metricaId === false || $metricaId <= 0 || $valor === false || $valor < 0) throw new DomainException('Métrica ou valor inválido.');
+                    $metrica->execute([':metrica' => $metricaId, ':esporte' => $esporteId]);
+                    if (!$metrica->fetchColumn()) throw new DomainException('A métrica não pertence ao esporte da partida.');
+                    $salvar->execute([':partida' => $id, ':usuario' => (int) $usuarioId, ':time' => $timeId, ':esporte' => $esporteId, ':metrica' => $metricaId, ':valor' => $valor]);
+                }
+            }
+            $pdo->commit();
+        }, 'Estatísticas dos atletas registradas.');
+    }
+
     public function criarLocalNaoSuportadoV1(): void
     {
         Response::error(

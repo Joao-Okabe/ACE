@@ -119,11 +119,7 @@ class EscolaApiController
 
     public function rankingV1(): void
     {
-        Response::error(
-            'NOT_IMPLEMENTED',
-            'O ACE não possui uma regra consolidada de ranking de escolas.',
-            501
-        );
+        (new RankingController())->escolas();
     }
 
     private function escolaDoUsuarioAtual(): int

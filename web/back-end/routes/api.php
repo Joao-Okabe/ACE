@@ -121,6 +121,10 @@ $router->get(
     '/api/esportes',
     [EsporteApiController::class, 'index']
 );
+$router->get(
+    '/api/modalidades',
+    [EsporteApiController::class, 'modalidadesV1']
+);
 /*
     Rotas de times
     1. listar todos
@@ -321,6 +325,7 @@ $vinculoTimeV1 = new VinculoTimeApiController();
 $partidaV1 = new PartidaController();
 $dashboardV1 = new DashboardController();
 $saudeV1 = new SaudeApiController();
+$rankingApi = new RankingController();
 
 $router->get('/api/v1/saude', [$saudeV1, 'show']);
 $router->post('/api/v1/auth/login', [$authV1, 'login']);
@@ -337,7 +342,9 @@ $router->get('/api/v1/escolas/codigo/{codigo}', [$escolaV1, 'buscarPorCodigoV1']
 $router->get('/api/v1/escolas/{id}', [$escolaV1, 'showV1']);
 $router->get('/api/v1/alunos', [$alunoV1, 'indexV1']);
 $router->post('/api/v1/alunos', [$alunoV1, 'store']);
-$router->get('/api/v1/rankings/individual', [$alunoV1, 'rankingIndividualV1']);
+$router->get('/api/v1/rankings/individual', [$rankingApi, 'atletas']);
+$router->get('/api/v1/rankings/atletas', [$rankingApi, 'atletas']);
+$router->get('/api/v1/esportes/{id}/metricas-atleta', [$rankingApi, 'metricasV1']);
 $router->get('/api/v1/alunos/{id}/historico', [$alunoV1, 'historicoV1']);
 $router->get('/api/v1/alunos/{id}/estatisticas', [$alunoV1, 'estatisticasV1']);
 $router->get('/api/v1/alunos/{id}', [$alunoV1, 'show']);
@@ -371,8 +378,15 @@ $router->get('/api/v1/partidas/{id}/ao-vivo', [$partidaV1, 'aoVivoV1']);
 $router->patch('/api/v1/partidas/{id}/iniciar', [$partidaV1, 'iniciarV1']);
 $router->post('/api/v1/partidas/{id}/arbitragem', [$partidaV1, 'operacaoSemSuporteV1']);
 $router->put('/api/v1/partidas/{id}/resultado', [$partidaV1, 'registrarResultadoV1']);
+$router->put('/api/v1/partidas/{id}/estatisticas-atletas', [$partidaV1, 'registrarEstatisticasAtletasV1']);
 $router->post('/api/v1/partidas/{id}/pontuacoes', [$partidaV1, 'operacaoSemSuporteV1']);
 $router->post('/api/v1/partidas/{id}/penalidades', [$partidaV1, 'registrarPenalidadeV1']);
 $router->post('/api/v1/partidas/{id}/publicar', [$partidaV1, 'publicarResultadoV1']);
-$router->get('/api/v1/rankings/escolas', [$escolaV1, 'rankingV1']);
-$router->get('/api/v1/rankings/equipes', [$timeV1, 'rankingEquipesV1']);
+$router->get('/api/v1/rankings/escolas', [$rankingApi, 'escolas']);
+$router->get('/api/v1/rankings/equipes', [$rankingApi, 'equipes']);
+$router->get('/api/rankings/escolas', [$rankingApi, 'escolas']);
+$router->get('/api/rankings/equipes', [$rankingApi, 'equipes']);
+$router->get('/api/rankings/atletas', [$rankingApi, 'atletas']);
+$router->get('/api/rankings/individual', [$rankingApi, 'atletas']);
+$router->get('/api/esportes/{id}/metricas-atleta', [$rankingApi, 'metricasV1']);
+$router->put('/api/partidas/{id}/estatisticas-atletas', [$partidaV1, 'registrarEstatisticasAtletasV1']);

@@ -15,20 +15,13 @@ class TimeApiController
 
     public function rankingV1(int $id): void
     {
-        Response::error(
-            'NOT_IMPLEMENTED',
-            'O ACE não possui uma regra consolidada de ranking de equipes para esta consulta.',
-            501
-        );
+        $_GET['limite'] = $_GET['limite'] ?? 100;
+        (new RankingController())->equipes();
     }
 
     public function rankingEquipesV1(): void
     {
-        Response::error(
-            'NOT_IMPLEMENTED',
-            'O ACE não possui uma regra consolidada de ranking global de equipes.',
-            501
-        );
+        (new RankingController())->equipes();
     }
 
     public function index(): void

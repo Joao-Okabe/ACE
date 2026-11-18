@@ -142,6 +142,9 @@ export async function apiFetch(endpoint, options = {}){
     if (dados && typeof dados === "object" && "dados" in dados) {
         return normalizarCamposImagem(dados.dados);
     }
+    if (dados && typeof dados === "object" && dados.success === true && "data" in dados) {
+        return normalizarCamposImagem(dados.data);
+    }
 
     return normalizarCamposImagem(dados);
 }

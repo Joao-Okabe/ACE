@@ -190,6 +190,104 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
+  /rankings/escolas:
+    get:
+      operationId: rankingEscolas
+      summary: Ranking de escolas pelas métricas das classificações de grupos
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: competicaoId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: modalidadeId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: esporteId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: escolaId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }
+      responses:
+        '200': { description: Classificação de escolas, content: { application/json: { schema: { $ref: '#/components/schemas/Success' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /rankings/equipes:
+    get:
+      operationId: rankingEquipes
+      summary: Ranking de equipes pelas métricas das classificações de grupos
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: competicaoId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: modalidadeId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: esporteId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: escolaId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }
+      responses:
+        '200': { description: Classificação de equipes, content: { application/json: { schema: { $ref: '#/components/schemas/Success' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /rankings/atletas:
+    get:
+      operationId: rankingAtletasPorMetrica
+      summary: Ranking de atletas por métrica dentro de um esporte e escopo
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: esporteId, in: query, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: metricaId, in: query, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: escopo, in: query, schema: { type: string, enum: [geral, esporte, escola, competicao], default: geral } }
+        - { name: escolaId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: competicaoId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }
+      responses:
+        '200': { description: Atletas classificados por valor acumulado da métrica }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /esportes/{id}/metricas-atleta:
+    get:
+      operationId: listarMetricasAtleta
+      summary: Lista as métricas configuradas para um esporte
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Métricas disponíveis para o esporte }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/{id}/estatisticas-atletas:
+    put:
+      operationId: registrarEstatisticasAtletas
+      summary: Registra valores de métricas para atletas participantes de uma partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [atletas]
+              properties:
+                atletas:
+                  type: array
+                  items:
+                    type: object
+                    required: [alunoId, timeId, metricas]
+                    properties:
+                      alunoId: { type: integer, minimum: 1 }
+                      timeId: { type: integer, minimum: 1 }
+                      metricas:
+                        type: array
+                        items:
+                          type: object
+                          required: [metricaId, valor]
+                          properties:
+                            metricaId: { type: integer, minimum: 1 }
+                            valor: { type: number, minimum: 0 }
+      responses:
+        '200': { description: Estatísticas registradas }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para atualizar a partida }
+        '409': { description: Atleta, time ou métrica inválidos para a partida }
   /competicoes/{id}:
     get:
       operationId: getCompetition
