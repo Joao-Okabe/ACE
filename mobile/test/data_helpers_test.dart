@@ -14,6 +14,13 @@ void main() {
     expect(statusLabel('INSCRICOES_ABERTAS'), 'Inscrições abertas');
   });
 
+  test('publicação de partida aceita o status usado pela API', () {
+    expect(canPublishMatch('FINALIZADA'), isTrue);
+    expect(canPublishMatch('ENCERRADA'), isFalse);
+    expect(canPublishMatch('EM_ANDAMENTO'), isTrue);
+    expect(canPublishMatch('AGENDADA'), isFalse);
+  });
+
   test('remove caracteres não numéricos', () {
     expect(digitsOnly('(13) 99999-0000'), '13999990000');
   });

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_client.dart';
@@ -8,8 +9,9 @@ import 'api_config.dart';
 import 'data_helpers.dart';
 
 class SessionController extends ChangeNotifier {
-  SessionController()
-    : client = ApiClient(baseUrl: ApiConfig.defaultBaseUrl()) {
+  SessionController({FlutterSecureStorage? secureStorage})
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
+      client = ApiClient(baseUrl: ApiConfig.defaultBaseUrl()) {
     client.onTokensChanged = _saveTokens;
   }
 
@@ -18,6 +20,7 @@ class SessionController extends ChangeNotifier {
   static const _refreshTokenKey = 'aether_refresh_token';
   static const _apiUrlKey = 'aether_api_url';
 
+  final FlutterSecureStorage _secureStorage;
   final ApiClient client;
   bool initialized = false;
   bool busy = false;
@@ -96,18 +99,34 @@ class SessionController extends ChangeNotifier {
   }
 
   Future<void> _saveTokens(String? accessToken, String? refreshToken) async {
-    final prefs = await SharedPreferences.getInstance();
     if (accessToken == null || accessToken.isEmpty) {
-      await prefs.remove(_tokenKey);
+      await _secureStorage.delete(key: _tokenKey);
     } else {
-      await prefs.setString(_tokenKey, accessToken);
+      await _secureStorage.write(key: _tokenKey, value: accessToken);
     }
     if (refreshToken == null || refreshToken.isEmpty) {
-      await prefs.remove(_refreshTokenKey);
+      await _secureStorage.delete(key: _refreshTokenKey);
     } else {
-      await prefs.setString(_refreshTokenKey, refreshToken);
+      await _secureStorage.write(key: _refreshTokenKey, value: refreshToken);
     }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_refreshTokenKey);
     notifyListeners();
+  }
+
+  Future<String?> _readToken(SharedPreferences prefs, String key) async {
+    final storedToken = await _secureStorage.read(key: key);
+    if (storedToken != null && storedToken.isNotEmpty) {
+      await prefs.remove(key);
+      return storedToken;
+    }
+
+    final legacyToken = prefs.getString(key);
+    if (legacyToken == null || legacyToken.isEmpty) return null;
+    await _secureStorage.write(key: key, value: legacyToken);
+    await prefs.remove(key);
+    return legacyToken;
   }
 
   Future<void> initialize() async {
@@ -115,8 +134,8 @@ class SessionController extends ChangeNotifier {
     client.baseUrl = ApiConfig.normalize(
       prefs.getString(_apiUrlKey) ?? ApiConfig.defaultBaseUrl(),
     );
-    client.token = prefs.getString(_tokenKey);
-    client.refreshToken = prefs.getString(_refreshTokenKey);
+    client.token = await _readToken(prefs, _tokenKey);
+    client.refreshToken = await _readToken(prefs, _refreshTokenKey);
     final rawUser = prefs.getString(_userKey);
     if (rawUser != null) {
       try {
@@ -149,8 +168,7 @@ class SessionController extends ChangeNotifier {
         throw const ApiFailure('A API não devolveu uma sessão válida.');
       }
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_tokenKey, client.token!);
-      await prefs.setString(_refreshTokenKey, client.refreshToken!);
+      await _saveTokens(client.token, client.refreshToken);
       await prefs.setString(_userKey, jsonEncode(user));
     } on ApiFailure catch (failure) {
       error = failure.message;
@@ -174,8 +192,7 @@ class SessionController extends ChangeNotifier {
     client.refreshToken = null;
     user = null;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_refreshTokenKey);
+    await _saveTokens(null, null);
     await prefs.remove(_userKey);
     notifyListeners();
   }

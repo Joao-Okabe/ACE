@@ -818,8 +818,7 @@ class _ControlGrid extends StatelessWidget {
         ('Falta/cartão', Icons.warning_amber_rounded, onPenalty),
       if (status == 'EM_ANDAMENTO' || status == 'AGENDADA')
         ('Encerrar', Icons.stop_circle_outlined, onResult),
-      if ((status == 'ENCERRADA' || status == 'EM_ANDAMENTO') &&
-          !boolOf(match, ['publicado']))
+      if (canPublishMatch(status) && !boolOf(match, ['publicado']))
         ('Publicar', Icons.public, onPublish),
       if (onReferee != null &&
           (status == 'AGENDADA' || status == 'EM_ANDAMENTO'))
@@ -891,7 +890,9 @@ class _EventTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  statusLabel(type),
+                  type == 'PONTUACAO' && event['pontos'] != null
+                      ? 'Pontuação +${event['pontos']}'
+                      : statusLabel(type),
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 Text(
@@ -963,6 +964,7 @@ class _MatchEventFormScreenState extends State<MatchEventFormScreen> {
     setState(() {
       _teamId = teamId;
       _athleteId = null;
+      _athletes = [];
       _loadingAthletes = true;
     });
     try {
@@ -982,18 +984,37 @@ class _MatchEventFormScreenState extends State<MatchEventFormScreen> {
       showFailure(context, const ApiFailure('Selecione o time.'));
       return;
     }
+    final points = int.tryParse(_points.text);
+    if (widget.type == MatchEventType.score &&
+        (points == null || points <= 0)) {
+      showFailure(context, const ApiFailure('Informe uma pontuação positiva.'));
+      return;
+    }
+    if (widget.type == MatchEventType.penalty && _athleteId == null) {
+      showFailure(
+        context,
+        const ApiFailure('Selecione o atleta da penalidade.'),
+      );
+      return;
+    }
+    final minuteText = _minute.text.trim();
+    final minute = minuteText.isEmpty ? null : int.tryParse(minuteText);
+    if (minuteText.isNotEmpty && (minute == null || minute < 0)) {
+      showFailure(context, const ApiFailure('Informe um minuto válido.'));
+      return;
+    }
     setState(() => _busy = true);
     try {
       final base = <String, Object?>{
         'timeId': _teamId,
         'alunoId': _athleteId,
-        'minuto': int.tryParse(_minute.text),
+        'minuto': minute,
         'observacao': _observation.text.trim(),
       };
       if (widget.type == MatchEventType.score) {
         await AppScope.read(context).client.post(
           '/partidas/${textOf(widget.match, ['id'])}/pontuacoes',
-          body: {...base, 'pontos': int.tryParse(_points.text) ?? 1},
+          body: {...base, 'pontos': points},
         );
       } else {
         await AppScope.read(context).client.post(
@@ -1057,7 +1078,9 @@ class _MatchEventFormScreenState extends State<MatchEventFormScreen> {
             DropdownButtonFormField<String>(
               initialValue: _athleteId,
               decoration: InputDecoration(
-                labelText: 'Atleta (opcional)',
+                labelText: widget.type == MatchEventType.score
+                    ? 'Atleta (opcional)'
+                    : 'Atleta',
                 prefixIcon: const Icon(Icons.person_outline),
                 suffixIcon: _loadingAthletes
                     ? const Padding(
@@ -1067,10 +1090,11 @@ class _MatchEventFormScreenState extends State<MatchEventFormScreen> {
                     : null,
               ),
               items: [
-                const DropdownMenuItem(
-                  value: null,
-                  child: Text('Sem atleta específico'),
-                ),
+                if (widget.type == MatchEventType.score)
+                  const DropdownMenuItem(
+                    value: null,
+                    child: Text('Sem atleta específico'),
+                  ),
                 ..._athletes.map(
                   (athlete) => DropdownMenuItem(
                     value: textOf(athlete, ['aluno_id']),
@@ -1078,7 +1102,9 @@ class _MatchEventFormScreenState extends State<MatchEventFormScreen> {
                   ),
                 ),
               ],
-              onChanged: (value) => setState(() => _athleteId = value),
+              onChanged: _loadingAthletes
+                  ? null
+                  : (value) => setState(() => _athleteId = value),
             ),
             const SizedBox(height: 12),
             if (widget.type == MatchEventType.score)
@@ -1274,28 +1300,50 @@ class AssignRefereeScreen extends StatefulWidget {
 }
 
 class _AssignRefereeScreenState extends State<AssignRefereeScreen> {
-  final _refereeId = TextEditingController(
-    text: '00000000-0000-0000-0000-000000000030',
-  );
+  String? _refereeId;
   String _role = 'PRINCIPAL';
+  List<Map<String, dynamic>> _referees = [];
+  Object? _refereeError;
+  bool _loadingReferees = true;
   bool _busy = false;
 
   @override
-  void dispose() {
-    _refereeId.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadReferees());
+  }
+
+  Future<void> _loadReferees() async {
+    if (!mounted) return;
+    setState(() {
+      _loadingReferees = true;
+      _refereeError = null;
+    });
+    try {
+      final referees = asList(
+        await AppScope.read(
+          context,
+        ).client.get('/partidas/${widget.matchId}/arbitragem/usuarios'),
+      );
+      if (mounted) setState(() => _referees = referees);
+    } catch (error) {
+      if (mounted) setState(() => _refereeError = error);
+    } finally {
+      if (mounted) setState(() => _loadingReferees = false);
+    }
   }
 
   Future<void> _save() async {
-    if (_refereeId.text.trim().isEmpty) {
-      showFailure(context, const ApiFailure('Informe o ID do árbitro.'));
+    final refereeId = int.tryParse(_refereeId ?? '');
+    if (refereeId == null || refereeId <= 0) {
+      showFailure(context, const ApiFailure('Selecione um árbitro elegível.'));
       return;
     }
     setState(() => _busy = true);
     try {
       await AppScope.read(context).client.post(
         '/partidas/${widget.matchId}/arbitragem',
-        body: {'arbitroId': _refereeId.text.trim(), 'funcao': _role},
+        body: {'arbitroId': refereeId, 'funcao': _role},
       );
       if (!mounted) return;
       showSuccess(context, 'Arbitragem registrada.');
@@ -1315,23 +1363,34 @@ class _AssignRefereeScreenState extends State<AssignRefereeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SurfaceCard(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: Text(
-                'A API atual ainda não possui uma rota de listagem de árbitros. O ID do árbitro de demonstração já está preenchido.',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+            if (_loadingReferees)
+              const Center(child: CircularProgressIndicator())
+            else if (_refereeError != null)
+              ErrorState(error: _refereeError!, onRetry: _loadReferees)
+            else if (_referees.isEmpty)
+              const EmptyState(
+                title: 'Nenhum árbitro elegível',
+                message:
+                    'Vincule árbitros à competição antes de montar a escala da partida.',
+                icon: Icons.badge_outlined,
+              )
+            else
+              DropdownButtonFormField<String>(
+                initialValue: _refereeId,
+                decoration: const InputDecoration(
+                  labelText: 'Árbitro',
+                  prefixIcon: Icon(Icons.badge_outlined),
                 ),
+                items: _referees
+                    .map(
+                      (referee) => DropdownMenuItem(
+                        value: textOf(referee, ['id']),
+                        child: Text(textOf(referee, ['nome'])),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) => setState(() => _refereeId = value),
               ),
-            ),
-            const SizedBox(height: 16),
-            AppTextFormField(
-              controller: _refereeId,
-              label: 'ID do árbitro',
-              prefixIcon: Icons.badge_outlined,
-              required: true,
-              validator: requiredField,
-            ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               initialValue: _role,
@@ -1355,7 +1414,13 @@ class _AssignRefereeScreenState extends State<AssignRefereeScreen> {
             ),
             const SizedBox(height: 18),
             FilledButton.icon(
-              onPressed: _busy ? null : _save,
+              onPressed:
+                  _busy ||
+                      _loadingReferees ||
+                      _referees.isEmpty ||
+                      _refereeId == null
+                  ? null
+                  : _save,
               icon: const Icon(Icons.save_outlined),
               label: Text(_busy ? 'Salvando...' : 'Registrar arbitragem'),
             ),

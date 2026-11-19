@@ -1,7 +1,7 @@
 FROM php:8.4-apache
 
-RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev unzip \
-    && docker-php-ext-install pdo_pgsql pgsql iconv \
+RUN apt-get update && apt-get install -y --no-install-recommends git libpq-dev libxml2-dev libonig-dev unzip \
+    && docker-php-ext-install pdo_pgsql pgsql iconv dom mbstring \
     && a2enmod rewrite \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -30,5 +30,8 @@ RUN printf '%s\n' \
     && a2enconf app
 
 WORKDIR /var/www/html
+
+COPY web/back-end/composer.json web/back-end/composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-source --optimize-autoloader
 
 EXPOSE 80

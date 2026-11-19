@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/api_client.dart';
 import '../core/app_scope.dart';
 import '../core/data_helpers.dart';
 import '../core/theme.dart';
@@ -29,6 +28,24 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFocus.dispose();
     _passwordFocus.dispose();
     super.dispose();
+  }
+
+  Future<void> _showRecoveryUnavailable() async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recuperação indisponível'),
+        content: const Text(
+          'A recuperação de senha ainda não está configurada. Entre em contato com o administrador do sistema.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Entendi'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _submit() async {
@@ -137,8 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () =>
-                              pushPage(context, const RecoveryRequestScreen()),
+                          onPressed: _showRecoveryUnavailable,
                           child: const Text('Esqueceu a senha?'),
                         ),
                       ),
@@ -161,230 +177,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class RecoveryRequestScreen extends StatefulWidget {
-  const RecoveryRequestScreen({super.key});
-
-  @override
-  State<RecoveryRequestScreen> createState() => _RecoveryRequestScreenState();
-}
-
-class _RecoveryRequestScreenState extends State<RecoveryRequestScreen> {
-  final _email = TextEditingController();
-  bool _busy = false;
-
-  @override
-  void dispose() {
-    _email.dispose();
-    super.dispose();
-  }
-
-  Future<void> _send() async {
-    if (!_email.text.contains('@')) {
-      showFailure(context, const ApiFailure('Informe um e-mail válido.'));
-      return;
-    }
-    setState(() => _busy = true);
-    try {
-      final response = asMap(
-        await AppScope.read(context).client.post(
-          '/auth/recuperacao/solicitar',
-          body: {'email': _email.text.trim()},
-        ),
-      );
-      if (!mounted) return;
-      final code = response['codigoDesenvolvimento']?.toString();
-      await pushPage(
-        context,
-        RecoveryConfirmScreen(email: _email.text.trim(), developmentCode: code),
-      );
-    } catch (error) {
-      if (mounted) showFailure(context, error);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recuperar acesso'),
-        actions: const [AccessibilityButton()],
-      ),
-      body: PageBody(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 18),
-            const AceLogo(height: 74),
-            const SizedBox(height: 24),
-            const SectionHeader(
-              title: 'Redefina sua senha',
-              subtitle:
-                  'Informe o e-mail cadastrado para receber um código de verificação.',
-            ),
-            const SizedBox(height: 24),
-            AppTextFormField(
-              controller: _email,
-              label: 'E-mail',
-              hint: 'Digite seu e-mail cadastrado',
-              required: true,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.emailAddress,
-              prefixIcon: Icons.alternate_email,
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _busy ? null : _send,
-              icon: const Icon(Icons.mark_email_read_outlined),
-              label: Text(_busy ? 'Enviando...' : 'Enviar código'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RecoveryConfirmScreen extends StatefulWidget {
-  const RecoveryConfirmScreen({
-    required this.email,
-    this.developmentCode,
-    super.key,
-  });
-
-  final String email;
-  final String? developmentCode;
-
-  @override
-  State<RecoveryConfirmScreen> createState() => _RecoveryConfirmScreenState();
-}
-
-class _RecoveryConfirmScreenState extends State<RecoveryConfirmScreen> {
-  late final TextEditingController _code;
-  final _password = TextEditingController();
-  final _confirm = TextEditingController();
-  bool _busy = false;
-  bool _obscure = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _code = TextEditingController(text: widget.developmentCode ?? '');
-  }
-
-  @override
-  void dispose() {
-    _code.dispose();
-    _password.dispose();
-    _confirm.dispose();
-    super.dispose();
-  }
-
-  Future<void> _confirmRecovery() async {
-    if (_code.text.trim().length != 6) {
-      showFailure(context, const ApiFailure('O código deve ter seis dígitos.'));
-      return;
-    }
-    if (_password.text.length < 8) {
-      showFailure(
-        context,
-        const ApiFailure('A nova senha deve ter ao menos 8 caracteres.'),
-      );
-      return;
-    }
-    if (_password.text != _confirm.text) {
-      showFailure(context, const ApiFailure('As senhas não coincidem.'));
-      return;
-    }
-    setState(() => _busy = true);
-    try {
-      await AppScope.read(context).client.post(
-        '/auth/recuperacao/confirmar',
-        body: {
-          'email': widget.email,
-          'codigo': _code.text.trim(),
-          'novaSenha': _password.text,
-        },
-      );
-      if (!mounted) return;
-      showSuccess(context, 'Senha alterada com sucesso.');
-      Navigator.of(context).popUntil((route) => route.isFirst);
-    } catch (error) {
-      if (mounted) showFailure(context, error);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Confirmar recuperação'),
-        actions: const [AccessibilityButton()],
-      ),
-      body: PageBody(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionHeader(title: 'Código e nova senha'),
-            const SizedBox(height: 8),
-            Text(
-              'Código enviado para ${widget.email}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            if (widget.developmentCode != null) ...[
-              const SizedBox(height: 12),
-              SurfaceCard(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(
-                  'Ambiente de desenvolvimento: código ${widget.developmentCode}',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-              ),
-            ],
-            const SizedBox(height: 20),
-            AppTextFormField(
-              controller: _code,
-              label: 'Código de 6 dígitos',
-              keyboardType: TextInputType.number,
-              prefixIcon: Icons.pin_outlined,
-            ),
-            const SizedBox(height: 14),
-            AppTextFormField(
-              controller: _password,
-              label: 'Nova senha',
-              obscureText: _obscure,
-              prefixIcon: Icons.lock_reset,
-              suffixIcon: IconButton(
-                tooltip: _obscure ? 'Mostrar senha' : 'Ocultar senha',
-                onPressed: () => setState(() => _obscure = !_obscure),
-                icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-              ),
-            ),
-            const SizedBox(height: 14),
-            AppTextFormField(
-              controller: _confirm,
-              label: 'Confirme a senha',
-              obscureText: _obscure,
-              prefixIcon: Icons.lock_outline,
-            ),
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _busy ? null : _confirmRecovery,
-              icon: const Icon(Icons.check_circle_outline),
-              label: Text(_busy ? 'Alterando...' : 'Alterar senha'),
-            ),
-          ],
         ),
       ),
     );
