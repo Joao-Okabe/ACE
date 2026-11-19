@@ -109,6 +109,34 @@ class PartidaController
         }
     }
 
+    public function indexApi(): void
+    {
+        $filtros = [];
+        foreach (['competicaoId' => 'cd_competicao', 'timeId' => 'cd_time'] as $query => $campo) {
+            if (!isset($_GET[$query]) || $_GET[$query] === '') continue;
+            $valor = filter_var($_GET[$query], FILTER_VALIDATE_INT);
+            if ($valor === false || $valor <= 0) Response::error('VALIDATION_ERROR', "Parâmetro {$query} inválido.", 400);
+            $filtros[$campo] = (int) $valor;
+        }
+        foreach (['status', 'visibilidade', 'de', 'ate', 'local'] as $campo) {
+            if (isset($_GET[$campo])) {
+                if (!is_string($_GET[$campo])) Response::error('VALIDATION_ERROR', "Parâmetro {$campo} inválido.", 400);
+                $filtros[$campo] = trim($_GET[$campo]);
+            }
+        }
+        $limite = filter_var($_GET['limite'] ?? 100, FILTER_VALIDATE_INT);
+        if ($limite === false || $limite < 1 || $limite > 100) Response::error('VALIDATION_ERROR', 'Parâmetro limite deve estar entre 1 e 100.', 400);
+        $filtros['limite'] = $limite;
+        try {
+            $itens = $this->service()->listar($filtros, $this->usuarioAtual());
+            Response::success(['itens' => $itens, 'limite' => $limite], 'Partidas listadas.');
+        } catch (Throwable $e) {
+            if (str_contains(mb_strtolower($e->getMessage()), 'permissão')) Response::error('FORBIDDEN', $e->getMessage(), 403);
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível listar as partidas.', 500);
+        }
+    }
+
     public function calendarioV1(): void
     {
         $filtros = [

@@ -196,15 +196,16 @@ class AlunoApiController
     {
         $idUsuario = AuthContext::id() ?? 0;
         $papeisGestores = ['DIR', 'CRD'];
-        if (Permissoes::temPapel('ADM')) {
-            $escolas = null;
-        } elseif (array_intersect(AuthContext::papeis(), $papeisGestores) !== []) {
-            $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
-                $idUsuario,
-                array_values(array_intersect(AuthContext::papeis(), $papeisGestores))
-            );
-        } else {
-            Response::error('FORBIDDEN', 'Sem permissão para listar alunos.', 403);
+        $escolas = null;
+        if (!Permissoes::temPapel('ADM')) {
+            if (array_intersect(AuthContext::papeis(), $papeisGestores) !== []) {
+                $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
+                    $idUsuario,
+                    array_values(array_intersect(AuthContext::papeis(), $papeisGestores))
+                );
+            } else {
+                Response::error('FORBIDDEN', 'Sem permissão para listar alunos.', 403);
+            }
         }
 
         $busca = $_GET['busca'] ?? '';
