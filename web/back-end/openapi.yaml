@@ -251,6 +251,205 @@ paths:
         '200': { description: Métricas disponíveis para o esporte }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
+  /partidas:
+    get:
+      operationId: listarPartidas
+      summary: Lista partidas visíveis para o usuário autenticado
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: competicaoId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: timeId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: visibilidade, in: query, schema: { type: string, enum: [PUBLICA, PRIVADA] } }
+        - { name: de, in: query, schema: { type: string, format: date } }
+        - { name: ate, in: query, schema: { type: string, format: date } }
+        - { name: local, in: query, schema: { type: string } }
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }
+      responses:
+        '200': { description: Partidas listadas }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /calendario:
+    get:
+      operationId: consultarCalendario
+      summary: Consulta partidas por período, competição, time ou local
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: competicaoId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: timeId, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: de, in: query, schema: { type: string, format: date } }
+        - { name: ate, in: query, schema: { type: string, format: date } }
+        - { name: local, in: query, schema: { type: string } }
+        - { name: pagina, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
+      responses:
+        '200': { description: Calendário consultado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/ao-vivo:
+    get:
+      operationId: listarPartidasAoVivo
+      summary: Lista partidas em andamento
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
+      responses:
+        '200': { description: Partidas em andamento }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/historico:
+    get:
+      operationId: listarHistoricoPartidas
+      summary: Lista partidas finalizadas
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
+      responses:
+        '200': { description: Histórico consultado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/{id}:
+    get:
+      operationId: consultarPartida
+      summary: Consulta uma partida visível para o usuário autenticado
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Partida consultada }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /partidas/{id}/calendario:
+    put:
+      operationId: agendarPartida
+      summary: Atualiza a data e hora agendadas da partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inicio]
+              properties:
+                inicio: { type: string, format: date-time }
+      responses:
+        '200': { description: Calendário atualizado }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Estado da partida não permite a alteração }
+  /partidas/{id}/local:
+    put:
+      operationId: atribuirLocalPartida
+      summary: Atualiza o local da partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [local]
+              properties:
+                local: { type: string, minLength: 1, maxLength: 150 }
+      responses:
+        '200': { description: Local atualizado }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /partidas/{id}/iniciar:
+    patch:
+      operationId: iniciarPartida
+      summary: Inicia uma partida agendada
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Partida iniciada }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Somente partidas agendadas podem ser iniciadas }
+  /partidas/{id}/resultado:
+    put:
+      operationId: registrarResultadoPartida
+      summary: Registra o placar e finaliza a partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [placarCasa, placarVisitante]
+              properties:
+                placarCasa: { type: integer, minimum: 0 }
+                placarVisitante: { type: integer, minimum: 0 }
+      responses:
+        '200': { description: Resultado registrado }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Partida sem dois times válidos }
+  /partidas/{id}/penalidades:
+    post:
+      operationId: registrarPenalidadePartida
+      summary: Registra uma penalidade para um atleta de um time da competição
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [timeId, alunoId, tipo]
+              properties:
+                timeId: { type: integer, minimum: 1 }
+                alunoId: { type: integer, minimum: 1 }
+                tipo: { type: string, minLength: 1 }
+                observacao: { type: string }
+      responses:
+        '200': { description: Penalidade registrada }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Dados incompatíveis com a partida }
+  /partidas/{id}/publicar:
+    post:
+      operationId: publicarResultadoPartida
+      summary: Torna público o resultado de uma partida finalizada
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Resultado publicado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Partida ainda não finalizada }
+  /locais:
+    get:
+      operationId: listarLocaisPartida
+      summary: Lista os locais já usados em partidas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Locais consultados }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
   /partidas/{id}/estatisticas-atletas:
     put:
       operationId: registrarEstatisticasAtletas
