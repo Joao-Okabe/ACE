@@ -551,6 +551,7 @@ CREATE TABLE partida (
 -- Os horários reais ficam separados nesta tabela.
 CREATE TABLE info_partida (
     cd_partida INTEGER PRIMARY KEY REFERENCES partida ON DELETE CASCADE,
+    dt_partida DATE,
     inicio_em TIMESTAMP,
     fim_em TIMESTAMP,
     local_partida VARCHAR(150),

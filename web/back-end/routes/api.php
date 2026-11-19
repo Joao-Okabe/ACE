@@ -331,9 +331,18 @@ $dashboardV1 = new DashboardController();
 $saudeV1 = new SaudeApiController();
 $rankingApi = new RankingController();
 
-$router->get('/api/v1/saude', [$saudeV1, 'show']);
-$router->post('/api/v1/auth/login', [$authV1, 'login']);
-$router->post('/api/v1/auth/recuperacao/solicitar', [$authV1, 'solicitarRecuperacao']);
+$router->get(
+    '/api/v1/saude', 
+    [$saudeV1, 'show']
+);
+$router->post(
+    '/api/v1/auth/login', 
+    [$authV1, 'login']
+);
+$router->post(
+    '/api/v1/auth/recuperacao/solicitar', 
+    [$authV1, 'solicitarRecuperacao']
+);
 $router->post('/api/v1/auth/recuperacao/confirmar', [$authV1, 'confirmarRecuperacao']);
 $router->get('/api/v1/auth/me', [$authV1, 'me']);
 $router->post('/api/v1/auth/refresh', [$authV1, 'refresh']);
@@ -397,4 +406,21 @@ $router->get('/api/rankings/equipes', [$rankingApi, 'equipes']);
 $router->get('/api/rankings/atletas', [$rankingApi, 'atletas']);
 $router->get('/api/rankings/individual', [$rankingApi, 'atletas']);
 $router->get('/api/esportes/{id}/metricas-atleta', [$rankingApi, 'metricasV1']);
+$router->get('/api/partidas', [$partidaV1, 'indexApi']);
+$router->get('/api/calendario', [$partidaV1, 'calendarioV1']);
+$router->get('/api/partidas/calendario', [$partidaV1, 'calendarioV1']);
+$router->get('/api/partidas/ao-vivo', [$partidaV1, 'partidasAoVivoV1']);
+$router->get('/api/partidas/historico', [$partidaV1, 'historicoV1']);
+$router->get('/api/partidas/{id}/ao-vivo', [$partidaV1, 'aoVivoV1']);
+$router->get('/api/partidas/{id}', [$partidaV1, 'aoVivoV1']);
+$router->put('/api/partidas/{id}/calendario', [$partidaV1, 'agendarV1']);
+$router->put('/api/partidas/{id}/local', [$partidaV1, 'atribuirLocalV1']);
+$router->patch('/api/partidas/{id}/iniciar', [$partidaV1, 'iniciarV1']);
+$router->post('/api/partidas/{id}/arbitragem', [$partidaV1, 'operacaoSemSuporteV1']);
+$router->put('/api/partidas/{id}/resultado', [$partidaV1, 'registrarResultadoV1']);
+$router->post('/api/partidas/{id}/pontuacoes', [$partidaV1, 'operacaoSemSuporteV1']);
+$router->post('/api/partidas/{id}/penalidades', [$partidaV1, 'registrarPenalidadeV1']);
+$router->post('/api/partidas/{id}/publicar', [$partidaV1, 'publicarResultadoV1']);
+$router->get('/api/locais', [$partidaV1, 'locaisV1']);
+$router->post('/api/locais', [$partidaV1, 'criarLocalNaoSuportadoV1']);
 $router->put('/api/partidas/{id}/estatisticas-atletas', [$partidaV1, 'registrarEstatisticasAtletasV1']);

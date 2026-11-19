@@ -226,6 +226,8 @@ Os rankings individuais guardam cada valor com atleta, time, partida, esporte e 
 
 Vínculos de arbitragem por competição ficam em `arbitro_competicao`. Em banco existente, aplique `database/migrations/20261118_arbitro_competicao.sql`. O criador da competição (além de administrador ou gestor autorizado da escola, conforme a permissão já existente) pode listar usuários ativos em `GET /api/v1/competicoes/{id}/arbitros/usuarios`, listar vínculos em `GET /api/v1/competicoes/{id}/arbitros`, atribuir com `POST /api/v1/competicoes/{id}/arbitros` (`{"usuarioId": 12}`) e remover com `DELETE /api/v1/competicoes/{id}/arbitros/{usuarioId}`. Os árbitros vinculados passam a poder ver a competição e suas partidas e executar operações de partida autorizadas para arbitragem. O vínculo não altera os papéis globais do usuário.
 
+As operações de partidas da API mobile também estão disponíveis para a web sob `/api`, usando a sessão web e CSRF. Incluem `GET /api/partidas`, `/api/partidas/{id}`, `/api/partidas/ao-vivo`, `/api/partidas/historico`, `/api/calendario` e `/api/locais`, além de agendamento, local, início, resultado, estatísticas dos atletas, penalidades e publicação em `/api/partidas/{id}/...`. As operações de arbitragem em tempo real e pontuações permanecem sem implementação no ACE e respondem `501`. Para bancos existentes, aplique `database/migrations/20261118_info_partida_data.sql`, que adiciona a coluna `info_partida.dt_partida` usada pelos dados de partidas.
+
 Para inspeção e administração visual do PostgreSQL, pode-se utilizar o DBeaver Community ou outra ferramenta compatível.
 
 ## API REST
