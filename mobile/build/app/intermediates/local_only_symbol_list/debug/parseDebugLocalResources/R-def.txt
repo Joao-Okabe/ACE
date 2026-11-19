@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+color ace_canvas
+color ace_navy
+color ace_orange
+drawable launch_background
+drawable splash_logo
+drawable transparent_splash
+mipmap ic_launcher
+style LaunchTheme
+style NormalTheme

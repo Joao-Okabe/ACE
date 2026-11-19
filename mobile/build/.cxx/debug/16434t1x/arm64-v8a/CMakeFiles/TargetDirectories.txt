@@ -1,0 +1,2 @@
+/home/tonhoka/Projects/ACE/Sistema/mobile/build/.cxx/debug/16434t1x/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/tonhoka/Projects/ACE/Sistema/mobile/build/.cxx/debug/16434t1x/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,443 @@
+-- Merging decision tree log ---
+application
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:5:5-30:19
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:5:5-30:19
+MERGED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:5-32:19
+MERGED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:5-32:19
+MERGED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-12:19
+MERGED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-12:19
+MERGED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/d4d562e69be971a6ef5ff3245cc792a1/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/d4d562e69be971a6ef5ff3245cc792a1/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:28:18-86
+	android:label
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:6:9-28
+	android:icon
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:8:9-43
+	android:usesCleartextTraffic
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:9:9-44
+	android:name
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:7:9-42
+manifest
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:1:1-37:12
+MERGED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-34:12
+MERGED from [:package_info_plus] /home/tonhoka/Projects/ACE/Sistema/mobile/build/package_info_plus/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/shared_preferences_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-14:12
+MERGED from [:flutter_plugin_android_lifecycle] /home/tonhoka/Projects/ACE/Sistema/mobile/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.preference:preference:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/9debb32622c5fc4e6609d3638b2723a9/transformed/preference-1.2.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.browser:browser:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/f5f72417fdb0181521e3ae7347071258/transformed/browser-1.9.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/ed3363a5bef4c3a41811629fefba1974/transformed/recyclerview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/79a2fd2782ec562debb5edc360510288/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/b4a6f7088cf87ce2a9eb982b9036d0c2/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.window:window-java:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/c0af03e7ab6cd83f5592975a5e4f1491/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/ec480daef9cfb52a7dabb4a29568f029/transformed/appcompat-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/3b2d17dd6a0120344e57faaeaeeeb5d9/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.fragment:fragment:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/678f2dcb2376327456b5ce62ec04a5de/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/9933bda07b2e304ef8f58b79b2d122c9/transformed/jetified-activity-ktx-1.12.4/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/612ce8ca9a4fad8ee18b7c368ae4a47b/transformed/jetified-activity-1.12.4/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/f20b9346453bc92f5831634dc3d69be9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/9a0d46ef392cacd18f29ed82e929f8b3/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/c963935e10a7a60bcddfb0cbf1105551/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/defcba1c659ae61faff5d94df6cfa4cd/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0ef131cd37c636d0e6e0550e48584bbf/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/5d51694608680edc68a187e0dd5b414f/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/20f895a52e75fe0f52459014875fcfe3/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0f889ae8a404a9bd4ee37876c23a0203/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/ba946de27689f569cfa9b2880d328d2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/d92fc20673c0d09f132c81913ae8331e/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/e0095e0a2afb66a1becad889e6e27f85/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/4dee0c346a4fb7e4028a824221482db8/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/41bbc48f781d5432483134700c9b35b4/transformed/jetified-core-ktx-1.18.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e9abad4d53f224534f658aa2f1957e08/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/28582ce094ece47bf0ff8adc8a4fc5ea/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/b681f14e16840b20a1aee0196c68aedb/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0a74e1b41d46915b35fe5643cc379fa4/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/449efeb2702d35a8ae38bc3ecb841542/transformed/customview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/1757952a59230a05fc2aadd554b2d8ff/transformed/transition-1.4.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/43a85dd7b9863ac966b842f53653150a/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/db11e7a841784ccfa46a341e5856a2cb/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e782865c3246124b659274f8c5e24cda/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/3e4dbb0da45135666fb44d82c11104c8/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.exifinterface:exifinterface:1.4.2] /home/tonhoka/.gradle/caches/8.12/transforms/2b7c1372a7b6d305855ad06f61e6a0b5/transformed/exifinterface-1.4.2/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/6f67f40ca911b733c4fc275ed3b9abc8/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/4c9527fa794344a88d62d6110b65c6ba/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/d4d562e69be971a6ef5ff3245cc792a1/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.datastore:datastore-preferences-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/5db2930a5a7538399b4db143043e68e9/transformed/jetified-datastore-preferences-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/fdb468dde7f650f441584e9dc97cd089/transformed/jetified-datastore-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/59776f961378350765c1a4d6b4ee3377/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/e17fe6593f93c783bed6108f28152c13/transformed/jetified-datastore-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/5153d0b119e8e07be2ded438af56d894/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.2] /home/tonhoka/.gradle/caches/8.12/transforms/65b06f572e6f556ad79ee1a55147cdf7/transformed/jetified-navigationevent/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0e7106bfae5aa52991cb69a4794e65a9/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window.extensions.core:core:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/8b1596279fc77bd9ecee6368aaf41aeb/transformed/jetified-core-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/d22346e30cadc1be5a8514032be202f8/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/2b5d2dfe2890e82e9fefa3d23635faf2/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/88c76ab93cc5f36399826a30a956cf95/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/41f5fc0e9252f3cad253dc1e3abf9314/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/7c6a143c0526f5342b5b4a5869db4d8c/transformed/jetified-core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/51e1d82c79d0b7741cad200689e9d0ae/transformed/jetified-runtime-annotation/AndroidManifest.xml:2:1-7:12
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /home/tonhoka/.gradle/caches/8.12/transforms/78d6fd56d8b1b516392cec13f0f63aab/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:2:5-67
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:2:22-64
+uses-permission#android.permission.CAMERA
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:3:5-65
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:3:22-62
+queries
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:31:5-36:15
+intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:32:9-35:18
+action#android.intent.action.PROCESS_TEXT
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:33:13-72
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:33:21-70
+data
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:34:13-50
+	android:mimeType
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:34:19-48
+activity#com.aether.mobile.MainActivity
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:10:9-26:20
+	android:launchMode
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:13:13-43
+	android:hardwareAccelerated
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:17:13-47
+	android:windowSoftInputMode
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:18:13-55
+	android:exported
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:12:13-36
+	android:configChanges
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:16:13-163
+	android:theme
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:15:13-47
+	android:taskAffinity
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:14:13-36
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:11:13-41
+meta-data#io.flutter.embedding.android.NormalTheme
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:19:13-21:55
+	android:resource
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:21:15-52
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:20:15-70
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:22:13-25:29
+action#android.intent.action.MAIN
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:23:17-68
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:23:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:24:17-76
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:24:27-74
+meta-data#flutterEmbedding
+ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:27:9-29:33
+	android:value
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:29:13-30
+	android:name
+		ADDED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml:28:13-44
+uses-sdk
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+MERGED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:6:5-44
+MERGED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:6:5-44
+MERGED from [:package_info_plus] /home/tonhoka/Projects/ACE/Sistema/mobile/build/package_info_plus/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:package_info_plus] /home/tonhoka/Projects/ACE/Sistema/mobile/build/package_info_plus/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/shared_preferences_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/shared_preferences_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /home/tonhoka/Projects/ACE/Sistema/mobile/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /home/tonhoka/Projects/ACE/Sistema/mobile/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [androidx.preference:preference:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/9debb32622c5fc4e6609d3638b2723a9/transformed/preference-1.2.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.preference:preference:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/9debb32622c5fc4e6609d3638b2723a9/transformed/preference-1.2.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/f5f72417fdb0181521e3ae7347071258/transformed/browser-1.9.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.browser:browser:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/f5f72417fdb0181521e3ae7347071258/transformed/browser-1.9.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/ed3363a5bef4c3a41811629fefba1974/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/ed3363a5bef4c3a41811629fefba1974/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/79a2fd2782ec562debb5edc360510288/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/79a2fd2782ec562debb5edc360510288/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/b4a6f7088cf87ce2a9eb982b9036d0c2/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/b4a6f7088cf87ce2a9eb982b9036d0c2/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/c0af03e7ab6cd83f5592975a5e4f1491/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.window:window-java:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/c0af03e7ab6cd83f5592975a5e4f1491/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/ec480daef9cfb52a7dabb4a29568f029/transformed/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/ec480daef9cfb52a7dabb4a29568f029/transformed/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/3b2d17dd6a0120344e57faaeaeeeb5d9/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/3b2d17dd6a0120344e57faaeaeeeb5d9/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/678f2dcb2376327456b5ce62ec04a5de/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /home/tonhoka/.gradle/caches/8.12/transforms/678f2dcb2376327456b5ce62ec04a5de/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/9933bda07b2e304ef8f58b79b2d122c9/transformed/jetified-activity-ktx-1.12.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/9933bda07b2e304ef8f58b79b2d122c9/transformed/jetified-activity-ktx-1.12.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/612ce8ca9a4fad8ee18b7c368ae4a47b/transformed/jetified-activity-1.12.4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.12.4] /home/tonhoka/.gradle/caches/8.12/transforms/612ce8ca9a4fad8ee18b7c368ae4a47b/transformed/jetified-activity-1.12.4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/f20b9346453bc92f5831634dc3d69be9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/f20b9346453bc92f5831634dc3d69be9/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/9a0d46ef392cacd18f29ed82e929f8b3/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/9a0d46ef392cacd18f29ed82e929f8b3/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/c963935e10a7a60bcddfb0cbf1105551/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/c963935e10a7a60bcddfb0cbf1105551/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/defcba1c659ae61faff5d94df6cfa4cd/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/defcba1c659ae61faff5d94df6cfa4cd/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0ef131cd37c636d0e6e0550e48584bbf/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0ef131cd37c636d0e6e0550e48584bbf/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/5d51694608680edc68a187e0dd5b414f/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/5d51694608680edc68a187e0dd5b414f/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/20f895a52e75fe0f52459014875fcfe3/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/20f895a52e75fe0f52459014875fcfe3/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0f889ae8a404a9bd4ee37876c23a0203/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/0f889ae8a404a9bd4ee37876c23a0203/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/ba946de27689f569cfa9b2880d328d2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/ba946de27689f569cfa9b2880d328d2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/d92fc20673c0d09f132c81913ae8331e/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/d92fc20673c0d09f132c81913ae8331e/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/e0095e0a2afb66a1becad889e6e27f85/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/tonhoka/.gradle/caches/8.12/transforms/e0095e0a2afb66a1becad889e6e27f85/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/4dee0c346a4fb7e4028a824221482db8/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/4dee0c346a4fb7e4028a824221482db8/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/41bbc48f781d5432483134700c9b35b4/transformed/jetified-core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/41bbc48f781d5432483134700c9b35b4/transformed/jetified-core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e9abad4d53f224534f658aa2f1957e08/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e9abad4d53f224534f658aa2f1957e08/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/28582ce094ece47bf0ff8adc8a4fc5ea/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/28582ce094ece47bf0ff8adc8a4fc5ea/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/b681f14e16840b20a1aee0196c68aedb/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/b681f14e16840b20a1aee0196c68aedb/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0a74e1b41d46915b35fe5643cc379fa4/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0a74e1b41d46915b35fe5643cc379fa4/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/449efeb2702d35a8ae38bc3ecb841542/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/449efeb2702d35a8ae38bc3ecb841542/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/1757952a59230a05fc2aadd554b2d8ff/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/1757952a59230a05fc2aadd554b2d8ff/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/43a85dd7b9863ac966b842f53653150a/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/43a85dd7b9863ac966b842f53653150a/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/db11e7a841784ccfa46a341e5856a2cb/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/tonhoka/.gradle/caches/8.12/transforms/db11e7a841784ccfa46a341e5856a2cb/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e782865c3246124b659274f8c5e24cda/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/e782865c3246124b659274f8c5e24cda/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/3e4dbb0da45135666fb44d82c11104c8/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/3e4dbb0da45135666fb44d82c11104c8/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.4.2] /home/tonhoka/.gradle/caches/8.12/transforms/2b7c1372a7b6d305855ad06f61e6a0b5/transformed/exifinterface-1.4.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.4.2] /home/tonhoka/.gradle/caches/8.12/transforms/2b7c1372a7b6d305855ad06f61e6a0b5/transformed/exifinterface-1.4.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/6f67f40ca911b733c4fc275ed3b9abc8/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/6f67f40ca911b733c4fc275ed3b9abc8/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/4c9527fa794344a88d62d6110b65c6ba/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/4c9527fa794344a88d62d6110b65c6ba/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/d4d562e69be971a6ef5ff3245cc792a1/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/d4d562e69be971a6ef5ff3245cc792a1/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore-preferences-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/5db2930a5a7538399b4db143043e68e9/transformed/jetified-datastore-preferences-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-preferences-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/5db2930a5a7538399b4db143043e68e9/transformed/jetified-datastore-preferences-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/fdb468dde7f650f441584e9dc97cd089/transformed/jetified-datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/fdb468dde7f650f441584e9dc97cd089/transformed/jetified-datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/59776f961378350765c1a4d6b4ee3377/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/59776f961378350765c1a4d6b4ee3377/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/e17fe6593f93c783bed6108f28152c13/transformed/jetified-datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.7] /home/tonhoka/.gradle/caches/8.12/transforms/e17fe6593f93c783bed6108f28152c13/transformed/jetified-datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/5153d0b119e8e07be2ded438af56d894/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/5153d0b119e8e07be2ded438af56d894/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.2] /home/tonhoka/.gradle/caches/8.12/transforms/65b06f572e6f556ad79ee1a55147cdf7/transformed/jetified-navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.2] /home/tonhoka/.gradle/caches/8.12/transforms/65b06f572e6f556ad79ee1a55147cdf7/transformed/jetified-navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0e7106bfae5aa52991cb69a4794e65a9/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/0e7106bfae5aa52991cb69a4794e65a9/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/8b1596279fc77bd9ecee6368aaf41aeb/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/8b1596279fc77bd9ecee6368aaf41aeb/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/d22346e30cadc1be5a8514032be202f8/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/d22346e30cadc1be5a8514032be202f8/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/2b5d2dfe2890e82e9fefa3d23635faf2/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/2b5d2dfe2890e82e9fefa3d23635faf2/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/88c76ab93cc5f36399826a30a956cf95/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/88c76ab93cc5f36399826a30a956cf95/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/41f5fc0e9252f3cad253dc1e3abf9314/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/tonhoka/.gradle/caches/8.12/transforms/41f5fc0e9252f3cad253dc1e3abf9314/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/7c6a143c0526f5342b5b4a5869db4d8c/transformed/jetified-core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/tonhoka/.gradle/caches/8.12/transforms/7c6a143c0526f5342b5b4a5869db4d8c/transformed/jetified-core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/51e1d82c79d0b7741cad200689e9d0ae/transformed/jetified-runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.9.0] /home/tonhoka/.gradle/caches/8.12/transforms/51e1d82c79d0b7741cad200689e9d0ae/transformed/jetified-runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /home/tonhoka/.gradle/caches/8.12/transforms/78d6fd56d8b1b516392cec13f0f63aab/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /home/tonhoka/.gradle/caches/8.12/transforms/78d6fd56d8b1b516392cec13f0f63aab/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+	android:targetSdkVersion
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/tonhoka/Projects/ACE/Sistema/mobile/android/app/src/main/AndroidManifest.xml
+provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:9-17:20
+	android:grantUriPermissions
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:13:13-47
+	android:authorities
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:13-74
+	android:exported
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:12:13-37
+	android:name
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:13-82
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:14:13-16:75
+	android:resource
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:16:17-72
+	android:name
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:15:17-67
+service#com.google.android.gms.metadata.ModuleDependencies
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:19:9-31:19
+	android:enabled
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:21:13-36
+	android:exported
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:22:13-37
+	tools:ignore
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:23:13-40
+	android:name
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:20:13-78
+intent-filter#action:name:com.google.android.gms.metadata.MODULE_DEPENDENCIES
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:24:13-26:29
+action#com.google.android.gms.metadata.MODULE_DEPENDENCIES
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:25:17-94
+	android:name
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:25:25-91
+meta-data#photopicker_activity:0:required
+ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:28:13-30:36
+	android:value
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:30:17-33
+	android:name
+		ADDED from [:image_picker_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:29:17-63
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:9-11:74
+	android:exported
+		ADDED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:13-37
+	android:theme
+		ADDED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:13-71
+	android:name
+		ADDED from [:url_launcher_android] /home/tonhoka/Projects/ACE/Sistema/mobile/build/url_launcher_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-74
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /home/tonhoka/.gradle/caches/8.12/transforms/83c18c76aca0093a3dbcfa66252d59d3/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/tonhoka/.gradle/caches/8.12/transforms/ca537d227d2a4d15c4d921a6fbad9f12/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/tonhoka/.gradle/caches/8.12/transforms/8a818a2457016ed18aef031a3c82240a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+permission#com.aether.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+uses-permission#com.aether.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/tonhoka/.gradle/caches/8.12/transforms/29defde0a34cc2106fe3e1cc30c2618e/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/tonhoka/.gradle/caches/8.12/transforms/937f42405f0fb313179033b94af64a25/transformed/jetified-profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
