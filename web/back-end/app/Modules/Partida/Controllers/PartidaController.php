@@ -18,497 +18,102 @@ class PartidaController
         $id = AuthContext::id() ?? 0;
 
         if ($id <= 0) {
-            throw new RuntimeException('Sessão inválida. Faça login novamente.');
+            Response::error('UNAUTHENTICATED', 'Autenticação necessária.', 401);
         }
 
         return $id;
     }
 
-    public function create(): void
-    {
-        try {
-            $idCompeticao = isset($_GET['id_competicao']) ? (int) $_GET['id_competicao'] : null;
-
-            if ($idCompeticao) {
-                $this->service()->exigirAcessoCompeticao($this->usuarioAtual(), $idCompeticao);
-            }
-
-            $esporteService = new EsporteService();
-            $modalidadeService = new ModalidadeService();
-            $timeService = new TimeService();
-
-            renderView('partida/criar', [
-                'idCompeticao' => $idCompeticao,
-                'esportes' => $esporteService->listar(),
-                'modalidades' => $modalidadeService->listar(),
-                'times' => $timeService->listar(),
-            ]);
-        } catch (Throwable $e) {
-            http_response_code(403);
-            renderView('erro', ['erro' => $e->getMessage()]);
-        }
-    }
-
     public function store(): void
     {
-        try {
-            $dados = $_POST;
-
-            // Campos opcionais: sem competição = partida avulsa;
-            // sem confronto = partida independente dentro da competição.
-            $idPartida = $this->service()->criar($dados);
-
-            $idCompeticao = (int) ($dados['cd_competicao'] ?? 0);
-
-            if ($idCompeticao > 0) {
-                header("Location: /competicoes/visualizar?id={$idCompeticao}&partida_criada=1");
-            } else {
-                header("Location: /partidas/visualizar?id={$idPartida}&partida_criada=1");
+        $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
+        if (str_contains($contentType, 'application/json')) {
+            $dados = json_decode(file_get_contents('php://input'), true);
+            if (!is_array($dados) || json_last_error() !== JSON_ERROR_NONE) {
+                Response::json(['sucesso' => false, 'mensagem' => 'O corpo da requisição contém JSON inválido.'], 400);
             }
-            exit;
-        } catch (Throwable $e) {
-            http_response_code(422);
-            renderView('partida/criar', [
-                'erro' => $e->getMessage(),
-                'dados' => $_POST,
-            ]);
+        } else {
+            $dados = $_POST;
         }
-    }
 
-    public function show(): void
-    {
         try {
-            $id = (int) ($_GET['id'] ?? 0);
-            $partida = $this->service()->buscar($id, $this->usuarioAtual());
-
-            renderView('partida/visualizar', ['partida' => $partida]);
+            $idPartida = $this->service()->criar($dados);
+            Response::json([
+                'sucesso' => true,
+                'mensagem' => 'Partida criada com sucesso.',
+                'dados' => ['cd_partida' => $idPartida],
+            ], 201);
+        } catch (InvalidArgumentException $e) {
+            Response::json(['sucesso' => false, 'mensagem' => $e->getMessage()], 422);
+        } catch (DomainException $e) {
+            $mensagem = $e->getMessage();
+            $status = str_contains(mb_strtolower($mensagem), 'permissão') ? 403
+                : (str_contains(mb_strtolower($mensagem), 'não encontrado') ? 404 : 409);
+            Response::json(['sucesso' => false, 'mensagem' => $mensagem], $status);
+        } catch (Exception $e) {
+            $mensagem = mb_strtolower($e->getMessage());
+            if (str_contains($mensagem, 'não autenticado')) {
+                Response::json(['sucesso' => false, 'mensagem' => 'Autenticação necessária.'], 401);
+            }
+            if (str_contains($mensagem, 'permissão')) {
+                Response::json(['sucesso' => false, 'mensagem' => $e->getMessage()], 403);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível criar a partida.'], 500);
         } catch (Throwable $e) {
-            http_response_code(404);
-            renderView('erro', ['erro' => $e->getMessage()]);
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível criar a partida.'], 500);
         }
     }
 
-    public function list(): void
-    {
-        try {
-            $filtros = [
-                'cd_competicao' => isset($_GET['cd_competicao']) ? (int) $_GET['cd_competicao'] : null,
-                'status' => trim($_GET['status'] ?? ''),
-                'visibilidade' => trim($_GET['visibilidade'] ?? ''),
-            ];
-
-            $partidas = $this->service()->listar($filtros, $this->usuarioAtual());
-
-            renderView('partida/listar', [
-                'partidas' => $partidas,
-                'filtros' => $filtros,
-            ]);
-        } catch (Throwable $e) {
-            http_response_code(403);
-            renderView('erro', ['erro' => $e->getMessage()]);
-        }
-    }
-
-    public function indexApi(): void
+    public function index(): void
     {
         $filtros = [];
-        foreach (['competicaoId' => 'cd_competicao', 'timeId' => 'cd_time'] as $query => $campo) {
-            if (!isset($_GET[$query]) || $_GET[$query] === '') continue;
-            $valor = filter_var($_GET[$query], FILTER_VALIDATE_INT);
-            if ($valor === false || $valor <= 0) Response::error('VALIDATION_ERROR', "Parâmetro {$query} inválido.", 400);
-            $filtros[$campo] = (int) $valor;
-        }
-        foreach (['status', 'visibilidade', 'de', 'ate', 'local'] as $campo) {
-            if (isset($_GET[$campo])) {
-                if (!is_string($_GET[$campo])) Response::error('VALIDATION_ERROR', "Parâmetro {$campo} inválido.", 400);
-                $filtros[$campo] = trim($_GET[$campo]);
+        foreach (['cd_competicao', 'status', 'visibilidade', 'de', 'ate', 'local'] as $campo) {
+            if (!isset($_GET[$campo])) {
+                continue;
             }
+            if (!is_string($_GET[$campo])) {
+                Response::json(['sucesso' => false, 'mensagem' => "Parâmetro {$campo} inválido."], 400);
+            }
+            $filtros[$campo] = trim($_GET[$campo]);
         }
-        $limite = filter_var($_GET['limite'] ?? 100, FILTER_VALIDATE_INT);
-        if ($limite === false || $limite < 1 || $limite > 100) Response::error('VALIDATION_ERROR', 'Parâmetro limite deve estar entre 1 e 100.', 400);
-        $filtros['limite'] = $limite;
+
+        if (isset($filtros['cd_competicao'])) {
+            $idCompeticao = filter_var($filtros['cd_competicao'], FILTER_VALIDATE_INT);
+            if ($idCompeticao === false || $idCompeticao <= 0) {
+                Response::json(['sucesso' => false, 'mensagem' => 'Parâmetro cd_competicao inválido.'], 400);
+            }
+            $filtros['cd_competicao'] = $idCompeticao;
+        }
+
         try {
-            $itens = $this->service()->listar($filtros, $this->usuarioAtual());
-            Response::success(['itens' => $itens, 'limite' => $limite], 'Partidas listadas.');
+            $partidas = $this->service()->listar($filtros, $this->usuarioAtual());
+            Response::json(['sucesso' => true, 'dados' => $partidas]);
         } catch (Throwable $e) {
-            if (str_contains(mb_strtolower($e->getMessage()), 'permissão')) Response::error('FORBIDDEN', $e->getMessage(), 403);
-            error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::error('INTERNAL_ERROR', 'Não foi possível listar as partidas.', 500);
-        }
-    }
-
-    public function calendarioV1(): void
-    {
-        $filtros = [
-            'cd_competicao' => isset($_GET['competicaoId']) ? (int) $_GET['competicaoId'] : null,
-            'cd_time' => isset($_GET['timeId']) ? (int) $_GET['timeId'] : null,
-            'de' => isset($_GET['de']) && is_string($_GET['de']) ? $_GET['de'] : null,
-            'ate' => isset($_GET['ate']) && is_string($_GET['ate']) ? $_GET['ate'] : null,
-            'local' => isset($_GET['local']) && is_string($_GET['local']) ? $_GET['local'] : null,
-            'limite' => min(100, max(1, (int) ($_GET['limite'] ?? 30))),
-        ];
-        if (isset($_GET['localId']) && !isset($_GET['local'])) {
-            Response::error('NOT_IMPLEMENTED', 'O ACE usa o local como texto sem ID próprio; envie local como texto.', 501);
-        }
-        try {
-            $itens = $this->service()->listar($filtros, $this->usuarioAtual());
-            Response::success([
-                'pagina' => max(1, (int) ($_GET['pagina'] ?? 1)),
-                'limite' => $filtros['limite'],
-                'itens' => $itens,
-            ], 'Calendário consultado.');
-        } catch (Throwable $e) {
-            error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::error('INTERNAL_ERROR', 'Não foi possível consultar o calendário.', 500);
-        }
-    }
-
-    public function partidasAoVivoV1(): void
-    {
-        $this->listarPorStatusV1('EM_ANDAMENTO', 'Partidas ao vivo consultadas.');
-    }
-
-    public function historicoV1(): void
-    {
-        $this->listarPorStatusV1('FINALIZADA', 'Histórico de partidas consultado.');
-    }
-
-    public function aoVivoV1(int $id): void
-    {
-        try {
-            Response::success(
-                $this->service()->buscar($id, $this->usuarioAtual()),
-                'Partida consultada.'
-            );
-        } catch (Throwable $e) {
-            Response::error('NOT_FOUND', 'Partida não encontrada.', 404);
-        }
-    }
-
-    public function locaisV1(): void
-    {
-        try {
-            $stmt = Database::connect()->query("
-                SELECT DISTINCT local_partida AS nome
-                FROM info_partida
-                WHERE NULLIF(BTRIM(local_partida), '') IS NOT NULL
-                ORDER BY nome
-            ");
-            Response::success($stmt->fetchAll(PDO::FETCH_ASSOC), 'Locais consultados.');
-        } catch (Throwable $e) {
-            error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::error('INTERNAL_ERROR', 'Não foi possível consultar os locais.', 500);
-        }
-    }
-
-    public function agendarV1(int $id): void
-    {
-        $dados = $this->lerJsonV1();
-        $inicio = $dados['inicio_agendado'] ?? $dados['inicio'] ?? $dados['dataHora'] ?? null;
-        if (!is_string($inicio) || trim($inicio) === '') {
-            Response::error('VALIDATION_ERROR', 'Informe a data e hora da partida.', 400);
-        }
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $inicio): void {
-            $stmt = $pdo->prepare('UPDATE partida SET inicio_agendado = :inicio WHERE cd_partida = :id');
-            $stmt->execute([':inicio' => $inicio, ':id' => $id]);
-            $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, dt_partida, inicio_em)
-                VALUES (:id, :data_partida, :inicio) ON CONFLICT (cd_partida)
-                DO UPDATE SET
-                    dt_partida = EXCLUDED.dt_partida,
-                    inicio_em = EXCLUDED.inicio_em
-            ");
-            $stmt->execute([
-                ':id' => $id,
-                ':data_partida' => substr($inicio, 0, 10),
-                ':inicio' => $inicio,
-            ]);
-        }, 'Calendário da partida atualizado.');
-    }
-
-    public function atribuirLocalV1(int $id): void
-    {
-        $dados = $this->lerJsonV1();
-        $local = $dados['local_partida'] ?? $dados['local'] ?? $dados['nome'] ?? null;
-        if (!is_string($local) || trim($local) === '' || mb_strlen($local) > 150) {
-            Response::error('VALIDATION_ERROR', 'Informe um local com até 150 caracteres.', 400);
-        }
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $local): void {
-            $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, dt_partida, local_partida)
-                SELECT :id_insert, COALESCE(inicio_agendado::date, CURRENT_DATE), :local
-                FROM partida
-                WHERE cd_partida = :id_partida
-                ON CONFLICT (cd_partida)
-                DO UPDATE SET local_partida = EXCLUDED.local_partida
-            ");
-            $stmt->execute([
-                ':id_insert' => $id,
-                ':id_partida' => $id,
-                ':local' => trim($local),
-            ]);
-        }, 'Local da partida atualizado.');
-    }
-
-    public function iniciarV1(int $id): void
-    {
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id): void {
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("UPDATE partida SET status = 'EM_ANDAMENTO' WHERE cd_partida = :id AND status = 'AGENDADA'");
-            $stmt->execute([':id' => $id]);
-            if ($stmt->rowCount() !== 1) {
-                $pdo->rollBack();
-                throw new DomainException('Somente partidas agendadas podem ser iniciadas.');
-            }
-            $stmt = $pdo->prepare("
-                INSERT INTO info_partida (cd_partida, dt_partida, inicio_em)
-                VALUES (:id, CURRENT_DATE, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida)
-                DO UPDATE SET inicio_em = COALESCE(info_partida.inicio_em, EXCLUDED.inicio_em)
-            ");
-            $stmt->execute([':id' => $id]);
-            $pdo->commit();
-        }, 'Partida iniciada.');
-    }
-
-    public function operacaoSemSuporteV1(int $id): void
-    {
-        Response::error(
-            'NOT_IMPLEMENTED',
-            'O ACE ainda não possui estrutura ou regra aprovada para registrar esta operação de partida.',
-            501
-        );
-    }
-
-    public function registrarResultadoV1(int $id): void
-    {
-        $dados = $this->lerJsonV1();
-        $placarCasa = filter_var($dados['placarCasa'] ?? null, FILTER_VALIDATE_INT);
-        $placarVisitante = filter_var($dados['placarVisitante'] ?? null, FILTER_VALIDATE_INT);
-        if ($placarCasa === false || $placarVisitante === false || $placarCasa < 0 || $placarVisitante < 0) {
-            Response::error('VALIDATION_ERROR', 'Informe dois placares inteiros não negativos.', 400);
-        }
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $placarCasa, $placarVisitante): void {
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare('SELECT cd_time, mandante FROM vinculo_partida_time WHERE cd_partida = :id ORDER BY mandante DESC, cd_time');
-            $stmt->execute([':id' => $id]);
-            $times = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (count($times) !== 2) {
-                $pdo->rollBack();
-                throw new DomainException('A partida precisa ter exatamente dois times para registrar o resultado.');
-            }
-            $stmt = $pdo->prepare("
-                INSERT INTO etapa_partida (cd_partida, nr_etapa, inicio_em, fim_em)
-                VALUES (:partida, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                ON CONFLICT (cd_partida, nr_etapa)
-                DO UPDATE SET fim_em = EXCLUDED.fim_em
-                RETURNING cd_etapa_partida
-            ");
-            $stmt->execute([':partida' => $id]);
-            $idEtapa = (int) $stmt->fetchColumn();
-            $stmtPonto = $pdo->prepare("
-                INSERT INTO resultado_etapa_partida (cd_etapa_partida, cd_time, pontuacao)
-                VALUES (:etapa, :time, :pontuacao)
-                ON CONFLICT (cd_etapa_partida, cd_time)
-                DO UPDATE SET pontuacao = EXCLUDED.pontuacao
-            ");
-            foreach ([[$times[0], $placarCasa], [$times[1], $placarVisitante]] as [$time, $pontos]) {
-                $stmtPonto->execute([
-                    ':etapa' => $idEtapa,
-                    ':time' => (int) $time['cd_time'],
-                    ':pontuacao' => $pontos,
-                ]);
-            }
-            $pdo->prepare("UPDATE partida SET status = 'FINALIZADA' WHERE cd_partida = :id")
-                ->execute([':id' => $id]);
-            $stmt = $pdo->prepare('INSERT INTO info_partida (cd_partida, dt_partida, fim_em) VALUES (:id, CURRENT_DATE, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida) DO UPDATE SET fim_em = EXCLUDED.fim_em');
-            $stmt->execute([':id' => $id]);
-            if ($placarCasa !== $placarVisitante) {
-                $vencedor = (int) $times[$placarCasa > $placarVisitante ? 0 : 1]['cd_time'];
-                $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = :vencedor, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
-                $stmt->execute([':vencedor' => $vencedor, ':id' => $id]);
-            } else {
-                $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = NULL, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
-                $stmt->execute([':id' => $id]);
-            }
-            $pdo->commit();
-        }, 'Resultado registrado e partida finalizada.');
-    }
-
-    public function registrarPenalidadeV1(int $id): void
-    {
-        $dados = $this->lerJsonV1();
-        $idTime = (int) ($dados['timeId'] ?? $dados['cd_time'] ?? 0);
-        $idAluno = (int) ($dados['alunoId'] ?? $dados['cd_aluno'] ?? 0);
-        $tipo = $dados['tipo'] ?? '';
-        if ($idTime <= 0 || $idAluno <= 0 || !is_string($tipo) || trim($tipo) === '') {
-            Response::error('VALIDATION_ERROR', 'Informe timeId, alunoId e tipo da penalidade.', 400);
-        }
-        $stmt = Database::connect()->prepare('SELECT cd_usuario FROM aluno WHERE cd_aluno = :id');
-        $stmt->execute([':id' => $idAluno]);
-        $idUsuario = $stmt->fetchColumn();
-        if ($idUsuario === false) {
-            Response::error('NOT_FOUND', 'Atleta não encontrado.', 404);
-        }
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $idTime, $idUsuario, $tipo, $dados): void {
-            $partida = $pdo->prepare('SELECT cd_competicao FROM partida WHERE cd_partida = :id');
-            $partida->execute([':id' => $id]);
-            $idCompeticao = $partida->fetchColumn();
-            if ($idCompeticao === false || $idCompeticao === null) {
-                throw new DomainException('Penalidades ACE só podem ser vinculadas a partidas de competição.');
-            }
-            $stmt = $pdo->prepare('SELECT cd_funcao_integrante FROM vinculo_time_integrante WHERE cd_time = :time AND cd_usuario = :usuario AND ativo = TRUE');
-            $stmt->execute([':time' => $idTime, ':usuario' => (int) $idUsuario]);
-            $funcao = $stmt->fetchColumn();
-            if ($funcao === false) {
-                throw new DomainException('O atleta não está vinculado ao time informado.');
-            }
-            $stmt = $pdo->prepare('SELECT cd_tipo_penalidade FROM tipo_penalidade WHERE LOWER(nm_tipo_penalidade) = LOWER(:tipo)');
-            $stmt->execute([':tipo' => trim($tipo)]);
-            $tipoId = $stmt->fetchColumn();
-            if ($tipoId === false) {
-                throw new DomainException('O tipo de penalidade não está cadastrado no ACE.');
-            }
-            $stmt = $pdo->prepare('INSERT INTO penalidade (cd_competicao, cd_time, cd_usuario, cd_funcao_integrante, cd_tipo_penalidade, descricao) VALUES (:competicao, :time, :usuario, :funcao, :tipo, :descricao)');
-            $stmt->execute([
-                ':competicao' => (int) $idCompeticao,
-                ':time' => $idTime,
-                ':usuario' => (int) $idUsuario,
-                ':funcao' => (int) $funcao,
-                ':tipo' => (int) $tipoId,
-                ':descricao' => isset($dados['observacao']) && is_string($dados['observacao']) ? trim($dados['observacao']) : null,
-            ]);
-        }, 'Penalidade registrada.');
-    }
-
-    public function publicarResultadoV1(int $id): void
-    {
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id): void {
-            $stmt = $pdo->prepare("UPDATE partida SET visibilidade = 'PUBLICA' WHERE cd_partida = :id AND status = 'FINALIZADA'");
-            $stmt->execute([':id' => $id]);
-            if ($stmt->rowCount() !== 1) {
-                throw new DomainException('Finalize a partida antes de publicar o resultado.');
-            }
-        }, 'Resultado publicado.');
-    }
-
-    public function registrarEstatisticasAtletasV1(int $id): void
-    {
-        $dados = $this->lerJsonV1();
-        $atletas = $dados['atletas'] ?? null;
-        if (!is_array($atletas) || $atletas === []) {
-            Response::error('VALIDATION_ERROR', 'Informe atletas com alunoId, timeId e métricas.', 400);
-        }
-        $this->alterarPartidaV1($id, function (PDO $pdo) use ($id, $atletas): void {
-            $stmt = $pdo->prepare('SELECT COALESCE(p.cd_esporte, c.cd_esporte) FROM partida p LEFT JOIN competicao c ON c.cd_competicao = p.cd_competicao WHERE p.cd_partida = :id');
-            $stmt->execute([':id' => $id]);
-            $esporteId = (int) $stmt->fetchColumn();
-            if ($esporteId <= 0) throw new DomainException('A partida não possui esporte associado.');
-            $participante = $pdo->prepare('SELECT 1 FROM participante_partida WHERE cd_partida = :partida AND cd_usuario = :usuario AND cd_time = :time LIMIT 1');
-            $aluno = $pdo->prepare('SELECT cd_usuario FROM aluno WHERE cd_aluno = :aluno AND ativo = TRUE');
-            $metrica = $pdo->prepare('SELECT 1 FROM metrica_atleta WHERE cd_metrica_atleta = :metrica AND cd_esporte = :esporte');
-            $salvar = $pdo->prepare('INSERT INTO estatistica_atleta_partida (cd_partida, cd_usuario, cd_time, cd_esporte, cd_metrica_atleta, valor) VALUES (:partida, :usuario, :time, :esporte, :metrica, :valor) ON CONFLICT (cd_partida, cd_usuario, cd_time, cd_metrica_atleta) DO UPDATE SET valor = EXCLUDED.valor, atualizado_em = CURRENT_TIMESTAMP');
-            $pdo->beginTransaction();
-            foreach ($atletas as $registro) {
-                if (!is_array($registro) || !isset($registro['alunoId'], $registro['timeId']) || !is_array($registro['metricas'] ?? null)) {
-                    throw new DomainException('Cada atleta deve conter alunoId, timeId e uma lista de métricas.');
-                }
-                $alunoId = filter_var($registro['alunoId'], FILTER_VALIDATE_INT);
-                $timeId = filter_var($registro['timeId'], FILTER_VALIDATE_INT);
-                if ($alunoId === false || $alunoId <= 0 || $timeId === false || $timeId <= 0) throw new DomainException('ID de aluno ou time inválido.');
-                $aluno->execute([':aluno' => $alunoId]);
-                $usuarioId = $aluno->fetchColumn();
-                if ($usuarioId === false) throw new DomainException('Atleta não encontrado.');
-                $participante->execute([':partida' => $id, ':usuario' => (int) $usuarioId, ':time' => $timeId]);
-                if (!$participante->fetchColumn()) throw new DomainException('O atleta não está inscrito como participante desse time na partida.');
-                foreach ($registro['metricas'] as $dadoMetrica) {
-                    if (!is_array($dadoMetrica) || !isset($dadoMetrica['metricaId'], $dadoMetrica['valor'])) throw new DomainException('Cada métrica deve conter metricaId e valor.');
-                    $metricaId = filter_var($dadoMetrica['metricaId'], FILTER_VALIDATE_INT);
-                    $valor = filter_var($dadoMetrica['valor'], FILTER_VALIDATE_FLOAT);
-                    if ($metricaId === false || $metricaId <= 0 || $valor === false || $valor < 0) throw new DomainException('Métrica ou valor inválido.');
-                    $metrica->execute([':metrica' => $metricaId, ':esporte' => $esporteId]);
-                    if (!$metrica->fetchColumn()) throw new DomainException('A métrica não pertence ao esporte da partida.');
-                    $salvar->execute([':partida' => $id, ':usuario' => (int) $usuarioId, ':time' => $timeId, ':esporte' => $esporteId, ':metrica' => $metricaId, ':valor' => $valor]);
-                }
-            }
-            $pdo->commit();
-        }, 'Estatísticas dos atletas registradas.');
-    }
-
-    public function criarLocalNaoSuportadoV1(): void
-    {
-        Response::error(
-            'NOT_IMPLEMENTED',
-            'O ACE guarda o local como texto da partida e não possui cadastro separado de locais.',
-            501
-        );
-    }
-
-    private function listarPorStatusV1(string $status, string $mensagem): void
-    {
-        try {
-            $itens = $this->service()->listar([
-                'status' => $status,
-                'limite' => min(100, max(1, (int) ($_GET['limite'] ?? 30))),
-            ], $this->usuarioAtual());
-            Response::success($itens, $mensagem);
-        } catch (Throwable $e) {
-            error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::error('INTERNAL_ERROR', 'Não foi possível consultar as partidas.', 500);
-        }
-    }
-
-    private function alterarPartidaV1(int $id, callable $operacao, string $mensagem): void
-    {
-        $usuario = $this->usuarioAtual();
-        $pdo = Database::connect();
-        try {
-            $stmt = $pdo->prepare('SELECT * FROM partida WHERE cd_partida = :id');
-            $stmt->execute([':id' => $id]);
-            $partida = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$partida) {
-                Response::error('NOT_FOUND', 'Partida não encontrada.', 404);
-            }
-            if (!Permissoes::temPapel('ADM') && (int) $partida['cd_criador'] !== $usuario) {
-                if (empty($partida['cd_competicao'])) {
-                    Response::error('FORBIDDEN', 'Sem permissão para alterar esta partida.', 403);
-                }
-                $competicao = (new Competicao())->buscar((int) $partida['cd_competicao']);
-                if (!$competicao) {
-                    Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
-                }
-                $ehArbitroCompeticao = (new Competicao())->usuarioEhArbitro(
-                    $usuario,
-                    (int) $partida['cd_competicao']
-                );
-                if (!$ehArbitroCompeticao) {
-                    (new CompeticaoService())->exigirPermissao($competicao);
-                }
-            }
-            $operacao($pdo);
-            Response::success(null, $mensagem);
-        } catch (DomainException $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-            Response::error('CONFLICT', $e->getMessage(), 409);
-        } catch (Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
             if (str_contains(mb_strtolower($e->getMessage()), 'permissão')) {
-                Response::error('FORBIDDEN', $e->getMessage(), 403);
+                Response::json(['sucesso' => false, 'mensagem' => $e->getMessage()], 403);
             }
             error_log(__METHOD__ . ': ' . $e->getMessage());
-            Response::error('INTERNAL_ERROR', 'Não foi possível alterar a partida.', 500);
+            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível listar as partidas.'], 500);
         }
     }
 
-    private function lerJsonV1(): array
+    public function show(int $id): void
     {
-        $dados = json_decode(file_get_contents('php://input'), true);
-        if (!is_array($dados) || json_last_error() !== JSON_ERROR_NONE) {
-            Response::error('BAD_REQUEST', 'O corpo contém JSON inválido.', 400);
+        if ($id <= 0) {
+            Response::json(['sucesso' => false, 'mensagem' => 'ID da partida inválido.'], 400);
         }
-        return $dados;
+
+        try {
+            $partida = $this->service()->buscar($id, $this->usuarioAtual());
+            Response::json(['sucesso' => true, 'dados' => $partida]);
+        } catch (Throwable $e) {
+            if (str_contains(mb_strtolower($e->getMessage()), 'permissão') || str_contains(mb_strtolower($e->getMessage()), 'não encontrada')) {
+                Response::json(['sucesso' => false, 'mensagem' => 'Partida não encontrada.'], 404);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::json(['sucesso' => false, 'mensagem' => 'Não foi possível consultar a partida.'], 500);
+        }
     }
 }
