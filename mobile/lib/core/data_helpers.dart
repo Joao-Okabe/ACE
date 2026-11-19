@@ -153,4 +153,9 @@ String statusLabel(Object? value) {
           .join(' ');
 }
 
+bool canPublishMatch(Object? value) {
+  final status = value?.toString().trim().toUpperCase() ?? '';
+  return status == 'FINALIZADA' || status == 'EM_ANDAMENTO';
+}
+
 String digitsOnly(String value) => value.replaceAll(RegExp(r'\D'), '');

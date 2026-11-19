@@ -5,10 +5,10 @@ class PartidaService
     private PDO $pdo;
     private Partida $partidaModel;
 
-    public function __construct()
+    public function __construct(?PDO $pdo = null, ?Partida $partidaModel = null)
     {
-        $this->pdo = Database::connect();
-        $this->partidaModel = new Partida();
+        $this->pdo = $pdo ?? Database::connect();
+        $this->partidaModel = $partidaModel ?? new Partida();
     }
 
     public function criar(array $dados): int
@@ -18,24 +18,34 @@ class PartidaService
             throw new RuntimeException('Usuário não autenticado.');
         }
 
-        $idCompeticao = !empty($dados['cd_competicao']) ? (int) $dados['cd_competicao'] : null;
-        if ($idCompeticao === null) {
-            throw new InvalidArgumentException('Toda partida precisa pertencer a uma competição.');
-        }
+        $idCompeticao = $this->normalizarIdOpcional($dados['cd_competicao'] ?? null, 'competição');
 
-        $idConfronto = !empty($dados['cd_confronto']) ? (int) $dados['cd_confronto'] : null;
-        $visibilidade = strtoupper(trim($dados['visibilidade'] ?? 'PUBLICA'));
+        $idConfronto = $this->normalizarIdOpcional($dados['cd_confronto'] ?? null, 'confronto');
+        $valorVisibilidade = $dados['visibilidade'] ?? 'PUBLICA';
+        if (!is_string($valorVisibilidade)) {
+            throw new InvalidArgumentException('Visibilidade inválida.');
+        }
+        $visibilidade = strtoupper(trim($valorVisibilidade));
 
         if (!in_array($visibilidade, ['PUBLICA', 'PRIVADA'], true)) {
             throw new InvalidArgumentException('Visibilidade inválida.');
         }
 
-        $idEsporte = !empty($dados['cd_esporte']) ? (int) $dados['cd_esporte'] : null;
-        $idModalidade = !empty($dados['cd_modalidade']) ? (int) $dados['cd_modalidade'] : null;
+        $idEsporte = $this->normalizarIdOpcional($dados['cd_esporte'] ?? null, 'esporte');
+        $idModalidade = $this->normalizarIdOpcional($dados['cd_modalidade'] ?? null, 'modalidade');
 
         $inicio = $this->normalizarDataHora($dados['inicio_em'] ?? null);
-        $data = trim($dados['dt_partida'] ?? '');
-        $local = trim($dados['local_partida'] ?? '');
+        $valorData = $dados['dt_partida'] ?? '';
+        if (!is_string($valorData)) {
+            throw new InvalidArgumentException('Informe uma data válida para a partida.');
+        }
+        $data = trim($valorData);
+
+        $valorLocal = $dados['local_partida'] ?? '';
+        if (!is_string($valorLocal)) {
+            throw new InvalidArgumentException('Informe o local da partida.');
+        }
+        $local = trim($valorLocal);
 
         if ($data === '' || !$this->dataValida($data)) {
             throw new InvalidArgumentException('Informe uma data válida para a partida.');
@@ -46,6 +56,10 @@ class PartidaService
         }
 
         $idsTimes = $this->normalizarTimes($dados['cd_times'] ?? []);
+        $observacoes = $dados['observacoes'] ?? null;
+        if ($observacoes !== null && !is_string($observacoes)) {
+            throw new InvalidArgumentException('Observações inválidas.');
+        }
 
         try {
             $this->pdo->beginTransaction();
@@ -125,7 +139,7 @@ class PartidaService
                 'dt_partida' => $data,
                 'inicio_em' => $inicio,
                 'local_partida' => $local,
-                'observacoes' => trim($dados['observacoes'] ?? '') ?: null,
+                'observacoes' => trim($observacoes ?? '') ?: null,
             ]);
 
             $this->partidaModel->capturarParticipantes($idPartida, $idsTimes);
@@ -221,20 +235,45 @@ class PartidaService
     private function normalizarTimes($times): array
     {
         if (!is_array($times)) {
-            return [];
+            throw new InvalidArgumentException('Informe uma lista válida de equipes.');
         }
 
-        $ids = array_values(array_unique(array_filter(
-            array_map('intval', $times),
-            static fn ($id) => $id > 0
-        )));
+        $ids = [];
+        foreach ($times as $time) {
+            $id = filter_var($time, FILTER_VALIDATE_INT);
+            if ($id === false || $id <= 0) {
+                throw new InvalidArgumentException('ID de equipe inválido.');
+            }
+            $ids[] = $id;
+        }
 
-        return $ids;
+        return array_values(array_unique($ids));
+    }
+
+    private function normalizarIdOpcional($valor, string $campo): ?int
+    {
+        if ($valor === null || $valor === '') {
+            return null;
+        }
+
+        $id = filter_var($valor, FILTER_VALIDATE_INT);
+        if ($id === false || $id <= 0) {
+            throw new InvalidArgumentException('ID de ' . $campo . ' inválido.');
+        }
+
+        return $id;
     }
 
     private function normalizarDataHora($valor): ?string
     {
-        $valor = trim((string) $valor);
+        if ($valor === null || $valor === '') {
+            return null;
+        }
+        if (!is_string($valor)) {
+            throw new InvalidArgumentException('Horário de início inválido.');
+        }
+
+        $valor = trim($valor);
         if ($valor === '') {
             return null;
         }

@@ -9,12 +9,18 @@ ob_start();
  * Ponto de entrada da API REST (Back-end).
  */
 
-if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
-    require_once dirname(__DIR__) . '/vendor/autoload.php';
-}
-
 require_once dirname(__DIR__) . '/app/Core/Autoloader.php';
 Autoloader::register();
+
+$composerAutoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($composerAutoload)) {
+    error_log('Composer dependencies are missing; run composer install in web/back-end.');
+    Response::json([
+        'sucesso' => false,
+        'mensagem' => 'Dependências do backend não instaladas. Execute composer install.',
+    ], 500);
+}
+require_once $composerAutoload;
 
 require_once dirname(__DIR__) . '/config/env.php';
 loadEnv(dirname(__DIR__) . '/.env');

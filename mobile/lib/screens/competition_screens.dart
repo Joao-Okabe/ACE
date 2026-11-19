@@ -1059,9 +1059,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
   Object? _error;
   List<Map<String, dynamic>> _items = [];
 
-  bool get _canCreate =>
-      AppScope.read(context).hasAnyProfile({'ADMINISTRADOR', 'ORGANIZADOR'});
-
   @override
   void initState() {
     super.initState();
@@ -1104,12 +1101,14 @@ class _LocationsScreenState extends State<LocationsScreen> {
                 SearchBarField(
                   controller: _search,
                   onSubmitted: (_) => _load(),
-                  hint: 'Buscar local ou cidade',
+                  hint: 'Buscar local',
                 ),
                 const SizedBox(height: 14),
                 if (_items.isEmpty)
                   const EmptyState(
-                    title: 'Nenhum local cadastrado',
+                    title: 'Nenhum local encontrado',
+                    message:
+                        'Os locais aparecem aqui depois de serem usados em partidas.',
                     icon: Icons.location_off_outlined,
                   )
                 else
@@ -1146,24 +1145,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
-                                  Text(
-                                    '${statusLabel(item['tipo'])} • ${textOf(item, ['cidade'])}/${textOf(item, ['estado'])}',
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  if (item['capacidade'] != null)
-                                    Text(
-                                      'Capacidade: ${item['capacidade']}',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                    ),
                                 ],
                               ),
                             ),
@@ -1174,196 +1155,6 @@ class _LocationsScreenState extends State<LocationsScreen> {
                   ),
               ],
             ),
-      floatingActionButton: _canCreate
-          ? FloatingActionButton.extended(
-              onPressed: () async {
-                final changed = await pushPage<bool>(
-                  context,
-                  const LocationFormScreen(),
-                );
-                if (changed == true) _load();
-              },
-              icon: const Icon(Icons.add_location_alt_outlined),
-              label: const Text('Novo local'),
-            )
-          : null,
-    );
-  }
-}
-
-class LocationFormScreen extends StatefulWidget {
-  const LocationFormScreen({super.key});
-
-  @override
-  State<LocationFormScreen> createState() => _LocationFormScreenState();
-}
-
-class _LocationFormScreenState extends State<LocationFormScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _name = TextEditingController();
-  final _capacity = TextEditingController();
-  final _street = TextEditingController();
-  final _number = TextEditingController();
-  final _neighborhood = TextEditingController();
-  final _city = TextEditingController(text: 'Itanhaém');
-  final _state = TextEditingController(text: 'SP');
-  final _cep = TextEditingController();
-  String _type = 'GINASIO';
-  bool _busy = false;
-
-  @override
-  void dispose() {
-    for (final controller in [
-      _name,
-      _capacity,
-      _street,
-      _number,
-      _neighborhood,
-      _city,
-      _state,
-      _cep,
-    ]) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _busy = true);
-    try {
-      await AppScope.read(context).client.post(
-        '/locais',
-        body: {
-          'nome': _name.text.trim(),
-          'tipo': _type,
-          'capacidade': int.tryParse(_capacity.text),
-          'logradouro': _street.text.trim(),
-          'numero': _number.text.trim(),
-          'bairro': _neighborhood.text.trim(),
-          'cidade': _city.text.trim(),
-          'estado': _state.text.trim().toUpperCase(),
-          'cep': digitsOnly(_cep.text),
-        },
-      );
-      if (!mounted) return;
-      showSuccess(context, 'Local cadastrado.');
-      Navigator.pop(context, true);
-    } catch (error) {
-      if (mounted) showFailure(context, error);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Cadastrar local')),
-      body: Form(
-        key: _formKey,
-        child: PageBody(
-          child: Column(
-            children: [
-              AppTextFormField(
-                controller: _name,
-                label: 'Nome do local',
-                prefixIcon: Icons.stadium_outlined,
-                required: true,
-                validator: requiredField,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: _type,
-                decoration: const InputDecoration(
-                  labelText: 'Tipo',
-                  prefixIcon: Icon(Icons.category_outlined),
-                ),
-                items: const [
-                  DropdownMenuItem(value: 'GINASIO', child: Text('Ginásio')),
-                  DropdownMenuItem(value: 'QUADRA', child: Text('Quadra')),
-                  DropdownMenuItem(value: 'CAMPO', child: Text('Campo')),
-                  DropdownMenuItem(value: 'PISTA', child: Text('Pista')),
-                  DropdownMenuItem(value: 'OUTRO', child: Text('Outro')),
-                ],
-                onChanged: (value) =>
-                    setState(() => _type = value ?? 'GINASIO'),
-              ),
-              const SizedBox(height: 12),
-              AppTextFormField(
-                controller: _capacity,
-                label: 'Capacidade',
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.groups_outlined,
-              ),
-              const SizedBox(height: 12),
-              AppTextFormField(
-                controller: _street,
-                label: 'Logradouro',
-                prefixIcon: Icons.route_outlined,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: AppTextFormField(
-                      controller: _number,
-                      label: 'Número',
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 3,
-                    child: AppTextFormField(
-                      controller: _neighborhood,
-                      label: 'Bairro',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: AppTextFormField(
-                      controller: _city,
-                      label: 'Cidade',
-                      required: true,
-                      validator: requiredField,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: AppTextFormField(
-                      controller: _state,
-                      label: 'UF',
-                      required: true,
-                      validator: (value) =>
-                          value?.trim().length == 2 ? null : 'UF inválida',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              AppTextFormField(
-                controller: _cep,
-                label: 'CEP',
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.location_searching,
-              ),
-              const SizedBox(height: 18),
-              FilledButton.icon(
-                onPressed: _busy ? null : _save,
-                icon: const Icon(Icons.save_outlined),
-                label: Text(_busy ? 'Salvando...' : 'Cadastrar local'),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

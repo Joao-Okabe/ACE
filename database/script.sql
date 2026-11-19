@@ -606,6 +606,40 @@ CREATE TABLE participante_partida (
     PRIMARY KEY (cd_partida, cd_usuario, cd_time, origem)
 );
 
+CREATE TABLE arbitro_partida (
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    funcao VARCHAR(20) NOT NULL
+        CHECK (funcao IN ('PRINCIPAL', 'ASSISTENTE', 'MESARIO')),
+    cd_usuario_vinculador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_partida, cd_usuario)
+);
+
+CREATE UNIQUE INDEX idx_arbitro_partida_principal
+    ON arbitro_partida (cd_partida)
+    WHERE funcao = 'PRINCIPAL';
+
+CREATE INDEX idx_arbitro_partida_usuario
+    ON arbitro_partida (cd_usuario, cd_partida);
+
+CREATE TABLE pontuacao_partida (
+    cd_pontuacao_partida INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL,
+    cd_usuario INTEGER REFERENCES aluno (cd_usuario) ON DELETE SET NULL,
+    pontos INTEGER NOT NULL CHECK (pontos > 0),
+    minuto INTEGER CHECK (minuto IS NULL OR minuto >= 0),
+    observacao TEXT,
+    cd_usuario_registrador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cd_partida, cd_time)
+        REFERENCES vinculo_partida_time (cd_partida, cd_time) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pontuacao_partida_eventos
+    ON pontuacao_partida (cd_partida, criado_em DESC);
+
 -- Métricas individuais genéricas por esporte (ex.: pontuação, assistências).
 CREATE TABLE metrica_atleta (
     cd_metrica_atleta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -641,7 +675,8 @@ CREATE TABLE tipo_penalidade (
 
 CREATE TABLE penalidade (
     cd_penalidade INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL REFERENCES competicao ON DELETE CASCADE,
+    cd_competicao INTEGER REFERENCES competicao ON DELETE CASCADE,
+    cd_partida INTEGER REFERENCES partida ON DELETE CASCADE,
     cd_time INTEGER NOT NULL,
     cd_usuario INTEGER NOT NULL,
     cd_funcao_integrante INTEGER NOT NULL
@@ -649,14 +684,24 @@ CREATE TABLE penalidade (
     cd_tipo_penalidade INTEGER NOT NULL
         REFERENCES tipo_penalidade ON DELETE RESTRICT,
     descricao TEXT,
+        minuto INTEGER CHECK (minuto IS NULL OR minuto >= 0),
     valor NUMERIC(10,3),
     aplicado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
 
+        CONSTRAINT penalidade_partida_ou_competicao_check
+            CHECK (cd_competicao IS NOT NULL OR cd_partida IS NOT NULL),
+        CONSTRAINT penalidade_partida_time_fkey
+            FOREIGN KEY (cd_partida, cd_time)
+            REFERENCES vinculo_partida_time (cd_partida, cd_time)
+            ON DELETE CASCADE,
     FOREIGN KEY (cd_time, cd_usuario)
         REFERENCES vinculo_time_integrante (cd_time, cd_usuario)
         ON DELETE RESTRICT
 );
+
+CREATE INDEX idx_penalidade_partida_eventos
+        ON penalidade (cd_partida, aplicado_em DESC);
 
 CREATE TABLE tipo_notificacao (
     cd_tipo_notificacao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

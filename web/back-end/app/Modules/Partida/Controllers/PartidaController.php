@@ -99,9 +99,10 @@ class PartidaController
         }
     }
 
-    public function show(int $id): void
+    public function show(int|string $id): void
     {
-        if ($id <= 0) {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if ($id === false || $id <= 0) {
             Response::json(['sucesso' => false, 'mensagem' => 'ID da partida inválido.'], 400);
         }
 

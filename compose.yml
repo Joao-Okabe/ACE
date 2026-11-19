@@ -17,11 +17,12 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     restart: unless-stopped
-    command: sh -c "chown -R www-data:www-data /var/www/html/storage/upload && apache2-foreground"
+    command: sh -c "composer install --no-dev --no-interaction --prefer-source --optimize-autoloader && chown -R www-data:www-data /var/www/html/storage/upload && apache2-foreground"
     ports:
       - ${API_PORT:-8000}:80
     volumes:
       - ./web/back-end:/var/www/html:rw
+      - backend_vendor:/var/www/html/vendor
       - ./web/back-end/storage/upload:/var/www/html/storage/upload
       - ./.env:/var/www/html/.env:ro
     env_file:
@@ -57,3 +58,4 @@ services:
 
 volumes:
   pgdata:
+  backend_vendor:

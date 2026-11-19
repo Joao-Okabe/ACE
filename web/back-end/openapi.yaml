@@ -270,6 +270,103 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: criarPartida
+      summary: Cria uma partida avulsa ou vinculada a uma competição
+      description: >-
+        Partidas avulsas exigem esporte, modalidade e duas equipes ativas e
+        compatíveis. Partidas de competição sem confronto exigem duas equipes
+        inscritas. Quando confrontoId for informado, as equipes são derivadas
+        dos participantes definidos do confronto.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [dt_partida, local_partida]
+              properties:
+                competicaoId: { type: [integer, 'null'], minimum: 1 }
+                cd_competicao: { type: [integer, 'null'], minimum: 1 }
+                confrontoId: { type: [integer, 'null'], minimum: 1 }
+                cd_confronto: { type: [integer, 'null'], minimum: 1 }
+                esporteId: { type: [integer, 'null'], minimum: 1 }
+                cd_esporte: { type: [integer, 'null'], minimum: 1 }
+                modalidadeId: { type: [integer, 'null'], minimum: 1 }
+                cd_modalidade: { type: [integer, 'null'], minimum: 1 }
+                timeIds:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  uniqueItems: true
+                  items: { type: integer, minimum: 1 }
+                cd_times:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  uniqueItems: true
+                  items: { type: integer, minimum: 1 }
+                dt_partida: { type: string, format: date }
+                data: { type: string, format: date }
+                inicio_em: { type: [string, 'null'] }
+                inicio_agendado: { type: [string, 'null'] }
+                inicio: { type: [string, 'null'] }
+                local_partida: { type: string, minLength: 1 }
+                local: { type: string, minLength: 1 }
+                visibilidade: { type: string, enum: [PUBLICA, PRIVADA], default: PUBLICA }
+                observacoes: { type: [string, 'null'] }
+            examples:
+              partidaAvulsa:
+                value:
+                  esporteId: 1
+                  modalidadeId: 2
+                  timeIds: [10, 11]
+                  dt_partida: '2026-11-20'
+                  inicio_em: '2026-11-20T18:00'
+                  local_partida: Ginásio ACE
+              competicaoSemConfronto:
+                value:
+                  competicaoId: 5
+                  timeIds: [10, 11]
+                  dt_partida: '2026-11-20'
+                  local_partida: Ginásio ACE
+              competicaoComConfronto:
+                value:
+                  competicaoId: 5
+                  confrontoId: 18
+                  dt_partida: '2026-11-20'
+                  local_partida: Ginásio ACE
+      responses:
+        '201':
+          description: Partida criada
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [partidaId]
+                        properties:
+                          partidaId: { type: integer, minimum: 1 }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: Sem permissão para criar a partida ou gerenciar as equipes
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Confronto ou situação incompatível com a criação
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '500': { $ref: '#/components/responses/InternalError' }
   /calendario:
     get:
       operationId: consultarCalendario
@@ -317,7 +414,10 @@ paths:
       parameters:
         - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
       responses:
-        '200': { description: Partida consultada }
+        '200':
+          description: >-
+            Partida consultada com placar final, equipes, árbitros escalados e
+            histórico de eventos de pontuação e penalidade.
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
   /partidas/{id}/calendario:
@@ -402,10 +502,85 @@ paths:
         '403': { description: Sem permissão para alterar a partida }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { description: Partida sem dois times válidos }
+  /partidas/{id}/pontuacoes:
+    post:
+      operationId: registrarPontuacaoPartida
+      summary: Registra um evento de pontuação durante a partida
+      description: >-
+        O evento fica no histórico e não altera automaticamente o placar final.
+        O resultado definitivo continua sendo informado em /partidas/{id}/resultado.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [timeId, pontos]
+              properties:
+                timeId: { type: integer, minimum: 1 }
+                alunoId: { type: [integer, 'null'], minimum: 1 }
+                pontos: { type: integer, minimum: 1 }
+                minuto: { type: [integer, 'null'], minimum: 0 }
+                observacao: { type: [string, 'null'] }
+      responses:
+        '200': { description: Evento de pontuação registrado }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Partida não está em andamento ou dados incompatíveis }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/{id}/arbitragem/usuarios:
+    get:
+      operationId: listarArbitrosElegiveisPartida
+      summary: Lista árbitros da competição ainda não escalados na partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: Árbitros elegíveis listados; partidas avulsas retornam lista vazia
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /partidas/{id}/arbitragem:
+    post:
+      operationId: registrarArbitragemPartida
+      summary: Designa árbitro vinculado à competição para a partida
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [arbitroId, funcao]
+              properties:
+                arbitroId: { type: integer, minimum: 1 }
+                funcao:
+                  type: string
+                  enum: [PRINCIPAL, ASSISTENTE, MESARIO]
+      responses:
+        '200': { description: Arbitragem registrada }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para alterar a partida }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Árbitro inelegível ou conflito na escala da partida }
+        '500': { $ref: '#/components/responses/InternalError' }
   /partidas/{id}/penalidades:
     post:
       operationId: registrarPenalidadePartida
-      summary: Registra uma penalidade para um atleta de um time da competição
+      summary: Registra uma penalidade para um atleta de um time da partida
+      description: >-
+        Aceita partidas avulsas e de competição. O atleta deve estar escalado
+        no time da partida. O minuto e a observação são opcionais.
       security: [{ bearerAuth: [] }]
       parameters:
         - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
@@ -420,7 +595,8 @@ paths:
                 timeId: { type: integer, minimum: 1 }
                 alunoId: { type: integer, minimum: 1 }
                 tipo: { type: string, minLength: 1 }
-                observacao: { type: string }
+                minuto: { type: [integer, 'null'], minimum: 0 }
+                observacao: { type: [string, 'null'] }
       responses:
         '200': { description: Penalidade registrada }
         '400': { $ref: '#/components/responses/BadRequest' }
@@ -428,6 +604,7 @@ paths:
         '403': { description: Sem permissão para alterar a partida }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { description: Dados incompatíveis com a partida }
+        '500': { $ref: '#/components/responses/InternalError' }
   /partidas/{id}/publicar:
     post:
       operationId: publicarResultadoPartida
@@ -446,8 +623,11 @@ paths:
       operationId: listarLocaisPartida
       summary: Lista os locais já usados em partidas
       security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: busca, in: query, schema: { type: string } }
       responses:
-        '200': { description: Locais consultados }
+        '200': { description: Lista de nomes de locais já usados em partidas }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
   /partidas/{id}/estatisticas-atletas:
@@ -486,7 +666,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { description: Sem permissão para atualizar a partida }
-        '409': { description: Atleta, time ou métrica inválidos para a partida }
+        '409': { description: 'Atleta, time ou métrica inválidos para a partida' }
   /competicoes/{id}/arbitros/usuarios:
     get:
       operationId: listarUsuariosElegiveisArbitros

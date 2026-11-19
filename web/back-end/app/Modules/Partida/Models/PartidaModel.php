@@ -208,6 +208,84 @@ class Partida extends Model
         $times->execute([':id' => $idPartida]);
         $partida['times'] = $times->fetchAll(PDO::FETCH_ASSOC);
 
+        $placares = $this->pdo->prepare("
+            SELECT r.cd_time, r.pontuacao
+            FROM etapa_partida ep
+            JOIN resultado_etapa_partida r
+              ON r.cd_etapa_partida = ep.cd_etapa_partida
+            WHERE ep.cd_partida = :id
+              AND ep.nr_etapa = (
+                  SELECT MAX(nr_etapa)
+                  FROM etapa_partida
+                  WHERE cd_partida = :id_etapas
+              )
+        ");
+        $placares->execute([
+            ':id' => $idPartida,
+            ':id_etapas' => $idPartida,
+        ]);
+        $placarPorTime = [];
+        foreach ($placares->fetchAll(PDO::FETCH_ASSOC) as $placar) {
+            $placarPorTime[(int) $placar['cd_time']] = (int) $placar['pontuacao'];
+        }
+        $partida['placar_casa'] = isset($partida['times'][0])
+            ? ($placarPorTime[(int) $partida['times'][0]['cd_time']] ?? 0)
+            : 0;
+        $partida['placar_visitante'] = isset($partida['times'][1])
+            ? ($placarPorTime[(int) $partida['times'][1]['cd_time']] ?? 0)
+            : 0;
+
+        $arbitragem = $this->pdo->prepare("
+            SELECT ap.cd_usuario, ap.funcao, u.nm_usuario AS arbitro
+            FROM arbitro_partida ap
+            JOIN usuario u ON u.cd_usuario = ap.cd_usuario
+            WHERE ap.cd_partida = :id
+            ORDER BY CASE ap.funcao
+                WHEN 'PRINCIPAL' THEN 1
+                WHEN 'ASSISTENTE' THEN 2
+                ELSE 3
+            END, u.nm_usuario
+        ");
+        $arbitragem->execute([':id' => $idPartida]);
+        $partida['arbitragem'] = $arbitragem->fetchAll(PDO::FETCH_ASSOC);
+
+        $eventos = $this->pdo->prepare("
+            SELECT
+                'PONTUACAO' AS tipo,
+                t.nm_time AS time,
+                u.nm_usuario AS atleta,
+                pp.pontos,
+                pp.minuto,
+                pp.observacao,
+                pp.criado_em
+            FROM pontuacao_partida pp
+            JOIN time t ON t.cd_time = pp.cd_time
+            LEFT JOIN aluno a ON a.cd_usuario = pp.cd_usuario
+            LEFT JOIN usuario u ON u.cd_usuario = a.cd_usuario
+            WHERE pp.cd_partida = :partida_pontuacao
+            UNION ALL
+            SELECT
+                tp.nm_tipo_penalidade AS tipo,
+                t.nm_time AS time,
+                u.nm_usuario AS atleta,
+                NULL AS pontos,
+                p.minuto,
+                p.descricao AS observacao,
+                p.aplicado_em AS criado_em
+            FROM penalidade p
+            JOIN time t ON t.cd_time = p.cd_time
+            JOIN usuario u ON u.cd_usuario = p.cd_usuario
+            JOIN tipo_penalidade tp ON tp.cd_tipo_penalidade = p.cd_tipo_penalidade
+            WHERE p.cd_partida = :partida_penalidade
+              AND p.ativo = TRUE
+            ORDER BY criado_em
+        ");
+        $eventos->execute([
+            ':partida_pontuacao' => $idPartida,
+            ':partida_penalidade' => $idPartida,
+        ]);
+        $partida['eventos'] = $eventos->fetchAll(PDO::FETCH_ASSOC);
+
         return $partida;
     }
 

@@ -1,8 +1,8 @@
 # ACE — Aplicativo de Competições Escolares
 
-O **ACE (Aplicativo de Competições Escolares)** é uma aplicação web acadêmica para apoiar o cadastro e a organização de escolas, usuários, alunos, equipes e competições esportivas. O sistema possui uma interface web renderizada pelo PHP e uma API REST para operações selecionadas, usando PostgreSQL como banco de dados.
+O **ACE (Aplicativo de Competições Escolares)** reúne a interface web, um aplicativo Flutter e um backend PHP com duas versões de API. A API Web (`/api`) atende o front-end usando sessão e CSRF; a API V1 (`/api/v1`) atende o Flutter usando Bearer JWT. As duas versões compartilham os serviços PHP e o banco PostgreSQL, mas mantêm contratos e autenticação separados.
 
-> **Estado do projeto:** este README foi atualizado a partir do código-fonte analisado. A importação de CSV e a geração de PDF não foram encontradas implementadas na versão examinada; são apresentadas abaixo como evoluções recomendadas, não como funcionalidades disponíveis.
+> **Estado do projeto:** não foi localizado um fluxo funcional de importação/exportação CSV ou geração de PDF. Dompdf está declarado como dependência, mas sua presença no Composer não comprova que a geração de PDF esteja implementada.
 
 ## Sumário
 
@@ -47,46 +47,32 @@ O comportamento de cada fluxo depende dos dados cadastrados, das etapas configur
 
 ### Arquivos e relatórios
 
-A versão analisada não contém implementação identificada de importação/exportação de arquivos CSV nem de geração de documentos PDF.
+Não foi localizado fluxo funcional de importação/exportação CSV nem geração de PDF. A dependência Dompdf está declarada no Composer, mas não há uso correspondente identificado no código da aplicação.
 
 ## Arquitetura
 
 O projeto utiliza uma organização inspirada em **MVC**, com separação adicional de serviços e modelos por módulo.
 
 ```text
-Navegador
-   │
-   ├── Interface web (HTML, CSS, JavaScript, Bootstrap)
-   │
-   ▼
-Rotas web / API REST
-   │
-   ▼
-Controllers
-   │
-   ▼
-Services ─── regras de negócio
-   │
-   ▼
-Models
-   │
-   ▼
-PostgreSQL
+Navegador ── API Web (/api, sessão + CSRF) ──┐
+                                             ├─ Backend PHP ── PostgreSQL
+Flutter ──── API V1 (/api/v1, Bearer JWT) ───┘
 ```
 
-O front-end está em `web/front-end/`. A aplicação PHP e a API estão em `web/back-end/`. O ponto de entrada HTTP é `web/back-end/public/index.php`, e as rotas são declaradas em `web/back-end/routes/web.php` e `web/back-end/routes/api.php`.
+O front-end web está em `web/front-end/`, o aplicativo Flutter em `mobile/` e o backend PHP em `web/back-end/`. O ponto de entrada HTTP é `web/back-end/public/index.php`; as rotas das APIs são declaradas em `web/back-end/routes/api.php`.
 
 ## Tecnologias
 
 - **Backend:** PHP 8.4 na imagem Docker.
 - **Banco de dados:** PostgreSQL 17.
 - **Acesso ao banco:** PDO com driver `pdo_pgsql`.
+- **Aplicativo móvel:** Flutter/Dart.
 - **Servidor HTTP:** Apache com `mod_rewrite`.
 - **Frontend:** HTML5, CSS3, JavaScript e Bootstrap 5.
 - **Consulta de CEP:** ViaCEP.
 - **Ambiente de desenvolvimento:** Docker Compose.
 
-Não há `composer.json` identificado na versão analisada. Portanto, bibliotecas PHP adicionais, como uma biblioteca de PDF, precisam ser instaladas e integradas explicitamente.
+As dependências PHP estão declaradas em `web/back-end/composer.json` e fixadas em `composer.lock`. O container instala essas dependências com Composer e mantém `vendor/` em um volume próprio, separado do bind mount do código. Dompdf e `firebase/php-jwt` são dependências; a instalação de Dompdf não significa que exista um fluxo de geração de PDF.
 
 ## Estrutura do repositório
 
@@ -101,7 +87,7 @@ ACE/
 ├── docker/
 │   └── php/
 │       └── Dockerfile
-└── web/
+├── web/
     ├── back-end/
     │   ├── app/
     │   │   ├── Core/            # Router, Database, View, CSRF etc.
@@ -117,6 +103,12 @@ ACE/
         └── assets/
             ├── css/
             └── js/
+└── mobile/
+    ├── lib/
+    ├── assets/
+    ├── android/
+    ├── pubspec.yaml
+    └── pubspec.lock
 ```
 
 ## Requisitos
@@ -151,7 +143,7 @@ DB_USERNAME=ace
 DB_PASSWORD=troque-esta-senha
 ```
 
-O serviço web lê essas variáveis pelo Compose; o PostgreSQL usa as mesmas credenciais para inicializar o banco. Dentro da rede Docker, `DB_HOST` deve ser o nome do serviço (`db`), não `localhost`.
+Os serviços leem essas variáveis pelo Compose; o PostgreSQL usa as mesmas credenciais para inicializar o banco. Dentro da rede Docker, `DB_HOST` deve ser o nome do serviço (`db`), não `localhost`.
 
 > Não use credenciais de exemplo em produção. Não versione o `.env` real nem senhas, tokens ou dados pessoais. Se o arquivo `.env` estiver ausente, o Compose poderá não conseguir interpolar as variáveis.
 
@@ -162,10 +154,13 @@ docker compose up -d --build
 docker compose ps
 ```
 
+A inicialização do serviço `backend` executa `composer install` usando o `composer.lock`. As dependências ficam no volume `backend_vendor`, portanto não dependem de uma pasta `vendor/` existente na máquina do desenvolvedor.
+
 Acompanhe os logs se necessário:
 
 ```bash
-docker compose logs -f web
+docker compose logs -f backend
+docker compose logs -f frontend
 docker compose logs -f db
 ```
 
@@ -226,13 +221,21 @@ Os rankings individuais guardam cada valor com atleta, time, partida, esporte e 
 
 Vínculos de arbitragem por competição ficam em `arbitro_competicao`. Em banco existente, aplique `database/migrations/20261118_arbitro_competicao.sql`. O criador da competição (além de administrador ou gestor autorizado da escola, conforme a permissão já existente) pode listar usuários ativos em `GET /api/v1/competicoes/{id}/arbitros/usuarios`, listar vínculos em `GET /api/v1/competicoes/{id}/arbitros`, atribuir com `POST /api/v1/competicoes/{id}/arbitros` (`{"usuarioId": 12}`) e remover com `DELETE /api/v1/competicoes/{id}/arbitros/{usuarioId}`. Os árbitros vinculados passam a poder ver a competição e suas partidas e executar operações de partida autorizadas para arbitragem. O vínculo não altera os papéis globais do usuário.
 
-As operações de partidas da API mobile também estão disponíveis para a web sob `/api`, usando a sessão web e CSRF. Incluem `GET /api/partidas`, `/api/partidas/{id}`, `/api/partidas/ao-vivo`, `/api/partidas/historico`, `/api/calendario` e `/api/locais`, além de agendamento, local, início, resultado, estatísticas dos atletas, penalidades e publicação em `/api/partidas/{id}/...`. As operações de arbitragem em tempo real e pontuações permanecem sem implementação no ACE e respondem `501`. Para bancos existentes, aplique `database/migrations/20261118_info_partida_data.sql`, que adiciona a coluna `info_partida.dt_partida` usada pelos dados de partidas.
+Para registrar operações por partida em banco existente, aplique `database/migrations/20261119_partida_operacoes.sql` e execute `database/seeds/18.tipo_penalidade.sql`. Eventos de pontuação e penalidades ficam no histórico da partida; o placar final continua sendo enviado separadamente por `PUT /api/v1/partidas/{id}/resultado`. A escala por partida usa apenas usuários vinculados como árbitros à competição, com no máximo um árbitro principal; partidas avulsas não têm escala. Penalidades exigem atleta participante do time e são permitidas em partidas avulsas e de competição. `GET /api/v1/locais` fornece sugestões de nomes já usados; o cadastro de locais continua indisponível e não é oferecido no app.
+
+A recuperação de senha continua indisponível até que o envio de e-mail seja configurado; o app informa essa limitação sem chamar as rotas ainda não implementadas.
+
+As operações de partidas da API mobile também estão disponíveis para a web sob `/api`, usando a sessão web e CSRF. Incluem `GET /api/partidas`, `/api/partidas/{id}`, `/api/partidas/ao-vivo`, `/api/partidas/historico`, `/api/calendario` e `/api/locais`, além de agendamento, local, início, resultado, estatísticas dos atletas, eventos de pontuação, penalidades, escala por partida e publicação em `/api/partidas/{id}/...`. A pontuação é registrada como evento e não altera automaticamente o resultado final. Partidas avulsas não permitem escala de árbitros porque a elegibilidade atual depende do vínculo à competição. Para bancos existentes, aplique também `database/migrations/20261118_info_partida_data.sql`, que adiciona a coluna `info_partida.dt_partida` usada pelos dados de partidas.
 
 Para inspeção e administração visual do PostgreSQL, pode-se utilizar o DBeaver Community ou outra ferramenta compatível.
 
 ## API REST
 
-As rotas estão declaradas em `web/back-end/routes/api.php`. Os recursos encontrados incluem:
+As rotas estão declaradas em `web/back-end/routes/api.php`. A API Web usa sessão PHP e CSRF em `/api`; a V1 usa Bearer JWT em `/api/v1`. O Flutter deve continuar consumindo a V1. As duas APIs compartilham o backend e o banco, mas não seus envelopes ou mecanismos de autenticação.
+
+Na V1, `POST /api/v1/partidas` cria partidas avulsas (esporte, modalidade e duas equipes), partidas de competição sem confronto (duas equipes inscritas) ou partidas vinculadas a confronto (equipes derivadas dos participantes definidos). O contrato e os exemplos estão em `web/back-end/openapi.yaml`.
+
+Os recursos da API Web incluem:
 
 | Recurso | Operações identificadas |
 |---|---|
