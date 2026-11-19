@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/home/tonhoka/fvm/versions/3.41.2/packages/flutter_tools/gradle/src/main/scripts/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/tonhoka/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/tonhoka/Projects/ACE/Sistema/mobile/build/.cxx/debug/2k4v526p/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/tonhoka/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/tonhoka/Projects/ACE/Sistema/mobile/build/.cxx/debug/2k4v526p/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/tonhoka/Android/Sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/tonhoka/Android/Sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}

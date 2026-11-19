@@ -1,0 +1,1 @@
+/home/tonhoka/Projects/ACE/Sistema/mobile/build/app/intermediates/cxx/debug/16434t1x/obj/x86_64

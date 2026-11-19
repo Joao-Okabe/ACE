@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "com.aether.mobile.app-debug-46:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.aether.mobile.app-main-41:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-mdpi_splash_logo.png.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-mdpi/splash_logo.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable_transparent_splash.xml.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable/transparent_splash.xml"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.aether.mobile.app-main-41:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.aether.mobile.app-main-41:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.aether.mobile.app-main-41:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-v21_launch_background.xml.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-v21/launch_background.xml"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.aether.mobile.app-main-41:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-xxhdpi_splash_logo.png.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-xxhdpi/splash_logo.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-hdpi_splash_logo.png.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-hdpi/splash_logo.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-xhdpi_splash_logo.png.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-xhdpi/splash_logo.png"
+    },
+    {
+        "merged": "com.aether.mobile.app-debug-46:/drawable-xxxhdpi_splash_logo.png.flat",
+        "source": "com.aether.mobile.app-main-41:/drawable-xxxhdpi/splash_logo.png"
+    }
+]
