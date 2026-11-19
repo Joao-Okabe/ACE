@@ -1,1 +1,0 @@
-/home/tonhoka/Projects/ACE/Sistema/mobile/build/app/intermediates/cxx/debug/2k4v526p/obj/arm64-v8a

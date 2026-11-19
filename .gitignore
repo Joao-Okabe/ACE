@@ -1,6 +1,6 @@
 # Web
 .env
-vendor/
+web/back-end/vendor/
 web/back-end/storage/
 public/.htaccess
 
