@@ -27,7 +27,9 @@ abstract final class AccessibilityUtils {
           : error.message;
     }
     if (code == 401) {
-      return 'Sua sessão expirou. Entre novamente para continuar.';
+      return error.message.isNotEmpty
+          ? error.message
+          : 'Sua sessão expirou. Entre novamente para continuar.';
     }
     if (code == 403) return 'Você não tem permissão para realizar esta ação.';
     if (code == 404) return 'O conteúdo solicitado não foi encontrado.';

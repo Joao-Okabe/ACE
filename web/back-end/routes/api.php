@@ -213,6 +213,10 @@ $router->post(
     '/api/competicoes/{id}/chaveamento',
     [CompeticaoControllerApi::class, 'gerarChaveamento']
 );
+$router->get('/api/competicoes/{id}/arbitros/usuarios', [CompeticaoControllerApi::class, 'usuariosArbitroV1']);
+$router->get('/api/competicoes/{id}/arbitros', [CompeticaoControllerApi::class, 'listarArbitrosV1']);
+$router->post('/api/competicoes/{id}/arbitros', [CompeticaoControllerApi::class, 'atribuirArbitroV1']);
+$router->delete('/api/competicoes/{id}/arbitros/{idUsuario}', [CompeticaoControllerApi::class, 'removerArbitroV1']);
 $router->get(
     '/api/competicoes/{id}/inscricao',
     [CompeticaoControllerApi::class, 'editInscricao']
@@ -363,6 +367,10 @@ $router->get('/api/v1/esportes', [$esporteV1, 'indexV1']);
 $router->get('/api/v1/modalidades', [$esporteV1, 'modalidadesV1']);
 $router->get('/api/v1/categorias', [$esporteV1, 'categoriasV1']);
 $router->get('/api/v1/competicoes', [$competicaoV1, 'indexV1']);
+$router->get('/api/v1/competicoes/{id}/arbitros/usuarios', [$competicaoV1, 'usuariosArbitroV1']);
+$router->get('/api/v1/competicoes/{id}/arbitros', [$competicaoV1, 'listarArbitrosV1']);
+$router->post('/api/v1/competicoes/{id}/arbitros', [$competicaoV1, 'atribuirArbitroV1']);
+$router->delete('/api/v1/competicoes/{id}/arbitros/{idUsuario}', [$competicaoV1, 'removerArbitroV1']);
 $router->get('/api/v1/competicoes/{id}/classificacao', [$competicaoV1, 'classificacaoV1']);
 $router->get('/api/v1/competicoes/{id}/tabela', [$competicaoV1, 'tabelaV1']);
 $router->post('/api/v1/competicoes/{id}/inscricoes', [$competicaoV1, 'inscricaoMobileV1']);

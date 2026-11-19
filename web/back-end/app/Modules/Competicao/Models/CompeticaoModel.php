@@ -81,6 +81,11 @@ class Competicao extends Model
                       AND pc.cd_usuario = :participante
                 )
                 OR EXISTS (
+                    SELECT 1 FROM arbitro_competicao ac
+                    WHERE ac.cd_competicao = c.cd_competicao
+                      AND ac.cd_usuario = :arbitro
+                )
+                OR EXISTS (
                     SELECT 1
                     FROM usuario_papel up
                     JOIN papel p ON p.cd_papel = up.cd_papel
@@ -103,9 +108,17 @@ class Competicao extends Model
             ':competicao' => $idCompeticao,
             ':criador' => $idUsuario,
             ':participante' => $idUsuario,
+            ':arbitro' => $idUsuario,
             ':administrador' => $idUsuario,
             ':diretor' => $idUsuario,
         ]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public function usuarioEhArbitro(int $idUsuario, int $idCompeticao): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT EXISTS (SELECT 1 FROM arbitro_competicao WHERE cd_usuario = :usuario AND cd_competicao = :competicao)');
+        $stmt->execute([':usuario' => $idUsuario, ':competicao' => $idCompeticao]);
         return (bool) $stmt->fetchColumn();
     }
 
@@ -139,6 +152,11 @@ class Competicao extends Model
                       AND pc.cd_usuario = :usuario_participante
                 )
                 OR EXISTS (
+                    SELECT 1 FROM arbitro_competicao ac
+                    WHERE ac.cd_competicao = c.cd_competicao
+                      AND ac.cd_usuario = :usuario_arbitro
+                )
+                OR EXISTS (
                     SELECT 1
                     FROM usuario_papel up
                     JOIN papel p ON p.cd_papel = up.cd_papel
@@ -158,6 +176,7 @@ class Competicao extends Model
             )";
             $filtrosSql['parametros'][':usuario_visibilidade'] = (int) $filtros['usuario'];
             $filtrosSql['parametros'][':usuario_participante'] = (int) $filtros['usuario'];
+            $filtrosSql['parametros'][':usuario_arbitro'] = (int) $filtros['usuario'];
             $filtrosSql['parametros'][':usuario_administrador'] = (int) $filtros['usuario'];
             $filtrosSql['parametros'][':usuario_diretor'] = (int) $filtros['usuario'];
         }
