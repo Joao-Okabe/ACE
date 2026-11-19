@@ -16,8 +16,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController(text: 'escola@ace.local');
-  final _password = TextEditingController(text: 'Admin@123');
+  final _email = TextEditingController();
+  final _password = TextEditingController();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
   bool _obscure = true;
@@ -38,13 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (error) {
       if (mounted) showFailure(context, error);
     }
-  }
-
-  void _demo(String email) {
-    setState(() {
-      _email.text = email;
-      _password.text = 'Admin@123';
-    });
   }
 
   @override
@@ -161,45 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               )
                             : const Icon(Icons.login),
                         label: Text(session.busy ? 'Entrando...' : 'Entrar'),
-                      ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'Acessos de demonstração',
-                        style: TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          ActionChip(
-                            label: const Text('Escola'),
-                            avatar: const Icon(Icons.school_outlined, size: 18),
-                            onPressed: () => _demo('escola@ace.local'),
-                          ),
-                          ActionChip(
-                            label: const Text('Atleta'),
-                            avatar: const Icon(Icons.sports_outlined, size: 18),
-                            onPressed: () => _demo('atleta@ace.local'),
-                          ),
-                          ActionChip(
-                            label: const Text('Árbitro'),
-                            avatar: const Icon(
-                              Icons.sports_score_outlined,
-                              size: 18,
-                            ),
-                            onPressed: () => _demo('arbitro@ace.local'),
-                          ),
-                          ActionChip(
-                            label: const Text('Admin'),
-                            avatar: const Icon(
-                              Icons.admin_panel_settings_outlined,
-                              size: 18,
-                            ),
-                            onPressed: () => _demo('admin@ace.local'),
-                          ),
-                        ],
                       ),
                     ],
                   ),

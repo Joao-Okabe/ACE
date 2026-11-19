@@ -242,6 +242,11 @@ class Partida extends Model
                           AND pc.cd_usuario = :usuario_participante_competicao
                     )
                     OR EXISTS (
+                        SELECT 1 FROM arbitro_competicao ac
+                        WHERE ac.cd_competicao = c.cd_competicao
+                          AND ac.cd_usuario = :usuario_arbitro_competicao
+                    )
+                    OR EXISTS (
                         SELECT 1
                         FROM usuario_papel up
                         JOIN papel papel_adm ON papel_adm.cd_papel = up.cd_papel
@@ -264,6 +269,11 @@ class Partida extends Model
                     p.visibilidade = 'PUBLICA'
                     OR p.cd_criador = :usuario_criador_partida
                     OR c.cd_criador = :usuario_criador_da_competicao
+                    OR EXISTS (
+                        SELECT 1 FROM arbitro_competicao ac
+                        WHERE ac.cd_competicao = c.cd_competicao
+                          AND ac.cd_usuario = :usuario_arbitro_partida
+                    )
                     OR EXISTS (
                         SELECT 1
                         FROM usuario_papel up
@@ -292,10 +302,12 @@ class Partida extends Model
         $params = [
             ':usuario_criador_competicao' => $idUsuario,
             ':usuario_participante_competicao' => $idUsuario,
+            ':usuario_arbitro_competicao' => $idUsuario,
             ':usuario_administrador_competicao' => $idUsuario,
             ':usuario_diretor_competicao' => $idUsuario,
             ':usuario_criador_partida' => $idUsuario,
             ':usuario_criador_da_competicao' => $idUsuario,
+            ':usuario_arbitro_partida' => $idUsuario,
             ':usuario_administrador_partida' => $idUsuario,
             ':usuario_diretor_partida' => $idUsuario,
             ':usuario_participante_partida' => $idUsuario,
@@ -441,6 +453,7 @@ class Partida extends Model
         // criador da competição ou participante registrado na partida.
         return $ehCriadorPartida
             || $ehCriadorCompeticao
+            || (!empty($partida['cd_competicao']) && (new Competicao())->usuarioEhArbitro($idUsuario, (int) $partida['cd_competicao']))
             || $this->usuarioParticipaPartida($idUsuario, (int) $partida['cd_partida']);
     }
 

@@ -288,6 +288,65 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { description: Sem permissão para atualizar a partida }
         '409': { description: Atleta, time ou métrica inválidos para a partida }
+  /competicoes/{id}/arbitros/usuarios:
+    get:
+      operationId: listarUsuariosElegiveisArbitros
+      summary: Lista usuários ativos que o criador pode vincular como árbitros
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: busca, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Usuários ativos com indicação do vínculo atual }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Usuário sem permissão para gerenciar os árbitros }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /competicoes/{id}/arbitros:
+    get:
+      operationId: listarArbitrosCompeticao
+      summary: Lista os árbitros vinculados à competição
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Árbitros da competição }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Usuário sem permissão para gerenciar os árbitros }
+        '404': { $ref: '#/components/responses/NotFound' }
+    post:
+      operationId: atribuirArbitroCompeticao
+      summary: Vincula um usuário como árbitro da competição
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [usuarioId]
+              properties:
+                usuarioId: { type: integer, minimum: 1 }
+      responses:
+        '200': { description: Usuário vinculado como árbitro }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Usuário sem permissão para gerenciar os árbitros }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /competicoes/{id}/arbitros/{idUsuario}:
+    delete:
+      operationId: removerArbitroCompeticao
+      summary: Remove o vínculo do árbitro com a competição
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+        - { name: idUsuario, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Vínculo removido }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Usuário sem permissão para gerenciar os árbitros }
+        '404': { $ref: '#/components/responses/NotFound' }
   /competicoes/{id}:
     get:
       operationId: getCompetition

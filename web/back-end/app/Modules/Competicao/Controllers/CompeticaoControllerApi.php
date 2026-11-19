@@ -152,6 +152,111 @@ class CompeticaoControllerApi
         }
     }
 
+    public function usuariosArbitroV1(int $id): void
+    {
+        $this->exigirGerenciaArbitros($id);
+        $busca = $_GET['busca'] ?? '';
+        if (!is_string($busca)) Response::error('VALIDATION_ERROR', 'Parâmetro busca inválido.', 400);
+        try {
+            $sql = "SELECT u.cd_usuario AS id, u.nm_usuario AS nome, u.email,
+                           EXISTS (
+                               SELECT 1 FROM arbitro_competicao ac
+                               WHERE ac.cd_competicao = :competicao AND ac.cd_usuario = u.cd_usuario
+                           ) AS arbitro
+                    FROM usuario u WHERE u.ativo = TRUE";
+            $params = [':competicao' => $id];
+            if (trim($busca) !== '') {
+                $sql .= ' AND (u.nm_usuario ILIKE :busca_nome OR u.email ILIKE :busca_email)';
+                $termo = '%' . trim($busca) . '%';
+                $params[':busca_nome'] = $termo;
+                $params[':busca_email'] = $termo;
+            }
+            $sql .= ' ORDER BY u.nm_usuario, u.cd_usuario';
+            $stmt = Database::connect()->prepare($sql);
+            $stmt->execute($params);
+            Response::success($stmt->fetchAll(PDO::FETCH_ASSOC), 'Usuários elegíveis para arbitragem listados.');
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível listar os usuários elegíveis.', 500);
+        }
+    }
+
+    public function listarArbitrosV1(int $id): void
+    {
+        $this->exigirGerenciaArbitros($id);
+        try {
+            $stmt = Database::connect()->prepare("SELECT u.cd_usuario AS id, u.nm_usuario AS nome, u.email, ac.cd_usuario_vinculador AS vinculado_por, ac.criado_em AS vinculado_em
+                FROM arbitro_competicao ac JOIN usuario u ON u.cd_usuario = ac.cd_usuario
+                WHERE ac.cd_competicao = :competicao AND u.ativo = TRUE
+                ORDER BY u.nm_usuario, u.cd_usuario");
+            $stmt->execute([':competicao' => $id]);
+            Response::success($stmt->fetchAll(PDO::FETCH_ASSOC), 'Árbitros da competição listados.');
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível listar os árbitros da competição.', 500);
+        }
+    }
+
+    public function atribuirArbitroV1(int $id): void
+    {
+        $this->exigirGerenciaArbitros($id);
+        $dados = $this->lerDadosRequisicao();
+        $idUsuario = filter_var($dados['usuarioId'] ?? $dados['cd_usuario'] ?? null, FILTER_VALIDATE_INT);
+        if ($idUsuario === false || $idUsuario === null || $idUsuario <= 0) {
+            Response::error('VALIDATION_ERROR', 'Informe um usuarioId válido.', 400);
+        }
+        try {
+            $pdo = Database::connect();
+            $usuario = $pdo->prepare('SELECT 1 FROM usuario WHERE cd_usuario = :usuario AND ativo = TRUE');
+            $usuario->execute([':usuario' => $idUsuario]);
+            if (!$usuario->fetchColumn()) Response::error('NOT_FOUND', 'Usuário não encontrado ou inativo.', 404);
+            $stmt = $pdo->prepare('INSERT INTO arbitro_competicao (cd_competicao, cd_usuario, cd_usuario_vinculador) VALUES (:competicao, :usuario, :vinculador) ON CONFLICT (cd_competicao, cd_usuario) DO NOTHING');
+            $stmt->execute([
+                ':competicao' => $id,
+                ':usuario' => $idUsuario,
+                ':vinculador' => AuthContext::id(),
+            ]);
+            Response::success(['competicaoId' => $id, 'usuarioId' => $idUsuario, 'vinculado' => true], 'Árbitro vinculado à competição.');
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível vincular o árbitro.', 500);
+        }
+    }
+
+    public function removerArbitroV1(int $id, int $idUsuario): void
+    {
+        $this->exigirGerenciaArbitros($id);
+        if ($idUsuario <= 0) Response::error('VALIDATION_ERROR', 'ID do usuário inválido.', 400);
+        try {
+            $stmt = Database::connect()->prepare('DELETE FROM arbitro_competicao WHERE cd_competicao = :competicao AND cd_usuario = :usuario');
+            $stmt->execute([':competicao' => $id, ':usuario' => $idUsuario]);
+            if ($stmt->rowCount() === 0) Response::error('NOT_FOUND', 'Vínculo de árbitro não encontrado.', 404);
+            Response::success(null, 'Árbitro removido da competição.');
+        } catch (Throwable $e) {
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível remover o árbitro.', 500);
+        }
+    }
+
+    private function exigirGerenciaArbitros(int $id): array
+    {
+        if ($id <= 0) Response::error('VALIDATION_ERROR', 'ID da competição inválido.', 400);
+        try {
+            $competicao = $this->service()->buscar($id);
+            $this->service()->exigirPermissao($competicao);
+            return $competicao;
+        } catch (Throwable $e) {
+            if ($e->getMessage() === 'Competição não encontrada.') {
+                Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
+            }
+            if (str_contains(mb_strtolower($e->getMessage()), 'permissão')) {
+                Response::error('FORBIDDEN', 'Somente o criador ou um gestor autorizado pode gerenciar os árbitros.', 403);
+            }
+            error_log(__METHOD__ . ': ' . $e->getMessage());
+            Response::error('INTERNAL_ERROR', 'Não foi possível validar a competição.', 500);
+        }
+    }
+
     private function buscarClassificacao(int $id): array
     {
         $this->service()->buscar($id);

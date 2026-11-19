@@ -448,7 +448,13 @@ class PartidaController
                 if (!$competicao) {
                     Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
                 }
-                (new CompeticaoService())->exigirPermissao($competicao);
+                $ehArbitroCompeticao = (new Competicao())->usuarioEhArbitro(
+                    $usuario,
+                    (int) $partida['cd_competicao']
+                );
+                if (!$ehArbitroCompeticao) {
+                    (new CompeticaoService())->exigirPermissao($competicao);
+                }
             }
             $operacao($pdo);
             Response::success(null, $mensagem);

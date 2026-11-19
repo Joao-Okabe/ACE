@@ -13,7 +13,7 @@ Future<void> main() async {
 
   await Future.wait([
     initializeDateFormatting('pt_BR'),
-    accessibility.initialize(),
+    accessibility.initialqize(),
     Future<void>.delayed(const Duration(milliseconds: 1200)),
   ]);
   await session.initialize();

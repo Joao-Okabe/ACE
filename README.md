@@ -224,6 +224,8 @@ A definição principal está em `database/script.sql`; triggers estão em `data
 
 Os rankings individuais guardam cada valor com atleta, time, partida, esporte e métrica. Após atualizar um banco existente, aplique `database/migrations/20261118_estatistica_atleta_partida.sql` e depois execute `database/seeds/17.metrica_atleta.sql` para carregar as métricas iniciais por esporte. As APIs de consulta são `/api/rankings/atletas` e `/api/v1/rankings/atletas`; informe `esporteId`, `metricaId` e `escopo` (`geral`, `esporte`, `escola` ou `competicao`). Para registrar dados da partida use `PUT /api/v1/partidas/{id}/estatisticas-atletas` com atleta, time e valores por `metricaId`. A classificação sempre permanece separada por time, mesmo quando o atleta participou de mais de uma equipe.
 
+Vínculos de arbitragem por competição ficam em `arbitro_competicao`. Em banco existente, aplique `database/migrations/20261118_arbitro_competicao.sql`. O criador da competição (além de administrador ou gestor autorizado da escola, conforme a permissão já existente) pode listar usuários ativos em `GET /api/v1/competicoes/{id}/arbitros/usuarios`, listar vínculos em `GET /api/v1/competicoes/{id}/arbitros`, atribuir com `POST /api/v1/competicoes/{id}/arbitros` (`{"usuarioId": 12}`) e remover com `DELETE /api/v1/competicoes/{id}/arbitros/{usuarioId}`. Os árbitros vinculados passam a poder ver a competição e suas partidas e executar operações de partida autorizadas para arbitragem. O vínculo não altera os papéis globais do usuário.
+
 Para inspeção e administração visual do PostgreSQL, pode-se utilizar o DBeaver Community ou outra ferramenta compatível.
 
 ## API REST
