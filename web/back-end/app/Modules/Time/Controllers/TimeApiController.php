@@ -78,19 +78,6 @@ class TimeApiController
                 $where[] = 'EXISTS (SELECT 1 FROM vinculo_time_escola vte WHERE vte.cd_time = t.cd_time AND vte.cd_escola = :escola AND vte.ativo = TRUE)';
                 $params[':escola'] = $idEscola;
             }
-            if (!Permissoes::temPapel('ADM') && Permissoes::temPapel('DIR')) {
-                $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(AuthContext::id() ?? 0, ['DIR']);
-                if ($escolas === []) {
-                    Response::success(['pagina' => $pagina, 'limite' => $limite, 'itens' => [], 'tem_proxima' => false], 'Times listados.');
-                }
-                $marks = [];
-                foreach ($escolas as $index => $idEscola) {
-                    $mark = ':escola_scope_' . $index;
-                    $marks[] = $mark;
-                    $params[$mark] = (int) $idEscola;
-                }
-                $where[] = 'EXISTS (SELECT 1 FROM vinculo_time_escola vte WHERE vte.cd_time = t.cd_time AND vte.ativo = TRUE AND vte.cd_escola IN (' . implode(',', $marks) . '))';
-            }
             $sql = 'SELECT t.cd_time, t.nm_time, t.cd_esporte, t.path_escudo, t.ativo FROM time t WHERE ' . implode(' AND ', $where) . ' ORDER BY t.nm_time LIMIT :limite OFFSET :offset';
             $stmt = $pdo->prepare($sql);
             foreach ($params as $key => $value) {

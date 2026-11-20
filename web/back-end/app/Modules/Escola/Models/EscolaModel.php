@@ -8,101 +8,6 @@ class Escola extends Model
     {
         parent::__construct();
         $this->filtro = new Filtro();
-<<<<<<< HEAD:app/Models/EscolaModel.php
-    }
-
-    // Cadastro de escola
-    public function cadastrar(array $dados): void
-    {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO escola
-            (
-                nm_escola,
-                telefone,
-                cep,
-                numero,
-                categoria_administrativa,
-                path_brasao
-            )
-            VALUES
-            (
-                :nome,
-                :telefone,
-                :cep,
-                :numero,
-                :categoria,
-                :img_logo
-            )
-        ");
-
-        $stmt->execute([
-            ':nome' => $dados['nome'],
-            ':telefone' => $dados['telefone'],
-            ':cep' => $dados['cep'],
-            ':numero' => $dados['numero'],
-            ':categoria' => $dados['categoria_administrativa'],
-            ':img_logo' => $dados['img_logo'] ?? null
-        ]);
-    }
-
-    //Atualiza Escola
-    public function atualizar(int $id, array $dados): void
-    {
-        $stmt = $this->pdo->prepare("
-            UPDATE escola
-            SET
-                nm_escola = :nome,
-                telefone = :telefone,
-                cep = :cep,
-                numero = :numero,
-                categoria_administrativa = :categoria,
-                path_brasao = :img_logo
-            WHERE cd_escola = :id
-        ");
-
-        $stmt->execute([
-            ':nome' => $dados['nome'],
-            ':telefone' => $dados['telefone'],
-            ':cep' => $dados['cep'],
-            ':numero' => $dados['numero'],
-            ':categoria' => $dados['categoria_administrativa'],
-            ':img_logo' => $dados['img_logo'] ?? null,
-            ':id' => $id
-        ]);
-    }
-
-    //Lista Escolas
-    public function listar(array $filtros = []): array
-    {
-        $stmt = "
-            SELECT
-                e.cd_escola,
-                e.nm_escola AS nome,
-                e.telefone,
-                e.cep,
-                e.numero,
-                e.categoria_administrativa,
-                e.path_brasao AS img_logo,
-                e.criada_em,
-                e.ativa
-            FROM escola e";
-
-        $filtrosSql = $this->filtro->filtrosEscola($filtros);
-
-        if (!empty($filtrosSql['onde'])) {
-            $stmt .= ' WHERE ' . implode(' AND ', $filtrosSql['onde']);
-        }
-
-        $ordem = $this->filtro->ordem($filtros);
-        $stmt .= " ORDER BY e.cd_escola {$ordem}";
-
-        $stmt = $this->pdo->prepare($stmt);
-        $stmt->execute($filtrosSql['parametros']);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-=======
     }
 
     // Cadastro de escola
@@ -200,7 +105,6 @@ class Escola extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
->>>>>>> api_v1:web/back-end/app/Modules/Escola/Models/EscolaModel.php
     //Busca Escola
     public function buscar(int $id): ?array
     {

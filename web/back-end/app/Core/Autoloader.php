@@ -6,8 +6,14 @@ class Autoloader
     {
         spl_autoload_register(function ($class) {
             $className = ltrim($class, '\\');
+            $moduleDirectory = __DIR__ . '/../Modules/' . $className;
 
             $directoryPatterns = [
+                $moduleDirectory . '/Models',
+                $moduleDirectory . '/Controllers',
+                $moduleDirectory . '/Services',
+                $moduleDirectory . '/Validators',
+                $moduleDirectory . '/Middleware',
                 __DIR__ . '/../Modules/*/Controllers',
                 __DIR__ . '/../Modules/*/Models',
                 __DIR__ . '/../Modules/*/Services',

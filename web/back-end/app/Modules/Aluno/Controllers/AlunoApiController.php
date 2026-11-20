@@ -96,6 +96,13 @@ class AlunoApiController
                 ], 404);
             }
 
+            if ($e instanceof DomainException) {
+                Response::json([
+                    'sucesso' => false,
+                    'mensagem' => 'Você não tem permissão para consultar este aluno.'
+                ], 403);
+            }
+
             error_log($e->getMessage());
 
             Response::json([
@@ -195,13 +202,17 @@ class AlunoApiController
     private function filtrosListaV1(): array
     {
         $idUsuario = AuthContext::id() ?? 0;
-        $papeisGestores = ['DIR', 'CRD'];
+        $papeisComAcessoPorEscola = ['DIR', 'CRD', 'PRF', 'AGR', 'ALU'];
         $escolas = null;
         if (!Permissoes::temPapel('ADM')) {
-            if (array_intersect(AuthContext::papeis(), $papeisGestores) !== []) {
+            $papeisUsuario = array_values(array_intersect(
+                AuthContext::papeis(),
+                $papeisComAcessoPorEscola
+            ));
+            if ($papeisUsuario !== []) {
                 $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
                     $idUsuario,
-                    array_values(array_intersect(AuthContext::papeis(), $papeisGestores))
+                    $papeisUsuario
                 );
             } else {
                 Response::error('FORBIDDEN', 'Sem permissão para listar alunos.', 403);
@@ -233,13 +244,18 @@ class AlunoApiController
         }
 
         $idAluno = (int) ($aluno['cd_aluno'] ?? 0);
-        if (array_intersect(AuthContext::papeis(), ['DIR', 'CRD']) !== []) {
-            $escolasGeridas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
+        $papeisComAcessoPorEscola = ['DIR', 'CRD', 'PRF', 'AGR', 'ALU'];
+        $papeisUsuario = array_values(array_intersect(
+            AuthContext::papeis(),
+            $papeisComAcessoPorEscola
+        ));
+        if ($papeisUsuario !== []) {
+            $escolasPermitidas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
                 $idUsuarioAtual,
-                array_values(array_intersect(AuthContext::papeis(), ['DIR', 'CRD']))
+                $papeisUsuario
             );
             $escolasAluno = $this->service()->obterEscolasDoAluno($idAluno);
-            if (array_intersect($escolasGeridas, $escolasAluno) !== []) {
+            if (array_intersect($escolasPermitidas, $escolasAluno) !== []) {
                 return;
             }
         }

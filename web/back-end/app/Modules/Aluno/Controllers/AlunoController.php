@@ -78,11 +78,26 @@ class AlunoController
             $filtros['ordem'] = 'asc';
         }
 
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $vinculoModel = new VinculoUsuarioEscola();
+        $papeisUsuario = $_SESSION['usuario']['papeis'] ?? [];
+        if (!is_array($papeisUsuario)) {
+            $papeisUsuario = [];
+        }
+        if (!in_array('ADM', $papeisUsuario, true)) {
+            $papeisComAcessoPorEscola = ['DIR', 'CRD', 'PRF', 'AGR', 'ALU'];
+            $papeisEscola = array_values(array_intersect(
+                $papeisUsuario,
+                $papeisComAcessoPorEscola
+            ));
+            $filtros['escolas'] = $papeisEscola === []
+                ? []
+                : $vinculoModel->escolasAtivasPorPapeis($idUsuario, $papeisEscola);
+        }
+
         $alunos = $this->service()->listar($filtros);
         $escolas = (new EscolaService())->listar();
 
-        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
-        $vinculoModel = new VinculoUsuarioEscola();
         $podeGerenciar = [];
 
         foreach ($alunos as $aluno) {
