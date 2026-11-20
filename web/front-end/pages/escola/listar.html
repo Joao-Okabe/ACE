@@ -28,9 +28,12 @@
             <p class="form-subtitle">Gerencie as escolas cadastradas.</p>
         </div>
 
-            <button type="button" class="custom-btn custom-btn-primary" id="abrirModalEscola">
-            + Adicionar escola
-            </button>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="custom-btn custom-btn-secondary" id="importarCsvEscola" href="/pages/importacao/csv.html?tipo=escolas" style="display:none">Importar CSV</a>
+                <button type="button" class="custom-btn custom-btn-primary" id="abrirModalEscola">
+                    + Adicionar escola
+                </button>
+            </div>
     </div>
 
     <app-lista placeholder="Pesquisar escola"></app-lista>

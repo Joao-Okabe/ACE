@@ -1,0 +1,127 @@
+.importacao-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.importacao-card {
+    padding: 24px;
+    border: 1px solid #e5e1db;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgb(24 24 71 / 5%);
+}
+
+.importacao-descricao,
+.importacao-resumo {
+    margin: 0 0 18px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.importacao-campos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.importacao-campos .campo-form {
+    min-width: 0;
+}
+
+.importacao-mensagem {
+    margin: 18px 0 0;
+    color: #175c31;
+    font-weight: 600;
+}
+
+.importacao-mensagem.erro {
+    color: #a32121;
+}
+
+.importacao-previa {
+    margin-top: 24px;
+}
+
+.importacao-tabela-scroll {
+    max-height: 65vh;
+    margin-bottom: 18px;
+    overflow: auto;
+    border: 1px solid #e5e1db;
+    border-radius: 8px;
+}
+
+.importacao-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.importacao-tabela th,
+.importacao-tabela td {
+    min-width: 120px;
+    padding: 10px;
+    border-bottom: 1px solid #e5e1db;
+    text-align: left;
+    vertical-align: top;
+}
+
+.importacao-tabela th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #f5f3ef;
+    color: #181847;
+}
+
+.importacao-tabela tr.com-erros {
+    background: #fff7f5;
+}
+
+.importacao-editor {
+    min-width: 130px;
+    padding: 8px;
+}
+
+.importacao-erros {
+    min-width: 190px;
+    margin: 0;
+    padding-left: 18px;
+    color: #a32121;
+}
+
+.importacao-salvar-linha {
+    min-height: 38px;
+    padding: 0 12px;
+}
+
+.importacao-resultado {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid #bed9c4;
+    border-radius: 8px;
+    background: #f2faf4;
+}
+
+.importacao-resultado h2 {
+    margin-top: 0;
+    color: #175c31;
+}
+
+.importacao-tabela-credenciais {
+    margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+    .importacao-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .importacao-card {
+        padding: 16px;
+    }
+}

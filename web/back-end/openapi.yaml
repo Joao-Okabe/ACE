@@ -751,6 +751,97 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
+  /importacoes/{tipo}/csv:
+    post:
+      operationId: analisarImportacaoCsv
+      summary: Envia um CSV de alunos ou escolas para validação e prévia
+      description: >-
+        Arquivos de até 5 MB e 2.000 registros. Alunos exigem nome, email, RA
+        e data_nascimento; informe escola_id no formulário. Escolas exigem
+        nome e categoria_administrativa. Aceita CSV com separador vírgula,
+        ponto e vírgula ou tabulação. Rascunhos expiram em 24 horas.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema: { type: string, enum: [alunos, escolas] }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [arquivo]
+              properties:
+                arquivo: { type: string, format: binary }
+                escola_id: { type: integer, minimum: 1 }
+      responses:
+        '201':
+          description: Prévia com erros de validação por linha e identificador do rascunho
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para importar o tipo ou escola selecionados }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /importacoes/escolas-disponiveis:
+    get:
+      operationId: listarEscolasParaImportacaoCsv
+      summary: Lista as escolas que o usuário pode selecionar ao importar alunos
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Escolas ativas disponíveis ao administrador ou diretor autenticado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Perfil sem permissão para importar alunos }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /importacoes/{id}/linhas/{linha}:
+    patch:
+      operationId: editarLinhaImportacaoCsv
+      summary: Corrige campos de uma linha da prévia
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: linha, in: path, required: true, schema: { type: integer, minimum: 2 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [dados]
+              properties:
+                dados: { type: object, additionalProperties: { type: [string, 'null'] } }
+      responses:
+        '200': { description: Linha corrigida e prévia revalidada }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Rascunho não pertence ao usuário ou sem permissão }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Rascunho já confirmado }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /importacoes/{id}/confirmar:
+    post:
+      operationId: confirmarImportacaoCsv
+      summary: Confirma e grava todos os registros da prévia em uma transação
+      description: >-
+        Todas as linhas precisam estar válidas. A senha inicial de cada aluno
+        é aleatória e retornada somente nesta resposta; distribua-a por um
+        canal seguro. A importação não poderá ser consultada novamente após
+        ser confirmada.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Importação concluída; credenciais iniciais aparecem apenas para alunos }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Sem permissão para confirmar esta importação }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Importação já confirmada ou conflito com registro existente }
+        '422': { description: Há linhas inválidas; detalhes retornam em error.details.linhas }
+        '500': { $ref: '#/components/responses/InternalError' }
 components:
   securitySchemes:
     bearerAuth:

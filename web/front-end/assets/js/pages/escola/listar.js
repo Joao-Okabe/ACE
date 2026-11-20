@@ -103,6 +103,9 @@ if (!customElements.get("app-lista")) {
 async function carregarEscolas() {
     try {
         window.usuarioLogado = window.usuarioLogado || await authService.me();
+        if (window.usuarioLogado?.papeis?.includes("ADM")) {
+            document.getElementById("importarCsvEscola").style.display = "inline-flex";
+        }
         const escolas = await escolaService.listar();
 
         console.log("Escolas recebidas:", escolas);

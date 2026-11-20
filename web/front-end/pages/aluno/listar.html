@@ -25,7 +25,10 @@
             <h2 class="form-title">Alunos</h2>
             <p class="form-subtitle">Gerencie os alunos cadastrados.</p>
         </div>
-        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalAluno">+ Adicionar aluno</button>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="custom-btn custom-btn-secondary" id="importarCsvAluno" href="/pages/importacao/csv.html?tipo=alunos" style="display:none">Importar CSV</a>
+            <button type="button" class="custom-btn custom-btn-primary" id="abrirModalAluno">+ Adicionar aluno</button>
+        </div>
     </div>
 
     <app-lista placeholder="Pesquisar aluno">

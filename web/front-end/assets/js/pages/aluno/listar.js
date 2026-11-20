@@ -114,6 +114,7 @@ const botaoAbrirCadastro = document.getElementById("abrirModalAluno");
 
 const seletorEscolaCadastro = document.getElementById("escolaAluno");
 const seletorEscolaEdicao = document.getElementById("editarEscolaAluno");
+const linkImportarCsv = document.getElementById("importarCsvAluno");
 
 // MENSAGENS
 function exibirMensagem(conteudo, mensagem) {
@@ -181,6 +182,9 @@ async function carregarAlunos() {
 
     try {
         window.usuarioLogado = window.usuarioLogado || await authService.me();
+        if (window.usuarioLogado?.papeis?.some((papel) => ["ADM", "DIR"].includes(papel))) {
+            linkImportarCsv.style.display = "inline-flex";
+        }
         const alunos = await alunoService.listar();
 
         conteudo.innerHTML = "";

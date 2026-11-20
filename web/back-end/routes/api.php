@@ -348,6 +348,15 @@ $router->post('/api/v1/auth/recuperacao/confirmar', [$authV1, 'confirmarRecupera
 $router->get('/api/v1/auth/me', [$authV1, 'me']);
 $router->post('/api/v1/auth/refresh', [$authV1, 'refresh']);
 $router->post('/api/v1/auth/logout', [$authV1, 'logout']);
+$importacaoCsvV1 = new ImportacaoCsvApiController();
+$router->get('/api/importacoes/escolas-disponiveis', [$importacaoCsvV1, 'escolasDisponiveis']);
+$router->post('/api/importacoes/{tipo}/csv', [$importacaoCsvV1, 'importar']);
+$router->patch('/api/importacoes/{id}/linhas/{linha}', [$importacaoCsvV1, 'editarLinha']);
+$router->post('/api/importacoes/{id}/confirmar', [$importacaoCsvV1, 'confirmar']);
+$router->post('/api/v1/importacoes/{tipo}/csv', [$importacaoCsvV1, 'importar']);
+$router->patch('/api/v1/importacoes/{id}/linhas/{linha}', [$importacaoCsvV1, 'editarLinha']);
+$router->post('/api/v1/importacoes/{id}/confirmar', [$importacaoCsvV1, 'confirmar']);
+$router->get('/api/v1/importacoes/escolas-disponiveis', [$importacaoCsvV1, 'escolasDisponiveis']);
 $router->get('/api/v1/dashboard', [$dashboardV1, 'apiV1']);
 $router->get('/api/v1/escolas', [$escolaV1, 'indexV1']);
 $router->get('/api/v1/perfil/escola', [$escolaV1, 'perfilV1']);

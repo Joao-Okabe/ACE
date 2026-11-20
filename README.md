@@ -2,7 +2,7 @@
 
 O **ACE (Aplicativo de Competições Escolares)** reúne a interface web, um aplicativo Flutter e um backend PHP com duas versões de API. A API Web (`/api`) atende o front-end usando sessão e CSRF; a API V1 (`/api/v1`) atende o Flutter usando Bearer JWT. As duas versões compartilham os serviços PHP e o banco PostgreSQL, mas mantêm contratos e autenticação separados.
 
-> **Estado do projeto:** não foi localizado um fluxo funcional de importação/exportação CSV ou geração de PDF. Dompdf está declarado como dependência, mas sua presença no Composer não comprova que a geração de PDF esteja implementada.
+> **Estado do projeto:** a API V1 oferece importação CSV de alunos e escolas com prévia, edição e confirmação. Não foi localizado fluxo de exportação CSV ou geração de PDF.
 
 ## Sumário
 
@@ -14,8 +14,6 @@ O **ACE (Aplicativo de Competições Escolares)** reúne a interface web, um apl
 - [Configuração e execução com Docker](#configuração-e-execução-com-docker)
 - [Banco de dados](#banco-de-dados)
 - [API REST](#api-rest)
-- [Importação de CSV: proposta de implementação](#importação-de-csv-proposta-de-implementação)
-- [Geração de PDF: proposta de implementação](#geração-de-pdf-proposta-de-implementação)
 - [Segurança e qualidade](#segurança-e-qualidade)
 - [Documentação relacionada](#documentação-relacionada)
 - [Equipe](#equipe)
@@ -47,7 +45,7 @@ O comportamento de cada fluxo depende dos dados cadastrados, das etapas configur
 
 ### Arquivos e relatórios
 
-Não foi localizado fluxo funcional de importação/exportação CSV nem geração de PDF. A dependência Dompdf está declarada no Composer, mas não há uso correspondente identificado no código da aplicação.
+A importação CSV está disponível na API V1 para alunos e escolas. Não foi localizado fluxo de exportação CSV nem geração de PDF.
 
 ## Arquitetura
 
@@ -219,6 +217,8 @@ A definição principal está em `database/script.sql`; triggers estão em `data
 
 Os rankings individuais guardam cada valor com atleta, time, partida, esporte e métrica. Após atualizar um banco existente, aplique `database/migrations/20261118_estatistica_atleta_partida.sql` e depois execute `database/seeds/17.metrica_atleta.sql` para carregar as métricas iniciais por esporte. As APIs de consulta são `/api/rankings/atletas` e `/api/v1/rankings/atletas`; informe `esporteId`, `metricaId` e `escopo` (`geral`, `esporte`, `escola` ou `competicao`). Para registrar dados da partida use `PUT /api/v1/partidas/{id}/estatisticas-atletas` com atleta, time e valores por `metricaId`. A classificação sempre permanece separada por time, mesmo quando o atleta participou de mais de uma equipe.
 
+Para habilitar a importação CSV em um banco existente, aplique `database/migrations/20261120_importacao_csv.sql`.
+
 Vínculos de arbitragem por competição ficam em `arbitro_competicao`. Em banco existente, aplique `database/migrations/20261118_arbitro_competicao.sql`. O criador da competição (além de administrador ou gestor autorizado da escola, conforme a permissão já existente) pode listar usuários ativos em `GET /api/v1/competicoes/{id}/arbitros/usuarios`, listar vínculos em `GET /api/v1/competicoes/{id}/arbitros`, atribuir com `POST /api/v1/competicoes/{id}/arbitros` (`{"usuarioId": 12}`) e remover com `DELETE /api/v1/competicoes/{id}/arbitros/{usuarioId}`. Os árbitros vinculados passam a poder ver a competição e suas partidas e executar operações de partida autorizadas para arbitragem. O vínculo não altera os papéis globais do usuário.
 
 Para registrar operações por partida em banco existente, aplique `database/migrations/20261119_partida_operacoes.sql` e execute `database/seeds/18.tipo_penalidade.sql`. Eventos de pontuação e penalidades ficam no histórico da partida; o placar final continua sendo enviado separadamente por `PUT /api/v1/partidas/{id}/resultado`. A escala por partida usa apenas usuários vinculados como árbitros à competição, com no máximo um árbitro principal; partidas avulsas não têm escala. Penalidades exigem atleta participante do time e são permitidas em partidas avulsas e de competição. `GET /api/v1/locais` fornece sugestões de nomes já usados; o cadastro de locais continua indisponível e não é oferecido no app.
@@ -251,6 +251,20 @@ Os recursos da API Web incluem:
 ### API V1 para clientes externos
 
 As rotas `/api/v1/auth/login`, `/api/v1/auth/me`, `/api/v1/auth/refresh` e `/api/v1/auth/logout` usam Bearer JWT, sem sessão PHP. O contrato atualizado está em [`web/back-end/openapi.yaml`](web/back-end/openapi.yaml). O cliente deve agrupar renovações simultâneas em uma única chamada (*single-flight*), pois um refresh token consumido não pode ser reutilizado.
+
+### Importação CSV
+
+O fluxo exige autenticação JWT e segue três etapas:
+
+1. `POST /api/v1/importacoes/alunos/csv` ou `POST /api/v1/importacoes/escolas/csv`, com `multipart/form-data` (`arquivo`, extensão `.csv`). Para alunos, envie também `escola_id`. A API aceita vírgula, ponto e vírgula ou tabulação, até 5 MB e 2.000 linhas.
+2. Revise a prévia retornada; cada registro inclui sua posição no CSV, os dados e os erros. Corrija campos com `PATCH /api/v1/importacoes/{id}/linhas/{linha}` e JSON `{"dados":{"campo":"novo valor"}}`.
+3. Confirme com `POST /api/v1/importacoes/{id}/confirmar`. A confirmação falha se ainda houver linhas inválidas; caso contrário, salva o lote atomicamente. Rascunhos expiram em 24 horas e só podem ser acessados pelo usuário que os criou.
+
+Alunos exigem as colunas `nome`, `email`, `ra` e `data_nascimento` (aceita `AAAA-MM-DD` ou `DD/MM/AAAA`); telefone, CEP e sexo são opcionais. Escolas exigem `nome` e `categoria_administrativa`; telefone, CEP, número e email são opcionais. Categorias aceitas: `Escola Municipal`, `Escola Estadual` e `Privada` (também aceita `Municipal` ou `Estadual`). Administradores podem importar escolas; administradores e diretores podem importar alunos para uma escola que gerenciam.
+
+Para cada aluno, o sistema gera uma senha aleatória. A senha inicial é devolvida apenas na resposta de confirmação; compartilhe-a com o aluno por um canal seguro. A confirmação é transacional e não pode ser repetida.
+
+Na Web, os mesmos endpoints ficam sob `/api/importacoes/...` e usam sessão PHP com o header `X-CSRF-Token`. Os links de importação aparecem nas listas de alunos para administradores/diretores e de escolas para administradores. O formulário permite revisar, editar e confirmar a prévia sem sair do navegador.
 | `/api/times/{id}/integrantes/{idUsuario}/capitao` | PUT para definir capitão e DELETE para remover a condição |
 | `/api/times/{id}/responsaveis` | POST para vincular responsável |
 | `/api/times/{id}/tecnicos` | POST para vincular técnico |

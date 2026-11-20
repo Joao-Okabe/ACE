@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/importacao-csv.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+
+    <title>Importar CSV</title>
+</head>
+<body>
+<app-bar></app-bar>
+<app-sidebar></app-sidebar>
+
+<main class="content">
+    <header class="importacao-header">
+        <div>
+            <h1 class="form-title" id="tituloImportacao">Importar CSV</h1>
+            <p class="form-subtitle">Revise os dados antes de confirmar o cadastro.</p>
+        </div>
+        <a class="custom-btn custom-btn-secondary" id="voltarImportacao" href="/pages/aluno/listar.html">Voltar</a>
+    </header>
+
+    <section class="importacao-card" aria-labelledby="tituloImportacao">
+        <p id="descricaoImportacao" class="importacao-descricao"></p>
+
+        <form id="formImportacaoCsv">
+            <div class="importacao-campos">
+                <div class="campo-form" id="campoEscolaImportacao" hidden>
+                    <label class="form-label" for="escolaImportacao">Escola dos alunos</label>
+                    <select class="form-input" id="escolaImportacao" name="escola_id" required>
+                        <option value="">Carregando escolas...</option>
+                    </select>
+                </div>
+                <div class="campo-form">
+                    <label class="form-label" for="arquivoImportacao">Arquivo CSV (máximo 5 MB)</label>
+                    <input class="form-input" id="arquivoImportacao" name="arquivo" type="file" accept=".csv,text/csv" required>
+                </div>
+            </div>
+            <button class="custom-btn custom-btn-primary" id="analisarImportacao" type="submit">Carregar prévia</button>
+        </form>
+
+        <p class="importacao-mensagem" id="mensagemImportacao" role="status" aria-live="polite" hidden></p>
+
+        <section id="previaImportacao" class="importacao-previa" aria-label="Prévia do CSV" hidden>
+            <p id="resumoImportacao" class="importacao-resumo"></p>
+            <div class="importacao-tabela-scroll">
+                <table class="importacao-tabela">
+                    <thead id="cabecalhoImportacao"></thead>
+                    <tbody id="linhasImportacao"></tbody>
+                </table>
+            </div>
+            <button class="custom-btn custom-btn-primary" id="confirmarImportacao" type="button" disabled>Confirmar importação</button>
+        </section>
+
+        <section id="resultadoImportacao" class="importacao-resultado" aria-live="polite" hidden>
+            <h2>Importação concluída</h2>
+            <p id="mensagemResultado"></p>
+            <div id="credenciaisImportacao"></div>
+        </section>
+    </section>
+</main>
+
+<script type="module" src="/assets/js/main.js"></script>
+<script type="module" src="/assets/js/pages/importacao/csv.js"></script>
+</body>
+</html>

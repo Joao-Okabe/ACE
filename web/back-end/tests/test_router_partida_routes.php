@@ -102,6 +102,27 @@ if ($rotas['POST']['/api/v1/partidas/{id}/pontuacoes'][1] !== 'registrarPontuaca
 if ($rotas['POST']['/api/v1/partidas/{id}/arbitragem'][1] !== 'registrarArbitragemV1') {
     throw new RuntimeException('A rota de arbitragem deve chamar a ação implementada.');
 }
+if ($rotas['POST']['/api/v1/importacoes/{tipo}/csv'][1] !== 'importar') {
+    throw new RuntimeException('A rota de importação CSV deve chamar o controlador correspondente.');
+}
+if ($rotas['POST']['/api/importacoes/{tipo}/csv'][1] !== 'importar') {
+    throw new RuntimeException('A rota de importação CSV da Web deve chamar o controlador correspondente.');
+}
+if ($rotas['GET']['/api/importacoes/escolas-disponiveis'][1] !== 'escolasDisponiveis') {
+    throw new RuntimeException('A Web deve disponibilizar ao formulário as escolas gerenciáveis.');
+}
+if ($rotas['PATCH']['/api/v1/importacoes/{id}/linhas/{linha}'][1] !== 'editarLinha') {
+    throw new RuntimeException('A rota de edição da importação CSV deve chamar o controlador correspondente.');
+}
+if ($rotas['PATCH']['/api/importacoes/{id}/linhas/{linha}'][1] !== 'editarLinha') {
+    throw new RuntimeException('A rota de edição da importação CSV da Web deve chamar o controlador correspondente.');
+}
+if ($rotas['POST']['/api/v1/importacoes/{id}/confirmar'][1] !== 'confirmar') {
+    throw new RuntimeException('A rota de confirmação da importação CSV deve chamar o controlador correspondente.');
+}
+if ($rotas['POST']['/api/importacoes/{id}/confirmar'][1] !== 'confirmar') {
+    throw new RuntimeException('A rota de confirmação da importação CSV da Web deve chamar o controlador correspondente.');
+}
 if ($rotas['GET']['/api/v1/partidas/{id}/arbitragem/usuarios'][1] !== 'listarArbitrosElegiveisV1') {
     throw new RuntimeException('A rota deve listar os árbitros elegíveis para a partida.');
 }
