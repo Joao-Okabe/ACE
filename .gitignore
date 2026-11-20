@@ -1,38 +1,52 @@
-# Web
+# =========================
+# Backend / PHP
+# =========================
 .env
 /vendor/
 /storage/
 public/uploads/
-web/back-end/vendor/
-web/back-end/storage/
 public/.htaccess
 
-# Flutter
-mobile/.dart_tool/
-mobile/build/
-mobile/.flutter-plugins
-mobile/.flutter-plugins-dependencies
-mobile/.packages
+web/back-end/vendor/
+web/back-end/storage/
 
-# Gradle
-mobile/android/.gradle/
-
-# Configurações locais
-mobile/android/local.properties
-
-# Mobile
+# =========================
+# Flutter / Dart
+# =========================
 .dart_tool/
 .packages
 .pub/
 build/
 .flutter-plugins
 .flutter-plugins-dependencies
+.flutter-plugins-dependencies
+.flutter-plugins
+
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+
+# =========================
+# Android / Gradle
+# =========================
 .idea/
 .vscode/
-android/local.properties
 *.iml
+
+.gradle/
+mobile/android/.gradle/
+
+android/local.properties
+mobile/android/local.properties
+
 android/key.properties
-android/*.jks
-android/*.keystore
+mobile/android/key.properties
+
 *.jks
 *.keystore
+
+# =========================
+# Configurações locais
+# =========================
