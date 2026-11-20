@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <title>Visualizar competição</title>
+</head>
+<body>
+    <app-bar></app-bar>
+    <app-sidebar></app-sidebar>
+    <div class="content">
+        <div class="visu-box mt-4">
+            <div class="header-visualizar">
+                <a href="/competicoes/listar" class="btn-voltar" aria-label="Voltar">
+                    <img src="/assets/img/icon.svg" alt="">
+                </a>
+                <div>
+                    <h1 class="page-title page-title--large" id="nomeCompeticao">Carregando competição...</h1>
+                    <p class="section-description">Visualize e gerencie as informações da competição.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row visu-painel">
+            <!-- ABAS SUPERIORES -->
+            <div class="col-12">
+                <nav>
+                    <div class="nav nav-tabs visu-menu" id="nav-competicao" role="tablist">
+                        <button class="nav-link visu-menu-item active" id="aba-inscricao" type="button" data-aba="inscricao" role="tab" aria-selected="true">Inscrição</button>
+                        <button class="nav-link visu-menu-item" id="aba-localedata" type="button" data-aba="localedata" role="tab" aria-selected="false">Local e datas</button>
+                        <button class="nav-link visu-menu-item" id="aba-times" type="button" data-aba="times" role="tab" aria-selected="false">Times inscritos</button>
+                        <button class="nav-link visu-menu-item" id="aba-arbitros" type="button" data-aba="arbitros" role="tab" aria-selected="false">Árbitros</button>
+                        <button class="nav-link visu-menu-item" id="aba-chaveamento" type="button" data-aba="chaveamento" role="tab" aria-selected="false">Chaveamento</button>
+                        <button class="nav-link visu-menu-item" id="aba-etapas" type="button" data-aba="etapas" role="tab" aria-selected="false">Etapas</button>
+                        <button class="nav-link visu-menu-item" id="aba-gerir" type="button" data-aba="gerir" data-gerenciar role="tab" aria-selected="false">Gerenciamento</button>
+                    </div>
+                </nav>
+            </div>
+            <div class="col-12">
+                <main class="visu-box visu-painel-conteudo">
+                   
+                    <!-- ABA DE INSCRIÇÃO -->
+                    <section class="visu-secao" id="inscricao" role="tabpanel">
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Inscrição de times</h2>
+                                <p class="section-description">Selecione os times disponíveis para participar.</p>
+                            </div>
+                        </div>
+                        <div id="mensagensInscricao" aria-live="polite"></div>
+
+                        <div class="competicao-subsecao">
+                            <form id="formInscreverTime" class="competicao-form mb-4">
+                                <div class="competicao-form-campo">
+                                    <div class="select-multiplos" id="selectTimesDisponiveis">
+                                        <button type="button" class="select-multiplos-toggle" id="abrirListaTimes">
+                                            <span id="textoTimesSelecionados">Selecione os times</span>
+                                            <img src="/assets/icons/seta-baixo.svg" alt="" class="select-multiplos-seta">
+                                        </button>
+                                        <div class="select-multiplos-lista" id="listaTimesDisponiveis" hidden></div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="custom-btn custom-btn-primary" id="botaoInscreverTime">
+                                    Inscrever times selecionados
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="competicao-info-bloco">
+                            <h2 class="section-title">Período de inscrição</h2>
+                            <div class="periodo-inscricao">
+                                <div class="periodo-inscricao-item">
+                                    <img src="/assets/icons/calender.svg" alt="">
+                                    <div>
+                                        <span>Início das inscrições</span>
+                                        <strong id="inicioInscricao">Não definida</strong>
+                                    </div>
+                                </div>
+                                <div class="periodo-inscricao-item">
+                                    <img src="/assets/icons/calender.svg" alt="">
+                                    <div>
+                                        <span>Encerramento das inscrições</span>
+                                        <strong id="fimInscricao">Não definida</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- ABA DE LOCAL E DATAS -->
+                    <section class="visu-secao" id="localedata" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Local e datas</h2>
+                                <p class="section-description">Confira quando e onde acontecerá a competição.</p>
+                            </div>
+                        </div>
+
+                        <div class="local-datas-container">
+                            <div class="local-data-card">
+                                <div class="local-data-card-header">
+                                    <span class="local-data-indicador"></span>
+                                    <span>Início da competição</span>
+                                </div>
+                                <strong id="dataInicio">Não definida</strong>
+                                <p>Data de início das atividades</p>
+                            </div>
+
+                            <div class="local-data-card">
+                                <div class="local-data-card-header">
+                                    <span class="local-data-indicador local-data-indicador-fim"></span>
+                                    <span>Encerramento da competição</span>
+                                </div>
+                                <strong id="dataFim">Não definida</strong>
+                                <p>Data prevista para o encerramento</p>
+                            </div>
+
+                            <div class="local-data-card local-data-card-local">
+                                <div class="local-data-card-header">
+                                    <span>Local da competição</span>
+                                </div>
+                                <strong id="localCompeticao">Não definido</strong>
+                                <p>Local onde serão realizadas as atividades</p>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- ABA DE TIMES -->
+                    <section class="visu-secao" id="times" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Times inscritos</h2>
+                                <p class="section-description">Confira os times participantes desta competição.</p>
+                            </div>
+                        </div>
+                        <div class="visu-cards" id="listaTimesCompeticao"></div>
+                        <p class="visu-mensagem" id="mensagemTimesCompeticao">Nenhum time inscrito até o momento.</p>
+                    </section>
+                    <!-- ABA DE ÁRBITROS -->
+                    <section class="visu-secao" id="arbitros" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Árbitros</h2>
+                                <p class="section-description">Confira os árbitros responsáveis pela competição.</p>
+                            </div>
+                        </div>
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Adicionar árbitro</h3>
+                            <form class="competicao-form" id="formAdicionarArbitro">
+                                <div class="competicao-form-campo">
+                                    <label for="arbitroDisponivel">Árbitro</label>
+                                    <select id="arbitroDisponivel" disabled>
+                                        <option value="">Integração pendente</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="custom-btn btn-laranja" disabled>Adicionar árbitro</button>
+                            </form>
+                        </div>
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Árbitros cadastrados</h3>
+                            <div class="visu-cards" id="listaArbitros"></div>
+                            <p class="visu-mensagem" id="mensagemArbitros">Nenhum árbitro cadastrado até o momento.</p>
+                        </div>
+                    </section>
+                    <!-- ABA DE CHAVEAMENTO -->
+                    <section class="visu-secao" id="chaveamento" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Chaveamento</h2>
+                                <p class="section-description">Confira os confrontos e as fases da competição.</p>
+                            </div>
+                            <button type="button" id="btnGerarChaveamento" class="btn btn-primary" hidden>Gerar chaveamento</button>
+                        </div>
+                        <!-- CLASSIFICAÇÃO DA FASE DE GRUPOS -->
+                        <div id="classificacao-grupos-container" hidden></div>
+                        <p class="visu-mensagem" id="mensagemClassificacaoGrupos" hidden></p>
+                        <div class="chaveamento" id="chaveamento-container"></div>
+                        <p class="visu-mensagem" id="mensagemChaveamento">O chaveamento ainda não foi gerado.</p>
+                    </section>
+                    
+                    <!-- ABA DE ETAPAS -->
+                    <section class="visu-secao" id="etapas" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Etapas</h2>
+                                <p class="section-description">Gerencie as etapas desta competição.</p>
+                            </div>
+                        </div>
+
+                        <div class="competicao-subsecao">
+                            <div class="visu-secao-header">
+                                <div>
+                                    <h3 class="visu-subtitulo">Etapas cadastradas</h3>
+                                    <p class="section-description">Confira as etapas e suas respectivas informações.</p>
+                                </div>
+                            </div>
+
+                            <div class="visu-cards" id="listaEtapas"></div>
+                            <p class="visu-mensagem" id="mensagemEtapas">Esta competição ainda não possui etapas cadastradas.</p>
+                        </div>
+                    </section>
+
+                    <!-- MODAL DE EDIÇÃO DE ETAPA -->
+                    <app-modal id="modalEditarEtapa" titulo="Editar etapa">
+                        <form id="formEditarEtapa">
+                            <div class="row">
+                                <input type="hidden" id="idEtapaEditar">
+                                <!-- Preserva o tipo atual da etapa -->
+                                <input type="hidden" id="tipoEtapaEditar">
+
+                                <div class="campo-form col-12">
+                                    <label for="nomeEtapaEditar" class="form-label">Nome da etapa</label>
+                                    <input class="form-control form-input" type="text" id="nomeEtapaEditar" required>
+                                </div>
+
+                                <div class="campo-form col-12">
+                                    <label for="ordemEtapaEditar" class="form-label">Ordem</label>
+                                    <input class="form-control form-input" type="number" id="ordemEtapaEditar" min="1" required>
+                                </div>
+
+                                <div class="campo-form col-12">
+                                    <label for="descricaoEtapaEditar" class="form-label">Descrição</label>
+                                    <textarea class="form-control form-input" id="descricaoEtapaEditar" rows="3"></textarea>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarEtapa">
+                                        Salvar alterações
+                                    </button>
+                                </div>
+
+                                <p id="mensagemEditarEtapa" aria-live="polite"></p>
+                            </div>
+                        </form>
+                    </app-modal>
+                    <!-- ABA DE GERENCIAMENTO -->
+                    <section class="visu-secao" id="gerir" role="tabpanel" hidden>
+                        <div class="visu-secao-header">
+                            <div>
+                                <h2 class="section-title">Gerenciar competição</h2>
+                                <p class="section-description">Acesse as opções de edição e gerenciamento.</p>
+                            </div>
+                        </div>
+
+                        <div class="competicao-gerenciar-lista">
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Informações da competição</strong>
+                                        <span>Editar nome e demais informações.</span>
+                                    </div>
+                                    <span class="competicao-gerenciar-seta">⌄</span>
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <div class="competicao-subsecao" id="formularioInformacoesCompeticao">
+                                        <h3 class="visu-subtitulo">Editar informações da competição</h3>
+                                        <form id="formEditarLocalDatas" class="competicao-form">
+                                            <div class="competicao-form-campo">
+                                                <label for="editarNomeCompeticao" class="form-label">Nome da competição</label>
+                                                <input type="text" id="editarNomeCompeticao" class="form-input" required>
+                                            </div>
+                                            <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarLocalDatas">
+                                                Salvar alterações
+                                            </button>
+                                            <p id="mensagemLocalDatas" aria-live="polite"></p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Período de inscrição</strong>
+                                        <span>Alterar as datas de inscrição.</span>
+                                    </div>
+                                    <span class="competicao-gerenciar-seta">⌄</span>
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <div class="competicao-subsecao" id="formularioPeriodoInscricao">
+                                        <h3 class="visu-subtitulo">Configurar período de inscrição</h3>
+                                        <form id="formCadastrarPeriodo" class="competicao-form">
+                                            <div class="competicao-form-campo">
+                                                <label for="dataInicioInscricao" class="form-label">Início das inscrições</label>
+                                                <input type="date" id="dataInicioInscricao" class="form-input" name="dt_inicio_inscricao" required>
+                                            </div>
+                                            <div class="competicao-form-campo">
+                                                <label for="dataFimInscricao" class="form-label">Encerramento das inscrições</label>
+                                                <input type="date" id="dataFimInscricao" class="form-input" name="dt_encerramento_inscricao">
+                                            </div>
+                                            <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPeriodo">Salvar período</button>
+                                            <p id="mensagemPeriodoInscricao" aria-live="polite"></p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Locais e datas</strong>
+                                        <span>Editar o local e o período da competição.</span>
+                                    </div>
+                                    <span class="competicao-gerenciar-seta">⌄</span>
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <div class="competicao-subsecao" id="formularioLocalDatas">
+                                        <h3 class="visu-subtitulo">Editar datas da competição</h3>
+                                        <form id="formEditarLocalDatas" class="competicao-form">
+                                            <div class="competicao-form-campo">
+                                                <label for="editarDataInicio" class="form-label">Data de início</label>
+                                                <input type="date" class="form-input" id="editarDataInicio" required>
+                                            </div>
+                                            <div class="competicao-form-campo">
+                                                <label for="editarDataFim" class="form-label">Data de encerramento</label>
+                                                <input type="date" class="form-input" id="editarDataFim" required>
+                                            </div>
+                                            <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarLocalDatas">Salvar alterações</button>
+                                            <p id="mensagemLocalDatas" aria-live="polite"></p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Etapas da competição</strong>
+                                        <span>Editar as etapas cadastradas.</span>
+                                    </div>
+                                    <span class="competicao-gerenciar-seta">⌄</span>
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <a href="#" id="editarEtapas" class="custom-btn custom-btn-primary">Gerenciar etapas</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/competicao/visualizar.js"></script>
+</body>
+</html>

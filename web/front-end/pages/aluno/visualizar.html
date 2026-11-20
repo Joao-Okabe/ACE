@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
+
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+
+    <title>Visualizar aluno</title>
+</head>
+<body>
+
+<app-bar></app-bar>
+<app-sidebar></app-sidebar>
+
+<div class="content">
+
+    <!-- Cabeçalho -->
+    <header class="header-visualizar">
+        <a href="listar.html" class="btn-voltar" aria-label="Voltar para a lista de alunos">
+            <span aria-hidden="true">←</span>
+        </a>
+
+        <h1 class="visu-title">Visualizar aluno</h1>
+    </header>
+
+    <div class="mb-3">
+        <p class="form-subtitle">Confira todas as informações do aluno.</p>
+    </div>
+
+    <!-- Identificação do aluno -->
+    <div class="visu-box visu-identificacao">
+
+        <div class="visu-perfil">
+            <img id="fotoAluno" src="/assets/img/no-prof-pic.png" alt="Foto de perfil do aluno">
+        </div>
+
+        <div class="visu-identificacao-info">
+
+            <div class="visu-nome-status">
+                <h2 class="page-title page-title--large" id="nomeAluno">
+                    Carregando...
+                </h2>
+
+                <span class="badge-status" id="statusAluno">—</span>
+            </div>
+
+            <div class="info-section">
+                <h3 class="section-title">Registro do aluno (RA)</h3>
+                <p class="value-info" id="raAluno">—</p>
+            </div>
+
+            <div id="mensagemAluno" class="visu-mensagem" role="status" hidden></div>
+
+            <button type="button" class="custom-btn custom-btn-primary" id="botaoStatusAluno" hidden>Alterar status</button>
+
+        </div>
+    </div>
+
+    <!-- Informações detalhadas -->
+    <div class="visu-grid">
+
+        <!-- Informações gerais -->
+        <div class="visu-box">
+            <h2 class="page-title section-title">Informações gerais</h2>
+
+            <div class="info-grid">
+
+                <div class="info-section">
+                    <h3 class="page-title">Escola</h3>
+                    <p id="escolaAluno">—</p>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="page-title">Código do aluno</h3>
+                    <p id="codigoAluno">—</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="visu-box">
+            <h2 class="page-title section-title">Contato</h2>
+
+            <div class="info-grid">
+
+                <div class="info-section">
+                    <h3 class="page-title">E-mail</h3>
+                    <p id="emailAluno">—</p>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="page-title">Telefone</h3>
+                    <p id="telefoneAluno">—</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="visu-box visu-box--full">
+            <h2 class="page-title section-title">Endereço</h2>
+
+            <div class="info-grid">
+
+                <div class="info-section">
+                    <h3 class="page-title">CEP</h3>
+                    <p id="cepAluno">—</p>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="page-title">Número</h3>
+                    <p id="numeroAluno">—</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="module" src="/assets/js/main.js"></script>
+<script type="module" src="/assets/js/pages/aluno/visualizar.js"></script>
+
+</body>
+</html>

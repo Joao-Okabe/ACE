@@ -8,4 +8,6 @@ VALUES
 ('CLASSIFICACAO', 'Etapa utilizada para determinar a ordem ou os classificados para uma fase posterior.'),
 ('INSCRICOES_ABERTAS', 'Inscrições abertas para o Campeonato.'),
 ('INSCRICOES_ENCERRADAS', 'Inscrições encerradas para o Campeonato.'),
-('ENCERRADO', 'Campeonato Encerrado.');
+('ENCERRADO', 'Campeonato Encerrado.')
+ON CONFLICT (nm_tipo_etapa) DO UPDATE
+SET ds_tipo_etapa = EXCLUDED.ds_tipo_etapa;

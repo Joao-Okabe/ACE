@@ -1,12 +1,36 @@
 services:
-  web:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    restart: unless-stopped
+    ports:
+      - ${APP_PORT:-8080}:80
+    volumes:
+       - ./web/front-end:/usr/share/nginx/html:ro
+  
+    depends_on:
+      - backend
+
+  backend:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    restart: unless-stopped
+    command: sh -c "composer install --no-dev --no-interaction --prefer-source --optimize-autoloader && chown -R www-data:www-data /var/www/html/storage/upload && apache2-foreground"
     ports:
+<<<<<<< HEAD
       - ${APP_PORT}:80
     volumes:
       - ./:/var/www/html:rwt
+=======
+      - ${API_PORT:-8000}:80
+    volumes:
+      - ./web/back-end:/var/www/html:rw
+      - backend_vendor:/var/www/html/vendor
+      - ./web/back-end/storage/upload:/var/www/html/storage/upload
+      - ./.env:/var/www/html/.env:ro
+>>>>>>> api_v1
     env_file:
       - .env
     environment:
@@ -21,6 +45,7 @@ services:
 
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}
@@ -39,3 +64,4 @@ services:
 
 volumes:
   pgdata:
+  backend_vendor:

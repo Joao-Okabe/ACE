@@ -1,0 +1,231 @@
+/* ==== LOGIN/CADASTRO ==== */
+
+.cor {
+    background-color: var(--azul-principal);
+}
+
+/* Logo */
+.auth-logo {
+    width: 270px;
+    margin-bottom: 25px;
+}
+
+/* Cards */
+.auth-card-login {
+    width: 900px;
+    height: 495px;
+    margin: 0;
+    background: var(--branco);
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.253);
+    padding: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.auth-card-cadastro {
+    width: 900px;
+    height: 555px;
+    margin: 0;
+    background: var(--branco);
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.253);
+    padding: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.auth-card h1 {
+    color: var(--azul-principal);
+    text-align: center;
+    font-size: 50px;
+    font-weight: 700;
+    margin-top: -15px;
+}
+
+.auth-card p {
+    color: var(--azul-principal);
+    text-align: center;
+}
+
+.auth-card label {
+    display: block;
+    color: var(--azul-principal);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.auth-link {
+    color: var(--laranja-principal);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+/* Lado esquerdo */
+.auth-card-left {
+    width: 50%;
+    background: var(--bege-principal);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 45px;
+    text-align: center;
+}
+
+.auth-card-left img {
+    width: 270px;
+    margin-bottom: 25px;
+}
+
+.auth-card-left h3 {
+    color: var(--azul-principal);
+    font-weight: 700;
+}
+
+/* Lado direito */
+.auth-card-right {
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--branco);
+}
+
+.container-auth {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            rgba(24, 24, 71, 0.65),
+            rgba(24, 24, 71, 0.65)
+        ),
+        url("../../img/fundo.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Mostrar senha */
+.btn-toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #656565;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-toggle-password:hover img {
+    color: var(--laranja-principal);
+}
+
+.btn-toggle-password:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+
+.form-input-group {
+    position: relative;
+    width: 100%;
+}
+
+.auth-error {
+    font-size: 14px;
+}
+
+/* Campos do login */
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--branco);
+    color: var(--preto);
+    font: inherit;
+}
+
+.form-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--azul-principal);
+    font-weight: 600;
+}
+
+.form-input-group .form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--branco);
+    color: var(--preto);
+    font: inherit;
+}
+
+.form-input-group .form-input:has(+ .btn-toggle-password) {
+    padding-right: 48px;
+}
+
+.auth-submit {
+    width: 100%;
+}
+
+.btn-toggle-password img {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.auth-error:not([hidden]) {
+    display: flex;
+    margin-bottom: 16px;
+    padding: 12px;
+    color: #842029;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+}
+
+.auth-error[hidden] {
+    display: none;
+}
+
+
+
+@media (max-width: 768px) {
+    .auth-card-login,
+    .auth-card-cadastro {
+        width: 100%;
+        max-width: 480px;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .auth-card-left,
+    .auth-card-right {
+        width: 100%;
+        padding: 30px 24px;
+    }
+
+    .auth-card-left img {
+        width: 180px;
+    }
+
+    .auth-card h1 {
+        font-size: 36px;
+    }
+}

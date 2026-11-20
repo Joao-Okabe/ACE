@@ -1,3 +1,38 @@
+# Web
 .env
-public/uploads
+/vendor/
+/storage/
+public/uploads/
+web/back-end/vendor/
+web/back-end/storage/
 public/.htaccess
+
+# Flutter
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+
+# Gradle
+mobile/android/.gradle/
+
+# Configurações locais
+mobile/android/local.properties
+
+# Mobile
+.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+.vscode/
+android/local.properties
+*.iml
+android/key.properties
+android/*.jks
+android/*.keystore
+*.jks
+*.keystore

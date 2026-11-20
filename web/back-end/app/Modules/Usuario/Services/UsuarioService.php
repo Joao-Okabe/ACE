@@ -1,0 +1,196 @@
+<?php
+
+class UsuarioService
+{
+    private PDO $pdo;
+
+    private Usuario $usuarioModel;
+
+    private Papel $papelModel;
+
+    private VinculoUsuarioEscola $vinculoUsuarioEscolaModel;
+
+    private UsuarioValidator $usuarioValidator;
+
+    public function __construct()
+    {
+        $this->pdo = Database::connect();
+
+        $this->usuarioModel = new Usuario();
+
+        $this->papelModel = new Papel();
+
+        $this->vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
+
+        $this->usuarioValidator = new UsuarioValidator();
+    }
+
+    public function cadastrar(array $dados): int
+    {
+
+        $this->usuarioValidator->validarCadastroUsuario($dados);
+
+        $senhaHash = password_hash(
+            $dados['senha'],
+            PASSWORD_DEFAULT
+        );
+
+        try {
+
+            $this->pdo->beginTransaction();
+
+            // Tratar upload de foto_perfil (opcional).
+            $caminhoPublicoFoto = $this->salvarFoto(
+                $_FILES['foto_perfil'] ?? null
+            );
+
+            $idUsuario = $this->usuarioModel->cadastrar([
+                'nm_usuario' => $dados['nm_usuario'],
+                'email' => $dados['email'],
+                'senha' => $senhaHash,
+                'foto_perfil' => $caminhoPublicoFoto
+            ]);
+
+            $papelVisitante = $this->papelModel->buscarPapelPorNome('VIS');
+
+            if ($papelVisitante === null) {
+                throw new Exception('O papel de visitante não está cadastrado.');
+            }
+
+            $this->papelModel->vincularPapel(
+                $idUsuario,
+                (int) $papelVisitante['cd_papel']
+            );
+
+            $this->pdo->commit();
+
+            return $idUsuario;
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $e;
+        }
+    }
+
+    // Lista usuários, respeitando o escopo de escola do diretor
+    public function listar(array $filtros = []): array
+    {
+        return $this->usuarioModel->listar($filtros);
+    }
+
+    // Retorna o id da escola em que o usuário está vinculado (vínculo ativo), ou null
+    public function obterEscolaDoUsuario(int $idUsuario): ?int
+    {
+        if ($idUsuario <= 0) {
+            return null;
+        }
+
+        return $this->vinculoUsuarioEscolaModel->escolaAtualPorPapeis(
+            $idUsuario,
+            ['ALU', 'PRF', 'AGR', 'DIR']
+        );
+    }
+
+    public function buscar(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE cd_usuario = :id');
+        $stmt->execute([':id' => $id]);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $usuario ?: null;
+    }
+
+    public function listarVinculos(int $idUsuario): array
+    {
+        return $this->vinculoUsuarioEscolaModel->listarVinculo($idUsuario);
+    }
+
+    public function atualizar(int $id, array $dados): void
+    {
+        $nome = trim((string) ($dados['nm_usuario'] ?? ''));
+        $email = trim((string) ($dados['email'] ?? ''));
+
+        if ($nome === '') {
+            throw new Exception('Informe seu nome.');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Informe um e-mail válido.');
+        }
+
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM usuario WHERE email = :email AND cd_usuario <> :id'
+        );
+        $stmt->execute([':email' => $email, ':id' => $id]);
+        if ($stmt->fetchColumn() !== false) {
+            throw new Exception('Já existe um usuário cadastrado com este e-mail.');
+        }
+
+        $usuarioAtual = $this->buscar($id);
+        if ($usuarioAtual === null) {
+            throw new Exception('Usuário não encontrado.');
+        }
+
+        $senha = trim((string) ($dados['senha'] ?? ''));
+        $senhaHash = $senha === '' ? null : password_hash($senha, PASSWORD_DEFAULT);
+        $foto = $this->salvarFoto($dados['foto_perfil'] ?? null);
+
+        $this->pdo->beginTransaction();
+        try {
+            $this->usuarioModel->atualizarPerfil($id, $nome, $email, $foto, $senhaHash);
+            $this->pdo->commit();
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    //Remove usuário
+    public function remover(int $id): void
+    {
+        $usuario = $this->buscar($id);
+
+        if ($usuario === null) {
+            throw new Exception('Usuário não encontrado.');
+        }
+
+        $this->usuarioModel->remover($id);
+    }
+
+    private function salvarFoto(?array $arquivo): ?string
+    {
+        if ($arquivo === null || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
+            throw new Exception('O arquivo enviado não é válido.');
+        }
+
+        if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
+            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+        }
+
+        $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $tipo = (new finfo(FILEINFO_MIME_TYPE))->file($arquivo['tmp_name']);
+        if (!isset($tiposPermitidos[$tipo])) {
+            throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
+        }
+
+        $pasta = __DIR__ . '/../../../../storage/upload';
+        if (!is_dir($pasta) && !mkdir($pasta, 0755, true) && !is_dir($pasta)) {
+            throw new Exception('Não foi possível criar a pasta de uploads.');
+        }
+
+        $nome = uniqid('IMG_', true) . '.' . $tiposPermitidos[$tipo];
+        if (!move_uploaded_file($arquivo['tmp_name'], $pasta . DIRECTORY_SEPARATOR . $nome)) {
+            throw new Exception('Não foi possível salvar a imagem.');
+        }
+
+        return '/uploads/' . $nome;
+    }
+}

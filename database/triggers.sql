@@ -1,7 +1,9 @@
-/*Cria função para atualizar a coluna "atualizado_em" de qualquer tabela  */
+-- ============================================================
+-- TRIGGERS DE ATUALIZAÇÃO
+-- ============================================================
+
 CREATE OR REPLACE FUNCTION atualizar_timestamp()
-RETURNS TRIGGER AS
-$$
+RETURNS TRIGGER AS $$
 BEGIN
     NEW.atualizado_em = CURRENT_TIMESTAMP;
     RETURN NEW;
@@ -23,3 +25,5 @@ CREATE TRIGGER trg_time_timestamp
 BEFORE UPDATE ON time
 FOR EACH ROW
 EXECUTE FUNCTION atualizar_timestamp();
+
+COMMIT;

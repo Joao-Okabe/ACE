@@ -1,0 +1,6 @@
+# Use este arquivo somente se decidir migrar para uma chave privada própria.
+# Atenção: trocar a chave impede atualizar instalações assinadas pela chave atual.
+storeFile=C:\\caminho\\seguro\\aether-upload.jks
+storePassword=PREENCHA_LOCALMENTE
+keyAlias=aether
+keyPassword=PREENCHA_LOCALMENTE

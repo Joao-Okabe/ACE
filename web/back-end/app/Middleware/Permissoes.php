@@ -1,0 +1,166 @@
+<?php
+
+class Permissoes
+{
+    public static function estaLogado(): bool
+    {
+        return AuthContext::autenticado();
+    }
+
+    public static function temPapel(string $papel): bool
+    {
+        return AuthContext::possuiPapel($papel);
+    }
+
+    public static function temPapelAdm(int $idUsuario): bool
+    {
+        $idUsuarioAutenticado = AuthContext::id();
+
+        if (
+            $idUsuario <= 0 ||
+            $idUsuario !== $idUsuarioAutenticado
+        ) {
+            return false;
+        }
+
+        return self::temPapel('ADM');
+    }
+
+    public static function podeGerenciarEscola(int $idEscola): bool
+    {
+        $idUsuario = AuthContext::id();
+
+        if ($idUsuario === null || $idEscola <= 0) {
+            return false;
+        }
+
+        // Administrador pode gerenciar qualquer escola.
+        if (self::temPapel('ADM')) {
+            return true;
+        }
+
+        // Considere todos os vínculos ativos do diretor, não apenas o mais recente.
+        if (self::temPapel('DIR')) {
+            $vinculoModel = new VinculoUsuarioEscola();
+            return $vinculoModel->isUsuarioComPapeis(
+                $idUsuario,
+                $idEscola,
+                ['DIR']
+            );
+        }
+
+        return false;
+    }
+
+    public static function exigirPermissaoGerenciarAluno(int $id): void
+    {
+        if (self::temPapel('ADM')) {
+            return;
+        }
+
+        if (!self::temPapel('DIR')) {
+            throw new Exception(
+                'Você não tem permissão para gerenciar este aluno.'
+            );
+        }
+
+        $alunoService = new AlunoService();
+
+        $escolasAluno = $alunoService->obterEscolasDoAluno($id);
+        $idUsuario = AuthContext::id();
+        $escolasGerenciaveis = [];
+        if ($idUsuario !== null && self::temPapel('DIR')) {
+            $vinculoModel = new VinculoUsuarioEscola();
+            $escolasGerenciaveis = $vinculoModel->escolasAtivasPorPapeis($idUsuario, ['DIR']);
+        }
+        if (!self::temPapel('ADM') && array_intersect($escolasAluno, $escolasGerenciaveis) === []) {
+            throw new Exception(
+                'Você não tem permissão para gerenciar este aluno.'
+            );
+        }
+    }
+
+    public static function podeGerenciarTime(int $idTime): bool
+    {
+        $idUsuario = AuthContext::id();
+
+        if ($idUsuario === null || $idTime <= 0) {
+            return false;
+        }
+
+        // Administrador pode gerenciar qualquer time.
+        if (self::temPapel('ADM')) {
+            return true;
+        }
+
+        // Técnico, responsável ou diretor da escola vinculada ao time.
+        $vinculoTimeModel = new VinculoTime();
+
+        return $vinculoTimeModel->usuarioPodeGerenciarTime(
+            $idUsuario,
+            $idTime
+        );
+    }
+
+    public static function resolverEscolaCadastro(array $dados): int
+    {
+        $vinculoUsuarioEscolaModel = new VinculoUsuarioEscola();
+
+        if (self::temPapel('ADM')) {
+            return (int) ($dados['escola'] ?? 0);
+        }
+
+        $idEscolaSolicitada = (int) ($dados['escola'] ?? 0);
+        if ($idEscolaSolicitada > 0) {
+            return self::podeGerenciarEscola($idEscolaSolicitada)
+                ? $idEscolaSolicitada
+                : 0;
+        }
+
+        $idUsuario = AuthContext::id();
+
+        if ($idUsuario === null) {
+            return 0;
+        }
+
+        return (int) (
+            $vinculoUsuarioEscolaModel
+                ->escolaGerenciavelPorUsuario($idUsuario) ?? 0
+        );
+    }
+
+    public static function podeGerenciarUsuarios(): bool
+    {
+        return self::temPapel('ADM') || self::temPapel('DIR');
+    }
+
+    public static function temPapelDiretor(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelCoordenador(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelProfessor(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelGremista(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelAluno(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+
+    public static function temPapelVisitante(string $papel): bool
+    {
+        return self::temPapel($papel);
+    }
+}

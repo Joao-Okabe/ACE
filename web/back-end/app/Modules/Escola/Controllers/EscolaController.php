@@ -1,0 +1,246 @@
+<?php
+
+class EscolaController
+{
+    private ?EscolaService $service = null;
+
+    private function service(): EscolaService
+    {
+        if ($this->service === null) {
+            $this->service = new EscolaService();
+        }
+
+        return $this->service;
+    }
+
+    //Exibe o formulário de cadastro
+    public function create(): void
+    {
+        $permissoes = new Permissoes();
+        $idUsuario = (int) ($_SESSION['usuario']['id'] ?? 0);
+        $possuiADM = $permissoes->temPapelAdm($idUsuario);
+        renderView('escola/cadastrar',['possuiADM' => $possuiADM]);
+    }
+
+    //Salva uma nova escola
+    public function store(): void
+    {
+        try {
+            // Somente administradores podem cadastrar escolas.
+            if (!Permissoes::temPapel('ADM')) {
+                throw new Exception('Você não tem permissão para cadastrar escolas.');
+            }
+
+            $dados = $_POST;
+            $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
+
+            $this->service()->cadastrar($dados);
+
+            header("Location: /escolas/cadastrar?sucesso=1");
+            exit;
+
+        } catch (Exception $e) {
+
+            $erro = $e->getMessage();
+            $dados = $_POST;
+
+            $escolaService = new EscolaService();
+            $escolas = $escolaService->listar();
+
+            renderView('escola/cadastrar', ['erro' => $erro, 'dados' => $dados]);
+
+        }
+    }
+
+    //Lista todas as escolas
+    public function list(): void
+    {
+        $filtros = [
+            'nome' => trim($_GET['nome'] ?? ''),
+            'categoria' => trim($_GET['categoria'] ?? ''),
+            'ordem' => strtolower($_GET['ordem'] ?? 'asc'),
+        ];
+
+        if (!in_array($filtros['ordem'], ['asc', 'desc'], true)) {
+            $filtros['ordem'] = 'asc';
+        }
+
+        $escolas = $this->service()->listar($filtros);
+
+        renderView('escola/listar', [
+            'escolas' => $escolas,
+            'filtros' => $filtros,
+        ]);
+    }
+
+    //Exibe formulário de edição de Escola
+    public function edit(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            $escola = $this->service()->buscar($id);
+
+            // Apenas ADM ou diretor da própria escola podem editar.
+            if (!Permissoes::podeGerenciarEscola($id)) {
+                throw new Exception('Você não tem permissão para editar esta escola.');
+            }
+        } catch (Exception $e) {
+            http_response_code(403);
+            echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+            return;
+        }
+
+        renderView('escola/editar', ['escola' => $escola]);
+    }
+
+    //Atualiza escola
+    public function update(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        try {
+            // Apenas ADM ou diretor da própria escola podem atualizar.
+            if (!Permissoes::podeGerenciarEscola($id)) {
+                throw new Exception('Você não tem permissão para editar esta escola.');
+            }
+
+            $dados = $_POST;
+            $dados['img_logo_upload'] = $_FILES['img_logo'] ?? null;
+
+            $this->service()->atualizar($id, $dados);
+
+            header("Location: /escolas/listar");
+            exit;
+
+        } catch (Exception $e) {
+
+            echo htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+
+        }
+    }
+
+    //Remove escola
+    public function destroy(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        // Verifica sessão
+        if (empty($_SESSION['usuario']['id'])) {
+            http_response_code(401);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        // CSRF: verificado centralmente pelo Router (Csrf::exigirToken).
+
+        // Apenas administradores podem remover escolas.
+        if (!Permissoes::temPapel('ADM')) {
+            http_response_code(403);
+            echo 'Você não tem permissão para remover escolas.';
+            return;
+        }
+
+        try {
+
+            $this->service()->remover($id);
+
+            $_SESSION['flash'] = ['success' => 'Escola removida com sucesso.'];
+            header("Location: /escolas/listar");
+            exit;
+
+        } catch (Exception $e) {
+            $_SESSION['flash'] = ['error' => $e->getMessage()];
+            header("Location: /escolas/listar");
+            exit;
+        }
+    }
+
+    //Visualiza perfil da escola
+    public function visualizar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        $escola = $this->service()->buscar($id);
+
+        renderView('escola/perfil', ['escola' => $escola]);
+    }
+
+    // Tranca/Destranca escola (apenas Diretores vinculados podem executar)
+    public function trancar(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Método não permitido.';
+            return;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'ID inválido';
+            return;
+        }
+
+        // Verifica sessão
+        if (empty($_SESSION['usuario']['id'])) {
+            http_response_code(401);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        // CSRF: verificado centralmente pelo Router (Csrf::exigirToken).
+
+        $idUsuario = (int) $_SESSION['usuario']['id'];
+
+        $vinculoModel = new VinculoUsuarioEscola();
+
+        if (!$vinculoModel->isUsuarioDiretor($idUsuario, $id)) {
+            http_response_code(403);
+            echo 'Acesso negado.';
+            return;
+        }
+
+        try {
+            $escola = $this->service()->buscar($id);
+            $novaAtiva = !((bool) ($escola['ativa'] ?? false));
+
+            $this->service()->definirAtiva($id, $novaAtiva);
+            // flash
+            $_SESSION['flash'] = ['success' => $novaAtiva ? 'Escola ativada.' : 'Escola trancada.'];
+
+            header("Location: /escolas/visualizar?id={$id}");
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash'] = ['error' => $e->getMessage()];
+            header("Location: /escolas/visualizar?id={$id}");
+            exit;
+        }
+    }
+}

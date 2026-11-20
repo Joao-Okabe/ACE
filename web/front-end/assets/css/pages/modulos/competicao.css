@@ -1,0 +1,676 @@
+
+/* ========================================
+   LAYOUT DA COMPETIÇÃO
+======================================== */
+.competicao-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+}
+.competicao-menu-lateral {
+    min-width: 0;
+}
+.competicao-menu-lateral .visu-menu {
+    position: sticky;
+    top: 20px;
+}
+.competicao-layout .visu-painel-conteudo {
+    min-width: 0;
+    min-height: 400px;
+    margin-top: 0;
+    padding: 28px;
+    border-radius: 16px;
+    background: var(--branco);
+    box-shadow: var(--shadow-sm);
+}
+.competicao-layout .visu-secao {
+    min-width: 0;
+}
+.competicao-layout .visu-secao[hidden] {
+    display: none !important;
+}
+.competicao-layout .visu-subtitulo {
+    margin: 0 0 14px;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* ========================================
+   INFORMAÇÕES DA COMPETIÇÃO
+======================================== */
+.competicao-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.competicao-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+    padding: 18px;
+    border-radius: 10px;
+    background: var(--bege-principal);
+}
+.competicao-info-item span {
+    color: var(--azul-principal);
+    font-size: 13px;
+    opacity: 0.75;
+}
+.competicao-info-item strong {
+    color: var(--azul-principal);
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+.competicao-info-item--full {
+    grid-column: 1 / -1;
+}
+.competicao-info-bloco {
+    margin-bottom: 26px;
+}
+.competicao-subsecao {
+    margin-top: 28px;
+}
+.competicao-subsecao .visu-secao-header {
+    margin-bottom: 16px;
+}
+
+/* ========================================
+   FORMULÁRIO DE INSCRIÇÃO
+======================================== */
+.competicao-form {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+.competicao-form-campo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+}
+.competicao-form-campo label {
+    color: var(--azul-principal);
+    font-size: 13px;
+    font-weight: 600;
+}
+.competicao-form-campo select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(24, 24, 71, 0.2);
+    border-radius: 9px;
+    background: var(--branco);
+    color: var(--azul-principal);
+    font: inherit;
+}
+.competicao-form-campo select:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+.competicao-form .custom-btn {
+    min-height: 44px;
+}
+.competicao-form .custom-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   PERÍODO DE INSCRIÇÃO
+======================================== */
+.periodo-inscricao {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+.periodo-inscricao-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #e8e5df;
+    border-radius: var(--radius);
+    background: var(--branco);
+}
+.periodo-inscricao-item img {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+.periodo-inscricao-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+.periodo-inscricao-item span {
+    color: #777;
+    font-size: 13px;
+    font-weight: 500;
+}
+.periodo-inscricao-item strong {
+    color: var(--azul-principal);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* ========================================
+   SELEÇÃO DE TIMES
+======================================== */
+.lista-times-disponiveis {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.time-selecao-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid #e8e5df;
+    border-radius: var(--radius);
+    background: var(--branco);
+    cursor: pointer;
+}
+.time-selecao-item.selecionado {
+    border-color: var(--azul-principal);
+    background: #f0f5fa;
+}
+.time-selecao-checkbox {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--azul-principal);
+    cursor: pointer;
+}
+.time-selecao-brasao {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+.time-selecao-nome {
+    color: var(--preto);
+    font-size: 14px;
+    font-weight: 600;
+}
+.contador-times {
+    display: block;
+    margin-top: 7px;
+    color: #777;
+    font-size: 12px;
+}
+.mensagem-vazia {
+    margin: 0;
+    padding: 16px;
+    border: 1px solid #e8e5df;
+    border-radius: var(--radius);
+    background: var(--branco);
+    color: #777;
+    text-align: center;
+}
+
+/* ========================================
+   SELECT COM SELEÇÃO MÚLTIPLA
+======================================== */
+.select-multiplos {
+    position: relative;
+    width: 100%;
+}
+.select-multiplos-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 2px solid var(--borda);
+    border-radius: 12px;
+    outline: none;
+    background: var(--branco);
+    color: var(--azul-principal);
+    font-family: inherit;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+}
+.select-multiplos-toggle.aberto,
+.select-multiplos-toggle:focus-visible {
+    border-color: var(--laranja-principal);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 78, 28, 0.15);
+}
+.select-multiplos-seta {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+.select-multiplos-toggle.aberto .select-multiplos-seta {
+    transform: rotate(180deg);
+}
+.select-multiplos-lista {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid #e8e5df;
+    border-radius: var(--radius);
+    background: var(--branco);
+    box-shadow: var(--shadow-md);
+}
+.select-multiplos-lista[hidden] {
+    display: none;
+}
+.select-multiplos-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.select-multiplos-item:hover {
+    background: #f5f5f2;
+}
+.select-multiplos-item.selecionado {
+    background: #f0f5fa;
+}
+.select-multiplos-item input {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    accent-color: var(--azul-principal);
+    cursor: pointer;
+}
+.select-multiplos-brasao {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+.select-multiplos-nome {
+    color: var(--preto);
+    font-size: 14px;
+    font-weight: 500;
+}
+.select-multiplos-vazio {
+    margin: 0;
+    padding: 14px;
+    color: #777;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* FORMULÁRIO DE INSCRIÇÃO DE TIMES */
+#formInscreverTime {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    width: 100%;
+}
+#formInscreverTime .competicao-form-campo {
+    flex: 3;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+}
+#formInscreverTime .select-multiplos-toggle,
+#formInscreverTime #botaoInscreverTime {
+    height: 45px;
+}
+#formInscreverTime .select-multiplos-toggle {
+    width: 100%;
+}
+#formInscreverTime #botaoInscreverTime {
+    flex: 1;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* ========================================
+   TIMES INSCRITOS
+======================================== */
+.times-inscritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+}
+.time-inscrito-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    min-height: 100px;
+    padding: 15px 20px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: var(--branco);
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.time-inscrito-card:hover {
+    border-color: var(--laranja-principal);
+    box-shadow: var(--shadow-md);
+}
+.time-inscrito-card:focus-visible {
+    outline: 2px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+.time-inscrito-brasao {
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+    border: 2px solid var(--azul-principal);
+    border-radius: 50%;
+    object-fit: cover;
+}
+.time-inscrito-nome {
+    color: var(--azul-principal);
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* ========================================
+   LOCAL E DATAS
+======================================== */
+.local-datas-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.local-data-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+    background: var(--branco);
+}
+.local-data-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--cinza);
+    font-size: 13px;
+    font-weight: 500;
+}
+.local-data-indicador {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--azul-principal);
+}
+.local-data-indicador-fim {
+    background: var(--laranja-principal);
+}
+.local-data-card strong {
+    color: var(--azul-principal);
+    font-size: 22px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.local-data-card p {
+    margin: 0;
+    color: var(--cinza);
+    font-size: 12px;
+}
+.local-data-card-local {
+    grid-column: 1 / -1;
+    border-left: 2px solid var(--laranja-principal);
+}
+
+/* ========================================
+   ETAPAS
+======================================== */
+.etapas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+}
+.etapa-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--borda);
+    border-radius: 14px;
+    background: var(--branco);
+    transition: var(--transition);
+}
+.etapa-card:hover {
+    border-color: var(--azul-principal);
+    box-shadow: var(--shadow-md);
+}
+.etapa-card-cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+.etapa-card-nome {
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.etapa-card-ordem {
+    flex-shrink: 0;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: var(--bege-principal);
+    color: var(--azul-principal);
+    font-size: 11px;
+    font-weight: 600;
+}
+.etapa-card-tipo {
+    align-self: flex-start;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background: rgba(244, 78, 28, 0.08);
+    color: var(--laranja-principal);
+    font-size: 12px;
+    font-weight: 600;
+}
+.etapa-card-descricao {
+    margin: 0;
+    color: var(--cinza);
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+.etapa-card-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 8px;
+}
+#modalEditarEtapa .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+}
+
+/* ========================================
+   GERENCIAMENTO
+======================================== */
+.competicao-gerenciar-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.competicao-gerenciar-grupo {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    background: var(--branco);
+}
+.competicao-gerenciar-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+    padding: 18px 20px;
+    border: none;
+    background: var(--branco);
+    color: var(--preto);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.competicao-gerenciar-item:hover,
+.competicao-gerenciar-item[aria-expanded="true"] {
+    background: var(--bege-principal);
+}
+.competicao-gerenciar-item > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+.competicao-gerenciar-item strong {
+    color: var(--azul-principal);
+    font-size: 14px;
+    font-weight: 700;
+}
+.competicao-gerenciar-item span {
+    color: var(--cinza);
+    font-size: 12px;
+}
+.competicao-gerenciar-seta {
+    flex-shrink: 0;
+    color: var(--laranja-principal);
+    font-size: 22px;
+    transition: transform 0.2s ease;
+}
+.competicao-gerenciar-item[aria-expanded="true"] .competicao-gerenciar-seta {
+    transform: rotate(180deg);
+}
+.competicao-gerenciar-item:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: -3px;
+}
+.competicao-gerenciar-conteudo {
+    padding: 18px 20px;
+    border-top: 1px solid var(--borda);
+}
+.competicao-gerenciar-conteudo[hidden] {
+    display: none;
+}
+
+/* ========================================
+   MENSAGENS
+======================================== */
+.mensagem-sucesso,
+.mensagem-erro {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.mensagem-sucesso {
+    background: rgba(40, 150, 90, 0.12);
+    color: #17643a;
+}
+.mensagem-erro {
+    background: rgba(220, 53, 69, 0.1);
+    color: #a52232;
+}
+.competicao-layout .visu-mensagem {
+    margin: 0;
+    padding: 16px;
+    border-radius: 9px;
+    background: var(--bege-principal);
+    color: var(--azul-principal);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+@media (max-width: 767px) {
+    .competicao-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+    .competicao-menu-lateral .visu-menu {
+        position: static;
+    }
+    .competicao-layout .visu-painel-conteudo {
+        min-height: 280px;
+        padding: 20px;
+    }
+    .competicao-info-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .competicao-info-item--full {
+        grid-column: auto;
+    }
+    .competicao-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .competicao-form .custom-btn {
+        width: 100%;
+    }
+    #formInscreverTime {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    #formInscreverTime .competicao-form-campo,
+    #formInscreverTime #botaoInscreverTime {
+        flex: 1;
+        width: 100%;
+    }
+    #formInscreverTime #botaoInscreverTime {
+        white-space: normal;
+    }
+}
+@media (max-width: 600px) {
+    .periodo-inscricao,
+    .local-datas-container,
+    .etapas-grid {
+        grid-template-columns: 1fr;
+    }
+    .periodo-inscricao {
+        gap: 10px;
+    }
+    .periodo-inscricao-item {
+        padding: 14px;
+    }
+    .local-data-card-local {
+        grid-column: auto;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .competicao-gerenciar-item,
+    .time-inscrito-card,
+    .etapa-card,
+    .select-multiplos-seta,
+    .competicao-gerenciar-seta {
+        transition: none;
+    }
+}

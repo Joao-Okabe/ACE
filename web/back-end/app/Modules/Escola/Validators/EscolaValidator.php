@@ -1,0 +1,34 @@
+<?php
+
+class EscolaValidator
+{
+    public function validarCadastroEscola(array $dados)
+    {
+        $this->validarNome($dados);
+        $this->validarCategoriaAdministrativa($dados);
+    }
+
+    private function validarNome(array $dados): void
+    {
+        if (empty(trim($dados['nome'] ?? ''))) {
+            throw new InvalidArgumentException(
+                'Informe o nome do(a) aluno(a).'
+            );
+        }
+    }
+    
+    private function validarCategoriaAdministrativa(array $dados): void
+    {
+        if (!in_array($dados['categoria_administrativa'], ['Escola Municipal', 'Escola Estadual', 'Privada'], true ?? '')) {
+            throw new InvalidArgumentException(
+                'Categoria administrativa inválida..'
+            );
+        } else { 
+            if (empty($dados['categoria_administrativa'] ?? '')) {
+            throw new InvalidArgumentException(
+                'Informe uma Categoria Administrativa.'
+            );
+        }
+        }
+    }
+}

@@ -1,0 +1,198 @@
+@import url("./modulos/time.css");
+@import url("./modulos/competicao.css");
+@import url("./modulos/chaveamento.css");
+
+
+.mensagem-sucesso,
+.mensagem-erro {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.mensagem-sucesso {
+    background: rgba(40, 150, 90, 0.12);
+    color: #17643a;
+}
+
+.mensagem-erro {
+    background: rgba(220, 53, 69, 0.1);
+    color: #a52232;
+}
+
+
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+.header-visualizar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ========================================
+   IDENTIFICAÇÃO DA ESCOLA
+======================================== */
+
+.visu-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.visu-perfil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 3px solid var(--azul-principal);
+    border-radius: 50%;
+}
+
+.visu-perfil img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.visu-identificacao-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.visu-nome-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+
+
+.visu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.visu-box--full {
+    grid-column: 1 / -1;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.section-title{
+    color: var(--azul-principal);
+}
+.info-section {
+    min-width: 0;
+}
+
+.info-section p {
+    overflow-wrap: anywhere;
+}
+
+.value-info {
+    margin: 0;
+}
+
+/* ========================================
+   MENSAGEM
+======================================== */
+
+.visu-mensagem {
+    margin: 12px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 768px) {
+    .visu-identificacao {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .visu-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .visu-box--full {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 575px) {
+    .visu-perfil img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .info-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .visu-nome-status {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* ABAS SUPERIORES DA COMPETIÇÃO */
+.visu-painel-conteudo {
+    position: relative;
+    z-index: auto;
+    border: 1px solid #D8D8E0;
+    border-radius: 12px;
+    padding: 24px;
+}
+.visu-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    gap: 8px;
+    border: none !important;
+    margin-bottom: -1px;
+    padding-left: 20px;
+}
+
+.visu-menu .visu-menu-item {
+    flex: 1 1 0 !important;
+    min-width: 0;
+    width: auto !important;
+    display: block !important;
+    text-align: center;
+    white-space: nowrap;
+    padding: 12px 6px;
+    border: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: #181847 !important;
+    font-weight: 500;
+}
+
+.visu-menu .visu-menu-item.active {
+    background: #181847 !important;
+    color: #ffffff !important;
+}
+
+.visu-menu .visu-menu-item:hover:not(.active) {
+    background: #F1E4D1 !important;
+    color: #181847 !important;
+}

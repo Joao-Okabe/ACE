@@ -1,0 +1,27 @@
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST "$API/api/v1/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg token "$REFRESH_TOKEN" \
+    '{refresh_token: $token}')" \
+  > /tmp/refresh-a.txt &
+
+PID_A=$!
+
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST "$API/api/v1/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg token "$REFRESH_TOKEN" \
+    '{refresh_token: $token}')" \
+  > /tmp/refresh-b.txt &
+
+PID_B=$!
+
+wait "$PID_A"
+wait "$PID_B"
+
+echo "=== Requisição A ==="
+cat /tmp/refresh-a.txt
+
+echo "=== Requisição B ==="
+cat /tmp/refresh-b.txt
+

@@ -1,5 +1,13 @@
 -- ============================================================
--- 1. PAPÉIS
+-- ACE - SCRIPT COMPLETO DO BANCO DE DADOS
+-- PostgreSQL
+-- Schema destinado à criação de um banco novo.
+-- ============================================================
+
+BEGIN;
+
+-- ============================================================
+-- USUÁRIOS, PAPÉIS E ESCOLAS
 -- ============================================================
 
 CREATE TABLE papel (
@@ -22,13 +30,40 @@ CREATE TABLE usuario (
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE refresh_token (
+    cd_refresh_token BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_usuario INTEGER NOT NULL
+        REFERENCES usuario(cd_usuario)
+        ON DELETE CASCADE,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    familia UUID NOT NULL,
+    expira_em TIMESTAMPTZ NOT NULL,
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usado_em TIMESTAMPTZ,
+    revogado_em TIMESTAMPTZ,
+    substituido_por_hash CHAR(64),
+    CONSTRAINT ck_refresh_token_hash
+        CHECK (token_hash ~ '^[a-f0-9]{64}$'),
+    CONSTRAINT ck_refresh_token_substituido
+        CHECK (
+            substituido_por_hash IS NULL
+            OR substituido_por_hash ~ '^[a-f0-9]{64}$'
+        )
+);
+
+CREATE INDEX idx_refresh_token_usuario
+    ON refresh_token(cd_usuario);
+CREATE INDEX idx_refresh_token_familia
+    ON refresh_token(familia);
+CREATE INDEX idx_refresh_token_expira
+    ON refresh_token(expira_em);
+
+
 CREATE TABLE usuario_papel (
-    cd_usuario INTEGER NOT NULL,
-    cd_papel INTEGER NOT NULL,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE CASCADE,
+    cd_papel INTEGER NOT NULL REFERENCES papel ON DELETE CASCADE,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    PRIMARY KEY (cd_usuario, cd_papel),
-    FOREIGN KEY (cd_usuario) REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (cd_papel) REFERENCES papel(cd_papel) ON DELETE CASCADE
+    PRIMARY KEY (cd_usuario, cd_papel)
 );
 
 -- ============================================================
@@ -42,11 +77,24 @@ CREATE TABLE escola (
     cep VARCHAR(9),
     numero VARCHAR(20),
     email VARCHAR(150),
-    categoria_administrativa VARCHAR(20) NOT NULL,
+    categoria_administrativa VARCHAR(30) NOT NULL
+        CHECK (categoria_administrativa IN (
+            'Escola Municipal',
+            'Escola Estadual',
+            'Privada'
+        )),
     path_brasao TEXT,
     criada_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ativa BOOLEAN NOT NULL DEFAULT TRUE,
-    CONSTRAINT chk_categoria CHECK (categoria_administrativa IN ('Escola Municipal', 'Escola Estadual', 'Privada'))
+    ativa BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE vinculo_usuario_escola (
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE CASCADE,
+    cd_escola INTEGER NOT NULL REFERENCES escola ON DELETE CASCADE,
+    cd_papel INTEGER NOT NULL REFERENCES papel ON DELETE RESTRICT,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_usuario, cd_escola, cd_papel)
 );
 
 CREATE TABLE vinculo_usuario_escola (
@@ -67,30 +115,27 @@ CREATE TABLE vinculo_usuario_escola (
 
 CREATE TABLE aluno (
     cd_aluno INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_usuario INTEGER NOT NULL UNIQUE,
+    cd_usuario INTEGER NOT NULL UNIQUE REFERENCES usuario ON DELETE CASCADE,
     ra VARCHAR(20) NOT NULL UNIQUE,
     data_nascimento DATE,
-    sexo CHAR(1),
+    sexo CHAR(1) CHECK (sexo IN ('M', 'F', 'O') OR sexo IS NULL),
     telefone VARCHAR(20),
     cep VARCHAR(9),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cd_usuario) REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
-    CONSTRAINT chk_sexo CHECK (sexo IN ('M', 'F', 'O') OR sexo IS NULL)
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE documentos_aluno (
     cd_documentos_aluno INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_aluno INTEGER NOT NULL,
+    cd_aluno INTEGER NOT NULL REFERENCES aluno ON DELETE CASCADE,
     rg TEXT,
     comprovante_escolar TEXT,
-    atestado_aptidao_fisica TEXT,
-    FOREIGN KEY (cd_aluno) REFERENCES aluno(cd_aluno) ON DELETE CASCADE
+    atestado_aptidao_fisica TEXT
 );
 
 -- ============================================================
--- 5. CONFIGURAÇÕES ESPORTIVAS
+-- ESPORTES, MODALIDADES E FORMATOS
 -- ============================================================
 
 CREATE TABLE formato (
@@ -101,10 +146,10 @@ CREATE TABLE formato (
 
 CREATE TABLE modalidade (
     cd_modalidade INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    sexo VARCHAR(5) NOT NULL,
-    categoria VARCHAR(10) NOT NULL,
-    CHECK (sexo IN ('M', 'F', 'MISTO')),
-    CHECK (categoria IN ('Sub14', 'Sub18', 'MISTO')),
+    sexo VARCHAR(5) NOT NULL
+        CHECK (sexo IN ('M', 'F', 'MISTO')),
+    categoria VARCHAR(10) NOT NULL
+        CHECK (categoria IN ('Sub14', 'Sub18', 'MISTO')),
     UNIQUE (sexo, categoria)
 );
 
@@ -121,201 +166,213 @@ CREATE TABLE tipo_etapa (
 );
 
 -- ============================================================
--- 6. COMPETIÇÃO
+-- COMPETIÇÕES
 -- ============================================================
 
 CREATE TABLE competicao (
     cd_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_competicao VARCHAR(150) NOT NULL,
-    cd_criador INTEGER,
-    cd_esporte INTEGER NOT NULL,
-    cd_modalidade INTEGER NOT NULL,
-    cd_formato INTEGER NOT NULL,
-    cd_escola INTEGER,
+    cd_criador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_esporte INTEGER NOT NULL REFERENCES esporte ON DELETE RESTRICT,
+    cd_modalidade INTEGER NOT NULL REFERENCES modalidade ON DELETE RESTRICT,
+    cd_formato INTEGER NOT NULL REFERENCES formato ON DELETE RESTRICT,
+    cd_escola INTEGER REFERENCES escola ON DELETE SET NULL,
     inicio_em TIMESTAMP,
     fim_em TIMESTAMP,
-    status VARCHAR(30) NOT NULL DEFAULT 'PLANEJADA',
+    status VARCHAR(30) NOT NULL DEFAULT 'PLANEJADA'
+        CHECK (status IN (
+            'PLANEJADA',
+            'INSCRICOES',
+            'EM_ANDAMENTO',
+            'FINALIZADA',
+            'CANCELADA'
+        )),
     descricao TEXT,
+    visibilidade VARCHAR(10) NOT NULL DEFAULT 'PUBLICA'
+        CHECK (visibilidade IN ('PUBLICA', 'PRIVADA')),
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cd_criador) REFERENCES usuario(cd_usuario) ON DELETE RESTRICT,
-    FOREIGN KEY (cd_esporte) REFERENCES esporte(cd_esporte) ON DELETE RESTRICT,
-    FOREIGN KEY (cd_modalidade) REFERENCES modalidade(cd_modalidade) ON DELETE RESTRICT,
-    FOREIGN KEY (cd_formato) REFERENCES formato(cd_formato) ON DELETE RESTRICT,
-    FOREIGN KEY (cd_escola) REFERENCES escola(cd_escola) ON DELETE SET NULL,
-    CHECK (status IN ('PLANEJADA', 'INSCRICOES', 'EM_ANDAMENTO', 'FINALIZADA', 'CANCELADA'))
+
+    CHECK (
+        fim_em IS NULL
+        OR inicio_em IS NULL
+        OR fim_em >= inicio_em
+    )
 );
 
+CREATE TABLE arbitro_competicao (
+    cd_competicao INTEGER NOT NULL
+        REFERENCES competicao ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL
+        REFERENCES usuario ON DELETE CASCADE,
+    cd_usuario_vinculador INTEGER NOT NULL
+        REFERENCES usuario ON DELETE RESTRICT,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_competicao, cd_usuario)
+);
+
+CREATE INDEX idx_arbitro_competicao_usuario
+    ON arbitro_competicao (cd_usuario, cd_competicao);
+
 -- ============================================================
--- 7. TIMES
+-- TIMES E VÍNCULOS
 -- ============================================================
 
 CREATE TABLE time (
     cd_time INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_time VARCHAR(100) NOT NULL,
-    cd_esporte INTEGER NOT NULL,
+    cd_esporte INTEGER NOT NULL REFERENCES esporte ON DELETE RESTRICT,
     descricao TEXT,
     principal BOOLEAN NOT NULL DEFAULT FALSE,
     path_escudo VARCHAR(255),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cd_esporte) REFERENCES esporte(cd_esporte) ON DELETE RESTRICT
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE funcao_integrante (
     cd_funcao_integrante INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_esporte INTEGER NOT NULL,
+    cd_esporte INTEGER NOT NULL REFERENCES esporte ON DELETE CASCADE,
     nm_funcao VARCHAR(100) NOT NULL,
     ds_funcao TEXT,
-    FOREIGN KEY (cd_esporte) REFERENCES esporte(cd_esporte) ON DELETE CASCADE,
     UNIQUE (cd_esporte, nm_funcao)
 );
 
 CREATE TABLE vinculo_time_escola (
-    cd_time INTEGER NOT NULL,
-    cd_escola INTEGER NOT NULL,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE CASCADE,
+    cd_escola INTEGER NOT NULL REFERENCES escola ON DELETE CASCADE,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (cd_time, cd_escola),
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE,
-    FOREIGN KEY (cd_escola) REFERENCES escola(cd_escola) ON DELETE CASCADE
+    PRIMARY KEY (cd_time, cd_escola)
 );
 
 CREATE TABLE vinculo_time_integrante (
     cd_vinculo_time_integrante INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_time INTEGER NOT NULL,
-    cd_usuario INTEGER NOT NULL,
-    cd_funcao_integrante INTEGER,
-    numero_camisa INTEGER,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_funcao_integrante INTEGER REFERENCES funcao_integrante ON DELETE SET NULL,
+    numero_camisa INTEGER CHECK (
+        numero_camisa IS NULL OR numero_camisa > 0
+    ),
     capitao BOOLEAN NOT NULL DEFAULT FALSE,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE,
-    FOREIGN KEY (cd_usuario) REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (cd_funcao_integrante) REFERENCES funcao_integrante(cd_funcao_integrante) ON DELETE SET NULL,
-    UNIQUE (cd_time, cd_usuario),
-    CHECK (numero_camisa IS NULL OR numero_camisa > 0)
+    UNIQUE (cd_time, cd_usuario)
 );
 
 CREATE TABLE escalacao_time (
-    cd_vinculo_time_integrante INTEGER PRIMARY KEY,
+    cd_vinculo_time_integrante INTEGER PRIMARY KEY
+        REFERENCES vinculo_time_integrante ON DELETE CASCADE,
     titular BOOLEAN NOT NULL DEFAULT FALSE,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (cd_vinculo_time_integrante) REFERENCES vinculo_time_integrante(cd_vinculo_time_integrante) ON DELETE CASCADE
+    ativo BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE vinculo_tecnico_time (
-    cd_usuario INTEGER NOT NULL,
-    cd_time INTEGER NOT NULL,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    PRIMARY KEY (cd_usuario, cd_time),
-    FOREIGN KEY (cd_usuario) REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE
+    PRIMARY KEY (cd_usuario, cd_time)
 );
 
 CREATE TABLE responsavel (
     cd_responsavel INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_usuario INTEGER NOT NULL,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE, 
-    CONSTRAINT responsavel_cd_usuario_fkey
-        FOREIGN KEY (cd_usuario)
-        REFERENCES usuario (cd_usuario),
-    CONSTRAINT responsavel_cd_usuario_unique
-        UNIQUE (cd_usuario)
+    cd_usuario INTEGER NOT NULL UNIQUE REFERENCES usuario ON DELETE RESTRICT,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE vinculo_time_responsavel (
-    cd_time INTEGER NOT NULL,
-    cd_responsavel INTEGER NOT NULL,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE, 
-    CONSTRAINT responsavel_time_pk
-        PRIMARY KEY (cd_time, cd_responsavel),
-    CONSTRAINT responsavel_time_cd_time_fkey
-        FOREIGN KEY (cd_time)
-        REFERENCES time (cd_time),
-    CONSTRAINT responsavel_time_cd_responsavel_fkey
-        FOREIGN KEY (cd_responsavel)
-        REFERENCES responsavel (cd_responsavel)
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    cd_responsavel INTEGER NOT NULL REFERENCES responsavel ON DELETE RESTRICT,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (cd_time, cd_responsavel)
 );
 
 -- ============================================================
--- 8. INSCRIÇÃO NA COMPETIÇÃO
+-- INSCRIÇÕES E PARTICIPANTES DE COMPETIÇÃO
 -- ============================================================
 
 CREATE TABLE inscricao_competicao (
     cd_inscricao_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL,
+    cd_competicao INTEGER NOT NULL REFERENCES competicao ON DELETE CASCADE,
     dt_inicio_inscricao TIMESTAMP,
     dt_encerramento_inscricao TIMESTAMP,
-    FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE
+
+    CHECK (
+        dt_encerramento_inscricao IS NULL
+        OR dt_inicio_inscricao IS NULL
+        OR dt_encerramento_inscricao >= dt_inicio_inscricao
+    )
 );
 
 CREATE TABLE vinculo_inscricao_time (
-    cd_inscricao_competicao INTEGER NOT NULL,
-    cd_time INTEGER NOT NULL,
+    cd_inscricao_competicao INTEGER NOT NULL
+        REFERENCES inscricao_competicao ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
     inscrito_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    PRIMARY KEY (cd_inscricao_competicao, cd_time),
-    FOREIGN KEY (cd_inscricao_competicao) REFERENCES inscricao_competicao(cd_inscricao_competicao) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE
+    PRIMARY KEY (cd_inscricao_competicao, cd_time)
+);
+
+-- Snapshot dos participantes no momento da inscrição.
+CREATE TABLE participante_competicao (
+    cd_competicao INTEGER NOT NULL REFERENCES competicao ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    origem VARCHAR(20) NOT NULL
+        CHECK (origem IN ('INTEGRANTE', 'TECNICO', 'RESPONSAVEL')),
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_competicao, cd_usuario, cd_time, origem)
 );
 
 -- ============================================================
--- 9. ETAPAS DA COMPETIÇÃO
+-- ETAPAS, RODADAS E GRUPOS
 -- ============================================================
 
 CREATE TABLE etapa_competicao (
     cd_etapa_competicao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL,
-    cd_tipo_etapa INTEGER NOT NULL,
+    cd_competicao INTEGER NOT NULL REFERENCES competicao ON DELETE CASCADE,
+    cd_tipo_etapa INTEGER NOT NULL REFERENCES tipo_etapa ON DELETE RESTRICT,
     nm_etapa VARCHAR(100) NOT NULL,
-    ordem INTEGER NOT NULL,
+    ordem INTEGER NOT NULL CHECK (ordem > 0),
     descricao TEXT,
-    FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE,
-    FOREIGN KEY (cd_tipo_etapa) REFERENCES tipo_etapa(cd_tipo_etapa) ON DELETE RESTRICT,
     UNIQUE (cd_competicao, ordem),
-    UNIQUE (cd_competicao, nm_etapa),
-    CHECK (ordem > 0)
+    UNIQUE (cd_competicao, nm_etapa)
 );
 
 CREATE TABLE rodada_competicao (
     cd_rodada INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_etapa_competicao INTEGER NOT NULL,
-    nr_rodada INTEGER NOT NULL,
+    cd_etapa_competicao INTEGER NOT NULL
+        REFERENCES etapa_competicao ON DELETE CASCADE,
+    nr_rodada INTEGER NOT NULL CHECK (nr_rodada > 0),
     nm_rodada VARCHAR(100),
     inicio_em TIMESTAMP,
     fim_em TIMESTAMP,
-    status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
-    FOREIGN KEY (cd_etapa_competicao) REFERENCES etapa_competicao(cd_etapa_competicao) ON DELETE CASCADE,
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE'
+        CHECK (status IN ('PENDENTE', 'EM_ANDAMENTO', 'FINALIZADA')),
     UNIQUE (cd_etapa_competicao, nr_rodada),
-    CHECK (nr_rodada > 0),
-    CHECK (status IN ('PENDENTE', 'EM_ANDAMENTO', 'FINALIZADA')),
-    CHECK (fim_em IS NULL OR inicio_em IS NULL OR fim_em >= inicio_em)
-);
 
--- ============================================================
--- 10. GRUPOS
--- ============================================================
+    CHECK (
+        fim_em IS NULL
+        OR inicio_em IS NULL
+        OR fim_em >= inicio_em
+    )
+);
 
 CREATE TABLE grupo_competicao (
     cd_grupo INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_etapa_competicao INTEGER NOT NULL,
+    cd_etapa_competicao INTEGER NOT NULL
+        REFERENCES etapa_competicao ON DELETE CASCADE,
     nm_grupo VARCHAR(100) NOT NULL,
-    ordem INTEGER,
-    FOREIGN KEY (cd_etapa_competicao) REFERENCES etapa_competicao(cd_etapa_competicao) ON DELETE CASCADE,
-    UNIQUE (cd_etapa_competicao, nm_grupo),
-    CHECK (ordem IS NULL OR ordem > 0)
+    ordem INTEGER CHECK (ordem IS NULL OR ordem > 0),
+    UNIQUE (cd_etapa_competicao, nm_grupo)
 );
 
 CREATE TABLE vinculo_grupo_time (
-    cd_grupo INTEGER NOT NULL,
-    cd_time INTEGER NOT NULL,
-    PRIMARY KEY (cd_grupo, cd_time),
-    FOREIGN KEY (cd_grupo) REFERENCES grupo_competicao(cd_grupo) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE
+    cd_grupo INTEGER NOT NULL REFERENCES grupo_competicao ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    PRIMARY KEY (cd_grupo, cd_time)
 );
 
 -- ============================================================
--- 11. CLASSIFICAÇÃO
+-- CLASSIFICAÇÃO
 -- ============================================================
 
 CREATE TABLE metrica_classificacao (
@@ -326,165 +383,312 @@ CREATE TABLE metrica_classificacao (
 
 CREATE TABLE configuracao_classificacao (
     cd_configuracao_classificacao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL UNIQUE,
+    cd_competicao INTEGER NOT NULL UNIQUE
+        REFERENCES competicao ON DELETE CASCADE,
     nome VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE
+    descricao TEXT
 );
 
 CREATE TABLE criterio_classificacao (
     cd_criterio_classificacao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_configuracao_classificacao INTEGER NOT NULL,
-    cd_metrica_classificacao INTEGER NOT NULL,
-    ordem INTEGER NOT NULL,
-    direcao VARCHAR(4) NOT NULL DEFAULT 'DESC',
-    FOREIGN KEY (cd_configuracao_classificacao) REFERENCES configuracao_classificacao(cd_configuracao_classificacao) ON DELETE CASCADE,
-    FOREIGN KEY (cd_metrica_classificacao) REFERENCES metrica_classificacao(cd_metrica_classificacao) ON DELETE RESTRICT,
+    cd_configuracao_classificacao INTEGER NOT NULL
+        REFERENCES configuracao_classificacao ON DELETE CASCADE,
+    cd_metrica_classificacao INTEGER NOT NULL
+        REFERENCES metrica_classificacao ON DELETE RESTRICT,
+    ordem INTEGER NOT NULL CHECK (ordem > 0),
+    direcao VARCHAR(4) NOT NULL DEFAULT 'DESC'
+        CHECK (direcao IN ('ASC', 'DESC')),
     UNIQUE (cd_configuracao_classificacao, ordem),
-    UNIQUE (cd_configuracao_classificacao, cd_metrica_classificacao),
-    CHECK (ordem > 0),
-    CHECK (direcao IN ('ASC', 'DESC'))
+    UNIQUE (cd_configuracao_classificacao, cd_metrica_classificacao)
 );
 
 CREATE TABLE classificacao_grupo (
     cd_classificacao_grupo INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cd_grupo INTEGER NOT NULL,
     cd_time INTEGER NOT NULL,
-    posicao INTEGER NOT NULL,
+    posicao INTEGER NOT NULL CHECK (posicao > 0),
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cd_grupo, cd_time) REFERENCES vinculo_grupo_time(cd_grupo, cd_time) ON DELETE CASCADE,
+
+    FOREIGN KEY (cd_grupo, cd_time)
+        REFERENCES vinculo_grupo_time (cd_grupo, cd_time)
+        ON DELETE CASCADE,
+
     UNIQUE (cd_grupo, cd_time),
-    UNIQUE (cd_grupo, posicao),
-    CHECK (posicao > 0)
+    UNIQUE (cd_grupo, posicao)
 );
 
 CREATE TABLE estatistica_classificacao (
-    cd_classificacao_grupo INTEGER NOT NULL,
-    cd_metrica_classificacao INTEGER NOT NULL,
+    cd_classificacao_grupo INTEGER NOT NULL
+        REFERENCES classificacao_grupo ON DELETE CASCADE,
+    cd_metrica_classificacao INTEGER NOT NULL
+        REFERENCES metrica_classificacao ON DELETE RESTRICT,
     valor NUMERIC(15,3) NOT NULL DEFAULT 0,
-    PRIMARY KEY (cd_classificacao_grupo, cd_metrica_classificacao),
-    FOREIGN KEY (cd_classificacao_grupo) REFERENCES classificacao_grupo(cd_classificacao_grupo) ON DELETE CASCADE,
-    FOREIGN KEY (cd_metrica_classificacao) REFERENCES metrica_classificacao(cd_metrica_classificacao) ON DELETE RESTRICT
+    PRIMARY KEY (cd_classificacao_grupo, cd_metrica_classificacao)
 );
 
 -- ============================================================
--- 12. CONFRONTOS / CHAVEAMENTO
+-- CONFRONTOS E ORIGEM DOS PARTICIPANTES
 -- ============================================================
 
 CREATE TABLE confronto (
     cd_confronto INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_rodada INTEGER NOT NULL,
-    nr_confronto INTEGER NOT NULL,
+    cd_rodada INTEGER NOT NULL REFERENCES rodada_competicao ON DELETE CASCADE,
+    nr_confronto INTEGER NOT NULL CHECK (nr_confronto > 0),
     nome VARCHAR(100),
-    status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
-    cd_vencedor INTEGER,
-    cd_confronto_anterior_a INTEGER,
-    cd_confronto_anterior_b INTEGER,
-    FOREIGN KEY (cd_rodada) REFERENCES rodada_competicao(cd_rodada) ON DELETE CASCADE,
-    FOREIGN KEY (cd_vencedor) REFERENCES time(cd_time) ON DELETE SET NULL,
-    FOREIGN KEY (cd_confronto_anterior_a) REFERENCES confronto(cd_confronto) ON DELETE SET NULL,
-    FOREIGN KEY (cd_confronto_anterior_b) REFERENCES confronto(cd_confronto) ON DELETE SET NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE'
+        CHECK (status IN (
+            'PENDENTE',
+            'AGUARDANDO',
+            'EM_ANDAMENTO',
+            'FINALIZADO',
+            'CANCELADO'
+        )),
+    cd_vencedor INTEGER REFERENCES time ON DELETE SET NULL,
+    cd_confronto_anterior_a INTEGER REFERENCES confronto ON DELETE SET NULL,
+    cd_confronto_anterior_b INTEGER REFERENCES confronto ON DELETE SET NULL,
+
     UNIQUE (cd_rodada, nr_confronto),
-    CHECK (nr_confronto > 0),
-    CHECK (status IN ('PENDENTE', 'AGUARDANDO', 'EM_ANDAMENTO', 'FINALIZADO', 'CANCELADO')),
-    CHECK (cd_confronto_anterior_a IS NULL OR cd_confronto_anterior_a <> cd_confronto),
-    CHECK (cd_confronto_anterior_b IS NULL OR cd_confronto_anterior_b <> cd_confronto)
+
+    CHECK (
+        cd_confronto_anterior_a IS NULL
+        OR cd_confronto_anterior_a <> cd_confronto
+    ),
+
+    CHECK (
+        cd_confronto_anterior_b IS NULL
+        OR cd_confronto_anterior_b <> cd_confronto
+    )
 );
 
 CREATE TABLE origem_participante_confronto (
     cd_origem_participante INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    tipo_origem VARCHAR(30) NOT NULL,
-    cd_time INTEGER,
-    cd_confronto INTEGER,
-    cd_classificacao_grupo INTEGER,
+    tipo_origem VARCHAR(30) NOT NULL
+        CHECK (tipo_origem IN (
+            'TIME',
+            'CONFRONTO',
+            'CLASSIFICACAO_GRUPO',
+            'BYE'
+        )),
+    cd_time INTEGER REFERENCES time ON DELETE CASCADE,
+    cd_confronto INTEGER REFERENCES confronto ON DELETE CASCADE,
+    cd_classificacao_grupo INTEGER
+        REFERENCES classificacao_grupo ON DELETE CASCADE,
     resultado_confronto VARCHAR(20),
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE,
-    FOREIGN KEY (cd_confronto) REFERENCES confronto(cd_confronto) ON DELETE CASCADE,
-    FOREIGN KEY (cd_classificacao_grupo) REFERENCES classificacao_grupo(cd_classificacao_grupo) ON DELETE CASCADE,
-    CHECK (tipo_origem IN ('TIME', 'CONFRONTO', 'CLASSIFICACAO_GRUPO', 'BYE')),
+
     CHECK (
-        (tipo_origem = 'TIME' AND cd_time IS NOT NULL AND cd_confronto IS NULL AND cd_classificacao_grupo IS NULL AND resultado_confronto IS NULL)
+        (
+            tipo_origem = 'TIME'
+            AND cd_time IS NOT NULL
+            AND cd_confronto IS NULL
+            AND cd_classificacao_grupo IS NULL
+            AND resultado_confronto IS NULL
+        )
         OR
-        (tipo_origem = 'CONFRONTO' AND cd_time IS NULL AND cd_confronto IS NOT NULL AND cd_classificacao_grupo IS NULL AND resultado_confronto IN ('VENCEDOR', 'PERDEDOR'))
+        (
+            tipo_origem = 'CONFRONTO'
+            AND cd_time IS NULL
+            AND cd_confronto IS NOT NULL
+            AND cd_classificacao_grupo IS NULL
+            AND resultado_confronto IN ('VENCEDOR', 'PERDEDOR')
+        )
         OR
-        (tipo_origem = 'CLASSIFICACAO_GRUPO' AND cd_time IS NULL AND cd_confronto IS NULL AND cd_classificacao_grupo IS NOT NULL AND resultado_confronto IS NULL)
+        (
+            tipo_origem = 'CLASSIFICACAO_GRUPO'
+            AND cd_time IS NULL
+            AND cd_confronto IS NULL
+            AND cd_classificacao_grupo IS NOT NULL
+            AND resultado_confronto IS NULL
+        )
         OR
-        (tipo_origem = 'BYE' AND cd_time IS NULL AND cd_confronto IS NULL AND cd_classificacao_grupo IS NULL AND resultado_confronto IS NULL)
+        (
+            tipo_origem = 'BYE'
+            AND cd_time IS NULL
+            AND cd_confronto IS NULL
+            AND cd_classificacao_grupo IS NULL
+            AND resultado_confronto IS NULL
+        )
     )
 );
 
 CREATE TABLE confronto_participante (
-    cd_confronto INTEGER NOT NULL,
-    posicao SMALLINT NOT NULL,
-    cd_origem_participante INTEGER NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
+    cd_confronto INTEGER NOT NULL REFERENCES confronto ON DELETE CASCADE,
+    posicao SMALLINT NOT NULL CHECK (posicao IN (1, 2)),
+    cd_origem_participante INTEGER NOT NULL
+        REFERENCES origem_participante_confronto ON DELETE CASCADE,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE'
+        CHECK (status IN (
+            'PENDENTE',
+            'DEFINIDO',
+            'BYE',
+            'ELIMINADO',
+            'CLASSIFICADO'
+        )),
     PRIMARY KEY (cd_confronto, posicao),
-    FOREIGN KEY (cd_confronto) REFERENCES confronto(cd_confronto) ON DELETE CASCADE,
-    FOREIGN KEY (cd_origem_participante) REFERENCES origem_participante_confronto(cd_origem_participante) ON DELETE CASCADE,
-    CHECK (posicao IN (1, 2)),
-    CHECK (status IN ('PENDENTE', 'DEFINIDO', 'BYE', 'ELIMINADO', 'CLASSIFICADO')),
     UNIQUE (cd_confronto, cd_origem_participante)
 );
 
 -- ============================================================
--- 13. PARTIDAS
+-- PARTIDAS
 -- ============================================================
 
 CREATE TABLE partida (
     cd_partida INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL,
-    cd_confronto INTEGER,
-    status VARCHAR(30) NOT NULL DEFAULT 'AGENDADA',
+    cd_competicao INTEGER REFERENCES competicao ON DELETE CASCADE,
+    cd_confronto INTEGER REFERENCES confronto ON DELETE SET NULL,
+    cd_criador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_esporte INTEGER REFERENCES esporte ON DELETE RESTRICT,
+    cd_modalidade INTEGER REFERENCES modalidade ON DELETE RESTRICT,
+    visibilidade VARCHAR(10) NOT NULL DEFAULT 'PUBLICA'
+        CHECK (visibilidade IN ('PUBLICA', 'PRIVADA')),
+    status VARCHAR(30) NOT NULL DEFAULT 'AGENDADA'
+        CHECK (status IN (
+            'AGENDADA',
+            'EM_ANDAMENTO',
+            'FINALIZADA',
+            'CANCELADA'
+        )),
     inicio_agendado TIMESTAMP,
-    FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE,
-    FOREIGN KEY (cd_confronto) REFERENCES confronto(cd_confronto) ON DELETE SET NULL,
-    CHECK (status IN ('AGENDADA', 'EM_ANDAMENTO', 'FINALIZADA', 'CANCELADA'))
+    motivo_cancelamento TEXT,
+
+    CHECK (
+        cd_confronto IS NULL
+        OR cd_competicao IS NOT NULL
+    ),
+
+    CHECK (
+        (
+            cd_competicao IS NULL
+            AND cd_esporte IS NOT NULL
+            AND cd_modalidade IS NOT NULL
+        )
+        OR
+        (
+            cd_competicao IS NOT NULL
+            AND cd_esporte IS NULL
+            AND cd_modalidade IS NULL
+        )
+    )
 );
 
+-- Informações de realização da partida.
+-- O horário agendado permanece em partida.inicio_agendado.
+-- Os horários reais ficam separados nesta tabela.
 CREATE TABLE info_partida (
-    cd_partida INTEGER PRIMARY KEY,
-    dt_partida DATE NOT NULL,
+    cd_partida INTEGER PRIMARY KEY REFERENCES partida ON DELETE CASCADE,
+    dt_partida DATE,
     inicio_em TIMESTAMP,
     fim_em TIMESTAMP,
     local_partida VARCHAR(150),
     observacoes TEXT,
-    FOREIGN KEY (cd_partida) REFERENCES partida(cd_partida) ON DELETE CASCADE,
-    CHECK (fim_em IS NULL OR inicio_em IS NULL OR fim_em >= inicio_em)
+
+    CHECK (
+        fim_em IS NULL
+        OR inicio_em IS NULL
+        OR fim_em >= inicio_em
+    )
 );
 
 CREATE TABLE etapa_partida (
     cd_etapa_partida INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_partida INTEGER NOT NULL,
-    nr_etapa INTEGER NOT NULL,
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    nr_etapa INTEGER NOT NULL CHECK (nr_etapa > 0),
     inicio_em TIMESTAMP,
     fim_em TIMESTAMP,
-    FOREIGN KEY (cd_partida) REFERENCES partida(cd_partida) ON DELETE CASCADE,
     UNIQUE (cd_partida, nr_etapa),
-    CHECK (nr_etapa > 0),
-    CHECK (fim_em IS NULL OR inicio_em IS NULL OR fim_em >= inicio_em)
+
+    CHECK (
+        fim_em IS NULL
+        OR inicio_em IS NULL
+        OR fim_em >= inicio_em
+    )
 );
 
 CREATE TABLE resultado_etapa_partida (
-    cd_etapa_partida INTEGER NOT NULL,
-    cd_time INTEGER NOT NULL,
-    pontuacao INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (cd_etapa_partida, cd_time),
-    FOREIGN KEY (cd_etapa_partida) REFERENCES etapa_partida(cd_etapa_partida) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE,
-    CHECK (pontuacao >= 0)
+    cd_etapa_partida INTEGER NOT NULL
+        REFERENCES etapa_partida ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    pontuacao INTEGER NOT NULL DEFAULT 0 CHECK (pontuacao >= 0),
+    PRIMARY KEY (cd_etapa_partida, cd_time)
 );
 
 CREATE TABLE vinculo_partida_time (
-    cd_partida INTEGER NOT NULL,
-    cd_time INTEGER NOT NULL,
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
     mandante BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (cd_partida, cd_time),
-    FOREIGN KEY (cd_partida) REFERENCES partida(cd_partida) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time) REFERENCES time(cd_time) ON DELETE CASCADE
+    PRIMARY KEY (cd_partida, cd_time)
+);
+
+-- Snapshot dos participantes no momento da partida.
+-- Alterações futuras nos vínculos dos times não modificam este histórico.
+CREATE TABLE participante_partida (
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    origem VARCHAR(20) NOT NULL
+        CHECK (origem IN ('INTEGRANTE', 'TECNICO', 'RESPONSAVEL')),
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_partida, cd_usuario, cd_time, origem)
+);
+
+CREATE TABLE arbitro_partida (
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    funcao VARCHAR(20) NOT NULL
+        CHECK (funcao IN ('PRINCIPAL', 'ASSISTENTE', 'MESARIO')),
+    cd_usuario_vinculador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_partida, cd_usuario)
+);
+
+CREATE UNIQUE INDEX idx_arbitro_partida_principal
+    ON arbitro_partida (cd_partida)
+    WHERE funcao = 'PRINCIPAL';
+
+CREATE INDEX idx_arbitro_partida_usuario
+    ON arbitro_partida (cd_usuario, cd_partida);
+
+CREATE TABLE pontuacao_partida (
+    cd_pontuacao_partida INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL,
+    cd_usuario INTEGER REFERENCES aluno (cd_usuario) ON DELETE SET NULL,
+    pontos INTEGER NOT NULL CHECK (pontos > 0),
+    minuto INTEGER CHECK (minuto IS NULL OR minuto >= 0),
+    observacao TEXT,
+    cd_usuario_registrador INTEGER NOT NULL REFERENCES usuario ON DELETE RESTRICT,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cd_partida, cd_time)
+        REFERENCES vinculo_partida_time (cd_partida, cd_time) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pontuacao_partida_eventos
+    ON pontuacao_partida (cd_partida, criado_em DESC);
+
+-- Métricas individuais genéricas por esporte (ex.: pontuação, assistências).
+CREATE TABLE metrica_atleta (
+    cd_metrica_atleta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cd_esporte INTEGER NOT NULL REFERENCES esporte ON DELETE CASCADE,
+    chave VARCHAR(50) NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    UNIQUE (cd_esporte, chave),
+    UNIQUE (cd_metrica_atleta, cd_esporte)
+);
+
+CREATE TABLE estatistica_atleta_partida (
+    cd_partida INTEGER NOT NULL REFERENCES partida ON DELETE CASCADE,
+    cd_usuario INTEGER NOT NULL REFERENCES aluno (cd_usuario) ON DELETE CASCADE,
+    cd_time INTEGER NOT NULL REFERENCES time ON DELETE RESTRICT,
+    cd_esporte INTEGER NOT NULL REFERENCES esporte ON DELETE CASCADE,
+    cd_metrica_atleta INTEGER NOT NULL,
+    valor NUMERIC(15,3) NOT NULL DEFAULT 0 CHECK (valor >= 0),
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cd_partida, cd_usuario, cd_time, cd_metrica_atleta),
+    FOREIGN KEY (cd_metrica_atleta, cd_esporte)
+        REFERENCES metrica_atleta (cd_metrica_atleta, cd_esporte) ON DELETE CASCADE
 );
 
 -- ============================================================
--- 14. PENALIDADES
+-- PENALIDADES E NOTIFICAÇÕES
 -- ============================================================
 
 CREATE TABLE tipo_penalidade (
@@ -495,29 +699,39 @@ CREATE TABLE tipo_penalidade (
 
 CREATE TABLE penalidade (
     cd_penalidade INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    cd_competicao INTEGER NOT NULL,
+    cd_competicao INTEGER REFERENCES competicao ON DELETE CASCADE,
+    cd_partida INTEGER REFERENCES partida ON DELETE CASCADE,
     cd_time INTEGER NOT NULL,
     cd_usuario INTEGER NOT NULL,
-    cd_funcao_integrante INTEGER NOT NULL,
-    cd_tipo_penalidade INTEGER NOT NULL,
+    cd_funcao_integrante INTEGER NOT NULL
+        REFERENCES funcao_integrante ON DELETE RESTRICT,
+    cd_tipo_penalidade INTEGER NOT NULL
+        REFERENCES tipo_penalidade ON DELETE RESTRICT,
     descricao TEXT,
+        minuto INTEGER CHECK (minuto IS NULL OR minuto >= 0),
     valor NUMERIC(10,3),
     aplicado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (cd_competicao) REFERENCES competicao(cd_competicao) ON DELETE CASCADE,
-    FOREIGN KEY (cd_time, cd_usuario) REFERENCES vinculo_time_integrante(cd_time, cd_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (cd_funcao_integrante) REFERENCES funcao_integrante(cd_funcao_integrante) ON DELETE RESTRICT,
-    FOREIGN KEY (cd_tipo_penalidade) REFERENCES tipo_penalidade(cd_tipo_penalidade) ON DELETE RESTRICT
+
+        CONSTRAINT penalidade_partida_ou_competicao_check
+            CHECK (cd_competicao IS NOT NULL OR cd_partida IS NOT NULL),
+        CONSTRAINT penalidade_partida_time_fkey
+            FOREIGN KEY (cd_partida, cd_time)
+            REFERENCES vinculo_partida_time (cd_partida, cd_time)
+            ON DELETE CASCADE,
+    FOREIGN KEY (cd_time, cd_usuario)
+        REFERENCES vinculo_time_integrante (cd_time, cd_usuario)
+        ON DELETE RESTRICT
 );
 
--- ============================================================
--- 15. ÍNDICES
--- ============================================================
+CREATE INDEX idx_penalidade_partida_eventos
+        ON penalidade (cd_partida, aplicado_em DESC);
 
-CREATE INDEX idx_confronto_rodada ON confronto(cd_rodada);
-CREATE INDEX idx_confronto_anterior_a ON confronto(cd_confronto_anterior_a);
-CREATE INDEX idx_confronto_anterior_b ON confronto(cd_confronto_anterior_b);
-CREATE INDEX idx_origem_confronto ON origem_participante_confronto(cd_confronto);
-CREATE INDEX idx_origem_classificacao ON origem_participante_confronto(cd_classificacao_grupo);
-CREATE INDEX idx_confronto_participante_origem ON confronto_participante(cd_origem_participante);
-CREATE INDEX idx_partida_confronto ON partida(cd_confronto);
+CREATE TABLE tipo_notificacao (
+    cd_tipo_notificacao INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nm_tipo_notificacao VARCHAR(100) NOT NULL UNIQUE,
+    descricao TEXT
+);
+
+COMMIT;
+

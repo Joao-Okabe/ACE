@@ -1,0 +1,18 @@
+#!/bin/sh
+APP_HOME=$(cd "${0%/*}" && pwd -P)
+WRAPPER_JAR="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+WRAPPER_URL="https://github.com/gradle/gradle/raw/refs/tags/v8.12.1/gradle/wrapper/gradle-wrapper.jar"
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  echo "Baixando o Gradle Wrapper..."
+  if command -v curl >/dev/null 2>&1; then
+    curl -L --fail "$WRAPPER_URL" -o "$WRAPPER_JAR" || exit 1
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O "$WRAPPER_JAR" "$WRAPPER_URL" || exit 1
+  else
+    echo "curl ou wget não encontrado. Execute: flutter create --platforms=android ."
+    exit 1
+  fi
+fi
+
+exec java -classpath "$WRAPPER_JAR" org.gradle.wrapper.GradleWrapperMain "$@"

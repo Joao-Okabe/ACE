@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE info_partida
+    ADD COLUMN IF NOT EXISTS dt_partida DATE;
+
+COMMIT;
