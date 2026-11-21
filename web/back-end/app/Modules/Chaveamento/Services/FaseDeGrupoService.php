@@ -105,6 +105,11 @@ class FaseDeGrupoService
                 $grupos
             );
 
+            $this->gerarEliminatoria(
+                $cdCompeticao,
+                $cdEtapaCompeticao
+            );
+
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -314,6 +319,302 @@ class FaseDeGrupoService
     private function nomeRodada(int $numero): string
     {
         return "Rodada {$numero}";
+    }
+
+    private function gerarEliminatoria(
+        int $cdCompeticao,
+        int $cdEtapaGrupos
+    ): void {
+        $classificados = $this->buscarClassificados($cdEtapaGrupos);
+
+        $participantes = $this->montarParticipantesEliminatoria(
+            $classificados
+        );
+
+        if (count($participantes) < 2) {
+            return;
+        }
+
+        $cdEtapaEliminatoria = $this->buscarOuCriarEtapaEliminatoria(
+            $cdCompeticao
+        );
+
+        $tamanhoChave = 1;
+        while ($tamanhoChave < count($participantes)) {
+            $tamanhoChave *= 2;
+        }
+
+        $posicoes = array_values($participantes);
+        while (count($posicoes) < $tamanhoChave) {
+            $posicoes[] = null;
+        }
+
+        $rodadas = $this->criarRodadasEliminatoria(
+            $cdEtapaEliminatoria,
+            $tamanhoChave
+        );
+
+        $confrontos = $this->criarPrimeiraRodadaEliminatoria(
+            $rodadas[0],
+            $posicoes
+        );
+
+        $this->criarRodadasSeguintesEliminatoria(
+            $rodadas,
+            $confrontos
+        );
+    }
+
+    private function buscarClassificados(int $cdEtapaGrupos): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                g.cd_grupo,
+                g.nm_grupo,
+                g.ordem AS ordem_grupo,
+                cg.cd_time,
+                cg.posicao
+            FROM grupo_competicao g
+            INNER JOIN classificacao_grupo cg
+                ON cg.cd_grupo = g.cd_grupo
+            INNER JOIN time t
+                ON t.cd_time = cg.cd_time
+            WHERE g.cd_etapa_competicao = :etapa
+              AND cg.posicao <= 2
+            ORDER BY g.ordem, cg.posicao
+        ");
+
+        $stmt->execute([
+            ':etapa' => $cdEtapaGrupos,
+        ]);
+
+        $grupos = [];
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $cdGrupo = (int) $row['cd_grupo'];
+
+            if (!isset($grupos[$cdGrupo])) {
+                $grupos[$cdGrupo] = [];
+            }
+
+            $grupos[$cdGrupo][] = [
+                'cd_time' => (int) $row['cd_time'],
+                'posicao' => (int) $row['posicao'],
+            ];
+        }
+
+        return array_values($grupos);
+    }
+
+    private function buscarOuCriarEtapaEliminatoria(
+        int $cdCompeticao
+    ): int {
+        $etapa = $this->etapaCompeticaoModel
+            ->buscarEliminatoriaPorCompeticao($cdCompeticao);
+
+        if ($etapa !== null) {
+            return (int) $etapa['cd_etapa_competicao'];
+        }
+
+        $cdTipoEtapa = $this->etapaCompeticaoModel
+            ->buscarTipoPorNome('ELIMINATORIA');
+
+        if ($cdTipoEtapa === null) {
+            throw new RuntimeException(
+                'Tipo de etapa eliminatória não cadastrado.'
+            );
+        }
+
+        return $this->etapaCompeticaoModel->criar([
+            'cd_competicao' => $cdCompeticao,
+            'cd_tipo_etapa' => $cdTipoEtapa,
+            'nm_etapa' => 'ELIMINATORIA',
+            'ordem' => 2,
+            'descricao' => 'Fase eliminatória dos grupos classificados.',
+        ]);
+    }
+
+    private function montarParticipantesEliminatoria(
+        array $grupos
+    ): array {
+        $primeiros = [];
+        $segundos = [];
+
+        foreach ($grupos as $grupo) {
+            foreach ($grupo as $time) {
+                if ((int) $time['posicao'] === 1) {
+                    $primeiros[] = (int) $time['cd_time'];
+                } elseif ((int) $time['posicao'] === 2) {
+                    $segundos[] = (int) $time['cd_time'];
+                }
+            }
+        }
+
+        $participantes = [];
+        $quantidadeGrupos = count($primeiros);
+
+        for ($indice = 0; $indice < $quantidadeGrupos; $indice++) {
+            $participantes[] = $primeiros[$indice];
+
+            if (count($segundos) > 0) {
+                $indiceSegundo = ($indice + 1) % count($segundos);
+                $participantes[] = $segundos[$indiceSegundo];
+            }
+        }
+
+        return array_values(array_filter(
+            $participantes,
+            static fn ($time): bool => $time !== null
+        ));
+    }
+
+    private function criarRodadasEliminatoria(
+        int $cdEtapaEliminatoria,
+        int $tamanhoChave
+    ): array {
+        $quantidadeRodadas = (int) log($tamanhoChave, 2);
+        $rodadas = [];
+
+        for ($numero = 1; $numero <= $quantidadeRodadas; $numero++) {
+            $rodadas[] = $this->rodadaCompeticaoModel->criar([
+                'cd_etapa_competicao' => $cdEtapaEliminatoria,
+                'nr_rodada' => $numero,
+                'nm_rodada' => $this->nomeRodadaEliminatoria(
+                    $quantidadeRodadas,
+                    $numero
+                ),
+            ]);
+        }
+
+        return $rodadas;
+    }
+
+    private function nomeRodadaEliminatoria(
+        int $totalRodadas,
+        int $rodada
+    ): string {
+        $distancia = $totalRodadas - $rodada;
+
+        return match ($distancia) {
+            0 => 'Final',
+            1 => 'Semifinal',
+            2 => 'Quartas de final',
+            3 => 'Oitavas de final',
+            4 => '16avos de final',
+            5 => '32avos de final',
+            default => "Rodada {$rodada}",
+        };
+    }
+
+    private function criarPrimeiraRodadaEliminatoria(
+        int $cdRodada,
+        array $posicoes
+    ): array {
+        $confrontos = [];
+
+        for ($indice = 0; $indice < count($posicoes); $indice += 2) {
+            $cdConfronto = $this->confrontoModel->criar([
+                'cd_rodada' => $cdRodada,
+                'nr_confronto' => (int) (($indice / 2) + 1),
+                'status' => 'PENDENTE',
+            ]);
+
+            $confrontos[] = $cdConfronto;
+
+            $this->adicionarParticipanteEliminatoria(
+                $cdConfronto,
+                1,
+                $posicoes[$indice]
+            );
+
+            $this->adicionarParticipanteEliminatoria(
+                $cdConfronto,
+                2,
+                $posicoes[$indice + 1] ?? null
+            );
+        }
+
+        return $confrontos;
+    }
+
+    private function criarRodadasSeguintesEliminatoria(
+        array $rodadas,
+        array $confrontosAnteriores
+    ): void {
+        for ($indiceRodada = 1; $indiceRodada < count($rodadas); $indiceRodada++) {
+            $novosConfrontos = [];
+
+            for ($indice = 0; $indice < count($confrontosAnteriores); $indice += 2) {
+                $confrontoA = $confrontosAnteriores[$indice];
+                $confrontoB = $confrontosAnteriores[$indice + 1] ?? null;
+
+                if ($confrontoB === null) {
+                    continue;
+                }
+
+                $cdConfronto = $this->confrontoModel->criar([
+                    'cd_rodada' => $rodadas[$indiceRodada],
+                    'nr_confronto' => (int) (($indice / 2) + 1),
+                    'status' => 'AGUARDANDO',
+                    'cd_confronto_anterior_a' => $confrontoA,
+                    'cd_confronto_anterior_b' => $confrontoB,
+                ]);
+
+                $novosConfrontos[] = $cdConfronto;
+
+                $this->adicionarOrigemConfrontoEliminatoria(
+                    $cdConfronto,
+                    1,
+                    $confrontoA
+                );
+
+                $this->adicionarOrigemConfrontoEliminatoria(
+                    $cdConfronto,
+                    2,
+                    $confrontoB
+                );
+            }
+
+            $confrontosAnteriores = $novosConfrontos;
+        }
+    }
+
+    private function adicionarParticipanteEliminatoria(
+        int $cdConfronto,
+        int $posicao,
+        ?int $idTime
+    ): void {
+        if ($idTime === null) {
+            $cdOrigem = $this->origemParticipanteConfrontoModel->criarBye();
+            $status = 'BYE';
+        } else {
+            $cdOrigem = $this->origemParticipanteConfrontoModel
+                ->criarTime($idTime);
+            $status = 'DEFINIDO';
+        }
+
+        $this->confrontoParticipanteModel->criar([
+            'cd_confronto' => $cdConfronto,
+            'posicao' => $posicao,
+            'cd_origem_participante' => $cdOrigem,
+            'status' => $status,
+        ]);
+    }
+
+    private function adicionarOrigemConfrontoEliminatoria(
+        int $cdConfronto,
+        int $posicao,
+        int $cdConfrontoAnterior
+    ): void {
+        $cdOrigem = $this->origemParticipanteConfrontoModel
+            ->criarVencedorConfronto($cdConfrontoAnterior);
+
+        $this->confrontoParticipanteModel->criar([
+            'cd_confronto' => $cdConfronto,
+            'posicao' => $posicao,
+            'cd_origem_participante' => $cdOrigem,
+            'status' => 'PENDENTE',
+        ]);
     }
 
     private function adicionarParticipante(
