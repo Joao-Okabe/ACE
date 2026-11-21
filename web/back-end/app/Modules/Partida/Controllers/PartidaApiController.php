@@ -463,6 +463,27 @@ class PartidaApiController
                 $pdo->rollBack();
                 throw new DomainException('A partida precisa ter exatamente dois times para registrar o resultado.');
             }
+            if ($placarCasa === $placarVisitante) {
+                $tipoEtapaStmt = $pdo->prepare("
+                    SELECT te.nm_tipo_etapa
+                    FROM partida p
+                    JOIN confronto c ON c.cd_confronto = p.cd_confronto
+                    JOIN rodada_competicao r ON r.cd_rodada = c.cd_rodada
+                    JOIN etapa_competicao ec
+                      ON ec.cd_etapa_competicao = r.cd_etapa_competicao
+                    JOIN tipo_etapa te
+                      ON te.cd_tipo_etapa = ec.cd_tipo_etapa
+                    WHERE p.cd_partida = :id
+                ");
+                $tipoEtapaStmt->execute([':id' => $id]);
+                $tipoEtapa = $tipoEtapaStmt->fetchColumn();
+                if ($tipoEtapa === 'ELIMINATORIA') {
+                    $pdo->rollBack();
+                    throw new DomainException(
+                        'Confrontos eliminatórios não podem terminar empatados.'
+                    );
+                }
+            }
             $stmt = $pdo->prepare("
                 INSERT INTO etapa_partida (cd_partida, nr_etapa, inicio_em, fim_em)
                 VALUES (:partida, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
@@ -493,10 +514,33 @@ class PartidaApiController
                 $vencedor = (int) $times[$placarCasa > $placarVisitante ? 0 : 1]['cd_time'];
                 $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = :vencedor, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
                 $stmt->execute([':vencedor' => $vencedor, ':id' => $id]);
+                $confrontoStmt = $pdo->prepare(
+                    'SELECT cd_confronto FROM partida WHERE cd_partida = :id'
+                );
+                $confrontoStmt->execute([':id' => $id]);
+                $cdConfronto = (int) $confrontoStmt->fetchColumn();
+                $this->atualizarConfrontosPosterioresV1(
+                    $pdo,
+                    $cdConfronto,
+                    $vencedor
+                );
             } else {
                 $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = NULL, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
                 $stmt->execute([':id' => $id]);
             }
+
+            $competicaoStmt = $pdo->prepare(
+                'SELECT cd_competicao FROM partida WHERE cd_partida = :id'
+            );
+            $competicaoStmt->execute([':id' => $id]);
+            $cdCompeticao = $competicaoStmt->fetchColumn();
+            if ($cdCompeticao !== false && $cdCompeticao !== null) {
+                (new FaseDeGrupoService())->recalcularClassificacao(
+                    $pdo,
+                    (int) $cdCompeticao
+                );
+            }
+
             $pdo->commit();
         }, 'Resultado registrado e partida finalizada.');
     }
@@ -660,6 +704,75 @@ class PartidaApiController
             'O ACE guarda o local como texto da partida e não possui cadastro separado de locais.',
             501
         );
+    }
+
+    private function atualizarConfrontosPosterioresV1(
+        PDO $pdo,
+        int $cdConfrontoAnterior,
+        int $cdTimeVencedor
+    ): void {
+        $buscar = $pdo->prepare("
+            SELECT cp.cd_confronto, cp.posicao
+            FROM confronto_participante cp
+            JOIN origem_participante_confronto opc
+              ON opc.cd_origem_participante = cp.cd_origem_participante
+            WHERE opc.tipo_origem = 'CONFRONTO'
+              AND opc.cd_confronto = :confronto_anterior
+              AND opc.resultado_confronto = 'VENCEDOR'
+        ");
+        $buscar->execute([
+            ':confronto_anterior' => $cdConfrontoAnterior,
+        ]);
+
+        foreach ($buscar->fetchAll(PDO::FETCH_ASSOC) as $participante) {
+            $cdConfronto = (int) $participante['cd_confronto'];
+            $posicao = (int) $participante['posicao'];
+
+            $origem = $pdo->prepare("
+                INSERT INTO origem_participante_confronto (
+                    tipo_origem,
+                    cd_time
+                )
+                VALUES ('TIME', :time)
+                RETURNING cd_origem_participante
+            ");
+            $origem->execute([':time' => $cdTimeVencedor]);
+            $cdOrigem = (int) $origem->fetchColumn();
+
+            $atualizar = $pdo->prepare("
+                UPDATE confronto_participante
+                SET cd_origem_participante = :origem,
+                    status = 'DEFINIDO'
+                WHERE cd_confronto = :confronto
+                  AND posicao = :posicao
+            ");
+            $atualizar->execute([
+                ':origem' => $cdOrigem,
+                ':confronto' => $cdConfronto,
+                ':posicao' => $posicao,
+            ]);
+
+            $definidos = $pdo->prepare("
+                SELECT COUNT(*)
+                FROM confronto_participante cp
+                JOIN origem_participante_confronto opc
+                  ON opc.cd_origem_participante = cp.cd_origem_participante
+                WHERE cp.cd_confronto = :confronto
+                  AND cp.status = 'DEFINIDO'
+                  AND opc.tipo_origem = 'TIME'
+            ");
+            $definidos->execute([':confronto' => $cdConfronto]);
+
+            $status = ((int) $definidos->fetchColumn() === 2)
+                ? 'PENDENTE'
+                : 'AGUARDANDO';
+            $pdo->prepare(
+                'UPDATE confronto SET status = :status WHERE cd_confronto = :confronto'
+            )->execute([
+                ':status' => $status,
+                ':confronto' => $cdConfronto,
+            ]);
+        }
     }
 
     private function listarPorStatusV1(string $status, string $mensagem): void

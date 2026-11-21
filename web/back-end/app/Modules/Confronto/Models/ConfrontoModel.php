@@ -61,6 +61,9 @@ class Confronto extends Model
                 c.nome,
                 c.status,
                 c.cd_vencedor,
+                ec.cd_etapa_competicao,
+                ec.nm_etapa,
+                ec.ordem AS ordem_etapa,
                 r.cd_rodada,
                 r.nr_rodada,
                 r.nm_rodada,
@@ -87,6 +90,7 @@ class Confronto extends Model
                 ON t.cd_time = opc.cd_time
             WHERE ec.cd_competicao = :cd_competicao
             ORDER BY
+                ec.ordem,
                 r.nr_rodada,
                 c.nr_confronto,
                 cp.posicao

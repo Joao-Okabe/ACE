@@ -105,11 +105,6 @@ class FaseDeGrupoService
                 $grupos
             );
 
-            $this->gerarEliminatoria(
-                $cdCompeticao,
-                $cdEtapaCompeticao
-            );
-
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -117,6 +112,178 @@ class FaseDeGrupoService
             }
 
             throw $e;
+        }
+    }
+
+    public function recalcularClassificacao(
+        PDO $pdo,
+        int $cdCompeticao
+    ): void {
+        $this->pdo = $pdo;
+
+        $etapa = $this->etapaCompeticaoModel
+            ->buscarPorCompeticaoETipo($cdCompeticao, 'GRUPOS');
+
+        if ($etapa === null) {
+            return;
+        }
+
+        $cdEtapaGrupos = (int) $etapa['cd_etapa_competicao'];
+
+        $stmt = $pdo->prepare("
+            SELECT g.cd_grupo, g.nm_grupo, cg.cd_time
+            FROM grupo_competicao g
+            JOIN classificacao_grupo cg ON cg.cd_grupo = g.cd_grupo
+            WHERE g.cd_etapa_competicao = :etapa
+            ORDER BY g.ordem, cg.posicao
+        ");
+        $stmt->execute([':etapa' => $cdEtapaGrupos]);
+
+        $grupos = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $linha) {
+            $grupos[(int) $linha['cd_grupo']]['nm_grupo'] =
+                (string) $linha['nm_grupo'];
+            $grupos[(int) $linha['cd_grupo']]['times'][] =
+                (int) $linha['cd_time'];
+        }
+
+        $partidas = $pdo->prepare("
+            SELECT p.cd_partida
+            FROM partida p
+            JOIN vinculo_partida_time vpt
+              ON vpt.cd_partida = p.cd_partida
+            WHERE p.cd_competicao = :competicao
+              AND p.cd_confronto IS NOT NULL
+              AND p.status = 'FINALIZADA'
+            GROUP BY p.cd_partida
+            HAVING COUNT(DISTINCT vpt.cd_time) = 2
+        ");
+        $partidas->execute([':competicao' => $cdCompeticao]);
+        $partidasFinalizadas = $partidas->fetchAll(PDO::FETCH_ASSOC);
+
+        $metricas = [
+            'JOGOS',
+            'VITORIAS',
+            'EMPATES',
+            'DERROTAS',
+            'PONTOS',
+            'SALDO',
+            'GOLS_PRO',
+            'GOLS_CONTRA',
+        ];
+
+        foreach ($grupos as &$grupo) {
+            $grupo['estatisticas'] = [];
+
+            foreach ($grupo['times'] as $cdTime) {
+                $grupo['estatisticas'][$cdTime] = [
+                    'JOGOS' => 0,
+                    'VITORIAS' => 0,
+                    'EMPATES' => 0,
+                    'DERROTAS' => 0,
+                    'PONTOS' => 0,
+                    'SALDO' => 0,
+                    'GOLS_PRO' => 0,
+                    'GOLS_CONTRA' => 0,
+                ];
+            }
+
+            $timesDoGrupo = array_fill_keys($grupo['times'], true);
+
+            foreach ($partidasFinalizadas as $partida) {
+                $cdPartida = (int) $partida['cd_partida'];
+
+                $timesStmt = $pdo->prepare("
+                    SELECT cd_time
+                    FROM vinculo_partida_time
+                    WHERE cd_partida = :partida
+                    ORDER BY cd_time
+                ");
+                $timesStmt->execute([':partida' => $cdPartida]);
+                $times = array_map(
+                    'intval',
+                    $timesStmt->fetchAll(PDO::FETCH_COLUMN)
+                );
+
+                if (count($times) !== 2
+                    || !isset($timesDoGrupo[$times[0]])
+                    || !isset($timesDoGrupo[$times[1]])) {
+                    continue;
+                }
+
+                $placarStmt = $pdo->prepare("
+                    SELECT r.cd_time, r.pontuacao
+                    FROM etapa_partida ep
+                    JOIN resultado_etapa_partida r
+                      ON r.cd_etapa_partida = ep.cd_etapa_partida
+                    WHERE ep.cd_partida = :partida
+                      AND ep.nr_etapa = (
+                          SELECT MAX(nr_etapa)
+                          FROM etapa_partida
+                          WHERE cd_partida = :partida_max
+                      )
+                ");
+                $placarStmt->execute([
+                    ':partida' => $cdPartida,
+                    ':partida_max' => $cdPartida,
+                ]);
+
+                $placares = [];
+                foreach ($placarStmt->fetchAll(PDO::FETCH_ASSOC) as $placar) {
+                    $placares[(int) $placar['cd_time']] =
+                        (int) $placar['pontuacao'];
+                }
+
+                if (!array_key_exists($times[0], $placares)
+                    || !array_key_exists($times[1], $placares)) {
+                    continue;
+                }
+
+                [$timeA, $timeB] = $times;
+                $golsA = $placares[$timeA];
+                $golsB = $placares[$timeB];
+
+                $grupo['estatisticas'][$timeA]['JOGOS']++;
+                $grupo['estatisticas'][$timeB]['JOGOS']++;
+                $grupo['estatisticas'][$timeA]['GOLS_PRO'] += $golsA;
+                $grupo['estatisticas'][$timeA]['GOLS_CONTRA'] += $golsB;
+                $grupo['estatisticas'][$timeB]['GOLS_PRO'] += $golsB;
+                $grupo['estatisticas'][$timeB]['GOLS_CONTRA'] += $golsA;
+
+                if ($golsA > $golsB) {
+                    $grupo['estatisticas'][$timeA]['VITORIAS']++;
+                    $grupo['estatisticas'][$timeA]['PONTOS'] += 3;
+                    $grupo['estatisticas'][$timeB]['DERROTAS']++;
+                } elseif ($golsB > $golsA) {
+                    $grupo['estatisticas'][$timeB]['VITORIAS']++;
+                    $grupo['estatisticas'][$timeB]['PONTOS'] += 3;
+                    $grupo['estatisticas'][$timeA]['DERROTAS']++;
+                } else {
+                    $grupo['estatisticas'][$timeA]['EMPATES']++;
+                    $grupo['estatisticas'][$timeB]['EMPATES']++;
+                    $grupo['estatisticas'][$timeA]['PONTOS']++;
+                    $grupo['estatisticas'][$timeB]['PONTOS']++;
+                }
+            }
+
+            foreach ($grupo['estatisticas'] as &$estatisticas) {
+                $estatisticas['SALDO'] =
+                    $estatisticas['GOLS_PRO'] - $estatisticas['GOLS_CONTRA'];
+            }
+            unset($estatisticas);
+        }
+        unset($grupo);
+
+        foreach ($grupos as $cdGrupo => $grupo) {
+            $this->salvarClassificacaoGrupo(
+                $cdGrupo,
+                $grupo['estatisticas'],
+                $metricas
+            );
+        }
+
+        if ($this->todosConfrontosGruposFinalizados($cdEtapaGrupos)) {
+            $this->gerarEliminatoria($cdCompeticao, $cdEtapaGrupos);
         }
     }
 
@@ -274,6 +441,7 @@ class FaseDeGrupoService
             }
 
             $n = count($idsTimes);
+            $paresCriados = [];
 
             for ($rodada = 0; $rodada < $quantidadeRodadas; $rodada++) {
                 $posicoes = [];
@@ -293,6 +461,14 @@ class FaseDeGrupoService
                     if ($a === null || $b === null) {
                         continue;
                     }
+
+                    $menor = min($a, $b);
+                    $maior = max($a, $b);
+                    $chavePar = $menor . ':' . $maior;
+                    if (isset($paresCriados[$chavePar])) {
+                        continue;
+                    }
+                    $paresCriados[$chavePar] = true;
 
                     $cdConfronto = $this->confrontoModel->criar([
                         'cd_rodada' => $rodadasDoGrupo[$rodada],
@@ -314,6 +490,128 @@ class FaseDeGrupoService
                 }
             }
         }
+    }
+
+    private function salvarClassificacaoGrupo(
+        int $cdGrupo,
+        array $estatisticas,
+        array $nomesMetricas
+    ): void {
+        uasort(
+            $estatisticas,
+            static function (array $a, array $b): int {
+                return ($b['PONTOS'] <=> $a['PONTOS'])
+                    ?: ($b['VITORIAS'] <=> $a['VITORIAS'])
+                    ?: ($b['SALDO'] <=> $a['SALDO'])
+                    ?: ($b['GOLS_PRO'] <=> $a['GOLS_PRO']);
+            }
+        );
+
+        $idsMetricas = [];
+        foreach ($nomesMetricas as $nome) {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO metrica_classificacao (nm_metrica_classificacao)
+                VALUES (:nome)
+                ON CONFLICT (nm_metrica_classificacao) DO UPDATE
+                    SET nm_metrica_classificacao =
+                        EXCLUDED.nm_metrica_classificacao
+                RETURNING cd_metrica_classificacao
+            ");
+            $stmt->execute([':nome' => $nome]);
+            $idsMetricas[$nome] = (int) $stmt->fetchColumn();
+        }
+
+        $posicaoTemp = 1000000;
+        $posicaoFinal = 1;
+        $classificacaoPorTime = [];
+
+        foreach ($estatisticas as $cdTime => $valores) {
+            $stmt = $this->pdo->prepare("
+                SELECT cd_classificacao_grupo
+                FROM classificacao_grupo
+                WHERE cd_grupo = :grupo AND cd_time = :time
+            ");
+            $stmt->execute([
+                ':grupo' => $cdGrupo,
+                ':time' => $cdTime,
+            ]);
+            $cdClassificacao = (int) $stmt->fetchColumn();
+
+            if ($cdClassificacao <= 0) {
+                continue;
+            }
+
+            $classificacaoPorTime[$cdTime] = $cdClassificacao;
+
+            $temporaria = $this->pdo->prepare("
+                UPDATE classificacao_grupo
+                SET posicao = :posicao, atualizado_em = CURRENT_TIMESTAMP
+                WHERE cd_classificacao_grupo = :classificacao
+            ");
+            $temporaria->execute([
+                ':posicao' => $posicaoTemp++,
+                ':classificacao' => $cdClassificacao,
+            ]);
+
+            $estatistica = $this->pdo->prepare("
+                INSERT INTO estatistica_classificacao (
+                    cd_classificacao_grupo,
+                    cd_metrica_classificacao,
+                    valor
+                )
+                VALUES (:classificacao, :metrica, :valor)
+                ON CONFLICT (
+                    cd_classificacao_grupo,
+                    cd_metrica_classificacao
+                )
+                DO UPDATE SET valor = EXCLUDED.valor
+            ");
+
+            foreach ($nomesMetricas as $nome) {
+                $estatistica->execute([
+                    ':classificacao' => $cdClassificacao,
+                    ':metrica' => $idsMetricas[$nome],
+                    ':valor' => $valores[$nome],
+                ]);
+            }
+        }
+
+        foreach ($estatisticas as $cdTime => $_valores) {
+            if (!isset($classificacaoPorTime[$cdTime])) {
+                continue;
+            }
+
+            $final = $this->pdo->prepare("
+                UPDATE classificacao_grupo
+                SET posicao = :posicao
+                WHERE cd_classificacao_grupo = :classificacao
+            ");
+            $final->execute([
+                ':posicao' => $posicaoFinal++,
+                ':classificacao' => $classificacaoPorTime[$cdTime],
+            ]);
+        }
+    }
+
+    private function todosConfrontosGruposFinalizados(
+        int $cdEtapaGrupos
+    ): bool {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                COUNT(*) AS total,
+                COUNT(*) FILTER (WHERE c.status = 'FINALIZADO') AS finalizados
+            FROM confronto c
+            JOIN rodada_competicao r
+              ON r.cd_rodada = c.cd_rodada
+            WHERE r.cd_etapa_competicao = :etapa
+        ");
+        $stmt->execute([':etapa' => $cdEtapaGrupos]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $total = (int) ($resultado['total'] ?? 0);
+        $finalizados = (int) ($resultado['finalizados'] ?? 0);
+
+        return $total > 0 && $total === $finalizados;
     }
 
     private function nomeRodada(int $numero): string
@@ -338,6 +636,20 @@ class FaseDeGrupoService
         $cdEtapaEliminatoria = $this->buscarOuCriarEtapaEliminatoria(
             $cdCompeticao
         );
+
+        $existente = $this->pdo->prepare("
+            SELECT EXISTS (
+                SELECT 1
+                FROM confronto c
+                JOIN rodada_competicao r
+                  ON r.cd_rodada = c.cd_rodada
+                WHERE r.cd_etapa_competicao = :etapa
+            )
+        ");
+        $existente->execute([':etapa' => $cdEtapaEliminatoria]);
+        if ((bool) $existente->fetchColumn()) {
+            return;
+        }
 
         $tamanhoChave = 1;
         while ($tamanhoChave < count($participantes)) {
@@ -462,10 +774,10 @@ class FaseDeGrupoService
             }
         }
 
-        return array_values(array_filter(
+        return array_values(array_unique(array_filter(
             $participantes,
             static fn ($time): bool => $time !== null
-        ));
+        )));
     }
 
     private function criarRodadasEliminatoria(

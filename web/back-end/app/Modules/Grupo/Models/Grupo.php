@@ -60,6 +60,8 @@ class Grupo extends Model
                 :cd_time,
                 :posicao
             )
+            ON CONFLICT (cd_grupo, cd_time)
+            DO UPDATE SET posicao = EXCLUDED.posicao
             RETURNING cd_classificacao_grupo
         ");
 
@@ -69,6 +71,49 @@ class Grupo extends Model
             ':posicao' => $posicao
         ]);
 
-        return (int) $stmt->fetchColumn();
+        $idClassificacao = (int) $stmt->fetchColumn();
+        $nomes = [
+            'JOGOS',
+            'VITORIAS',
+            'EMPATES',
+            'DERROTAS',
+            'PONTOS',
+            'SALDO',
+            'GOLS_PRO',
+            'GOLS_CONTRA',
+        ];
+
+        foreach ($nomes as $nome) {
+            $metrica = $this->pdo->prepare("
+                INSERT INTO metrica_classificacao (nm_metrica_classificacao)
+                VALUES (:nome)
+                ON CONFLICT (nm_metrica_classificacao) DO UPDATE
+                    SET nm_metrica_classificacao =
+                        EXCLUDED.nm_metrica_classificacao
+                RETURNING cd_metrica_classificacao
+            ");
+            $metrica->execute([':nome' => $nome]);
+            $idMetrica = (int) $metrica->fetchColumn();
+
+            $estatistica = $this->pdo->prepare("
+                INSERT INTO estatistica_classificacao (
+                    cd_classificacao_grupo,
+                    cd_metrica_classificacao,
+                    valor
+                )
+                VALUES (:classificacao, :metrica, 0)
+                ON CONFLICT (
+                    cd_classificacao_grupo,
+                    cd_metrica_classificacao
+                )
+                DO UPDATE SET valor = EXCLUDED.valor
+            ");
+            $estatistica->execute([
+                ':classificacao' => $idClassificacao,
+                ':metrica' => $idMetrica,
+            ]);
+        }
+
+        return $idClassificacao;
     }
 }

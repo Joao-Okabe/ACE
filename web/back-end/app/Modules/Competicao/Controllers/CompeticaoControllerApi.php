@@ -238,13 +238,12 @@ class CompeticaoControllerApi
         }
     }
 
-    private function exigirGerenciaArbitros(int $id): array
+    private function exigirGerenciaArbitros(int $id): void
     {
         if ($id <= 0) Response::error('VALIDATION_ERROR', 'ID da competição inválido.', 400);
         try {
             $competicao = $this->service()->buscar($id);
             $this->service()->exigirPermissao($competicao);
-            return $competicao;
         } catch (Throwable $e) {
             if ($e->getMessage() === 'Competição não encontrada.') {
                 Response::error('NOT_FOUND', 'Competição não encontrada.', 404);
@@ -265,6 +264,7 @@ class CompeticaoControllerApi
                 g.cd_grupo,
                 g.nm_grupo,
                 cg.posicao,
+                (cg.posicao <= 2) AS classificado,
                 cg.cd_time,
                 t.nm_time,
                 COALESCE(
