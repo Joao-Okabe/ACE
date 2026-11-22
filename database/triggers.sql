@@ -10,7 +10,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+<<<<<<< HEAD
 /* Chama a função de atualizar antes de alterar as tabelas */
+=======
+>>>>>>> origin/api_v1
 CREATE TRIGGER trg_usuario_timestamp
 BEFORE UPDATE ON usuario
 FOR EACH ROW

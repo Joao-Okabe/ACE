@@ -391,6 +391,7 @@ $router->get('/api/v1/competicoes/{id}/arbitros', [$competicaoV1, 'listarArbitro
 $router->post('/api/v1/competicoes/{id}/arbitros', [$competicaoV1, 'atribuirArbitroV1']);
 $router->delete('/api/v1/competicoes/{id}/arbitros/{idUsuario}', [$competicaoV1, 'removerArbitroV1']);
 $router->get('/api/v1/competicoes/{id}/classificacao', [$competicaoV1, 'classificacaoV1']);
+$router->get('/api/competicoes/{id}/classificacao', [$competicaoV1, 'classificacaoV1']);
 $router->get('/api/v1/competicoes/{id}/tabela', [$competicaoV1, 'tabelaV1']);
 $router->post('/api/v1/competicoes/{id}/inscricoes', [$competicaoV1, 'inscricaoMobileV1']);
 $router->get('/api/v1/competicoes/{id}', [$competicaoV1, 'showV1']);

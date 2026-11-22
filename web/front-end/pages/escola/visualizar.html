@@ -3,108 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
-    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
-
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/escalacao.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/partidas.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/gerenciamento.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/time.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/competicao.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/chaveamento.css">
     <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
-
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
 
     <title>Visualizar escola</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/escola/visualizar.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
 <body>
-
 <app-bar></app-bar>
 <app-sidebar></app-sidebar>
 
+
 <div class="content">
     <header class="header-visualizar">
-        <a href="listar.html" class="btn-voltar" aria-label="Voltar para a lista de escolas">
-            <span aria-hidden="true">←</span>
+        <a href="listar.html" class="btn-voltar" aria-label="Voltar para escolas">
+            <img src="/assets/icons/arrow.svg" alt="">
         </a>
-            <h1 class="visu-title">Visualizar escola</h1>
+        <div>
+            <h1 class="page-title page-title--large">Visualizar escola</h1>
+        </div>
     </header>
 
-    <div class="mb-3">
-        <p class="form-subtitle">Confira todas as informações da escola.</p>
-    </div>
-
-        <div class="visu-box visu-identificacao">
-            <div class="visu-perfil">
-                <img id="brasaoEscola" src="/assets/img/brasao.jpg" alt="Brasão da escola">
-            </div>
-
-            <div class="visu-identificacao-info">
-                <div class="visu-nome-status">
-                    <h2 class="page-title page-title--large" id="nomeEscola">Carregando...</h2>
-                    <span class="badge-status" id="statusEscola">—</span>
-                </div>
-
-                <div class="info-section">
-                    <h3 class="section-title">Categoria administrativa</h3>
-                    <p class="value-info" id="categoriaEscola">—</p>
-                </div>
-
-                <div id="mensagemEscola" class="visu-mensagem" role="status" hidden></div>
-
-                <button type="button" class="custom-btn custom-btn-primary" id="botaoStatusEscola" hidden>
-                    Alterar status
-                </button>
-            </div>
+    <section class="visu-box escola-identificacao">
+        <div class="visu-perfil">
+            <img id="brasaoEscola" src="/assets/img/brasao.jpg" alt="Brasão da escola">
         </div>
+        <div class="escola-identificacao-info">
+            <span class="escola-identificacao-label">INSTITUIÇÃO DE ENSINO</span>
+            <div class="escola-nome-status">
+                <h2 id="nomeEscola">Carregando...</h2>
+                <span class="badge-status" id="statusEscola">—</span>
+            </div>
+            <p class="escola-identificacao-descricao">Dados gerais da escola cadastrada no ACE.</p>
+            <div id="mensagemEscola" class="visu-mensagem" role="status" hidden></div>
+        </div>
+    </section>
 
-        <div class="visu-grid">
-
-            <div class="visu-box">
+    <div class="escola-grid">
+        <section class="visu-box escola-card">
+            <div class="escola-card-header">
+                <div class="escola-card-icone"><img src="/assets/icons/infos.svg" alt=""></div>
                 <h2 class="page-title section-title">Informações gerais</h2>
-
-                <div class="info-grid">
-                    <div class="info-section">
-                        <h3 class="page-title">Nome da escola</h3>
-                        <p id="nomeEscolaInfo">—</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3 class="page-title">Categoria</h3>
-                        <p id="categoriaEscolaInfo">—</p>
-                    </div>
+            </div>
+            <div class="escola-info-grid">
+                <div class="escola-info-item">
+                    <span class="escola-info-label">Nome da escola</span>
+                    <p id="nomeEscolaInfo">—</p>
+                </div>
+                <div class="escola-info-item">
+                    <span class="escola-info-label">Categoria</span>
+                    <p id="categoriaEscolaInfo">—</p>
                 </div>
             </div>
+        </section>
 
-            <div class="visu-box">
+        <section class="visu-box escola-card">
+            <div class="escola-card-header">
+                <div class="escola-card-icone"><img src="/assets/icons/tel.svg" alt=""></div>
                 <h2 class="page-title section-title">Contato</h2>
-
-                <div class="info-grid">
-                    <div class="info-section">
-                        <h3 class="page-title">E-mail</h3>
-                        <p id="emailEscola">—</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3 class="page-title">Telefone</h3>
-                        <p id="telefoneEscola">—</p>
-                    </div>
+            </div>
+            <div class="escola-info-grid">
+                <div class="escola-info-item">
+                    <span class="escola-info-label">Telefone</span>
+                    <p id="telefoneEscola">—</p>
                 </div>
             </div>
+        </section>
 
-            <div class="visu-box visu-box--full">
+        <section class="visu-box escola-card escola-card--full">
+            <div class="escola-card-header">
+                <div class="escola-card-icone"><img src="/assets/icons/pin.svg" alt=""></div>
                 <h2 class="page-title section-title">Endereço</h2>
-
-                <div class="info-grid">
-                    <div class="info-section">
-                        <h3 class="page-title">CEP</h3>
-                        <p id="cepEscola">—</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h3 class="page-title">Número</h3>
-                        <p id="numeroEscola">—</p>
-                    </div>
+            </div>
+            <div class="escola-info-grid">
+                <div class="escola-info-item">
+                    <span class="escola-info-label">CEP</span>
+                    <p id="cepEscola">—</p>
+                </div>
+                <div class="escola-info-item">
+                    <span class="escola-info-label">Número</span>
+                    <p id="numeroEscola">—</p>
                 </div>
             </div>
+        </section>
     </div>
 </div>
+
 
 <script type="module" src="/assets/js/main.js"></script>
 <script type="module" src="/assets/js/pages/escola/visualizar.js"></script>

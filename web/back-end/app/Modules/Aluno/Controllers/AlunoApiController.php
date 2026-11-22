@@ -202,6 +202,7 @@ class AlunoApiController
     private function filtrosListaV1(): array
     {
         $idUsuario = AuthContext::id() ?? 0;
+<<<<<<< HEAD
         $papeisComAcessoPorEscola = ['DIR', 'CRD', 'PRF', 'AGR', 'ALU'];
         $escolas = null;
         if (!Permissoes::temPapel('ADM')) {
@@ -213,6 +214,15 @@ class AlunoApiController
                 $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
                     $idUsuario,
                     $papeisUsuario
+=======
+        $papeisGestores = ['DIR', 'CRD'];
+        $escolas = null;
+        if (!Permissoes::temPapel('ADM')) {
+            if (array_intersect(AuthContext::papeis(), $papeisGestores) !== []) {
+                $escolas = (new VinculoUsuarioEscola())->escolasAtivasPorPapeis(
+                    $idUsuario,
+                    array_values(array_intersect(AuthContext::papeis(), $papeisGestores))
+>>>>>>> origin/api_v1
                 );
             } else {
                 Response::error('FORBIDDEN', 'Sem permissão para listar alunos.', 403);

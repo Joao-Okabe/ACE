@@ -3,22 +3,50 @@ import {
     configurarFormularioInscricao,
     configurarFormularioPeriodo
 } from "./inscricao.js";
+<<<<<<< HEAD
 import { configurarFormularioLocalDatas } from "./localDatas.js";
 import { configurarFormularioEdicaoEtapa } from "./etapas.js";
 import { configurarBotaoGerarChaveamento } from "./chaveamento.js";
 import { configurarAbas } from "./abas.js";
+=======
+import {
+    configurarFormularioInformacoes,
+    configurarFormularioDatas
+} from "./datas.js";
+import { configurarFormularioEdicaoEtapa } from "./etapas.js";
+import { configurarBotaoGerarChaveamento } from "./chaveamento.js";
+import { configurarAbas } from "./abas.js";
+import { inicializarArbitros } from "./arbitros.js";
+import { configurarRemocaoCompeticao } from "./remover.js";
+import { configurarRemocaoTimes } from "./remocaoTimes.js";
+>>>>>>> origin/api_v1
 
 // INICIALIZAR VISUALIZAÇÃO
 export async function inicializarVisualizacao() {
     configurarAbas();
     configurarFormularioInscricao(carregarCompeticao);
     configurarFormularioPeriodo(carregarCompeticao);
+<<<<<<< HEAD
     configurarFormularioLocalDatas(carregarCompeticao);
     configurarFormularioEdicaoEtapa();
     configurarBotaoGerarChaveamento(carregarCompeticao);
     configurarMenuGerenciamento();
 
     await carregarCompeticao();
+=======
+
+    configurarFormularioInformacoes(carregarCompeticao);
+    configurarFormularioDatas(carregarCompeticao);
+
+    configurarFormularioEdicaoEtapa();
+    configurarBotaoGerarChaveamento(carregarCompeticao);
+    configurarMenuGerenciamento();
+    configurarRemocaoTimes(carregarCompeticao);
+    configurarRemocaoCompeticao();
+
+    await carregarCompeticao();
+    await inicializarArbitros();
+>>>>>>> origin/api_v1
 }
 
 // CONFIGURAR MENU DE GERENCIAMENTO

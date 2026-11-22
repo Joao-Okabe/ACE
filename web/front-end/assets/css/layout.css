@@ -1,5 +1,9 @@
 /*=== LAYOUT ===*/
 
+/* ESTADO INICIAL DA SIDEBAR */
+html.sidebar-fechada .content {
+    margin-left: 72px;
+}
 /* === APPBAR === */
 .navbar {
     position: fixed;
@@ -382,10 +386,6 @@
     cursor: pointer;
     transition: .3s;
     text-align: left;
-}
-
-.perfil-botao:hover {
-    background: rgba(255, 255, 255, 0.15);
 }
 
 .perfil-botao > img {

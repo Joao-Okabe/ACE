@@ -145,7 +145,12 @@ class CompeticaoService
 
     public function remover(int $id): void
     {
-        $this->exigirPermissao($this->buscar($id));
+        $competicao = $this->buscar($id);
+
+        if (!$this->usuarioEhCriador($competicao)) {
+            throw new Exception('Você não tem permissão para remover esta competição. Somente o criador ou um administrador pode removê-la.');
+        }
+
         $this->competicaoModel->remover($id);
     }
 
@@ -363,7 +368,13 @@ class CompeticaoService
     */
     public function usuarioEhCriador(array $competicao): bool
     {
-        return $this->podeGerenciar($competicao);
+        $idUsuario = AuthContext::id() ?? 0;
+        $idCriador = (int) ($competicao['cd_criador'] ?? 0);
+
+        return $idUsuario > 0 && (
+            $idCriador === $idUsuario
+            || $this->permissoes->temPapelAdm($idUsuario)
+        );
     }
 
     public function gerarChaveamento(int $idCompeticao): void

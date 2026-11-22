@@ -3,17 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
-    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
-
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
     <link rel="stylesheet" href="/assets/css/pages/lista.css">
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
 
     <title>Competições</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/competicao/listar.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
 <body>
-
 <app-bar></app-bar>
 <app-sidebar></app-sidebar>
 
@@ -23,14 +39,14 @@
             <h2 class="form-title">Competições</h2>
             <p class="form-subtitle">Gerencie as competições cadastradas.</p>
         </div>
-        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalCompeticao">+ Adicionar competição</button>
+        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalCompeticao" hidden style="display:none!important">+ Adicionar competição</button>
     </div>
     
     <app-lista placeholder="Pesquisar competição"></app-lista>
 </div>
 
 <!-- Modal de cadastro -->
-<app-modal titulo="Cadastrar competição">
+<app-modal titulo="Cadastrar competição" hidden style="display:none!important">
     <form id="form-competicao">
         <div class="row">
             <div class="campo-form col-12">
@@ -83,31 +99,6 @@
     </form>
 </app-modal>
 
-<!-- Modal de edição -->
-<app-modal titulo="Editar competição">
-    <form id="form-editar-competicao">
-        <input type="hidden" id="editarIdCompeticao" name="cd_competicao">
-        <div class="row">
-            <div class="campo-form col-12">
-                <label for="editarNomeCompeticao" class="form-label">Nome da competição</label>
-                <input class="form-control form-input" type="text" id="editarNomeCompeticao" name="nm_competicao" placeholder="Digite o nome da competição" required>
-            </div>
-            <div class="campo-form col-md-6">
-                <label for="editarInicioCompeticao" class="form-label">Data de início</label>
-                <input class="form-control form-input" type="date" id="editarInicioCompeticao" name="dt_inicio">
-            </div>
-            <div class="campo-form col-md-6">
-                <label for="editarFimCompeticao" class="form-label">Data de encerramento</label>
-                <input class="form-control form-input" type="date" id="editarFimCompeticao" name="dt_encerramento">
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
-                <button type="submit" class="custom-btn custom-btn-primary"> Confirmar </button> 
-            </div>
-        </div>
-    </form>
-</app-modal>
 
 <script type="module" src="/assets/js/main.js"></script>
 <script type="module" src="/assets/js/pages/competicao/listar.js"></script>

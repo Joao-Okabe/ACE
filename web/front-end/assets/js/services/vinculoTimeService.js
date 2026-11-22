@@ -36,6 +36,12 @@ export const vinculoTimeService ={
         );
     },
 
+    listarIntegrantes(idTime) {
+        return apiFetch(
+            `${BASE_URL}/${validarId(idTime, "ID do time")}/integrantes`
+        );
+    },
+
     removerIntegrante(idTime, idUsuario){
         return apiFetch(`${BASE_URL}/${validarId(idTime, "ID do time")}/integrantes/${validarId(idUsuario, "ID do usuário")}`,{
                 method: "DELETE"

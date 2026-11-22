@@ -1,0 +1,250 @@
+
+/* CONTAINER */
+.configuracoes-container {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+.configuracoes-container .competicao-gerenciar-lista {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.configuracoes-container .config-grupo {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* GRUPOS */
+.config-grupo {
+    background: #fff;
+    border: 1px solid #e5e1db;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.config-grupo[open] {
+    box-shadow: 0 0 0 1px var(--laranja-principal);
+}
+
+/* CABEÇALHOS */
+.config-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    padding: 18px 22px;
+    background: transparent;
+    border: none;
+    list-style: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.config-cabecalho::-webkit-details-marker {
+    display: none;
+}
+
+.config-cabecalho strong {
+    display: block;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.config-cabecalho span {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.config-seta {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.config-grupo[open] .config-seta {
+    transform: rotate(180deg);
+}
+
+/* CONTEÚDO */
+.config-conteudo {
+    padding: 22px;
+    border-top: 1px solid #e5e1db;
+}
+
+.configuracoes-container .competicao-subsecao {
+    width: 100%;
+}
+
+.configuracoes-container .visu-subtitulo {
+    margin: 0 0 20px;
+    color: var(--azul-principal);
+}
+
+/* PERFIL */
+.config-perfil-layout {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.config-foto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.config-foto .seletor-imagem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: visible;
+    cursor: pointer;
+}
+
+.config-foto .imagem-selecionada {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.config-foto .imagem-adicionar {
+    right: -4px;
+    bottom: -4px;
+}
+
+.config-foto small {
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+}
+
+.config-perfil-campos {
+    display: grid;
+    gap: 18px;
+}
+
+/* BOTÕES */
+.config-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* APARÊNCIA */
+.config-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.config-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 15px;
+}
+
+.config-opcao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border: 1px solid #e5e1db;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.config-opcao:has(:checked) {
+    border-color: var(--laranja-principal);
+    background: var(--bege-principal);
+}
+
+/* ACESSIBILIDADE */
+.config-acessibilidade-campos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.config-controle-fonte {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.config-controle-fonte button {
+    padding: 10px 15px;
+    border: 1px solid #e5e1db;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--azul-principal);
+    cursor: pointer;
+}
+
+.config-controle-fonte output {
+    min-width: 55px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* EXCLUSÃO */
+.config-perigo[open] {
+    box-shadow: 0 0 0 1px #dc3545;
+}
+
+.config-perigo .config-conteudo h3 {
+    color: #b42332;
+}
+
+/* ACESSIBILIDADE DE NAVEGAÇÃO */
+.config-cabecalho:focus-visible,
+.configuracoes-container button:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 650px) {
+    .config-cabecalho,
+    .config-conteudo {
+        padding: 18px;
+    }
+
+    .config-perfil-layout,
+    .config-acessibilidade-campos {
+        grid-template-columns: 1fr;
+    }
+
+    .config-acoes .custom-btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .config-grupo,
+    .config-seta {
+        transition: none;
+    }
+}

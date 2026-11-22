@@ -34,6 +34,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_arbitro_partida_principal
 CREATE INDEX IF NOT EXISTS idx_arbitro_partida_usuario
     ON arbitro_partida (cd_usuario, cd_partida);
 
+<<<<<<< HEAD
 ALTER TABLE penalidade
     ALTER COLUMN cd_competicao DROP NOT NULL;
 
@@ -50,17 +51,126 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM pg_constraint
+=======
+
+-- Atualiza a estrutura da tabela de penalidades.
+ALTER TABLE penalidade
+    ALTER COLUMN cd_competicao DROP NOT NULL,
+    ADD COLUMN IF NOT EXISTS cd_time INTEGER,
+    ADD COLUMN IF NOT EXISTS cd_usuario INTEGER,
+    ADD COLUMN IF NOT EXISTS cd_funcao_integrante INTEGER,
+    ADD COLUMN IF NOT EXISTS cd_partida INTEGER
+        REFERENCES partida ON DELETE CASCADE,
+    ADD COLUMN IF NOT EXISTS minuto INTEGER
+        CHECK (minuto IS NULL OR minuto >= 0);
+
+-- Recupera os dados da estrutura antiga, caso existam.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'penalidade'
+          AND column_name = 'cd_vinculo_time_integrante'
+    ) THEN
+        EXECUTE '
+            UPDATE penalidade p
+            SET
+                cd_time = vti.cd_time,
+                cd_usuario = vti.cd_usuario,
+                cd_funcao_integrante = vti.cd_funcao_integrante
+            FROM vinculo_time_integrante vti
+            WHERE p.cd_vinculo_time_integrante =
+                  vti.cd_vinculo_time_integrante
+              AND (
+                  p.cd_time IS NULL
+                  OR p.cd_usuario IS NULL
+                  OR p.cd_funcao_integrante IS NULL
+              )
+        ';
+    END IF;
+END
+$$;
+
+-- Verifica se todos os registros podem utilizar a nova estrutura.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM penalidade
+        WHERE cd_time IS NULL
+           OR cd_usuario IS NULL
+           OR cd_funcao_integrante IS NULL
+    ) THEN
+        RAISE EXCEPTION
+            'Existem penalidades sem dados suficientes para a migração.';
+    END IF;
+END
+$$;
+
+-- Aplica as obrigatoriedades do esquema atual.
+ALTER TABLE penalidade
+    ALTER COLUMN cd_time SET NOT NULL,
+    ALTER COLUMN cd_usuario SET NOT NULL,
+    ALTER COLUMN cd_funcao_integrante SET NOT NULL;
+
+-- Remove o vínculo antigo.
+ALTER TABLE penalidade
+    DROP COLUMN IF EXISTS cd_vinculo_time_integrante;
+
+-- Adiciona os relacionamentos do esquema atual.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'penalidade_cd_funcao_integrante_fkey'
+          AND conrelid = 'public.penalidade'::regclass
+    ) THEN
+        ALTER TABLE penalidade
+            ADD CONSTRAINT penalidade_cd_funcao_integrante_fkey
+            FOREIGN KEY (cd_funcao_integrante)
+            REFERENCES funcao_integrante (cd_funcao_integrante)
+            ON DELETE RESTRICT;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'penalidade_cd_time_cd_usuario_fkey'
+          AND conrelid = 'public.penalidade'::regclass
+    ) THEN
+        ALTER TABLE penalidade
+            ADD CONSTRAINT penalidade_cd_time_cd_usuario_fkey
+            FOREIGN KEY (cd_time, cd_usuario)
+            REFERENCES vinculo_time_integrante (cd_time, cd_usuario)
+            ON DELETE RESTRICT;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+>>>>>>> origin/api_v1
         WHERE conname = 'penalidade_partida_ou_competicao_check'
           AND conrelid = 'public.penalidade'::regclass
     ) THEN
         ALTER TABLE penalidade
             ADD CONSTRAINT penalidade_partida_ou_competicao_check
+<<<<<<< HEAD
             CHECK (cd_competicao IS NOT NULL OR cd_partida IS NOT NULL);
     END IF;
 
     IF NOT EXISTS (
         SELECT 1
         FROM pg_constraint
+=======
+            CHECK (
+                cd_competicao IS NOT NULL
+                OR cd_partida IS NOT NULL
+            );
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+>>>>>>> origin/api_v1
         WHERE conname = 'penalidade_partida_time_fkey'
           AND conrelid = 'public.penalidade'::regclass
     ) THEN
@@ -77,6 +187,13 @@ $$;
 CREATE INDEX IF NOT EXISTS idx_penalidade_partida_eventos
     ON penalidade (cd_partida, aplicado_em DESC);
 
+<<<<<<< HEAD
+=======
+-- Remove coluna legada que não existe mais no esquema atual.
+ALTER TABLE tipo_penalidade
+    DROP COLUMN IF EXISTS origem_penalidade;
+
+>>>>>>> origin/api_v1
 INSERT INTO tipo_penalidade (nm_tipo_penalidade, descricao)
 VALUES
     ('FALTA', 'Falta registrada durante a partida.'),

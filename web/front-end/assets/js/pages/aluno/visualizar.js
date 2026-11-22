@@ -1,8 +1,12 @@
 import { alunoService } from "../../services/alunoService.js";
+import { exibirMensagem as exibirFeedback } from "../../utils/mensagens.js";
 // E os import @Claralops?
 
 const parametros = new URLSearchParams(window.location.search);
 const idAluno = parametros.get("id");
+
+console.log("ID do aluno recebido pela URL:", idAluno);
+console.log("URL atual:", window.location.href);
 
 const elementos = {
     foto: document.getElementById("fotoAluno"),
@@ -26,9 +30,9 @@ function preencherTexto(elemento, valor) {
     }
 }
 
-function exibirMensagem(mensagem) {
+function exibirMensagem(mensagem, tipo = "info") {
     if (elementos.mensagem) {
-        elementos.mensagem.textContent = mensagem;
+        exibirFeedback(elementos.mensagem, mensagem, tipo);
         elementos.mensagem.hidden = false;
     }
 }
@@ -88,8 +92,46 @@ async function carregarAluno() {
 
     } catch (erro) {
         console.error("Erro ao carregar aluno:", erro);
-        exibirMensagem("Não foi possível carregar os dados do aluno.");
+        exibirMensagem("Não foi possível carregar os dados do aluno.", "erro");
     }
 }
 
+
+// CONFIGURAR BOTÃO VOLTAR
+function configurarBotaoVoltar() {
+    const botao = document.getElementById("botaoVoltarAluno");
+    if (!botao) {
+        console.error("Botão voltar do aluno não encontrado no HTML.");
+        return;
+    }
+
+    const destinoPadrao = "/pages/aluno/listar.html";
+    const parametros = new URLSearchParams(window.location.search);
+    const origem = parametros.get("voltar") || document.referrer;
+
+    botao.href = destinoPadrao;
+
+    if (!origem) return;
+
+    try {
+        const url = new URL(origem, window.location.origin);
+        if (url.origin !== window.location.origin) return;
+
+        const caminhosPermitidos = [
+            "/pages/time/visualizar.html",
+            "/pages/aluno/listar.html"
+        ];
+
+        if (caminhosPermitidos.includes(url.pathname)) {
+            botao.href = url.pathname + url.search + url.hash;
+        }
+
+        console.log("Destino do botão voltar:", botao.href);
+    } catch (erro) {
+        console.error("Erro ao configurar botão voltar:", erro);
+    }
+}
+
+
+configurarBotaoVoltar();
 carregarAluno();

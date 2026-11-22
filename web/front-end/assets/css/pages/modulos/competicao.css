@@ -218,6 +218,7 @@
     text-align: center;
 }
 
+<<<<<<< HEAD
 /* ========================================
    SELECT COM SELEÇÃO MÚLTIPLA
 ======================================== */
@@ -341,6 +342,35 @@
     white-space: nowrap;
 }
 
+=======
+/* FORMULÁRIO DE INSCRIÇÃO DE TIMES */
+#formInscreverTime {
+   display: flex;
+   align-items: flex-end;
+   gap: 16px;
+   width: 100%;
+}
+#formInscreverTime .competicao-form-campo {
+   flex: 3;
+   min-width: 0;
+   max-width: none;
+   margin: 0;
+}
+#formInscreverTime .select-multiplos-toggle,
+#formInscreverTime #botaoInscreverTime {
+   height: 45px;
+}
+#formInscreverTime .select-multiplos-toggle {
+   width: 100%;
+}
+#formInscreverTime #botaoInscreverTime {
+   flex: 1;
+   margin: 0;
+   white-space: nowrap;
+}
+
+
+>>>>>>> origin/api_v1
 /* ========================================
    TIMES INSCRITOS
 ======================================== */
@@ -522,7 +552,11 @@
 .competicao-gerenciar-grupo {
     width: 100%;
     overflow: hidden;
+<<<<<<< HEAD
     border: 1px solid var(--borda);
+=======
+    border: 2px solid var(--borda);
+>>>>>>> origin/api_v1
     border-radius: 10px;
     background: var(--branco);
 }
@@ -541,8 +575,12 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
+<<<<<<< HEAD
 .competicao-gerenciar-item:hover,
 .competicao-gerenciar-item[aria-expanded="true"] {
+=======
+.competicao-gerenciar-item:hover {
+>>>>>>> origin/api_v1
     background: var(--bege-principal);
 }
 .competicao-gerenciar-item > div {
@@ -572,6 +610,7 @@
 .competicao-gerenciar-item:focus-visible {
     outline: 3px solid var(--laranja-principal);
     outline-offset: -3px;
+<<<<<<< HEAD
 }
 .competicao-gerenciar-conteudo {
     padding: 18px 20px;
@@ -579,7 +618,22 @@
 }
 .competicao-gerenciar-conteudo[hidden] {
     display: none;
+=======
+>>>>>>> origin/api_v1
 }
+.competicao-gerenciar-conteudo {
+    padding: 18px 20px;
+    border-top: 2px solid var(--borda);
+}
+.competicao-gerenciar-conteudo[hidden] {
+    display: none;
+}
+
+.competicao-gerenciar-grupo {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
 
 /* ========================================
    MENSAGENS
@@ -664,6 +718,7 @@
     .local-data-card-local {
         grid-column: auto;
     }
+<<<<<<< HEAD
 }
 @media (prefers-reduced-motion: reduce) {
     .competicao-gerenciar-item,
@@ -673,4 +728,178 @@
     .competicao-gerenciar-seta {
         transition: none;
     }
+=======
+}
+@media (prefers-reduced-motion: reduce) {
+    .competicao-gerenciar-item,
+    .time-inscrito-card,
+    .etapa-card,
+    .select-multiplos-seta,
+    .competicao-gerenciar-seta {
+        transition: none;
+    }
+}
+
+/* AÇÕES DE REMOÇÃO */
+.times-remocao-acoes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.times-remocao-acoes[hidden] {
+    display: none;
+}
+
+/* CHECKBOX DOS CARDS */
+.card-entidade .time-remocao-checkbox {
+    display: none;
+}
+
+.modo-remocao .card-entidade .time-remocao-checkbox {
+    display: block;
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    accent-color: var(--laranja-principal);
+    pointer-events: none;
+}
+
+/* CARD SELECIONADO */
+.modo-remocao .card-entidade {
+    cursor: pointer;
+}
+
+.modo-remocao .card-entidade.time-selecionado-remocao {
+    border-color: var(--laranja-principal);
+    background: var(--bege-principal);
+}
+
+@media (max-width: 600px) {
+    .times-remocao-acoes {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+/* ESCONDER CHECKBOX NORMALMENTE */
+#listaTimesCompeticao .time-remocao-checkbox {
+    display: none;
+}
+
+/* MOSTRAR CHECKBOX NO MODO REMOÇÃO */
+#listaTimesCompeticao.modo-remocao .time-remocao-checkbox {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: var(--laranja-principal);
+    pointer-events: none;
+}
+
+/* ALINHAR CHECKBOX COM O TIME */
+#listaTimesCompeticao .card-entidade {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* FORMULÁRIOS DO GERENCIAMENTO */
+.competicao-form-gerenciamento {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    width: 100%;
+}
+
+.competicao-form-gerenciamento > p {
+    width: 100%;
+    margin: 0;
+}
+
+.competicao-form-gerenciamento > p:empty {
+    display: none;
+}
+
+.competicao-gerenciar-campos {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: 100%;
+}
+
+.competicao-gerenciar-campos .competicao-form-campo {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.competicao-gerenciar-campos .form-input {
+    width: 100%;
+}
+
+.competicao-gerenciar-campos .custom-btn {
+    flex-shrink: 0;
+    min-height: 44px;
+    white-space: nowrap;
+}
+
+/* BORDA LARANJA AO ABRIR */
+#gerir .competicao-gerenciar-grupo {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#gerir .competicao-gerenciar-grupo:has(.competicao-gerenciar-item[aria-expanded="true"]) {
+    box-shadow: 0 0 0 1px var(--laranja-principal);
+}
+
+/* BOTÃO REMOVER COMPETIÇÃO */
+#botaoRemoverCompeticao {
+    background: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+#botaoRemoverCompeticao:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 650px) {
+    .competicao-gerenciar-campos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .competicao-gerenciar-campos .competicao-form-campo,
+    .competicao-gerenciar-campos .custom-btn {
+        width: 100%;
+    }
+}
+
+.select-arbitros {
+    width: 100%;
+    min-width: 0;
+>>>>>>> origin/api_v1
+}
+
+.select-arbitros .select-multiplos-toggle {
+    width: 100%;
+}
+
+/* MENSAGEM ACIMA DO CAMPO DE ÁRBITROS */
+#formAdicionarArbitro #mensagemAdicionarArbitro {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0;
+    order: -1;
+}
+
+#formAdicionarArbitro #mensagemAdicionarArbitro:empty {
+    display: none;
 }

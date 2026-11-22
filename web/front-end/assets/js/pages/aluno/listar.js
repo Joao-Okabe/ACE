@@ -405,6 +405,55 @@ if (foto) {
     }
 });
 
+
+// REMOVER ALUNO
+const botaoRemoverAluno = document.getElementById("btnRemoverAluno");
+
+botaoRemoverAluno?.addEventListener("click", async () => {
+    const idAluno = document.getElementById("editarIdAluno")?.value;
+    const nomeAluno = document.getElementById("editarNomeAluno")?.value;
+
+    if (!idAluno) {
+        alert("Não foi possível identificar o aluno.");
+        return;
+    }
+
+    const confirmar = confirm(
+        `Tem certeza que deseja remover o aluno "${nomeAluno}"?\n\n` +
+        "Esta ação não poderá ser desfeita."
+    );
+
+    if (!confirmar) return;
+
+    try {
+        botaoRemoverAluno.disabled = true;
+        botaoRemoverAluno.textContent = "Removendo...";
+
+        await alunoService.remover(idAluno);
+
+        alert("Aluno removido com sucesso!");
+
+        modalEditar?.fechar();
+
+        formularioEdicao?.reset();
+
+        await carregarAlunos();
+
+    } catch (erro) {
+        console.error("Erro ao remover aluno:", erro);
+
+        alert(
+            erro.message ||
+            "Não foi possível remover o aluno."
+        );
+
+    } finally {
+        botaoRemoverAluno.disabled = false;
+        botaoRemoverAluno.textContent = "Remover aluno";
+    }
+});
+
+
 // INICIALIZAÇÃO
 carregarEscolas();
 carregarAlunos();

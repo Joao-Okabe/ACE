@@ -1,0 +1,83 @@
+.time-editar-layout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+
+}
+
+.time-editar-imagem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.time-editar-dados {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+    width: 100%;
+}
+
+.time-editar-dados .competicao-form-campo {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.time-editar-dados button {
+    white-space: nowrap;
+    height: 42px;
+}
+
+@media (max-width: 600px) {
+    .time-editar-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .time-editar-dados {
+        grid-template-columns: 1fr;
+    }
+    .time-editar-dados button {
+        width: 100%;
+    }
+}
+
+.custom-btn-danger {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    transition: all 0.2s ease;
+}
+
+.custom-btn-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
+    color: #fff;
+}
+
+.custom-btn-danger:focus-visible {
+    outline: 3px solid rgba(220, 53, 69, 0.3);
+    outline-offset: 3px;
+
+}
+
+#gerenciamento .competicao-gerenciar-grupo:has(.competicao-gerenciar-item[aria-expanded="true"]) {
+    box-shadow: 0 0 0 1px var(--laranja-principal);
+}
+
+.gerenciar-seta {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.competicao-gerenciar-item[aria-expanded="true"] .gerenciar-seta {
+    transform: rotate(180deg);
+}

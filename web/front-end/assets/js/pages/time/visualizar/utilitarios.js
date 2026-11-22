@@ -2,7 +2,14 @@
 export const estadoTime = {
     integrantes: [],
     funcoes: [],
+<<<<<<< HEAD
     responsaveis: []
+=======
+    responsaveis: [],
+    podeGerenciar: false,
+    permissaoVerificada: false,
+    somenteLeitura: true
+>>>>>>> origin/api_v1
 };
 
 // OBTER ID DO TIME

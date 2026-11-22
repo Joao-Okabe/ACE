@@ -406,11 +406,15 @@ class FaseDeGrupoService
         dentro de cada grupo, usando o método do círculo
         (round-robin / tabela de Berger).
     */
+   
     private function gerarConfrontosGrupos(
         int $cdEtapaCompeticao,
         array $grupos
     ): void {
-        foreach ($grupos as $indiceGrupo => $dadosGrupo) {
+        $rodadasPorNumero = [];
+        $numerosConfrontos = [];
+
+        foreach ($grupos as $dadosGrupo) {
             $idsTimes = array_map(
                 static fn (array $time): int => (int) $time['cd_time'],
                 $dadosGrupo
@@ -427,41 +431,47 @@ class FaseDeGrupoService
                 : $quantidadeTimes;
 
             if ($quantidadeTimes % 2 === 1) {
-                $idsTimes[] = null; // bye fictício
+                $idsTimes[] = null;
             }
 
-            $rodadasDoGrupo = [];
-
+            // Cada número de rodada é criado apenas uma vez na etapa.
             for ($numero = 1; $numero <= $quantidadeRodadas; $numero++) {
-                $rodadasDoGrupo[] = $this->rodadaCompeticaoModel->criar([
-                    'cd_etapa_competicao' => $cdEtapaCompeticao,
-                    'nr_rodada' => $numero,
-                    'nm_rodada' => $this->nomeRodada($numero),
-                ]);
+                if (!isset($rodadasPorNumero[$numero])) {
+                    $rodadasPorNumero[$numero] = $this->rodadaCompeticaoModel->criar([
+                        'cd_etapa_competicao' => $cdEtapaCompeticao,
+                        'nr_rodada' => $numero,
+                        'nm_rodada' => $this->nomeRodada($numero),
+                    ]);
+
+                    $numerosConfrontos[$numero] = 0;
+                }
             }
 
             $n = count($idsTimes);
             $paresCriados = [];
 
             for ($rodada = 0; $rodada < $quantidadeRodadas; $rodada++) {
-                $posicoes = [];
+                $numeroRodada = $rodada + 1;
+                $cdRodada = $rodadasPorNumero[$numeroRodada];
 
+                $posicoes = [];
                 $posicoes[0] = $idsTimes[0];
 
                 for ($i = 1; $i < $n; $i++) {
-                    $posicoes[$i] =
-                        $idsTimes[1 + (($i - 1 + $rodada) % ($n - 1))];
+                    $posicoes[$i] = $idsTimes[
+                        1 + (($i - 1 + $rodada) % ($n - 1))
+                    ];
                 }
 
                 for ($i = 0; $i < $n / 2; $i++) {
                     $a = $posicoes[$i];
-
                     $b = $posicoes[$n - 1 - $i];
 
                     if ($a === null || $b === null) {
                         continue;
                     }
 
+<<<<<<< HEAD
                     $menor = min($a, $b);
                     $maior = max($a, $b);
                     $chavePar = $menor . ':' . $maior;
@@ -469,10 +479,14 @@ class FaseDeGrupoService
                         continue;
                     }
                     $paresCriados[$chavePar] = true;
+=======
+                    // Numeração contínua entre todos os grupos da rodada.
+                    $numerosConfrontos[$numeroRodada]++;
+>>>>>>> origin/api_v1
 
                     $cdConfronto = $this->confrontoModel->criar([
-                        'cd_rodada' => $rodadasDoGrupo[$rodada],
-                        'nr_confronto' => $i + 1,
+                        'cd_rodada' => $cdRodada,
+                        'nr_confronto' => $numerosConfrontos[$numeroRodada],
                         'status' => 'PENDENTE',
                     ]);
 

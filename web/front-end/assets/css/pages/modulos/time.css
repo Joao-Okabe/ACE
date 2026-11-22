@@ -1,16 +1,29 @@
+<<<<<<< HEAD
 
 /* ========================================
    LAYOUT DO PAINEL
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .visu-painel {
     margin-top: 24px;
     row-gap: 20px;
 }
+<<<<<<< HEAD
 .visu-painel > div,
 .visu-painel-conteudo {
     min-width: 0;
 }
 .visu-painel-conteudo {
+=======
+
+.visu-painel > div,
+.visu-painel-conteudo {
+    min-width: 0;
+}
+
+.visu-painel-conteudo {
+>>>>>>> origin/api_v1
     min-height: 340px;
     padding: 28px;
 }
@@ -18,9 +31,12 @@
     display: none !important;
 }
 
+<<<<<<< HEAD
 /* ========================================
    MENU LATERAL
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .visu-menu {
     display: flex;
     flex-direction: column;
@@ -70,12 +86,15 @@
 }
 .visu-menu-item:focus-visible {
     outline: 3px solid var(--laranja-principal);
-    outline-offset: 3px;
+   outline-offset: 3px;
 }
 
+<<<<<<< HEAD
 /* ========================================
    CABEÇALHO DAS SEÇÕES
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .visu-secao-header {
     display: flex;
     align-items: center;
@@ -126,9 +145,12 @@
     box-shadow: none;
 }
 
+<<<<<<< HEAD
 /* ========================================
    LISTAS
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .visu-lista {
     display: flex;
     flex-direction: column;
@@ -182,9 +204,12 @@
     line-height: 1.6;
 }
 
+<<<<<<< HEAD
 /* ========================================
    CARDS DOS INTEGRANTES
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .time-card {
     display: flex;
     flex-direction: column;
@@ -197,6 +222,10 @@
     border-radius: 12px;
     background: var(--branco, #fff);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .time-card--small {
     width: 400px;
     height: 100px;
@@ -208,10 +237,18 @@
     box-shadow: var(--shadow-sm, 0 2px 8px rgba(24, 24, 71, 0.04));
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .time-card--small:hover {
     border-color: rgba(244, 78, 28, 0.4);
     box-shadow: 0 4px 14px rgba(24, 24, 71, 0.07);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .time-seta {
     display: inline-block;
     flex-shrink: 0;
@@ -220,24 +257,39 @@
     font-size: 26px;
     transition: transform 0.3s ease;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .time-card:hover .time-seta {
     transform: translateX(6px);
 }
 
+<<<<<<< HEAD
 /* ========================================
    PESSOAS E INTEGRANTES
 ======================================== */
+=======
+>>>>>>> origin/api_v1
 .pessoa-topo {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     width: 100%;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-avatar {
     flex-shrink: 0;
     border: 2px solid var(--azul-principal);
     border-radius: 50%;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-avatar img {
     display: block;
     width: 75px;
@@ -245,18 +297,34 @@
     border-radius: 50%;
     object-fit: cover;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-info {
     flex: 1;
     min-width: 0;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-info h3 {
     margin: 0 0 6px;
     font-size: 15px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-info p {
     margin: 0 0 8px;
     font-size: 13px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-tag {
     display: inline-flex;
     align-items: center;
@@ -268,6 +336,10 @@
     font-size: 12px;
     font-weight: 600;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-acoes {
     display: flex;
     flex-direction: column;
@@ -275,16 +347,28 @@
     gap: 8px;
     width: 100%;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-acoes button {
     width: 100%;
     padding: 6px;
     font-size: 11px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-card {
     display: flex;
     align-items: center;
     gap: 16px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .pessoa-acao {
     display: flex;
     align-items: center;
@@ -330,9 +414,33 @@
     color: var(--branco);
 }
 
+<<<<<<< HEAD
 /* ========================================
    BOTÕES DE AÇÃO
 ======================================== */
+=======
+.btn-editar-integrante {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background: var(--branco);
+    color: var(--azul-principal);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-editar-integrante:hover {
+    border-color: var(--laranja-principal);
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+>>>>>>> origin/api_v1
 .btn-acao,
 .btn-remover {
     display: inline-flex;
@@ -347,23 +455,40 @@
     font-weight: 600;
     transition: var(--transition);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .btn-acao {
     border-color: var(--azul-principal);
     color: var(--azul-principal);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .btn-acao:hover {
     background: var(--azul-principal);
     color: var(--branco);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .btn-remover {
     border-color: var(--laranja-principal);
     color: var(--laranja-principal);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/api_v1
 .btn-remover:hover {
     background: var(--laranja-principal);
     color: var(--branco);
 }
 
+<<<<<<< HEAD
 /* ========================================
    CARDS DE PARTIDA
 ======================================== */
@@ -379,8 +504,126 @@
 .partida-card-topo,
 .partida-card-rodape,
 .partida-topo {
+=======
+@media (max-width: 767px) {
+    .visu-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    .visu-menu-item {
+        gap: 8px;
+        padding: 10px;
+        font-size: 12px;
+    }
+    .visu-menu-seta {
+        display: none;
+    }
+    .visu-painel-conteudo {
+        min-height: 260px;
+        padding: 20px;
+    }
+    .visu-secao-header {
+        align-items: stretch;
+    }
+    .visu-secao-header .custom-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 575px) {
+    .time-card {
+        padding: 16px;
+    }
+    .pessoa-card {
+        gap: 12px;
+    }
+
+    .pessoa-avatar img {
+        width: 46px;
+        height: 46px;
+    }
+    
+    .pessoa-info h3 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .visu-cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .visu-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .visu-menu-item,
+    .visu-secao-header .custom-btn,
+    .time-card,
+    .time-card--small,
+    .pessoa-acao,
+    .btn-acao,
+    .btn-remover,
+    .btn-editar-integrante {
+        transition: none;
+    }
+}
+
+\#listaIntegrantes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+}
+
+.integrante-card {
     display: flex;
     align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    background: var(--bege-principal, #F1E4D1);
+    border: 4px solid rgba(24, 24, 71, 0.12);
+    border-radius: 12px;
+}
+
+.integrante-card .time-inscrito-brasao {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.integrante-card .time-inscrito-info {
+>>>>>>> origin/api_v1
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+}
+
+.integrante-card .time-inscrito-nome {
+    color: var(--azul-principal, #181847);
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.integrante-card-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+<<<<<<< HEAD
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
@@ -477,9 +720,34 @@
     object-fit: contain;
 }
 .partida-placar {
+=======
+    gap: 5px 10px;
+}
+.integrante-card .time-inscrito-posicao,
+.integrante-card .time-inscrito-camisa {
+    color: #555;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.integrante-card .pessoa-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: rgba(244, 78, 28, 0.12);
+    color: var(--laranja-principal, #F44E1C);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.integrante-card .btn-editar-integrante {
+>>>>>>> origin/api_v1
     display: flex;
+    flex: 0 0 34px;
     align-items: center;
     justify-content: center;
+<<<<<<< HEAD
     gap: 5px;
     color: var(--azul-principal, #181847);
     font-size: 25px;
@@ -492,8 +760,105 @@
 }
 .partida-placar span {
     color: #999;
-    font-size: 18px;
+=======
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--azul-principal, #181847);
+    cursor: pointer;
 }
+
+.integrante-card .btn-editar-integrante:hover {
+    background: rgba(24, 24, 71, 0.1);
+}
+
+@media (max-width: 480px) {
+    \#listaIntegrantes {
+       grid-template-columns: 1fr;
+    }
+}
+
+.integrante-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+.integrante-card:focus-visible {
+    outline: 2px solid var(--laranja-principal, #F44E1C);
+    outline-offset: 3px;
+}
+
+.integrante-card-seta {
+    flex: 0 0 auto;
+    color: var(--azul-principal, #181847);
+    font-size: 19px;
+    transition: transform 0.25s ease, color 0.25s ease;
+
+}
+.integrante-card:hover .integrante-card-seta {
+    transform: translateX(5px);
+    color: var(--laranja-principal, #F44E1C);
+}
+
+.integrante-card .btn-editar-integrante {
+    position: relative;
+    z-index: 1;
+}
+
+.integrante-card-acoes {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.integrante-card .btn-editar-integrante {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-shrink: 0;
+    padding: 9px 2px;
+    border: 2px solid var(--laranja-principal);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--laranja-principal);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.integrante-card .btn-editar-integrante img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.integrante-card .btn-editar-integrante:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.integrante-card-seta {
+    color: var(--azul-principal, #181847);
+>>>>>>> origin/api_v1
+    font-size: 18px;
+    font-weight: 600;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+<<<<<<< HEAD
 .partida-placar strong:only-child {
     font-size: 25px;
 }
@@ -990,4 +1355,36 @@
     .btn-editar-integrante {
         transition: none;
     }
+=======
+
+.integrante-card:hover .integrante-card-seta {
+    transform: translateX(5px);
+    color: var(--laranja-principal, #F44E1C);
+}
+
+.integrante-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+@media (max-width: 480px) {
+    .integrante-card-acoes {
+        gap: 6px;
+    }
+
+    .integrante-card .btn-editar-integrante {
+        padding: 7px;
+    }
+
+    .integrante-card .btn-editar-integrante span {
+        display: none;
+
+    }
+
+>>>>>>> origin/api_v1
 }

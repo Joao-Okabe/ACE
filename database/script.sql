@@ -15,10 +15,13 @@ CREATE TABLE papel (
     nm_papel VARCHAR(50) NOT NULL UNIQUE
 );
 
+<<<<<<< HEAD
 -- ============================================================
 -- 2. USUÁRIOS
 -- ============================================================
 
+=======
+>>>>>>> origin/api_v1
 CREATE TABLE usuario (
     cd_usuario INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_usuario VARCHAR(150) NOT NULL,
@@ -65,10 +68,13 @@ CREATE TABLE usuario_papel (
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (cd_usuario, cd_papel)
 );
+<<<<<<< HEAD
 
 -- ============================================================
 -- 3. ESCOLA
 -- ============================================================
+=======
+>>>>>>> origin/api_v1
 
 CREATE TABLE escola (
     cd_escola INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -111,8 +111,7 @@ class RankingController
             $where = $filtros ? ' AND ' . implode(' AND ', $filtros) : '';
             $pdo = Database::connect();
             $sql = "SELECT t.cd_time AS time_id, t.nm_time AS time, e.cd_escola AS escola_id,
-                           e.nm_escola AS escola,
-                           COALESCE(SUM(CASE WHEN lower(mc.nm_metrica_classificacao) IN ('jogos','games','matches') THEN est.valor ELSE 0 END),0) AS jogos,
+                           e.nm_escola AS escola, COUNT(DISTINCT cg.cd_classificacao_grupo) AS jogos,
                            COALESCE(SUM(CASE WHEN lower(mc.nm_metrica_classificacao) IN ('vitorias','vitórias','vitoria','vitória','wins') THEN est.valor ELSE 0 END),0) AS vitorias,
                            COALESCE(SUM(CASE WHEN lower(mc.nm_metrica_classificacao) IN ('pontos','points') THEN est.valor ELSE 0 END),0) AS pontos,
                            COALESCE(SUM(cg.posicao),0) AS _posicoes

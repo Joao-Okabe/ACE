@@ -177,3 +177,53 @@ if (arquivoLogo) {
         }
     });
 }
+
+// REMOVER ESCOLA
+const botaoRemoverEscola = document.querySelector("#btnRemoverEscola");
+
+if (botaoRemoverEscola) {
+    botaoRemoverEscola.addEventListener("click", async () => {
+        const formulario = document.querySelector("#form-editar-escola");
+
+        const idEscola = formulario
+            ?.querySelector("#editarIdEscola")?.value;
+
+        const nomeEscola = formulario
+            ?.querySelector("#editarNomeEscola")?.value;
+
+        if (!idEscola) {
+            alert("Não foi possível identificar a escola.");
+            return;
+        }
+
+        const confirmar = confirm(
+            `Tem certeza que deseja remover a escola "${nomeEscola}"?\n\n` +
+            "Esta ação não poderá ser desfeita."
+        );
+
+        if (!confirmar) return;
+
+        try {
+            botaoRemoverEscola.disabled = true;
+            botaoRemoverEscola.textContent = "Removendo...";
+
+            await escolaService.remover(idEscola);
+
+            alert("Escola removida com sucesso!");
+
+            window.location.reload();
+
+        } catch (erro) {
+            console.error("Erro ao remover escola:", erro);
+
+            alert(
+                erro.message ||
+                "Não foi possível remover a escola."
+            );
+
+        } finally {
+            botaoRemoverEscola.disabled = false;
+            botaoRemoverEscola.textContent = "Remover escola";
+        }
+    });
+}
