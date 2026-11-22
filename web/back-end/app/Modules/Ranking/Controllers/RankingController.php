@@ -110,8 +110,8 @@ class RankingController
             if ($escola !== null) { $filtros[] = 'e.cd_escola = :escola'; $params[':escola'] = $escola; }
             $where = $filtros ? ' AND ' . implode(' AND ', $filtros) : '';
             $pdo = Database::connect();
-            $sql = "SELECT t.cd_time AS time_id, t.nm_time AS time, e.cd_escola AS escola_id,
-                           e.nm_escola AS escola, COUNT(DISTINCT cg.cd_classificacao_grupo) AS jogos,
+            $sqlBase = "SELECT t.cd_time AS time_id, t.nm_time AS time, e.cd_escola AS escola_id,
+                           e.nm_escola AS escola, COALESCE(jogos_por_time.jogos, 0) AS jogos,
                            COALESCE(SUM(CASE WHEN lower(mc.nm_metrica_classificacao) IN ('vitorias','vitórias','vitoria','vitória','wins') THEN est.valor ELSE 0 END),0) AS vitorias,
                            COALESCE(SUM(CASE WHEN lower(mc.nm_metrica_classificacao) IN ('pontos','points') THEN est.valor ELSE 0 END),0) AS pontos,
                            COALESCE(SUM(cg.posicao),0) AS _posicoes
@@ -120,30 +120,54 @@ class RankingController
                     JOIN grupo_competicao g ON g.cd_etapa_competicao = ec.cd_etapa_competicao
                     JOIN classificacao_grupo cg ON cg.cd_grupo = g.cd_grupo
                     JOIN time t ON t.cd_time = cg.cd_time
-                    JOIN vinculo_time_escola vte ON vte.cd_time = t.cd_time AND vte.ativo = TRUE
-                    JOIN escola e ON e.cd_escola = vte.cd_escola
+                    JOIN LATERAL (
+                        SELECT e.cd_escola, e.nm_escola
+                        FROM vinculo_time_escola vte
+                        JOIN escola e ON e.cd_escola = vte.cd_escola
+                        WHERE vte.cd_time = t.cd_time
+                          AND vte.ativo = TRUE
+                        ORDER BY vte.criado_em DESC, vte.cd_escola
+                        LIMIT 1
+                    ) e ON TRUE
                     LEFT JOIN estatistica_classificacao est ON est.cd_classificacao_grupo = cg.cd_classificacao_grupo
                     LEFT JOIN metrica_classificacao mc ON mc.cd_metrica_classificacao = est.cd_metrica_classificacao
+                    LEFT JOIN LATERAL (
+                        SELECT COUNT(DISTINCT c.cd_confronto) AS jogos
+                        FROM rodada_competicao rj
+                        JOIN confronto c ON c.cd_rodada = rj.cd_rodada
+                        JOIN confronto_participante cp ON cp.cd_confronto = c.cd_confronto
+                        JOIN origem_participante_confronto opc
+                          ON opc.cd_origem_participante = cp.cd_origem_participante
+                        WHERE rj.cd_etapa_competicao = ec.cd_etapa_competicao
+                          AND c.status = 'FINALIZADO'
+                          AND opc.tipo_origem = 'TIME'
+                          AND opc.cd_time = t.cd_time
+                    ) jogos_por_time ON TRUE
                     WHERE 1=1 {$where}
-                    GROUP BY t.cd_time,t.nm_time,e.cd_escola,e.nm_escola
-                    ORDER BY pontos DESC,vitorias DESC,_posicoes ASC,t.nm_time ASC LIMIT :limite";
+                    GROUP BY t.cd_time,t.nm_time,e.cd_escola,e.nm_escola,jogos_por_time.jogos";
+            if ($tipo === 'escolas') {
+                $sql = "SELECT escola_id, escola, SUM(jogos) AS jogos,
+                               SUM(vitorias) AS vitorias, SUM(pontos) AS pontos
+                        FROM ({$sqlBase}) AS ranking_equipes
+                        GROUP BY escola_id, escola
+                        ORDER BY pontos DESC, vitorias DESC, escola ASC
+                        LIMIT :limite";
+            } else {
+                $sql = $sqlBase . ' ORDER BY pontos DESC,vitorias DESC,_posicoes ASC,t.nm_time ASC LIMIT :limite';
+            }
             $stmt = $pdo->prepare($sql);
             foreach ($params as $key => $value) $stmt->bindValue($key, $value, PDO::PARAM_INT);
             $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
             $stmt->execute();
             $linhas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($tipo === 'escolas') {
-                $agrupado = [];
-                foreach ($linhas as $linha) {
-                    $id = (int) $linha['escola_id'];
-                    if (!isset($agrupado[$id])) $agrupado[$id] = ['escola_id'=>$id,'escola'=>$linha['escola'],'jogos'=>0,'vitorias'=>0,'pontos'=>0];
-                    $agrupado[$id]['jogos'] += (int) $linha['jogos'];
-                    $agrupado[$id]['vitorias'] += (int) $linha['vitorias'];
-                    $agrupado[$id]['pontos'] += (float) $linha['pontos'];
+                foreach ($linhas as &$linha) {
+                    $linha['escola_id'] = (int) $linha['escola_id'];
+                    $linha['jogos'] = (int) $linha['jogos'];
+                    $linha['vitorias'] = (int) $linha['vitorias'];
+                    $linha['pontos'] = (float) $linha['pontos'];
                 }
-                $linhas = array_values($agrupado);
-                usort($linhas, fn($a,$b) => ($b['pontos'] <=> $a['pontos']) ?: (($b['vitorias'] <=> $a['vitorias']) ?: strcasecmp($a['escola'],$b['escola'])));
-                $linhas = array_slice($linhas, 0, $limite);
+                unset($linha);
             } else {
                 foreach ($linhas as &$linha) { unset($linha['_posicoes']); $linha['time_id']=(int)$linha['time_id']; $linha['escola_id']=(int)$linha['escola_id']; $linha['jogos']=(int)$linha['jogos']; $linha['vitorias']=(int)$linha['vitorias']; $linha['pontos']=(float)$linha['pontos']; }
                 unset($linha);

@@ -235,6 +235,9 @@ class UsuarioApiController
             }
         } else {
             $dados = $_POST;
+            if (isset($_FILES['foto_perfil'])) {
+                $dados['foto_perfil'] = $_FILES['foto_perfil'];
+            }
         }
 
         try {
@@ -272,10 +275,29 @@ class UsuarioApiController
             }
 
             $this->service()->atualizar($id, $dados);
+            $usuario = $this->service()->buscar($id);
+            if ($usuario === null) {
+                throw new RuntimeException('Usuário não encontrado.');
+            }
+
+            $fotoPerfil = $usuario['path_ft_usuario'] ?? null;
+            if ($id === $idUsuarioSessao) {
+                $_SESSION['usuario']['nome'] = $usuario['nm_usuario'];
+                $_SESSION['usuario']['nm_usuario'] = $usuario['nm_usuario'];
+                $_SESSION['usuario']['email'] = $usuario['email'];
+                $_SESSION['usuario']['foto_perfil'] = $fotoPerfil;
+            }
 
             Response::json([
                 'sucesso' => true,
-                'mensagem' => 'Usuário atualizado com sucesso.'
+                'mensagem' => 'Usuário atualizado com sucesso.',
+                'dados' => [
+                    'id' => (int) $usuario['cd_usuario'],
+                    'nome' => $usuario['nm_usuario'],
+                    'nm_usuario' => $usuario['nm_usuario'],
+                    'email' => $usuario['email'],
+                    'foto_perfil' => $fotoPerfil
+                ]
             ]);
         } catch (Throwable $e) {
             $mensagem = $e->getMessage();

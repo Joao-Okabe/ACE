@@ -2,6 +2,7 @@ import { timeService } from "../../services/timeService.js";
 import { escolaService } from "../../services/escolaService.js";
 import { esporteService } from "../../services/esporteService.js";
 import { usuarioEhVisitante, definirVisibilidade } from "../../utils/permissoesVisuais.js";
+import { configurarImagem, obterFonteImagem } from "../../utils/imagens.js";
 
 class AppLista extends HTMLElement {
     connectedCallback() {
@@ -134,9 +135,10 @@ function timeEstaAtivo(valor) {
 function criarCardTime(time) {
     const id = escaparHTML(time.cd_time);
     const nome = escaparHTML(time.nm_time);
-    const escudo = escaparHTML(
-        time.path_escudo || "/assets/img/escudo.jpg"
-    );
+    const escudo = escaparHTML(obterFonteImagem(
+        [time.path_escudo, time.imagem],
+        "/assets/img/escudo.jpg"
+    ));
 
     const situacao = timeEstaAtivo(time.ativo)
         ? "Ativo"
@@ -190,9 +192,11 @@ async function carregarTimes() {
 
         // Imagem padrão caso algum escudo não seja encontrado.
         conteudo.querySelectorAll(".lista-brasao img").forEach(imagem => {
-            imagem.addEventListener("error", () => {
-                imagem.src = "/assets/img/escudo.jpg";
-            }, { once: true });
+            configurarImagem(
+                imagem,
+                imagem.getAttribute("src"),
+                "/assets/img/escudo.jpg"
+            );
         });
 
     } catch (erro) {
@@ -234,31 +238,6 @@ async function configurarCadastroTime() {
         document.getElementById("form-time")?.remove();
     }
 }
-
-// ========================================
-// MODAL DE EDIÇÃO
-// ========================================
-
-// Delegação: funciona também com cards criados dinamicamente.
-lista?.addEventListener("click", evento => {
-    const botao = evento.target.closest("[data-editar-time]");
-
-    if (!botao) return;
-
-    evento.preventDefault();
-    evento.stopPropagation();
-
-    if (!modalEditarTime) return;
-
-    const campoId = modalEditarTime.querySelector("#editarIdTime");
-
-    if (campoId) {
-        campoId.value = botao.dataset.id;
-    }
-
-    modalEditarTime.abrir();
-});
-
 
 // ========================================
 // CARREGAR ESCOLAS NO SELECT
@@ -391,7 +370,11 @@ lista?.addEventListener("click", async evento => {
         campoNome.value = time.nm_time || "";
 
         if (imagem) {
-            imagem.src = time.path_escudo || "/assets/img/escudo.jpg";
+            configurarImagem(
+                imagem,
+                [time.path_escudo, time.imagem],
+                "/assets/img/escudo.jpg"
+            );
         }
 
         if (campoEscudo) {

@@ -34,24 +34,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_arbitro_partida_principal
 CREATE INDEX IF NOT EXISTS idx_arbitro_partida_usuario
     ON arbitro_partida (cd_usuario, cd_partida);
 
-<<<<<<< HEAD
-ALTER TABLE penalidade
-    ALTER COLUMN cd_competicao DROP NOT NULL;
-
-ALTER TABLE penalidade
-    ADD COLUMN IF NOT EXISTS cd_partida INTEGER
-        REFERENCES partida ON DELETE CASCADE;
-
-ALTER TABLE penalidade
-    ADD COLUMN IF NOT EXISTS minuto INTEGER
-        CHECK (minuto IS NULL OR minuto >= 0);
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM pg_constraint
-=======
 
 -- Atualiza a estrutura da tabela de penalidades.
 ALTER TABLE penalidade
@@ -148,20 +130,11 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1 FROM pg_constraint
->>>>>>> origin/api_v1
         WHERE conname = 'penalidade_partida_ou_competicao_check'
           AND conrelid = 'public.penalidade'::regclass
     ) THEN
         ALTER TABLE penalidade
             ADD CONSTRAINT penalidade_partida_ou_competicao_check
-<<<<<<< HEAD
-            CHECK (cd_competicao IS NOT NULL OR cd_partida IS NOT NULL);
-    END IF;
-
-    IF NOT EXISTS (
-        SELECT 1
-        FROM pg_constraint
-=======
             CHECK (
                 cd_competicao IS NOT NULL
                 OR cd_partida IS NOT NULL
@@ -170,7 +143,6 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1 FROM pg_constraint
->>>>>>> origin/api_v1
         WHERE conname = 'penalidade_partida_time_fkey'
           AND conrelid = 'public.penalidade'::regclass
     ) THEN
@@ -187,13 +159,10 @@ $$;
 CREATE INDEX IF NOT EXISTS idx_penalidade_partida_eventos
     ON penalidade (cd_partida, aplicado_em DESC);
 
-<<<<<<< HEAD
-=======
 -- Remove coluna legada que não existe mais no esquema atual.
 ALTER TABLE tipo_penalidade
     DROP COLUMN IF EXISTS origem_penalidade;
 
->>>>>>> origin/api_v1
 INSERT INTO tipo_penalidade (nm_tipo_penalidade, descricao)
 VALUES
     ('FALTA', 'Falta registrada durante a partida.'),

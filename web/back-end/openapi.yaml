@@ -266,7 +266,7 @@ paths:
         - { name: local, in: query, schema: { type: string } }
         - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }
       responses:
-        '200': { description: Partidas listadas }
+        '200': { description: Partidas listadas; cada item inclui email_criador }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
@@ -381,7 +381,7 @@ paths:
         - { name: pagina, in: query, schema: { type: integer, minimum: 1, default: 1 } }
         - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
       responses:
-        '200': { description: Calendário consultado }
+        '200': { description: Calendário consultado; cada item inclui email_criador }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
   /partidas/ao-vivo:
@@ -392,7 +392,7 @@ paths:
       parameters:
         - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
       responses:
-        '200': { description: Partidas em andamento }
+        '200': { description: Partidas em andamento; cada item inclui email_criador }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
   /partidas/historico:
@@ -403,7 +403,7 @@ paths:
       parameters:
         - { name: limite, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 30 } }
       responses:
-        '200': { description: Histórico consultado }
+        '200': { description: Histórico consultado; cada item inclui email_criador }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
   /partidas/{id}:
@@ -417,7 +417,8 @@ paths:
         '200':
           description: >-
             Partida consultada com placar final, equipes, árbitros escalados e
-            histórico de eventos de pontuação e penalidade.
+            histórico de eventos de pontuação e penalidade, além do e-mail do
+            criador no campo email_criador.
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
   /partidas/{id}/calendario:

@@ -1,5 +1,6 @@
 import { escolaService } from "../../services/escolaService.js";
 import { configurarConsultaCep, consultarCep } from "../../utils/cep.js";
+import { configurarImagem } from "../../utils/imagens.js";
 
 // MODAL DE EDIÇÃO
 const modalEditarEscola = document.querySelector(
@@ -42,7 +43,11 @@ function preencherFormulario(formulario, escola) {
     const previewBrasao = formulario.querySelector("#editarPreviewBrasao");
 
     if (previewBrasao) {
-        previewBrasao.src = escola.path_brasao || escola.img_logo || "/assets/img/brasao.jpg";
+        configurarImagem(
+            previewBrasao,
+            [escola.path_brasao, escola.img_logo, escola.logo, escola.imagem],
+            "/assets/img/brasao.jpg"
+        );
 }
 }
 

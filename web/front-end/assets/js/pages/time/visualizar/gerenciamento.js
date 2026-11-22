@@ -1,5 +1,6 @@
 import { timeService } from "../../../services/timeService.js";
 import { estadoTime, obterIdTime } from "./utilitarios.js";
+import { configurarImagem } from "../../../utils/imagens.js";
 
 // MENSAGENS
 function mostrarMensagem(elemento, texto, tipo) {
@@ -13,12 +14,7 @@ function mostrarMensagem(elemento, texto, tipo) {
 function atualizarImagem(imagem, caminho) {
     if (!imagem) return;
 
-    imagem.src = caminho || "/assets/img/escudo.jpg";
-
-    imagem.onerror = () => {
-        imagem.onerror = null;
-        imagem.src = "/assets/img/escudo.jpg";
-    };
+    configurarImagem(imagem, caminho, "/assets/img/escudo.jpg");
 }
 
 // CONFIGURAR GRUPOS EXPANSÍVEIS

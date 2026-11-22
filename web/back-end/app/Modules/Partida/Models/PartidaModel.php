@@ -183,12 +183,14 @@ class Partida extends Model
                 c.nm_competicao,
                 e.nm_esporte,
                 m.sexo,
-                m.categoria
+                m.categoria,
+                criador.email AS email_criador
             FROM partida p
             LEFT JOIN info_partida ip ON ip.cd_partida = p.cd_partida
             LEFT JOIN competicao c ON c.cd_competicao = p.cd_competicao
             LEFT JOIN esporte e ON e.cd_esporte = COALESCE(p.cd_esporte, c.cd_esporte)
             LEFT JOIN modalidade m ON m.cd_modalidade = COALESCE(p.cd_modalidade, c.cd_modalidade)
+            LEFT JOIN usuario criador ON criador.cd_usuario = p.cd_criador
             WHERE p.cd_partida = :id
         ");
         $stmt->execute([':id' => $idPartida]);
@@ -302,12 +304,14 @@ class Partida extends Model
                 c.nm_competicao,
                 e.nm_esporte,
                 m.sexo,
-                m.categoria
+                m.categoria,
+                criador.email AS email_criador
             FROM partida p
             LEFT JOIN info_partida ip ON ip.cd_partida = p.cd_partida
             LEFT JOIN competicao c ON c.cd_competicao = p.cd_competicao
             LEFT JOIN esporte e ON e.cd_esporte = COALESCE(p.cd_esporte, c.cd_esporte)
             LEFT JOIN modalidade m ON m.cd_modalidade = COALESCE(p.cd_modalidade, c.cd_modalidade)
+            LEFT JOIN usuario criador ON criador.cd_usuario = p.cd_criador
             WHERE
                 -- Primeiro: o usuário precisa ter acesso à competição-pai.
                 (

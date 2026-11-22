@@ -1,5 +1,6 @@
 import { escolaService } from "../../services/escolaService.js";
 import { authService } from "../../services/authService.js";
+import { configurarImagem } from "../../utils/imagens.js";
 
 import "./cadastrar.js";
 import "./editar.js";
@@ -134,8 +135,12 @@ console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
             brasao.classList.add("lista-brasao");
 
             const imagem = document.createElement("img");
-            imagem.src = escola.img_logo || "/assets/img/brasao.jpg";
             imagem.alt = "";
+            configurarImagem(
+                imagem,
+                [escola.img_logo, escola.path_brasao, escola.logo, escola.imagem],
+                "/assets/img/brasao.jpg"
+            );
 
             brasao.appendChild(imagem);
 

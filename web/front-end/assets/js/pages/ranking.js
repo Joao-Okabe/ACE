@@ -766,5 +766,7 @@ formRanking.addEventListener(
 selecionarTipo("equipes");
 alternarFiltrosAvancados(false);
 
-carregarCompeticoes();
-carregarFiltros();
+Promise.all([
+    carregarCompeticoes(),
+    carregarFiltros()
+]).then(carregarRanking);

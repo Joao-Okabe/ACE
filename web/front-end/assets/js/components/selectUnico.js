@@ -1,5 +1,7 @@
 let contadorSelectUnico = 0;
 
+import { configurarImagem } from "../utils/imagens.js";
+
 export function criarSelectUnico({
     select,
     placeholder = "Selecione uma opção",
@@ -93,12 +95,12 @@ export function criarSelectUnico({
 
             const imagem = document.createElement("img");
             imagem.className = "select-unico-foto";
-            imagem.src = obterImagem(opcao) || "/assets/img/no-prof-pic.png";
             imagem.alt = "";
-            imagem.onerror = () => {
-                imagem.onerror = null;
-                imagem.src = "/assets/img/no-prof-pic.png";
-            };
+            configurarImagem(
+                imagem,
+                obterImagem(opcao),
+                "/assets/img/no-prof-pic.png"
+            );
 
             const nome = document.createElement("span");
             nome.className = "select-unico-nome";

@@ -218,7 +218,6 @@
     text-align: center;
 }
 
-<<<<<<< HEAD
 /* ========================================
    SELECT COM SELEÇÃO MÚLTIPLA
 ======================================== */
@@ -342,35 +341,6 @@
     white-space: nowrap;
 }
 
-=======
-/* FORMULÁRIO DE INSCRIÇÃO DE TIMES */
-#formInscreverTime {
-   display: flex;
-   align-items: flex-end;
-   gap: 16px;
-   width: 100%;
-}
-#formInscreverTime .competicao-form-campo {
-   flex: 3;
-   min-width: 0;
-   max-width: none;
-   margin: 0;
-}
-#formInscreverTime .select-multiplos-toggle,
-#formInscreverTime #botaoInscreverTime {
-   height: 45px;
-}
-#formInscreverTime .select-multiplos-toggle {
-   width: 100%;
-}
-#formInscreverTime #botaoInscreverTime {
-   flex: 1;
-   margin: 0;
-   white-space: nowrap;
-}
-
-
->>>>>>> origin/api_v1
 /* ========================================
    TIMES INSCRITOS
 ======================================== */
@@ -552,11 +522,7 @@
 .competicao-gerenciar-grupo {
     width: 100%;
     overflow: hidden;
-<<<<<<< HEAD
     border: 1px solid var(--borda);
-=======
-    border: 2px solid var(--borda);
->>>>>>> origin/api_v1
     border-radius: 10px;
     background: var(--branco);
 }
@@ -575,12 +541,8 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
-<<<<<<< HEAD
 .competicao-gerenciar-item:hover,
 .competicao-gerenciar-item[aria-expanded="true"] {
-=======
-.competicao-gerenciar-item:hover {
->>>>>>> origin/api_v1
     background: var(--bege-principal);
 }
 .competicao-gerenciar-item > div {
@@ -610,7 +572,6 @@
 .competicao-gerenciar-item:focus-visible {
     outline: 3px solid var(--laranja-principal);
     outline-offset: -3px;
-<<<<<<< HEAD
 }
 .competicao-gerenciar-conteudo {
     padding: 18px 20px;
@@ -618,8 +579,6 @@
 }
 .competicao-gerenciar-conteudo[hidden] {
     display: none;
-=======
->>>>>>> origin/api_v1
 }
 .competicao-gerenciar-conteudo {
     padding: 18px 20px;
@@ -718,17 +677,6 @@
     .local-data-card-local {
         grid-column: auto;
     }
-<<<<<<< HEAD
-}
-@media (prefers-reduced-motion: reduce) {
-    .competicao-gerenciar-item,
-    .time-inscrito-card,
-    .etapa-card,
-    .select-multiplos-seta,
-    .competicao-gerenciar-seta {
-        transition: none;
-    }
-=======
 }
 @media (prefers-reduced-motion: reduce) {
     .competicao-gerenciar-item,
@@ -885,7 +833,6 @@
 .select-arbitros {
     width: 100%;
     min-width: 0;
->>>>>>> origin/api_v1
 }
 
 .select-arbitros .select-multiplos-toggle {

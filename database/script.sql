@@ -15,13 +15,10 @@ CREATE TABLE papel (
     nm_papel VARCHAR(50) NOT NULL UNIQUE
 );
 
-<<<<<<< HEAD
 -- ============================================================
 -- 2. USUÁRIOS
 -- ============================================================
 
-=======
->>>>>>> origin/api_v1
 CREATE TABLE usuario (
     cd_usuario INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nm_usuario VARCHAR(150) NOT NULL,
@@ -68,13 +65,10 @@ CREATE TABLE usuario_papel (
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (cd_usuario, cd_papel)
 );
-<<<<<<< HEAD
 
 -- ============================================================
 -- 3. ESCOLA
 -- ============================================================
-=======
->>>>>>> origin/api_v1
 
 CREATE TABLE escola (
     cd_escola INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -103,17 +97,25 @@ CREATE TABLE vinculo_usuario_escola (
     PRIMARY KEY (cd_usuario, cd_escola, cd_papel)
 );
 
-CREATE TABLE vinculo_usuario_escola (
-    cd_usuario INTEGER NOT NULL,
-    cd_escola INTEGER NOT NULL,
-    cd_papel INTEGER NOT NULL,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+CREATE TABLE importacao_csv (
+    id UUID PRIMARY KEY,
+    cd_usuario INTEGER NOT NULL REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
+    tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('alunos', 'escolas')),
+    cd_escola INTEGER REFERENCES escola(cd_escola) ON DELETE CASCADE,
+    dados JSONB NOT NULL,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDENTE'
+        CHECK (status IN ('PENDENTE', 'CONCLUIDA')),
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (cd_usuario, cd_escola, cd_papel),
-    FOREIGN KEY (cd_usuario) REFERENCES usuario(cd_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (cd_escola) REFERENCES escola(cd_escola) ON DELETE CASCADE,
-    FOREIGN KEY (cd_papel) REFERENCES papel(cd_papel) ON DELETE RESTRICT
+    expira_em TIMESTAMP NOT NULL,
+    finalizada_em TIMESTAMP,
+    CHECK (
+        (tipo = 'alunos' AND cd_escola IS NOT NULL)
+        OR (tipo = 'escolas' AND cd_escola IS NULL)
+    )
 );
+
+CREATE INDEX idx_importacao_csv_usuario_expira
+    ON importacao_csv (cd_usuario, expira_em);
 
 -- ============================================================
 -- 4. ALUNOS

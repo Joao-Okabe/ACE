@@ -1,3 +1,5 @@
+import { configurarImagem } from "../utils/imagens.js";
+
 // COMPONENTE SELECT MÚLTIPLO
 export function criarSelectMultiplo({
     container,
@@ -81,8 +83,12 @@ export function criarSelectMultiplo({
                 if (caminho) {
                     const imagem = document.createElement("img");
                     imagem.className = "select-multiplos-brasao";
-                    imagem.src = caminho;
                     imagem.alt = "";
+                    configurarImagem(
+                        imagem,
+                        caminho,
+                        "/assets/img/no-prof-pic.png"
+                    );
                     label.appendChild(imagem);
                 }
             }

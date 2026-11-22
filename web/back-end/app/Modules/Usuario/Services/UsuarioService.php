@@ -113,11 +113,11 @@ class UsuarioService
         $email = trim((string) ($dados['email'] ?? ''));
 
         if ($nome === '') {
-            throw new Exception('Informe seu nome.');
+            throw new InvalidArgumentException('Informe seu nome.');
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Informe um e-mail válido.');
+            throw new InvalidArgumentException('Informe um e-mail válido.');
         }
 
         $stmt = $this->pdo->prepare(
@@ -125,7 +125,7 @@ class UsuarioService
         );
         $stmt->execute([':email' => $email, ':id' => $id]);
         if ($stmt->fetchColumn() !== false) {
-            throw new Exception('Já existe um usuário cadastrado com este e-mail.');
+            throw new InvalidArgumentException('Já existe um usuário cadastrado com este e-mail.');
         }
 
         $usuarioAtual = $this->buscar($id);
@@ -168,17 +168,17 @@ class UsuarioService
         }
 
         if (($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'] ?? '')) {
-            throw new Exception('O arquivo enviado não é válido.');
+            throw new InvalidArgumentException('O arquivo enviado não é válido.');
         }
 
         if ((int) ($arquivo['size'] ?? 0) > 2 * 1024 * 1024) {
-            throw new Exception('Arquivo muito grande. Tamanho máximo de 2MB.');
+            throw new InvalidArgumentException('Arquivo muito grande. Tamanho máximo de 2MB.');
         }
 
         $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
         $tipo = (new finfo(FILEINFO_MIME_TYPE))->file($arquivo['tmp_name']);
         if (!isset($tiposPermitidos[$tipo])) {
-            throw new Exception('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
+            throw new InvalidArgumentException('Tipo de arquivo inválido. Apenas JPG, PNG e WEBP são permitidos.');
         }
 
         $pasta = __DIR__ . '/../../../../storage/upload';

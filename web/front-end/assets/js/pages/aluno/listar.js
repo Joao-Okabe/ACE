@@ -1,6 +1,7 @@
 import { alunoService } from "../../services/alunoService.js";
 import { escolaService } from "../../services/escolaService.js";
 import { authService } from "../../services/authService.js";
+import { configurarImagem } from "../../utils/imagens.js";
 
 // COMPONENTE DE LISTAGEM
 class AppLista extends HTMLElement {
@@ -172,6 +173,8 @@ if (filtroEscola) {
     }
 }
 
+const escolasCarregadas = carregarEscolas();
+
 // LISTAR ALUNOS
 async function carregarAlunos() {
     const conteudo = lista?.querySelector(".lista-conteudo");
@@ -207,12 +210,12 @@ async function carregarAlunos() {
             foto.className = "lista-brasao";
 
             const imagem = document.createElement("img");
-            imagem.src = aluno.path_ft_usuario || "/assets/img/no-prof-pic.png";
             imagem.alt = "";
-
-            imagem.onerror = () => {
-                imagem.src = "/assets/img/no-prof-pic.png";
-            };
+            configurarImagem(
+                imagem,
+                [aluno.path_ft_usuario, aluno.foto_perfil, aluno.imagem],
+                "/assets/img/no-prof-pic.png"
+            );
 
             foto.appendChild(imagem);
 
@@ -291,10 +294,11 @@ lista?.addEventListener("click", async (evento) => {
 
             // Carregar foto atual do aluno
             const imagemEdicao = formularioEdicao.querySelector(".icone-camera");
-            imagemEdicao.src = aluno.path_ft_usuario || "/assets/img/no-prof-pic.png";
-            imagemEdicao.onerror = () => {
-            imagemEdicao.src = "/assets/img/no-prof-pic.png";
-        };
+        configurarImagem(
+            imagemEdicao,
+            [aluno.path_ft_usuario, aluno.foto_perfil, aluno.imagem],
+            "/assets/img/no-prof-pic.png"
+        );
 
         document.getElementById("editarIdAluno").value = aluno.cd_aluno;
         document.getElementById("editarNomeAluno").value = aluno.nome || "";
@@ -304,6 +308,7 @@ lista?.addEventListener("click", async (evento) => {
         document.getElementById("editarTelefoneAluno").value = aluno.telefone || "";
         document.getElementById("editarCepAluno").value = aluno.cep || "";
 
+        await escolasCarregadas;
         seletorEscolaEdicao.value = String(aluno.cd_escola ?? "");
 
         modalEditar.abrir();
@@ -455,5 +460,4 @@ botaoRemoverAluno?.addEventListener("click", async () => {
 
 
 // INICIALIZAÇÃO
-carregarEscolas();
 carregarAlunos();

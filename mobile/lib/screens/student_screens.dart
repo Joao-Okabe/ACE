@@ -245,10 +245,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   void initState() {
     super.initState();
     _fill(widget.initialData ?? {});
-    if (widget.editing &&
-        (widget.initialData == null || widget.initialData!.length < 4)) {
-      _loadDetail();
-    }
+    if (widget.editing) _loadDetail();
   }
 
   void _fill(Map<String, dynamic> data) {
@@ -376,7 +373,9 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       final data = asMap(
         await AppScope.read(context).client.get('/alunos/${widget.studentId}'),
       );
-      if (mounted) setState(() => _fill(data));
+      if (mounted) {
+        setState(() => _fill({...?widget.initialData, ...data}));
+      }
     } catch (error) {
       if (mounted) showFailure(context, error);
     } finally {
@@ -628,6 +627,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
+                      key: ValueKey(_gender),
                       initialValue: _gender,
                       decoration: const InputDecoration(
                         labelText: 'Gênero',

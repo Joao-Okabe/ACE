@@ -553,6 +553,13 @@ class _LiveMatchScreenState extends State<LiveMatchScreen> {
                           ], fallback: 'A definir'),
                           icon: Icons.location_on_outlined,
                         ),
+                        KeyValueRow(
+                          label: 'E-mail do criador',
+                          value: textOf(_match, [
+                            'email_criador',
+                          ], fallback: 'Não informado'),
+                          icon: Icons.alternate_email,
+                        ),
                       ],
                     ),
                   ),

@@ -387,7 +387,8 @@ class Competicao extends Model
         $stmt = $this->pdo->prepare("
             SELECT DISTINCT
                 t.cd_time,
-                t.nm_time
+                t.nm_time,
+                t.path_escudo
             FROM competicao c
             INNER JOIN time t
                 ON t.cd_esporte = c.cd_esporte

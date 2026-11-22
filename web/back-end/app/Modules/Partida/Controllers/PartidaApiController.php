@@ -511,19 +511,29 @@ class PartidaApiController
             $stmt = $pdo->prepare('INSERT INTO info_partida (cd_partida, dt_partida, fim_em) VALUES (:id, CURRENT_DATE, CURRENT_TIMESTAMP) ON CONFLICT (cd_partida) DO UPDATE SET fim_em = EXCLUDED.fim_em');
             $stmt->execute([':id' => $id]);
             if ($placarCasa !== $placarVisitante) {
-                $vencedor = (int) $times[$placarCasa > $placarVisitante ? 0 : 1]['cd_time'];
-                $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = :vencedor, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
-                $stmt->execute([':vencedor' => $vencedor, ':id' => $id]);
+                $indiceVencedor = $placarCasa > $placarVisitante ? 0 : 1;
+                $vencedor = (int) $times[$indiceVencedor]['cd_time'];
+                $perdedor = (int) $times[1 - $indiceVencedor]['cd_time'];
                 $confrontoStmt = $pdo->prepare(
-                    'SELECT cd_confronto FROM partida WHERE cd_partida = :id'
+                    'SELECT c.cd_confronto, r.cd_etapa_competicao
+                     FROM partida p
+                     JOIN confronto c ON c.cd_confronto = p.cd_confronto
+                     JOIN rodada_competicao r ON r.cd_rodada = c.cd_rodada
+                     WHERE p.cd_partida = :id'
                 );
                 $confrontoStmt->execute([':id' => $id]);
-                $cdConfronto = (int) $confrontoStmt->fetchColumn();
-                $this->atualizarConfrontosPosterioresV1(
-                    $pdo,
-                    $cdConfronto,
-                    $vencedor
-                );
+                $confronto = $confrontoStmt->fetch(PDO::FETCH_ASSOC);
+                if ($confronto !== false) {
+                    $confrontoModel = new Confronto();
+                    $confrontoModel->definirResultado(
+                        (int) $confronto['cd_confronto'],
+                        $vencedor,
+                        $perdedor
+                    );
+                    $confrontoModel->processarByesEtapa(
+                        (int) $confronto['cd_etapa_competicao']
+                    );
+                }
             } else {
                 $stmt = $pdo->prepare("UPDATE confronto SET cd_vencedor = NULL, status = 'FINALIZADO' WHERE cd_confronto = (SELECT cd_confronto FROM partida WHERE cd_partida = :id)");
                 $stmt->execute([':id' => $id]);
@@ -535,10 +545,39 @@ class PartidaApiController
             $competicaoStmt->execute([':id' => $id]);
             $cdCompeticao = $competicaoStmt->fetchColumn();
             if ($cdCompeticao !== false && $cdCompeticao !== null) {
-                (new FaseDeGrupoService())->recalcularClassificacao(
-                    $pdo,
-                    (int) $cdCompeticao
+                $formatoStmt = $pdo->prepare("
+                    SELECT lower(trim(f.nm_formato)) AS formato,
+                           r.cd_etapa_competicao AS etapa
+                    FROM partida p
+                    JOIN competicao c ON c.cd_competicao = p.cd_competicao
+                    JOIN formato f ON f.cd_formato = c.cd_formato
+                    LEFT JOIN confronto cf ON cf.cd_confronto = p.cd_confronto
+                    LEFT JOIN rodada_competicao r ON r.cd_rodada = cf.cd_rodada
+                    WHERE p.cd_partida = :partida
+                ");
+                $formatoStmt->execute([':partida' => $id]);
+                $formato = $formatoStmt->fetch(PDO::FETCH_ASSOC);
+
+                $sistemaSuico = $formato && in_array(
+                    $formato['formato'],
+                    ['suico', 'sistema suíço', 'sistema suico', 'sistema suiço'],
+                    true
                 );
+
+                if ($sistemaSuico) {
+                    if ($formato['etapa'] !== null) {
+                        (new SuicoService())->processarResultado(
+                            $pdo,
+                            (int) $cdCompeticao,
+                            (int) $formato['etapa']
+                        );
+                    }
+                } else {
+                    (new FaseDeGrupoService())->recalcularClassificacao(
+                        $pdo,
+                        (int) $cdCompeticao
+                    );
+                }
             }
 
             $pdo->commit();
@@ -704,75 +743,6 @@ class PartidaApiController
             'O ACE guarda o local como texto da partida e não possui cadastro separado de locais.',
             501
         );
-    }
-
-    private function atualizarConfrontosPosterioresV1(
-        PDO $pdo,
-        int $cdConfrontoAnterior,
-        int $cdTimeVencedor
-    ): void {
-        $buscar = $pdo->prepare("
-            SELECT cp.cd_confronto, cp.posicao
-            FROM confronto_participante cp
-            JOIN origem_participante_confronto opc
-              ON opc.cd_origem_participante = cp.cd_origem_participante
-            WHERE opc.tipo_origem = 'CONFRONTO'
-              AND opc.cd_confronto = :confronto_anterior
-              AND opc.resultado_confronto = 'VENCEDOR'
-        ");
-        $buscar->execute([
-            ':confronto_anterior' => $cdConfrontoAnterior,
-        ]);
-
-        foreach ($buscar->fetchAll(PDO::FETCH_ASSOC) as $participante) {
-            $cdConfronto = (int) $participante['cd_confronto'];
-            $posicao = (int) $participante['posicao'];
-
-            $origem = $pdo->prepare("
-                INSERT INTO origem_participante_confronto (
-                    tipo_origem,
-                    cd_time
-                )
-                VALUES ('TIME', :time)
-                RETURNING cd_origem_participante
-            ");
-            $origem->execute([':time' => $cdTimeVencedor]);
-            $cdOrigem = (int) $origem->fetchColumn();
-
-            $atualizar = $pdo->prepare("
-                UPDATE confronto_participante
-                SET cd_origem_participante = :origem,
-                    status = 'DEFINIDO'
-                WHERE cd_confronto = :confronto
-                  AND posicao = :posicao
-            ");
-            $atualizar->execute([
-                ':origem' => $cdOrigem,
-                ':confronto' => $cdConfronto,
-                ':posicao' => $posicao,
-            ]);
-
-            $definidos = $pdo->prepare("
-                SELECT COUNT(*)
-                FROM confronto_participante cp
-                JOIN origem_participante_confronto opc
-                  ON opc.cd_origem_participante = cp.cd_origem_participante
-                WHERE cp.cd_confronto = :confronto
-                  AND cp.status = 'DEFINIDO'
-                  AND opc.tipo_origem = 'TIME'
-            ");
-            $definidos->execute([':confronto' => $cdConfronto]);
-
-            $status = ((int) $definidos->fetchColumn() === 2)
-                ? 'PENDENTE'
-                : 'AGUARDANDO';
-            $pdo->prepare(
-                'UPDATE confronto SET status = :status WHERE cd_confronto = :confronto'
-            )->execute([
-                ':status' => $status,
-                ':confronto' => $cdConfronto,
-            ]);
-        }
     }
 
     private function listarPorStatusV1(string $status, string $mensagem): void

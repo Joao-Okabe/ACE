@@ -49,45 +49,25 @@
             </div>
         </div>
         <div class="row visu-painel">
-<<<<<<< HEAD
             <!-- ABAS SUPERIORES -->
             <div class="col-12">
-                <nav>
-                    <div class="nav nav-tabs visu-menu" id="nav-competicao" role="tablist">
-                        <button class="nav-link visu-menu-item active" id="aba-inscricao" type="button" data-aba="inscricao" role="tab" aria-selected="true">Inscrição</button>
-                        <button class="nav-link visu-menu-item" id="aba-localedata" type="button" data-aba="localedata" role="tab" aria-selected="false">Local e datas</button>
-                        <button class="nav-link visu-menu-item" id="aba-times" type="button" data-aba="times" role="tab" aria-selected="false">Times inscritos</button>
-                        <button class="nav-link visu-menu-item" id="aba-arbitros" type="button" data-aba="arbitros" role="tab" aria-selected="false">Árbitros</button>
-                        <button class="nav-link visu-menu-item" id="aba-chaveamento" type="button" data-aba="chaveamento" role="tab" aria-selected="false">Chaveamento</button>
-                        <button class="nav-link visu-menu-item" id="aba-etapas" type="button" data-aba="etapas" role="tab" aria-selected="false">Etapas</button>
-                        <button class="nav-link visu-menu-item" id="aba-gerir" type="button" data-aba="gerir" data-gerenciar role="tab" aria-selected="false">Gerenciamento</button>
-=======
-<!-- ABAS SUPERIORES -->
-            <div class="col-12">
-                <nav aria-label="Navegação da competição">
-                    <div class="nav nav-tabs visu-menu" id="nav-competicao" role="tablist">
+                <nav aria-label="Seções da competição">
+                    <div class="nav nav-tabs visu-menu" id="nav-competicao" role="tablist" aria-orientation="horizontal">
                         <button class="nav-link visu-menu-item active" id="aba-inscricao" type="button" data-aba="inscricao" role="tab" aria-controls="inscricao" aria-selected="true">Inscrição</button>
-                        <button class="nav-link visu-menu-item" id="aba-localedata" type="button" data-aba="localedata" role="tab" aria-controls="localedata" aria-selected="false">Datas</button>
-                        <button class="nav-link visu-menu-item" id="aba-times" type="button" data-aba="times" role="tab" aria-controls="times" aria-selected="false">Times</button>
-                        <button class="nav-link visu-menu-item" id="aba-etapas" type="button" data-aba="etapas" role="tab" aria-controls="etapas" aria-selected="false">Etapas</button>
-                        <button class="nav-link visu-menu-item" id="aba-partidas" type="button" data-aba="partidas" role="tab" aria-controls="partidas" aria-selected="false">Partidas</button>
-                        <button class="nav-link visu-menu-item" id="aba-chaveamento" type="button" data-aba="chaveamento" role="tab" aria-controls="chaveamento" aria-selected="false">Chaveamento</button>
+                        <button class="nav-link visu-menu-item" id="aba-localedata" type="button" data-aba="localedata" role="tab" aria-controls="localedata" aria-selected="false">Local e datas</button>
+                        <button class="nav-link visu-menu-item" id="aba-times" type="button" data-aba="times" role="tab" aria-controls="times" aria-selected="false">Times inscritos</button>
                         <button class="nav-link visu-menu-item" id="aba-arbitros" type="button" data-aba="arbitros" role="tab" aria-controls="arbitros" aria-selected="false">Árbitros</button>
-                        <button class="nav-link visu-menu-item" id="aba-gerir" hidden style="display:none!important" type="button" data-aba="gerir" data-gerenciar role="tab" hidden aria-controls="gerir" aria-selected="false">Gerenciamento</button>
->>>>>>> origin/api_v1
+                        <button class="nav-link visu-menu-item" id="aba-chaveamento" type="button" data-aba="chaveamento" role="tab" aria-controls="chaveamento" aria-selected="false">Chaveamento</button>
+                        <button class="nav-link visu-menu-item" id="aba-etapas" type="button" data-aba="etapas" role="tab" aria-controls="etapas" aria-selected="false">Etapas</button>
+                        <button class="nav-link visu-menu-item" id="aba-gerir" type="button" data-aba="gerir" data-gerenciar role="tab" aria-controls="gerir" aria-selected="false">Gerenciamento</button>
                     </div>
                 </nav>
             </div>
             <div class="col-12">
-                <main class="visu-box visu-painel-conteudo">
-<<<<<<< HEAD
+                <main class="visu-box visu-painel-conteudo competicao-painel-conteudo">
                    
                     <!-- ABA DE INSCRIÇÃO -->
-                    <section class="visu-secao" id="inscricao" role="tabpanel">
-=======
-<!-- ABA DE INSCRIÇÃO -->
-                    <section class="visu-secao" id="inscricao" role="tabpanel" aria-labelledby="aba-inscricao">
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="inscricao" role="tabpanel" aria-labelledby="aba-inscricao" tabindex="0">
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Inscrição de times</h2>
@@ -95,19 +75,14 @@
                             </div>
                         </div>
                         <div id="mensagensInscricao" aria-live="polite"></div>
-<<<<<<< HEAD
 
                         <div class="competicao-subsecao">
                             <form id="formInscreverTime" class="competicao-form mb-4">
-=======
-                        <div class="competicao-subsecao">
-                            <form id="formInscreverTime" hidden style="display:none!important" class="competicao-form mb-4" hidden>
->>>>>>> origin/api_v1
                                 <div class="competicao-form-campo">
                                     <div class="select-multiplos" id="selectTimesDisponiveis">
                                         <button type="button" class="select-multiplos-toggle" id="abrirListaTimes">
                                             <span id="textoTimesSelecionados">Selecione os times</span>
-                                            <img src="/assets/icons/seta-baixo.svg" alt="" class="select-multiplos-seta">
+                                            <img src="/assets/icons/seta.svg" alt="" class="select-multiplos-seta">
                                         </button>
                                         <div class="select-multiplos-lista" id="listaTimesDisponiveis" hidden></div>
                                     </div>
@@ -117,10 +92,7 @@
                                 </button>
                             </form>
                         </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                         <div class="competicao-info-bloco">
                             <h2 class="section-title">Período de inscrição</h2>
                             <div class="periodo-inscricao">
@@ -141,23 +113,15 @@
                             </div>
                         </div>
                     </section>
-<<<<<<< HEAD
                     <!-- ABA DE LOCAL E DATAS -->
-                    <section class="visu-secao" id="localedata" role="tabpanel" hidden>
-=======
-<!-- ABA DATAS -->
-                    <section class="visu-secao" id="localedata" role="tabpanel" aria-labelledby="aba-localedata" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="localedata" role="tabpanel" aria-labelledby="aba-localedata" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Datas da competição</h2>
                                 <p class="section-description">Confira o período de realização da competição.</p>
                             </div>
                         </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                         <div class="local-datas-container">
                             <div class="local-data-card">
                                 <div class="local-data-card-header">
@@ -167,10 +131,7 @@
                                 <strong id="dataInicio">Não definida</strong>
                                 <p>Data de início das atividades</p>
                             </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                             <div class="local-data-card">
                                 <div class="local-data-card-header">
                                     <span class="local-data-indicador local-data-indicador-fim"></span>
@@ -178,7 +139,6 @@
                                 </div>
                                 <strong id="dataFim">Não definida</strong>
                                 <p>Data prevista para o encerramento</p>
-<<<<<<< HEAD
                             </div>
 
                             <div class="local-data-card local-data-card-local">
@@ -191,14 +151,7 @@
                         </div>
                     </section>
                     <!-- ABA DE TIMES -->
-                    <section class="visu-secao" id="times" role="tabpanel" hidden>
-=======
-                            </div>
-                        </div>
-                    </section>
-<!-- ABA DE TIMES -->
-                    <section class="visu-secao" id="times" role="tabpanel" aria-labelledby="aba-times" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="times" role="tabpanel" aria-labelledby="aba-times" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Times inscritos</h2>
@@ -215,249 +168,8 @@
                             <button type="button" class="custom-btn custom-btn-danger" id="confirmarRemocaoTimes" disabled>Remover selecionados</button>
                         </div>
                     </section>
-<<<<<<< HEAD
                     <!-- ABA DE ÁRBITROS -->
-                    <section class="visu-secao" id="arbitros" role="tabpanel" hidden>
-=======
-<!-- ABA DE PARTIDAS -->
-                    <section class="visu-secao" id="partidas" role="tabpanel" aria-labelledby="aba-partidas" hidden>
-                        <div class="visu-secao-header">
-                            <div>
-                                <h2 class="section-title">Partidas</h2>
-                                <p class="section-description">Acompanhe e gerencie as partidas desta competição.</p>
-                            </div>
-                            <button type="button" class="custom-btn custom-btn-primary" id="abrirModalPartida" hidden style="display:none!important">+ Cadastrar partida</button>
-                        </div>
-                        <div id="mensagemPartidas" aria-live="polite"></div>
-                        <div class="partidas-lista" id="listaPartidas"></div>
-                    </section>
-<!-- MODAL DE CADASTRO DE PARTIDA -->
-                    <app-modal id="modalCadastrarPartida" titulo="Cadastrar partida">
-                        <form id="formCadastrarPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="tipoCadastroPartida" class="form-label">Tipo de cadastro</label>
-                                    <select class="form-control form-input" id="tipoCadastroPartida" required>
-                                        <option value="CONFRONTO">Vincular a um confronto</option>
-                                        <option value="MANUAL">Escolher os times manualmente</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12" id="campoConfronto">
-                                    <label for="confrontoPartida" class="form-label">Confronto</label>
-                                    <select class="form-control form-input" id="confrontoPartida">
-                                        <option value="">Selecione um confronto</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12" id="campoTime1" hidden>
-                                    <label for="timePartida1" class="form-label">Primeiro time</label>
-                                    <select class="form-control form-input" id="timePartida1">
-                                        <option value="">Selecione o primeiro time</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12" id="campoTime2" hidden>
-                                    <label for="timePartida2" class="form-label">Segundo time</label>
-                                    <select class="form-control form-input" id="timePartida2">
-                                        <option value="">Selecione o segundo time</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="dataPartida" class="form-label">Data da partida</label>
-                                    <input class="form-control form-input" type="date" id="dataPartida" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="horarioPartida" class="form-label">Horário</label>
-                                    <input class="form-control form-input" type="time" id="horarioPartida">
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="localPartida" class="form-label">Local da partida</label>
-                                    <input class="form-control form-input" type="text" id="localPartida" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="observacoesPartida" class="form-label">Observações</label>
-                                    <textarea class="form-control form-input" id="observacoesPartida" rows="3"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPartida">Cadastrar partida</button>
-                                </div>
-                                <p id="mensagemCadastrarPartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE EDIÇÃO DE PARTIDA -->
-                    <app-modal id="modalEditarPartida" titulo="Editar partida">
-                        <form id="formEditarPartida">
-                            <input type="hidden" id="editarIdPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="editarDataPartida" class="form-label">Data da partida</label>
-                                    <input class="form-control form-input" type="date" id="editarDataPartida" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="editarHorarioPartida" class="form-label">Horário</label>
-                                    <input class="form-control form-input" type="time" id="editarHorarioPartida" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="editarLocalPartida" class="form-label">Local da partida</label>
-                                    <input class="form-control form-input" type="text" id="editarLocalPartida" maxlength="150" required>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarEdicaoPartida">
-                                        Salvar alterações
-                                    </button>
-                                </div>
-                                <p id="mensagemEditarPartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE RESULTADO DA PARTIDA -->
-                    <app-modal id="modalResultadoPartida" titulo="Registrar resultado">
-                        <form id="formResultadoPartida">
-                            <input type="hidden" id="resultadoIdPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="placarCasa" class="form-label">Placar do mandante</label>
-                                    <input class="form-control form-input" type="number" id="placarCasa" min="0" step="1" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="placarVisitante" class="form-label">Placar do visitante</label>
-                                    <input class="form-control form-input" type="number" id="placarVisitante" min="0" step="1" required>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarResultado">Finalizar partida</button>
-                                </div>
-                                <p id="mensagemResultadoPartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE REGISTRO DE PONTUAÇÃO -->
-                    <app-modal id="modalPontuacaoPartida" titulo="Registrar pontuação">
-                        <form id="formPontuacaoPartida">
-                            <input type="hidden" id="pontuacaoIdPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="timePontuacaoPartida" class="form-label">Time</label>
-                                    <select class="form-control form-input" id="timePontuacaoPartida" required>
-                                        <option value="">Selecione o time</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="atletaPontuacaoPartida" class="form-label">Atleta</label>
-                                    <select class="form-control form-input" id="atletaPontuacaoPartida" required>
-                                        <option value="">Selecione o atleta</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="pontosPartida" class="form-label">Pontos</label>
-                                    <input class="form-control form-input" type="number"
-                                        id="pontosPartida" min="1" step="1" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="minutoPontuacaoPartida" class="form-label">Minuto</label>
-                                    <input class="form-control form-input" type="number"
-                                        id="minutoPontuacaoPartida" min="0" step="1">
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="observacaoPontuacaoPartida" class="form-label">Observação</label>
-                                    <textarea class="form-control form-input"
-                                        id="observacaoPontuacaoPartida" rows="2"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPontuacao">
-                                        Registrar pontuação
-                                    </button>
-                                </div>
-                                <p id="mensagemPontuacaoPartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE REGISTRO DE PENALIDADE -->
-                    <app-modal id="modalPenalidadePartida" titulo="Registrar penalidade">
-                        <form id="formPenalidadePartida">
-                            <input type="hidden" id="penalidadeIdPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="timePenalidadePartida" class="form-label">Time</label>
-                                    <select class="form-control form-input" id="timePenalidadePartida" required>
-                                        <option value="">Selecione o time</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="atletaPenalidadePartida" class="form-label">Atleta</label>
-                                    <select class="form-control form-input" id="atletaPenalidadePartida" required>
-                                        <option value="">Selecione o atleta</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="tipoPenalidadePartida" class="form-label">Tipo de penalidade</label>
-                                    <select class="form-control form-input" id="tipoPenalidadePartida" required>
-                                        <option value="">Selecione o tipo</option>
-                                        <option value="FALTA">Falta</option>
-                                        <option value="CARTAO_AMARELO">Cartão amarelo</option>
-                                        <option value="CARTAO_VERMELHO">Cartão vermelho</option>
-                                        <option value="PENALIDADE">Penalidade</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="minutoPenalidadePartida" class="form-label">Minuto</label>
-                                    <input class="form-control form-input" type="number"
-                                        id="minutoPenalidadePartida" min="0" step="1">
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="observacaoPenalidadePartida" class="form-label">Observação</label>
-                                    <textarea class="form-control form-input"
-                                        id="observacaoPenalidadePartida" rows="2"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPenalidade">
-                                        Registrar penalidade
-                                    </button>
-                                </div>
-                                <p id="mensagemPenalidadePartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE ESCALAÇÃO DE ÁRBITRO -->
-                    <app-modal id="modalArbitragemPartida" titulo="Escalar árbitro">
-                        <form id="formArbitragemPartida">
-                            <input type="hidden" id="arbitragemIdPartida">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="arbitroPartida" class="form-label">Árbitro</label>
-                                    <select class="form-control form-input" id="arbitroPartida" required>
-                                        <option value="">Selecione um árbitro</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="funcaoArbitroPartida" class="form-label">Função</label>
-                                    <select class="form-control form-input" id="funcaoArbitroPartida" required>
-                                        <option value="">Selecione uma função</option>
-                                        <option value="PRINCIPAL">Principal</option>
-                                        <option value="ASSISTENTE">Assistente</option>
-                                        <option value="MESARIO">Mesário</option>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarArbitragem">Escalar árbitro</button>
-                                </div>
-                                <p id="mensagemArbitragemPartida" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- ABA DE ÁRBITROS -->
-                    <section class="visu-secao" id="arbitros" role="tabpanel" aria-labelledby="aba-arbitros" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="arbitros" role="tabpanel" aria-labelledby="aba-arbitros" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Árbitros</h2>
@@ -465,7 +177,6 @@
                             </div>
                         </div>
                         <div class="competicao-subsecao">
-<<<<<<< HEAD
                             <h3 class="visu-subtitulo">Adicionar árbitro</h3>
                             <form class="competicao-form" id="formAdicionarArbitro">
                                 <div class="competicao-form-campo">
@@ -475,14 +186,6 @@
                                     </select>
                                 </div>
                                 <button type="button" class="custom-btn btn-laranja" disabled>Adicionar árbitro</button>
-=======
-                            <form class="competicao-form" id="formAdicionarArbitro" hidden style="display:none!important" hidden style="display:none!important" hidden>
-                                <p id="mensagemAdicionarArbitro" aria-live="polite"></p>
-                                <div class="competicao-form-campo">
-                                   <div id="arbitroDisponivel" class="select-arbitros"></div>
-                                </div>
-                                <button type="submit" id="botaoAdicionarArbitro" class="custom-btn custom-btn-primary">Adicionar árbitro</button>
->>>>>>> origin/api_v1
                             </form>
                         </div>
                         <div class="competicao-subsecao">
@@ -491,60 +194,30 @@
                             <p class="visu-mensagem" id="mensagemArbitros">Nenhum árbitro cadastrado até o momento.</p>
                         </div>
                     </section>
-<<<<<<< HEAD
                     <!-- ABA DE CHAVEAMENTO -->
-                    <section class="visu-secao" id="chaveamento" role="tabpanel" hidden>
-=======
-<!-- ABA DE CHAVEAMENTO -->
-                    <section class="visu-secao" id="chaveamento" role="tabpanel" aria-labelledby="aba-chaveamento" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="chaveamento" role="tabpanel" aria-labelledby="aba-chaveamento" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Chaveamento</h2>
                                 <p class="section-description">Confira os confrontos e as fases da competição.</p>
                             </div>
-<<<<<<< HEAD
                             <button type="button" id="btnGerarChaveamento" class="btn btn-primary" hidden>Gerar chaveamento</button>
                         </div>
                         <!-- CLASSIFICAÇÃO DA FASE DE GRUPOS -->
-=======
-                            <button type="button" id="btnGerarChaveamento" hidden style="display:none!important" hidden style="display:none!important" class="custom-btn custom-btn-primary" hidden>Gerar chaveamento</button>
-                        </div>
-<!-- CLASSIFICAÇÃO DA FASE DE GRUPOS -->
->>>>>>> origin/api_v1
                         <div id="classificacao-grupos-container" hidden></div>
                         <p class="visu-mensagem" id="mensagemClassificacaoGrupos" hidden></p>
                         <div class="chaveamento" id="chaveamento-container"></div>
                         <p class="visu-mensagem" id="mensagemChaveamento">O chaveamento ainda não foi gerado.</p>
                     </section>
-<<<<<<< HEAD
                     
                     <!-- ABA DE ETAPAS -->
-                    <section class="visu-secao" id="etapas" role="tabpanel" hidden>
-=======
-<!-- ABA DE ETAPAS -->
-                    <section class="visu-secao" id="etapas" role="tabpanel" aria-labelledby="aba-etapas" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="etapas" role="tabpanel" aria-labelledby="aba-etapas" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Etapas</h2>
                                 <p class="section-description">Gerencie as etapas desta competição.</p>
                             </div>
-                            <button type="button" class="custom-btn btn-laranja" id="botaoAbrirModalCadastrarEtapa" hidden style="display:none!important" hidden style="display:none!important" hidden>
-                                Adicionar etapa
-                            </button>
                         </div>
-                        <div class="competicao-subsecao">
-                            <div class="visu-secao-header">
-                                <div>
-                                    <h3 class="visu-subtitulo">Etapas cadastradas</h3>
-                                    <p class="section-description">Consulte a sequência e os detalhes de cada etapa.</p>
-                                </div>
-                            </div>
-                            <div class="visu-cards" id="listaEtapas"></div>
-                            <p class="visu-mensagem" id="mensagemEtapas">Esta competição ainda não possui etapas cadastradas.</p>
-                        </div>
-<<<<<<< HEAD
 
                         <div class="competicao-subsecao">
                             <div class="visu-secao-header">
@@ -560,78 +233,28 @@
                     </section>
 
                     <!-- MODAL DE EDIÇÃO DE ETAPA -->
-=======
-                    </section>
-                    <app-modal id="modalCadastrarEtapa" titulo="Cadastrar etapa">
-                        <form id="formCadastrarEtapa">
-                            <div class="row">
-                                <div class="campo-form col-12">
-                                    <label for="tipoEtapaCadastro" class="form-label">Tipo de etapa</label>
-                                    <select class="form-control form-input" id="tipoEtapaCadastro" required>
-                                        <option value="">Selecione o tipo</option>
-                                        <option value="1">Fase de grupos</option>
-                                        <option value="2">Eliminatória</option>
-                                        <option value="3">Final</option>
-                                    </select>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="nomeEtapaCadastro" class="form-label">Nome da etapa</label>
-                                    <input class="form-control form-input" type="text" id="nomeEtapaCadastro" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="ordemEtapaCadastro" class="form-label">Ordem</label>
-                                    <input class="form-control form-input" type="number" id="ordemEtapaCadastro" min="1" required>
-                                </div>
-                                <div class="campo-form col-12">
-                                    <label for="descricaoEtapaCadastro" class="form-label">Descrição</label>
-                                    <textarea class="form-control form-input" id="descricaoEtapaCadastro" rows="3"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoCadastrarEtapa">Cadastrar etapa</button>
-                                </div>
-                                <p id="mensagemCadastrarEtapa" aria-live="polite"></p>
-                            </div>
-                        </form>
-                    </app-modal>
-<!-- MODAL DE EDIÇÃO DE ETAPA -->
->>>>>>> origin/api_v1
                     <app-modal id="modalEditarEtapa" titulo="Editar etapa">
                         <form id="formEditarEtapa">
                             <div class="row">
                                 <input type="hidden" id="idEtapaEditar">
-<<<<<<< HEAD
                                 <!-- Preserva o tipo atual da etapa -->
                                 <input type="hidden" id="tipoEtapaEditar">
 
-=======
-<!-- Preserva o tipo atual da etapa -->
-                                <input type="hidden" id="tipoEtapaEditar">
->>>>>>> origin/api_v1
                                 <div class="campo-form col-12">
                                     <label for="nomeEtapaEditar" class="form-label">Nome da etapa</label>
                                     <input class="form-control form-input" type="text" id="nomeEtapaEditar" required>
                                 </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                                 <div class="campo-form col-12">
                                     <label for="ordemEtapaEditar" class="form-label">Ordem</label>
                                     <input class="form-control form-input" type="number" id="ordemEtapaEditar" min="1" required>
                                 </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                                 <div class="campo-form col-12">
                                     <label for="descricaoEtapaEditar" class="form-label">Descrição</label>
                                     <textarea class="form-control form-input" id="descricaoEtapaEditar" rows="3"></textarea>
                                 </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                                 <div class="modal-footer">
                                     <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
                                         Cancelar
@@ -640,22 +263,13 @@
                                         Salvar alterações
                                     </button>
                                 </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/api_v1
                                 <p id="mensagemEditarEtapa" aria-live="polite"></p>
                             </div>
                         </form>
                     </app-modal>
-<<<<<<< HEAD
                     <!-- ABA DE GERENCIAMENTO -->
-                    <section class="visu-secao" id="gerir" role="tabpanel" hidden>
-=======
-<!-- ABA DE GERENCIAMENTO -->
-                
-                    <section class="visu-secao" id="gerir" hidden style="display:none!important" hidden style="display:none!important" role="tabpanel" aria-labelledby="aba-gerir" hidden>
->>>>>>> origin/api_v1
+                    <section class="visu-secao" id="gerir" role="tabpanel" aria-labelledby="aba-gerir" tabindex="0" hidden>
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Gerenciamento</h2>
@@ -663,75 +277,42 @@
                             </div>
                         </div>
                         <div class="competicao-gerenciar-lista">
-<<<<<<< HEAD
-=======
-                            <!-- INFORMAÇÕES DA COMPETIÇÃO -->
->>>>>>> origin/api_v1
                             <div class="competicao-gerenciar-grupo">
                                 <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
                                     <div>
                                         <strong>Informações da competição</strong>
-<<<<<<< HEAD
                                         <span>Editar nome e demais informações.</span>
                                     </div>
                                     <span class="competicao-gerenciar-seta">⌄</span>
-=======
-                                        <span>Altere o nome da competição.</span>
-                                    </div>
-                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
->>>>>>> origin/api_v1
                                 </button>
                                 <div class="competicao-gerenciar-conteudo" hidden>
                                     <div class="competicao-subsecao" id="formularioInformacoesCompeticao">
                                         <h3 class="visu-subtitulo">Editar informações da competição</h3>
-<<<<<<< HEAD
-                                        <form id="formEditarLocalDatas" class="competicao-form">
+                                        <form id="formEditarInformacoesCompeticao" class="competicao-form">
                                             <div class="competicao-form-campo">
                                                 <label for="editarNomeCompeticao" class="form-label">Nome da competição</label>
                                                 <input type="text" id="editarNomeCompeticao" class="form-input" required>
                                             </div>
-                                            <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarLocalDatas">
+                                            <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarInformacoesCompeticao">
                                                 Salvar alterações
                                             </button>
-                                            <p id="mensagemLocalDatas" aria-live="polite"></p>
-=======
-                                        <form id="formEditarInformacoesCompeticao" class="competicao-form competicao-form-gerenciamento">
                                             <p id="mensagemInformacoesCompeticao" aria-live="polite"></p>
-                                            <div class="competicao-gerenciar-campos">
-                                                <div class="competicao-form-campo">
-                                                    <label for="editarNomeCompeticao" class="form-label">Nome da competição</label>
-                                                    <input type="text" id="editarNomeCompeticao" class="form-input" required>
-                                                </div>
-                                                <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarInformacoesCompeticao">Salvar alterações</button>
-                                            </div>
->>>>>>> origin/api_v1
                                         </form>
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
 
-=======
-                            <!-- PERÍODO DE INSCRIÇÃO -->
->>>>>>> origin/api_v1
                             <div class="competicao-gerenciar-grupo">
                                 <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
                                     <div>
                                         <strong>Período de inscrição</strong>
-<<<<<<< HEAD
                                         <span>Alterar as datas de inscrição.</span>
                                     </div>
                                     <span class="competicao-gerenciar-seta">⌄</span>
-=======
-                                        <span>Altere as datas de início e encerramento das inscrições.</span>
-                                    </div>
-                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
->>>>>>> origin/api_v1
                                 </button>
                                 <div class="competicao-gerenciar-conteudo" hidden>
                                     <div class="competicao-subsecao" id="formularioPeriodoInscricao">
                                         <h3 class="visu-subtitulo">Configurar período de inscrição</h3>
-<<<<<<< HEAD
                                         <form id="formCadastrarPeriodo" class="competicao-form">
                                             <div class="competicao-form-campo">
                                                 <label for="dataInicioInscricao" class="form-label">Início das inscrições</label>
@@ -743,26 +324,10 @@
                                             </div>
                                             <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPeriodo">Salvar período</button>
                                             <p id="mensagemPeriodoInscricao" aria-live="polite"></p>
-=======
-                                        <form id="formCadastrarPeriodo" class="competicao-form competicao-form-gerenciamento">
-                                            <p id="mensagemPeriodoInscricao" aria-live="polite"></p>
-                                            <div class="competicao-gerenciar-campos">
-                                                <div class="competicao-form-campo">
-                                                    <label for="dataInicioInscricao" class="form-label">Início das inscrições</label>
-                                                    <input type="date" id="dataInicioInscricao" class="form-input" name="dt_inicio_inscricao" required>
-                                                </div>
-                                                <div class="competicao-form-campo">
-                                                    <label for="dataFimInscricao" class="form-label">Encerramento das inscrições</label>
-                                                    <input type="date" id="dataFimInscricao" class="form-input" name="dt_encerramento_inscricao">
-                                                </div>
-                                                <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPeriodo">Salvar período</button>
-                                            </div>
->>>>>>> origin/api_v1
                                         </form>
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
 
                             <div class="competicao-gerenciar-grupo">
                                 <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
@@ -771,21 +336,10 @@
                                         <span>Editar o local e o período da competição.</span>
                                     </div>
                                     <span class="competicao-gerenciar-seta">⌄</span>
-=======
-                            <!-- DATAS DA COMPETIÇÃO -->
-                            <div class="competicao-gerenciar-grupo">
-                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
-                                    <div>
-                                        <strong>Datas da competição</strong>
-                                        <span>Atualize as datas de início e encerramento.</span>
-                                    </div>
-                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
->>>>>>> origin/api_v1
                                 </button>
                                 <div class="competicao-gerenciar-conteudo" hidden>
                                     <div class="competicao-subsecao" id="formularioLocalDatas">
                                         <h3 class="visu-subtitulo">Editar datas da competição</h3>
-<<<<<<< HEAD
                                         <form id="formEditarLocalDatas" class="competicao-form">
                                             <div class="competicao-form-campo">
                                                 <label for="editarDataInicio" class="form-label">Data de início</label>
@@ -797,26 +351,10 @@
                                             </div>
                                             <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarLocalDatas">Salvar alterações</button>
                                             <p id="mensagemLocalDatas" aria-live="polite"></p>
-=======
-                                        <form id="formEditarLocalDatas" class="competicao-form competicao-form-gerenciamento">
-                                            <p id="mensagemLocalDatas" aria-live="polite"></p>
-                                            <div class="competicao-gerenciar-campos">
-                                                <div class="competicao-form-campo">
-                                                    <label for="editarDataInicio" class="form-label">Data de início</label>
-                                                    <input type="date" id="editarDataInicio" class="form-input" required>
-                                                </div>
-                                                <div class="competicao-form-campo">
-                                                    <label for="editarDataFim" class="form-label">Data de encerramento</label>
-                                                    <input type="date" id="editarDataFim" class="form-input" required>
-                                                </div>
-                                                <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarLocalDatas">Salvar alterações</button>
-                                            </div>
->>>>>>> origin/api_v1
                                         </form>
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
 
                             <div class="competicao-gerenciar-grupo">
                                 <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
@@ -828,24 +366,6 @@
                                 </button>
                                 <div class="competicao-gerenciar-conteudo" hidden>
                                     <a href="#" id="editarEtapas" class="custom-btn custom-btn-primary">Gerenciar etapas</a>
-=======
-                            <!-- REMOVER COMPETIÇÃO -->
-                            <div class="competicao-gerenciar-grupo" hidden>
-                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
-                                    <div>
-                                        <strong>Remover competição</strong>
-                                        <span>Excluir permanentemente esta competição.</span>
-                                    </div>
-                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
-                                </button>
-                                <div class="competicao-gerenciar-conteudo" hidden>
-                                    <div class="competicao-subsecao">
-                                        <h3 class="visu-subtitulo">Remover competição</h3>
-                                        <p>Essa ação removerá a competição do sistema. Tenha certeza antes de continuar.</p>
-                                        <p id="mensagemRemoverCompeticao" aria-live="polite"></p>
-                                        <button type="button" class="custom-btn custom-btn-danger" id="botaoRemoverCompeticao">Remover competição</button>
-                                    </div>
->>>>>>> origin/api_v1
                                 </div>
                             </div>
                         </div>

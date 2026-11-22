@@ -73,6 +73,10 @@ $router->post(
     '/api/usuarios',
     [UsuarioApiController::class, 'store']
 );
+$router->post(
+    '/api/usuarios/{id}',
+    [UsuarioApiController::class, 'update']
+);
 $router->put(
     '/api/usuarios/{id}',
     [UsuarioApiController::class, 'update']

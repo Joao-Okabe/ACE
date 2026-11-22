@@ -4,6 +4,8 @@ import { exibirMensagem as exibirFeedback } from "../../utils/mensagens.js";
 const parametros = new URLSearchParams(window.location.search);
 const idEscola = parametros.get("id");
 
+import { configurarImagem } from "../../utils/imagens.js";
+
 const elementos = {
     brasao: document.getElementById("brasaoEscola"),
     nome: document.getElementById("nomeEscola"),
@@ -57,12 +59,11 @@ function preencherEscola(escola) {
     const brasao = escola.path_brasao || escola.img_logo;
 
     if (elementos.brasao) {
-        elementos.brasao.onerror = () => {
-            elementos.brasao.onerror = null;
-            elementos.brasao.src = "/assets/img/brasao.jpg";
-        };
-
-        elementos.brasao.src = brasao || "/assets/img/brasao.jpg";
+        configurarImagem(
+            elementos.brasao,
+            [brasao, escola.logo, escola.imagem],
+            "/assets/img/brasao.jpg"
+        );
     }
 }
 

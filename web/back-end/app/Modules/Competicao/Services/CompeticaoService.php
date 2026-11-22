@@ -397,6 +397,9 @@ class CompeticaoService
             'eliminatória simples' => 'ELIMINATORIA_SIMPLES',
             'eliminatória dupla' => 'ELIMINATORIA_DUPLA',
             'fase de grupo + eliminatória' => 'GRUPOS_ELIMINATORIA',
+            'suico' => 'SUICO',
+            'sistema suico' => 'SUICO',
+            'sistema suíço' => 'SUICO',
             'sistema suiço' => 'SUICO',
         ];
 

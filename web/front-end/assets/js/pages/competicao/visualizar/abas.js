@@ -1,34 +1,63 @@
 // CONFIGURAR ABAS
 export function configurarAbas() {
-    const menu = document.querySelector(".visu-menu");
-    const conteudo = document.querySelector(".visu-painel-conteudo");
+    const menu = document.getElementById("nav-competicao");
+    const conteudo = document.querySelector(".competicao-painel-conteudo");
 
     if (!menu || !conteudo) return;
 
-    const botoes = menu.querySelectorAll("[data-aba]");
+    const botoes = [...menu.querySelectorAll("[data-aba]")];
     const secoes = conteudo.querySelectorAll(".visu-secao");
 
-    botoes.forEach(botao => {
-        botao.addEventListener("click", () => {
-            const aba = botao.dataset.aba;
+    const secaoPorBotao = new Map(
+        botoes.map(botao => [
+            botao,
+            [...secoes].find(secao => secao.id === botao.dataset.aba)
+        ])
+    );
 
-            if (aba === "gerir" && !window.podeGerenciarCompeticao) {
-                return;
-            }
+    const podeAbrir = botao =>
+        secaoPorBotao.get(botao)
+        && (!botao.hasAttribute("data-gerenciar") || window.podeGerenciarCompeticao);
 
-            botoes.forEach(item => {
-                const ativo = item === botao;
+    const ativarAba = botao => {
+        if (!podeAbrir(botao)) return;
 
-                item.classList.toggle("active", ativo);
-                item.setAttribute("aria-selected", String(ativo));
-                item.setAttribute("tabindex", ativo ? "0" : "-1");
-            });
-
-            secoes.forEach(secao => {
-                secao.hidden = secao.id !== aba;
-            });
+        botoes.forEach(item => {
+            const ativo = item === botao;
+            item.classList.toggle("active", ativo);
+            item.setAttribute("aria-selected", String(ativo));
+            item.setAttribute("tabindex", ativo ? "0" : "-1");
+            secaoPorBotao.get(item)?.toggleAttribute("hidden", !ativo);
         });
+    };
+
+    botoes.forEach(botao => {
+        botao.addEventListener("click", () => ativarAba(botao));
     });
+
+    menu.addEventListener("keydown", evento => {
+        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(evento.key)) return;
+
+        const navegaveis = botoes.filter(botao => !botao.hidden && podeAbrir(botao));
+        if (navegaveis.length === 0) return;
+
+        const atual = navegaveis.indexOf(document.activeElement);
+        let proximo = atual;
+        if (evento.key === "Home") proximo = 0;
+        else if (evento.key === "End") proximo = navegaveis.length - 1;
+        else if (atual >= 0) {
+            const direcao = evento.key === "ArrowRight" ? 1 : -1;
+            proximo = (atual + direcao + navegaveis.length) % navegaveis.length;
+        }
+
+        evento.preventDefault();
+        navegaveis[proximo].focus();
+        ativarAba(navegaveis[proximo]);
+    });
+
+    const inicial = botoes.find(botao => botao.classList.contains("active") && podeAbrir(botao))
+        || botoes.find(podeAbrir);
+    if (inicial) ativarAba(inicial);
 }
 
 // CONFIGURAR MENU DE GERENCIAMENTO

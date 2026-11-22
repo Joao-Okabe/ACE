@@ -8,6 +8,8 @@ const idAluno = parametros.get("id");
 console.log("ID do aluno recebido pela URL:", idAluno);
 console.log("URL atual:", window.location.href);
 
+import { configurarImagem } from "../../utils/imagens.js";
+
 const elementos = {
     foto: document.getElementById("fotoAluno"),
     nome: document.getElementById("nomeAluno"),
@@ -54,12 +56,12 @@ function preencherAluno(aluno) {
     preencherTexto(elementos.cep, aluno.cep);
 
     if (elementos.foto) {
-        elementos.foto.src = aluno.path_ft_usuario || aluno.img || "/assets/img/no-prof-pic.png";
         elementos.foto.alt = `Foto de ${nome}`;
-
-        elementos.foto.onerror = () => {
-            elementos.foto.src = "/assets/img/no-prof-pic.png";
-        };
+        configurarImagem(
+            elementos.foto,
+            [aluno.path_ft_usuario, aluno.foto_perfil, aluno.img, aluno.imagem],
+            "/assets/img/no-prof-pic.png"
+        );
     }
 
     if (elementos.status) {

@@ -506,6 +506,11 @@ class MatchCard extends StatelessWidget {
       'timeVisitante',
       'visitante',
     ], fallback: 'Time B');
+    final creatorEmail = textOf(
+      data,
+      ['email_criador'],
+      fallback: 'Não informado',
+    );
     final homeScore = intOf(data, ['placar_casa', 'placarCasa']);
     final awayScore = intOf(data, ['placar_visitante', 'placarVisitante']);
     return SurfaceCard(
@@ -514,7 +519,8 @@ class MatchCard extends StatelessWidget {
           '$home, $homeScore pontos. $away, $awayScore pontos. '
           'Status: ${statusLabel(data['status'])}. '
           '${formatDate(data['data_hora'] ?? data['dataHora'], withTime: true)}. '
-          '${textOf(data, ['local'], fallback: 'Local a definir')}.',
+          '${textOf(data, ['local'], fallback: 'Local a definir')}. '
+          'E-mail do criador: $creatorEmail.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -598,6 +604,26 @@ class MatchCard extends StatelessWidget {
               Flexible(
                 child: Text(
                   textOf(data, ['local'], fallback: 'Local a definir'),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.alternate_email,
+                size: 17,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  'E-mail do criador: $creatorEmail',
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,

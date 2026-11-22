@@ -184,6 +184,10 @@ class EliminatoriaSimplesService
                 $confrontos
             );
 
+            $this->confrontoModel->processarByesEtapa(
+                $cdEtapaCompeticao
+            );
+
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {

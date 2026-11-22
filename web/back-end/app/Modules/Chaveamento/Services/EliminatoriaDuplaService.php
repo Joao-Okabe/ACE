@@ -176,6 +176,10 @@ class EliminatoriaDuplaService
                 $cdVencedorRepescagem
             );
 
+            $this->confrontoModel->processarByesEtapa(
+                $cdEtapaCompeticao
+            );
+
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {

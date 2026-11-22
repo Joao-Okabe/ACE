@@ -79,9 +79,11 @@ ACE/
 ├── compose.yml
 ├── .env                         # configuração local do Docker
 ├── database/
-│   ├── script.sql               # estrutura do banco
+│   ├── script.sql               # esquema, índices, triggers e seeds iniciais
+│   ├── indexes.sql
 │   ├── triggers.sql
-│   └── seeds/                   # dados iniciais
+│   ├── seeds.sql                # seed único de dados iniciais
+│   └── ranking_seed.sql         # dados de demonstração dos rankings
 ├── docker/
 │   └── php/
 │       └── Dockerfile
@@ -164,17 +166,25 @@ docker compose logs -f db
 
 ### 4. Criar o esquema e inserir os dados iniciais
 
-O Compose cria o contêiner e o volume do PostgreSQL, mas o arquivo `database/script.sql` não é montado automaticamente como inicialização do banco no `compose.yml`. Execute o esquema e os seeds manualmente em um banco recém-criado.
+O Compose cria o contêiner e o volume do PostgreSQL. O `database/script.sql` é um bootstrap executável pelo `psql`, que cria o esquema atual, índices, triggers e carrega o seed único `database/seeds.sql`. Execute-o somente em um banco recém-criado; ele não é idempotente.
 
 Uma opção é usar `psql` dentro do contêiner do banco:
 
 ```bash
-docker compose exec -T db psql -U ace -d ace < database/script.sql
+docker compose exec -T db psql -U ace -d ace -f /database/script.sql
 ```
 
-Depois, execute os arquivos de `database/seeds/` **na ordem necessária às dependências**. Confirme a ordem e o conteúdo antes de executar em um banco que já contenha dados. Por exemplo, os arquivos numerados são destinados a dados iniciais; não os execute repetidamente sem verificar constraints e duplicidades.
+Todos os dados iniciais estão centralizados em `database/seeds.sql`. O bootstrap não é idempotente; não o execute novamente depois de carregar o banco.
 
 Se as credenciais do `.env` forem diferentes do exemplo, ajuste `-U ace -d ace` para os valores configurados.
+
+Para testar rankings sem alterar os dados do seed geral, execute o seed específico após o bootstrap:
+
+```bash
+docker compose exec -T db psql -U ace -d ace -f /database/ranking_seed.sql
+```
+
+Esse arquivo cria a competição `Ranking Demo ACE`, com equipes, partidas finalizadas, classificação por grupo e métricas individuais. Ele pode ser executado novamente sem duplicar esses dados.
 
 ### 5. Acessar a aplicação
 
@@ -213,15 +223,17 @@ O banco utiliza PostgreSQL e possui entidades relacionadas a:
 - Integrantes, responsáveis, técnicos e escalações.
 - Etapas, rodadas, grupos, confrontos, participantes e partidas.
 
-A definição principal está em `database/script.sql`; triggers estão em `database/triggers.sql`; dados iniciais ficam em `database/seeds/`.
+A definição principal está em `database/script.sql`; `database/indexes.sql`, `database/triggers.sql` e o arquivo único `database/seeds.sql` são incluídos pelo bootstrap.
 
-Os rankings individuais guardam cada valor com atleta, time, partida, esporte e métrica. Após atualizar um banco existente, aplique `database/migrations/20261118_estatistica_atleta_partida.sql` e depois execute `database/seeds/17.metrica_atleta.sql` para carregar as métricas iniciais por esporte. As APIs de consulta são `/api/rankings/atletas` e `/api/v1/rankings/atletas`; informe `esporteId`, `metricaId` e `escopo` (`geral`, `esporte`, `escola` ou `competicao`). Para registrar dados da partida use `PUT /api/v1/partidas/{id}/estatisticas-atletas` com atleta, time e valores por `metricaId`. A classificação sempre permanece separada por time, mesmo quando o atleta participou de mais de uma equipe.
+O seed opcional `database/ranking_seed.sql` prepara dados específicos para testar rankings individuais, de equipes e de escolas; execute-o somente depois do bootstrap.
+
+Os rankings individuais guardam cada valor com atleta, time, partida, esporte e métrica. Ao atualizar um banco existente, aplique `database/migrations/20261118_estatistica_atleta_partida.sql`; a migração também carrega as métricas iniciais por esporte. As APIs de consulta são `/api/rankings/atletas` e `/api/v1/rankings/atletas`; informe `esporteId`, `metricaId` e `escopo` (`geral`, `esporte`, `escola` ou `competicao`). Para registrar dados da partida use `PUT /api/v1/partidas/{id}/estatisticas-atletas` com atleta, time e valores por `metricaId`. A classificação sempre permanece separada por time, mesmo quando o atleta participou de mais de uma equipe.
 
 Para habilitar a importação CSV em um banco existente, aplique `database/migrations/20261120_importacao_csv.sql`.
 
 Vínculos de arbitragem por competição ficam em `arbitro_competicao`. Em banco existente, aplique `database/migrations/20261118_arbitro_competicao.sql`. O criador da competição (além de administrador ou gestor autorizado da escola, conforme a permissão já existente) pode listar usuários ativos em `GET /api/v1/competicoes/{id}/arbitros/usuarios`, listar vínculos em `GET /api/v1/competicoes/{id}/arbitros`, atribuir com `POST /api/v1/competicoes/{id}/arbitros` (`{"usuarioId": 12}`) e remover com `DELETE /api/v1/competicoes/{id}/arbitros/{usuarioId}`. Os árbitros vinculados passam a poder ver a competição e suas partidas e executar operações de partida autorizadas para arbitragem. O vínculo não altera os papéis globais do usuário.
 
-Para registrar operações por partida em banco existente, aplique `database/migrations/20261119_partida_operacoes.sql` e execute `database/seeds/18.tipo_penalidade.sql`. Eventos de pontuação e penalidades ficam no histórico da partida; o placar final continua sendo enviado separadamente por `PUT /api/v1/partidas/{id}/resultado`. A escala por partida usa apenas usuários vinculados como árbitros à competição, com no máximo um árbitro principal; partidas avulsas não têm escala. Penalidades exigem atleta participante do time e são permitidas em partidas avulsas e de competição. `GET /api/v1/locais` fornece sugestões de nomes já usados; o cadastro de locais continua indisponível e não é oferecido no app.
+Para registrar operações por partida em banco existente, aplique `database/migrations/20261119_partida_operacoes.sql`; a migração também cadastra os tipos iniciais de penalidade. Eventos de pontuação e penalidades ficam no histórico da partida; o placar final continua sendo enviado separadamente por `PUT /api/v1/partidas/{id}/resultado`. A escala por partida usa apenas usuários vinculados como árbitros à competição, com no máximo um árbitro principal; partidas avulsas não têm escala. Penalidades exigem atleta participante do time e são permitidas em partidas avulsas e de competição. `GET /api/v1/locais` fornece sugestões de nomes já usados; o cadastro de locais continua indisponível e não é oferecido no app.
 
 A recuperação de senha continua indisponível até que o envio de e-mail seja configurado; o app informa essa limitação sem chamar as rotas ainda não implementadas.
 

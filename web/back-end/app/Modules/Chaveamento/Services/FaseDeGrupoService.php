@@ -471,7 +471,6 @@ class FaseDeGrupoService
                         continue;
                     }
 
-<<<<<<< HEAD
                     $menor = min($a, $b);
                     $maior = max($a, $b);
                     $chavePar = $menor . ':' . $maior;
@@ -479,10 +478,8 @@ class FaseDeGrupoService
                         continue;
                     }
                     $paresCriados[$chavePar] = true;
-=======
                     // Numeração contínua entre todos os grupos da rodada.
                     $numerosConfrontos[$numeroRodada]++;
->>>>>>> origin/api_v1
 
                     $cdConfronto = $this->confrontoModel->criar([
                         'cd_rodada' => $cdRodada,
@@ -688,6 +685,10 @@ class FaseDeGrupoService
         $this->criarRodadasSeguintesEliminatoria(
             $rodadas,
             $confrontos
+        );
+
+        $this->confrontoModel->processarByesEtapa(
+            $cdEtapaEliminatoria
         );
     }
 

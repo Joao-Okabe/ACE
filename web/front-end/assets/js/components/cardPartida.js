@@ -1,3 +1,5 @@
+import { configurarImagem } from "../utils/imagens.js";
+
 const STATUS_PARTIDA = {
     AGENDADA: {
         texto: "Agendada",
@@ -17,12 +19,8 @@ const STATUS_PARTIDA = {
 function criarImagemTime(nome, escudo) {
     const imagem = document.createElement("img");
 
-    imagem.src = escudo || "/assets/img/escudo.jpg";
     imagem.alt = `Escudo de ${nome}`;
-    imagem.onerror = () => {
-        imagem.onerror = null;
-        imagem.src = "/assets/img/escudo.jpg";
-    };
+    configurarImagem(imagem, escudo, "/assets/img/escudo.jpg");
 
     return imagem;
 }
@@ -122,7 +120,12 @@ export function criarCardPartida(partida) {
     competicao.textContent =
         partida.competicao || "Competição não informada";
 
-    rodape.append(local, competicao);
+    const criador = document.createElement("span");
+    criador.textContent = `E-mail do criador: ${
+        partida.email_criador || "Não informado"
+    }`;
+
+    rodape.append(local, competicao, criador);
 
     card.append(topo, confronto, rodape);
 

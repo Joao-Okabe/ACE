@@ -1,3 +1,5 @@
+import { configurarImagem } from "../utils/imagens.js";
+
 export function criarCardEntidade({
     foto = "/assets/img/no-prof-pic.png",
     nome = "Nome não informado",
@@ -12,14 +14,9 @@ export function criarCardEntidade({
     // FOTO OU BRASÃO
     const imagem = document.createElement("img");
     imagem.className = "card-entidade-foto";
-    imagem.src = foto || "/assets/img/no-prof-pic.png";
     imagem.alt = `Imagem de ${nome}`;
     imagem.loading = "lazy";
-
-    imagem.onerror = () => {
-        imagem.onerror = null;
-        imagem.src = "/assets/img/no-prof-pic.png";
-    };
+    configurarImagem(imagem, foto, "/assets/img/no-prof-pic.png");
 
     // INFORMAÇÕES
     const info = document.createElement("div");

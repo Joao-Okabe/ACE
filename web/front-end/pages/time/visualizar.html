@@ -83,11 +83,7 @@
                             <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante" hidden style="display:none!important">+ Adicionar integrante</button>
                         </div>
                         <div id="mensagensIntegrantes" aria-live="polite"></div>
-<<<<<<< HEAD
                         <div class="times-inscritos-grid" id="listaIntegrantes">
-=======
-                        <div class="cards-entidade" id="listaIntegrantes">
->>>>>>> origin/api_v1
                             <!-- Os integrantes vão ser listados aqui pela API -->
                         </div>
                     </section>
@@ -286,17 +282,28 @@
             <div class="mb-3">
                 <label for="integranteCamisa" class="form-label">Número da camisa</label>
                 <input type="number" class="form-input" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
-<<<<<<< HEAD
             </div>
+
+            <div class="mb-3">
+                <label for="editarIntegranteFuncao">Função no time</label>
+                <select class="form-input" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
+                    <option value="">Selecione uma função</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="editarIntegranteCamisa">Número da camisa</label>
+                <input type="number" class="form-input" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
+            </div>
+
             <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="integranteCapitao" name="capitao">
-                <label class="form-check-label" for="integranteCapitao">Definir como capitão</label>
-=======
->>>>>>> origin/api_v1
+                <input type="checkbox" class="form-check-input" id="editarIntegranteCapitao" name="capitao">
+                <label class="form-check-label" for="editarIntegranteCapitao">Definir como capitão</label>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                <button type="submit" class="custom-btn custom-btn-primary">Adicionar integrante</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Salvar alterações</button>
             </div>
         </form>
     </app-modal>
@@ -309,31 +316,19 @@
 
             <div class="mb-3">
                 <label for="editarIntegranteNome">Aluno</label>
-<<<<<<< HEAD
                 <input type="text" class="form-control" id="editarIntegranteNome" disabled>
-=======
-                <input type="text" class="form-input" id="editarIntegranteNome" disabled>
->>>>>>> origin/api_v1
             </div>
 
             <div class="mb-3">
                 <label for="editarIntegranteFuncao">Função no time</label>
-<<<<<<< HEAD
                 <select class="form-select" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
-=======
-                <select class="form-input" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
->>>>>>> origin/api_v1
                     <option value="">Selecione uma função</option>
                 </select>
             </div>
 
             <div class="mb-3">
                 <label for="editarIntegranteCamisa">Número da camisa</label>
-<<<<<<< HEAD
                 <input type="number" class="form-control" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
-=======
-                <input type="number" class="form-input" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
->>>>>>> origin/api_v1
             </div>
 
             <div class="form-check mb-3">

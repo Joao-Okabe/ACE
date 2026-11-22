@@ -915,6 +915,7 @@ class _ScheduleMatchScreenState extends State<ScheduleMatchScreen> {
         DateTime.now().add(const Duration(days: 1));
     _locationId = (widget.match['local_partida'] ?? widget.match['local'])
         ?.toString();
+    _reason.text = textOf(widget.match, ['observacoes'], fallback: '');
     _loadLocations();
   }
 
@@ -927,6 +928,15 @@ class _ScheduleMatchScreenState extends State<ScheduleMatchScreen> {
   Future<void> _loadLocations() async {
     try {
       final result = asList(await AppScope.read(context).client.get('/locais'));
+      final currentLocation = _locationId?.trim();
+      if (currentLocation != null &&
+          currentLocation.isNotEmpty &&
+          !result.any(
+            (item) =>
+                textOf(item, ['nome', 'local_partida']) == currentLocation,
+          )) {
+        result.insert(0, {'nome': currentLocation});
+      }
       if (mounted) setState(() => _locations = result);
     } catch (error) {
       if (mounted) showFailure(context, error);

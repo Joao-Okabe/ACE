@@ -196,11 +196,32 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
   @override
   void initState() {
     super.initState();
-    final data = widget.initialData ?? {};
-    _name.text = textOf(data, ['nome'], fallback: '');
-    _schoolId.text = textOf(data, ['escola_id'], fallback: '');
-    _sportId = data['cd_esporte']?.toString();
+    _fill(widget.initialData ?? {});
+    if (widget.editing) _loadTeam();
     _loadOptions();
+  }
+
+  void _fill(Map<String, dynamic> data) {
+    _name.text = textOf(data, ['nome'], fallback: '');
+    _schoolId.text = textOf(data, [
+      'escola_id',
+      'cd_escola',
+    ], fallback: '');
+    final sportId = textOf(data, ['cd_esporte', 'esporteId'], fallback: '');
+    _sportId = sportId.isEmpty ? null : sportId;
+  }
+
+  Future<void> _loadTeam() async {
+    try {
+      final data = asMap(
+        await AppScope.read(context).client.get('/times/${widget.teamId}'),
+      );
+      if (mounted) {
+        setState(() => _fill({...?widget.initialData, ...data}));
+      }
+    } catch (error) {
+      if (mounted) showFailure(context, error);
+    }
   }
 
   @override
@@ -283,6 +304,7 @@ class _TeamFormScreenState extends State<TeamFormScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                key: ValueKey(_sportId),
                 initialValue: _sportId,
                 decoration: const InputDecoration(
                   labelText: 'Esporte *',

@@ -37,15 +37,9 @@ export const competicaoService = {
         return apiFetch(`${BASE_URL}/${validarId(id)}/visualizar`);
     },
 
-<<<<<<< HEAD
-   listarClassificacao(id) {
-    return apiFetch(`/competicoes/${validarId(id)}/classificacao`);
-},
-=======
     listarClassificacao(id) {
-     return apiFetch(`/competicoes/${validarId(id)}/classificacao`);
+        return apiFetch(`/competicoes/${validarId(id)}/classificacao`);
     },
->>>>>>> origin/api_v1
 
     gerarChaveamento(id) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/chaveamento`, {
@@ -53,22 +47,13 @@ export const competicaoService = {
         });
     },
 
-<<<<<<< HEAD
-
-=======
     listarPartidas(id) {
-        return apiFetch(
-            `/calendario?competicaoId=${validarId(id)}`
-        );
+        return apiFetch(`/calendario?competicaoId=${validarId(id)}`);
     },
-    
->>>>>>> origin/api_v1
+
     listarEtapas(id) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/etapas`);
     },
-
-<<<<<<< HEAD
-=======
 
     listarArbitros(id) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/arbitros`);
@@ -106,7 +91,6 @@ export const competicaoService = {
         );
     },
 
->>>>>>> origin/api_v1
     criarEtapa(id, dados) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/etapas`, {
             method: "POST",
