@@ -1,8 +1,9 @@
 
-import { apiFetch } from "../api/api.js";
+import { rankingService } from "../services/rankingService.js";
 import { competicaoService } from "../services/competicaoService.js";
 import { esporteService } from "../services/esporteService.js";
 import { escolaService } from "../services/escolaService.js";
+import { exibirMensagem, limparMensagem } from "../utils/mensagens.js";
 
 const selectCompeticao = document.getElementById("competicaoRanking");
 const selectEsporte = document.getElementById("esporteRanking");
@@ -28,10 +29,12 @@ const corpoTabela = document.getElementById("corpoRanking");
 const titulo = document.getElementById("tituloRanking");
 const descricao = document.getElementById("descricaoRanking");
 const mensagem = document.getElementById("mensagemRanking");
+const btnExportar = document.getElementById("btnExportarRanking");
 
 let tipoAtual = "equipes";
 let versaoConsulta = 0;
 let versaoMetricas = 0;
+let resultadosAtuais = [];
 
 // COLUNAS DOS RANKINGS
 const colunas = {
@@ -199,7 +202,7 @@ async function carregarModalidades() {
     );
 
     try {
-        const resposta = await apiFetch("/modalidades");
+        const resposta = await rankingService.listarModalidades();
         const modalidades = obterLista(resposta);
 
         selectModalidade.replaceChildren(
@@ -302,9 +305,7 @@ async function carregarMetricas() {
     );
 
     try {
-        const resposta = await apiFetch(
-            `/esportes/${id}/metricas-atleta`
-        );
+        const resposta = await rankingService.listarMetricasAtleta(id);
 
         if (consulta !== versaoMetricas) return;
 
@@ -360,7 +361,9 @@ function limparResultados() {
 
     corpoTabela.replaceChildren();
     podio.replaceChildren();
+    resultadosAtuais = [];
 
+    if (btnExportar) btnExportar.disabled = true;
     secaoPodio.hidden = true;
 }
 
@@ -540,26 +543,32 @@ async function carregarRanking() {
     const consulta = versaoConsulta;
     const tipo = tipoAtual;
 
-    mensagem.textContent =
-        "Carregando ranking...";
+    exibirMensagem(mensagem, "Carregando ranking...", "info");
 
     try {
         const params = montarParametros();
 
-        const resposta = await apiFetch(
-            `/rankings/${tipo}?${params.toString()}`
-        );
+        const resposta = await rankingService.listar(tipo, Object.fromEntries(params.entries()));
 
         if (consulta !== versaoConsulta) return;
 
         const itens = obterLista(resposta);
+        resultadosAtuais = itens;
+
+        if (btnExportar) btnExportar.disabled = itens.length === 0;
 
         renderizarTabela(itens);
         renderizarPodio(itens);
 
-        mensagem.textContent = itens.length
-            ? ""
-            : "Nenhum resultado encontrado para os filtros selecionados.";
+        if (itens.length) {
+            limparMensagem(mensagem);
+        } else {
+            exibirMensagem(
+                mensagem,
+                "Nenhum resultado encontrado para os filtros selecionados.",
+                "info"
+            );
+        }
 
     } catch (erro) {
         if (consulta !== versaoConsulta) return;
@@ -569,9 +578,11 @@ async function carregarRanking() {
             erro
         );
 
-        mensagem.textContent =
-            erro.message ||
-            "Não foi possível carregar o ranking.";
+        exibirMensagem(
+            mensagem,
+            erro.message || "Não foi possível carregar o ranking.",
+            "erro"
+        );
     }
 }
 
@@ -613,9 +624,13 @@ function selecionarTipo(tipo) {
 
     atualizarCabecalho();
 
-    mensagem.textContent = atletas
-        ? "Selecione um esporte e uma métrica para consultar."
-        : "Aplique os filtros para consultar o ranking.";
+    exibirMensagem(
+        mensagem,
+        atletas
+            ? "Selecione um esporte e uma métrica para consultar."
+            : "Aplique os filtros para consultar o ranking.",
+        "info"
+    );
 }
 
 // ABRIR E FECHAR FILTROS AVANÇADOS
@@ -645,8 +660,66 @@ function limparFiltros() {
 
     limparResultados();
 
-    mensagem.textContent =
-        "Filtros limpos. Aplique os filtros para consultar.";
+    exibirMensagem(
+        mensagem,
+        "Filtros limpos. Aplique os filtros para consultar.",
+        "info"
+    );
+}
+
+// EXPORTAR O RANKING ATUAL PARA CSV
+function exportarRankingCSV() {
+    if (!resultadosAtuais.length) {
+        exibirMensagem(mensagem, "Aplique os filtros antes de exportar o ranking.", "info");
+        return;
+    }
+
+    const colunasAtuais = colunas[tipoAtual];
+
+    function escaparCSV(valor) {
+        let texto = String(valor ?? "");
+
+        // Evita que valores iniciados por operadores sejam interpretados como fórmulas.
+        if (/^[\s]*[=+\-@]/.test(texto)) {
+            texto = `'${texto}`;
+        }
+
+        return `"${texto.replace(/"/g, '""')}"`;
+    }
+
+    const linhas = [
+        colunasAtuais.map(coluna => escaparCSV(coluna.titulo)),
+        ...resultadosAtuais.map((item, indice) =>
+            colunasAtuais.map(coluna =>
+                escaparCSV(
+                    coluna.campo === "posicao"
+                        ? `${indice + 1}º`
+                        : exibirValor(item[coluna.campo])
+                )
+            )
+        )
+    ];
+
+    // Ponto e vírgula facilita a abertura no Excel configurado para pt-BR.
+    const conteudo = "\uFEFF" + linhas.map(linha => linha.join(";")).join("\r\n");
+    const arquivo = new Blob([conteudo], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(arquivo);
+    const link = document.createElement("a");
+    const agora = new Date();
+    const data = [
+        agora.getFullYear(),
+        String(agora.getMonth() + 1).padStart(2, "0"),
+        String(agora.getDate()).padStart(2, "0")
+    ].join("-");
+
+    link.href = url;
+    link.download = `ranking-${tipoAtual}-${data}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    exibirMensagem(mensagem, "Arquivo CSV exportado com sucesso.", "sucesso");
 }
 
 // EVENTOS DAS ABAS
@@ -670,6 +743,9 @@ btnLimpar.addEventListener(
     "click",
     limparFiltros
 );
+
+// EVENTO DE EXPORTAÇÃO CSV
+btnExportar?.addEventListener("click", exportarRankingCSV);
 
 // EVENTO DO ESPORTE
 selectEsporte.addEventListener(

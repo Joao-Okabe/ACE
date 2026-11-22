@@ -1,0 +1,423 @@
+/* ========================================
+   CARDS DE PARTIDA
+======================================== */
+
+.partida-card {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 16px;
+    border: 1px solid rgba(24, 24, 71, 0.10);
+    border-radius: 12px;
+    background: var(--branco, #fff);
+    box-shadow: 0 4px 15px rgba(24, 24, 71, 0.06);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* EFEITO AO PASSAR O MOUSE */
+.partida-card:hover {
+    border-color: var(--laranja-principal, #F44E1C);
+    box-shadow: 0 6px 20px rgba(244, 78, 28, 0.16);
+}
+
+.partida-card-topo,
+.partida-card-rodape,
+.partida-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.partida-card-topo {
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(24, 24, 71, 0.1);
+}
+
+.partida-topo {
+    gap: 12px;
+    margin-bottom: 3px;
+}
+
+.partida-card-rodape {
+    padding-top: 14px;
+    border-top: 1px solid rgba(24, 24, 71, 0.1);
+    color: var(--azul-principal, #181847);
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.partida-data {
+    color: var(--azul-principal);
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.75;
+}
+
+.partida-status {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: var(--bege-principal, #F1E4D1);
+    color: var(--azul-principal, #181847);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.partida-status.agendada {
+    background: #e8f0ff;
+    color: #2456a6;
+}
+
+.partida-status.finalizada {
+    background: #e5f5eb;
+    color: #237447;
+}
+
+.partida-status.andamento {
+    background: #e5f5eb;
+    color: var(--laranja-principal);
+}
+
+.partida-confronto {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 24px 0;
+}
+
+.partida-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--azul-principal, #181847);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.partida-time img {
+    width: 78px;
+    height: 78px;
+    margin-bottom: 4px;
+    border: 3px solid var(--azul-principal);
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.partida-time h3 {
+    margin: 0;
+    color: #181847;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.partida-time span {
+    margin-top: 4px;
+    color: #777;
+    font-size: 12px;
+}
+
+.partida-escudo {
+    width: 58px;
+    height: 58px;
+    border: 2px solid var(--azul-principal);
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.partida-placar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--azul-principal, #181847);
+    font-size: 25px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.partida-placar strong {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.partida-placar span {
+    color: #999;
+    font-size: 18px;
+}
+
+.partida-placar strong:only-child {
+    font-size: 25px;
+}
+
+.partida-x {
+    color: var(--laranja-principal, #F44E1C);
+    font-size: 18px;
+}
+
+.partida-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(24, 24, 71, 0.10);
+    color: var(--azul-principal);
+    font-size: 12px;
+}
+
+.partida-rodape span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.partida-icone {
+    font-style: normal;
+}
+
+/* ========================================
+   LISTA DE PARTIDAS
+======================================== */
+
+.partidas-lista {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    min-width: 0;
+    margin-top: 24px;
+}
+
+/* CARD CLICÁVEL */
+.partida-card--clicavel {
+    display: block;
+    color: inherit;
+    text-decoration: none !important;
+}
+
+.partida-card--clicavel:hover,
+.partida-card--clicavel:focus,
+.partida-card--clicavel:visited {
+    color: inherit;
+    text-decoration: none !important;
+}
+
+.partida-card--clicavel * {
+    text-decoration: none !important;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 575px) {
+    .partidas-lista {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .partida-card {
+        padding: 16px;
+    }
+
+    .partida-confronto {
+        gap: 8px;
+        padding: 20px 0;
+    }
+
+    .partida-time img {
+        width: 52px;
+        height: 52px;
+    }
+
+    .partida-escudo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .partida-time,
+    .partida-time h3 {
+        font-size: 11px;
+    }
+
+    .partida-placar {
+        gap: 7px;
+        font-size: 20px;
+    }
+
+    .partida-placar strong {
+        font-size: 24px;
+    }
+
+    .partida-card-rodape,
+    .partida-rodape {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+
+/* LISTA DE PARTIDAS */
+#listaPartidas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+    align-items: start;
+}
+
+/* CARD COMPLETO */
+#listaPartidas .partida-card-completo {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--branco);
+}
+
+/* INFORMAÇÕES DA PARTIDA */
+#listaPartidas .partida-card-informacoes {
+    width: 100%;
+    min-width: 0;
+}
+
+/* CARD VISUAL ORIGINAL */
+#listaPartidas .partida-card-informacoes > * {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    box-sizing: border-box;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* ÁREA DE GERENCIAMENTO */
+#listaPartidas .partida-card-acoes {
+    padding: 0 16px 16px;
+}
+
+/* BOTÃO GERENCIAR */
+#listaPartidas .partida-botao-gerenciar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 0;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    color: var(--azul-principal);
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* DESTAQUE LARANJA */
+#listaPartidas .partida-botao-gerenciar:hover,
+#listaPartidas .partida-botao-gerenciar[aria-expanded="true"] {
+    border-color: var(--laranja-principal);
+}
+
+#listaPartidas .partida-botao-gerenciar[aria-expanded="true"] {
+    box-shadow: 0 0 0 1px var(--laranja-principal);
+}
+
+#listaPartidas .partida-botao-gerenciar:focus-visible {
+    outline: 2px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+
+/* SETA */
+#listaPartidas .partida-gerenciar-seta {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+#listaPartidas .partida-botao-gerenciar[aria-expanded="true"] .partida-gerenciar-seta {
+    transform: rotate(180deg);
+}
+
+/* PAINEL EXPANSÍVEL */
+#listaPartidas .partida-gerenciamento {
+    padding-top: 14px;
+}
+
+#listaPartidas .partida-gerenciamento[hidden] {
+    display: none !important;
+}
+
+/* BOTÕES DOS MODAIS */
+#listaPartidas .partida-gerenciar-acoes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+#listaPartidas .partida-gerenciar-acoes .custom-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    white-space: normal;
+}
+
+#listaPartidas .partida-gerenciar-acoes .custom-btn[hidden] {
+    display: none !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 850px) {
+    #listaPartidas {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    #listaPartidas .partida-gerenciar-acoes {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+#listaPartidas .partida-gerenciar-acoes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+#listaPartidas .partida-gerenciar-acoes .custom-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    white-space: normal;
+}
+
+#listaPartidas .partida-gerenciar-acoes .custom-btn[hidden] {
+    display: none !important;
+}
+
+.dashboard-lista-partidas {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dashboard-lista-partidas .partida-card {
+    width: 100%;
+    min-width: 0;
+}

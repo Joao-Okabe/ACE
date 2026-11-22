@@ -351,3 +351,128 @@
     flex: 0 0 60px;
     width: 100%;
 }
+
+
+/* FASE DE GRUPOS */
+
+.bracket-grupos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(190px, 1fr));
+    gap: 24px;
+    width: 100%;
+    padding: 20px 0;
+    align-items: start;
+}
+
+.bracket-grupos .bracket-grupos-coluna {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    height: auto;
+}
+
+.bracket-grupos .round-title {
+    position: static;
+    width: 100%;
+    min-height: 28px;
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.bracket-grupos .bracket-grupos-lista {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    height: auto;
+}
+
+.bracket-grupos .bracket-grupos-lista .partida {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: 56px;
+    flex-shrink: 0;
+    margin: 0;
+    background: var(--bege-principal);
+    border: 2px solid var(--azul-principal);
+    border-radius: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+@media (max-width: 800px) {
+    .bracket-grupos {
+        grid-template-columns: repeat(2, minmax(190px, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .bracket-grupos {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.classificacao-grupo {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.classificacao-grupo-titulo {
+    color: var(--azul-principal);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.classificacao-tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.classificacao-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+
+}
+
+.classificacao-tabela th,
+.classificacao-tabela td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+    white-space: nowrap;
+}
+
+.classificacao-tabela th {
+    background: var(--azul-principal);
+    color: white;
+}
+
+.classificacao-tabela .classificacao-nome-time {
+    text-align: left;
+    font-weight: 600;
+}
+
+.classificacao-tabela tbody tr:hover {
+    background: #f8f4ef;
+}
+
+.classificacao-tabela td:last-child {
+    color: var(--laranja-principal);
+    font-weight: 700;
+}

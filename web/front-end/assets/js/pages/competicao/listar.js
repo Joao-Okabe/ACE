@@ -1,4 +1,5 @@
 import { competicaoService } from "../../services/competicaoService.js";
+import { usuarioEhVisitante, definirVisibilidade } from "../../utils/permissoesVisuais.js";
 //LISTA
 class AppLista extends HTMLElement {
     connectedCallback() {
@@ -84,24 +85,46 @@ ordenacao.addEventListener("change", () => {
     }
 }
 
-customElements.define("app-lista", AppLista);
+if (!customElements.get("app-lista")) {
+    customElements.define("app-lista", AppLista);
+}
 
 const modalCadastrar = document.querySelector(
     'app-modal[titulo="Cadastrar competição"]'
 );
 
-const modalEditar = document.querySelector(
-    'app-modal[titulo="Editar competição"]'
-);
-
 const botaoAbrirCadastro = document.getElementById("abrirModalCompeticao");
+let podeCadastrarCompeticao = false;
 const lista = document.querySelector("app-lista");
 const conteudo = lista?.querySelector(".lista-conteudo");
 
 // ABRIR MODAL DE CADASTRO
-botaoAbrirCadastro?.addEventListener("click", () => {
-    modalCadastrar?.abrir();
-});
+async function configurarCadastroCompeticao() {
+    try {
+        const visitante = await usuarioEhVisitante();
+
+        if (visitante) {
+            definirVisibilidade(botaoAbrirCadastro, false);
+            modalCadastrar?.remove();
+            document.getElementById("form-competicao")?.remove();
+            return;
+        }
+
+        podeCadastrarCompeticao = true;
+        definirVisibilidade(botaoAbrirCadastro, true);
+
+        botaoAbrirCadastro?.addEventListener("click", () => {
+            modalCadastrar?.abrir();
+        });
+
+        await carregarOpcoesCadastro();
+    } catch (erro) {
+        console.warn("Não foi possível confirmar a permissão de cadastro da competição:", erro);
+        definirVisibilidade(botaoAbrirCadastro, false);
+        modalCadastrar?.remove();
+        document.getElementById("form-competicao")?.remove();
+    }
+}
 
 // FORMATAR DATA
 function formatarData(data) {
@@ -161,15 +184,7 @@ function criarCard(competicao) {
 
     link.append(brasao, info, seta);
 
-    const botaoEditar = document.createElement("button");
-    botaoEditar.type = "button";
-    botaoEditar.className = "btn-editar-lista";
-    botaoEditar.textContent = "Editar";
-    botaoEditar.dataset.editarCompeticao = "";
-    botaoEditar.dataset.id = id;
-    botaoEditar.setAttribute("aria-label", "Editar competição");
-
-    item.append(link, botaoEditar);
+    item.appendChild(link);
 
     return item;
 }
@@ -198,22 +213,6 @@ async function carregarCompeticoes() {
         conteudo.textContent = "Não foi possível carregar as competições.";
     }
 }
-
-// ABRIR MODAL DE EDIÇÃO
-lista?.addEventListener("click", (evento) => {
-    const botao = evento.target.closest("[data-editar-competicao]");
-
-    if (!botao || !modalEditar) return;
-
-    const campoId = modalEditar.querySelector("#editarIdCompeticao");
-
-    if (campoId) {
-        campoId.value = botao.dataset.id;
-    }
-
-    modalEditar.abrir();
-});
-
 
 
 // PREENCHER OS SELECTS DO CADASTRO
@@ -315,6 +314,8 @@ const formCadastro = document.getElementById("form-competicao");
 formCadastro?.addEventListener("submit", async (evento) => {
     evento.preventDefault();
 
+    if (!podeCadastrarCompeticao) return;
+
     const dados = Object.fromEntries(
         new FormData(formCadastro).entries()
     );
@@ -339,4 +340,4 @@ formCadastro?.addEventListener("submit", async (evento) => {
 
 // INICIALIZAÇÃO
 carregarCompeticoes();
-carregarOpcoesCadastro();
+configurarCadastroCompeticao();

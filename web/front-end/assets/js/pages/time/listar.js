@@ -1,6 +1,7 @@
 import { timeService } from "../../services/timeService.js";
 import { escolaService } from "../../services/escolaService.js";
 import { esporteService } from "../../services/esporteService.js";
+import { usuarioEhVisitante, definirVisibilidade } from "../../utils/permissoesVisuais.js";
 
 class AppLista extends HTMLElement {
     connectedCallback() {
@@ -100,11 +101,9 @@ const lista = document.querySelector("app-lista");
 const modalCadastrarTime = document.querySelector(
     'app-modal[titulo="Cadastrar time"]'
 );
-const modalEditarTime = document.querySelector(
-    'app-modal[titulo="Editar time"]'
-);
 
 const botaoAbrirCadastro = document.getElementById("abrirModalTime");
+let podeCadastrarTime = false;
 
 // ========================================
 // FUNÇÕES AUXILIARES
@@ -161,16 +160,6 @@ function criarCardTime(time) {
 
                 <span class="lista-seta" aria-hidden="true">›</span>
             </a>
-
-            <button
-                type="button"
-                class="btn-editar-lista"
-                data-editar-time
-                data-id="${id}"
-                aria-label="Editar time ${nome}"
-            >
-                Editar
-            </button>
         </div>
     `;
 }
@@ -219,9 +208,32 @@ async function carregarTimes() {
 // MODAL DE CADASTRO
 // ========================================
 
-botaoAbrirCadastro?.addEventListener("click", () => {
-    modalCadastrarTime?.abrir();
-});
+async function configurarCadastroTime() {
+    try {
+        const visitante = await usuarioEhVisitante();
+
+        if (visitante) {
+            definirVisibilidade(botaoAbrirCadastro, false);
+            modalCadastrarTime?.remove();
+            document.getElementById("form-time")?.remove();
+            return;
+        }
+
+        podeCadastrarTime = true;
+        definirVisibilidade(botaoAbrirCadastro, true);
+
+        botaoAbrirCadastro?.addEventListener("click", () => {
+            modalCadastrarTime?.abrir();
+        });
+
+        await Promise.all([carregarEscolas(), carregarEsportes()]);
+    } catch (erro) {
+        console.warn("Não foi possível confirmar a permissão de cadastro do time:", erro);
+        definirVisibilidade(botaoAbrirCadastro, false);
+        modalCadastrarTime?.remove();
+        document.getElementById("form-time")?.remove();
+    }
+}
 
 // ========================================
 // MODAL DE EDIÇÃO
@@ -299,6 +311,8 @@ const formTime = document.getElementById("form-time");
 
 formTime?.addEventListener("submit", async evento => {
     evento.preventDefault();
+
+    if (!podeCadastrarTime) return;
 
     const selectEsporte = document.getElementById("esporteTime");
 
@@ -508,5 +522,4 @@ async function carregarEsportes() {
 }
 
 carregarTimes();
-carregarEscolas();
-carregarEsportes();
+configurarCadastroTime();

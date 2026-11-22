@@ -37,7 +37,7 @@ export const alunoService = {
         });
     },
 
-    excluir(id){
+    remover(id){
         return apiFetch(`${BASE_URL}/${validarId(id)}`,{
             method: "DELETE"
         });

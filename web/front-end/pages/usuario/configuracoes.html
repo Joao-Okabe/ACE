@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/pages/configuracoes.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <title>Configurações de usuário</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/usuario/configuracoes.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
+</head>
+<body>
+<app-bar></app-bar>
+    <app-sidebar></app-sidebar>
+
+    <main class="content" id="conteudoPrincipal">
+
+         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div>
+                <h2 class="form-title">Configurações da conta</h2>
+                <p class="form-subtitle">Personalize seu perfil, aparência e acessibilidade.</p>
+            </div>
+        </div>
+
+        <section class="visu-secao configuracoes-container" aria-label="Configurações de usuário">
+
+            <div class="competicao-gerenciar-lista">
+
+                <!-- MEU PERFIL -->
+                <details class="competicao-gerenciar-grupo config-grupo">
+                    <summary class="competicao-gerenciar-item config-cabecalho">
+                        <div>
+                            <strong>Meu perfil</strong>
+                            <span>Altere seu nome, e-mail e imagem de perfil.</span>
+                        </div>
+                        <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
+                    </summary>
+
+                    <div class="competicao-gerenciar-conteudo config-conteudo">
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Informações pessoais</h3>
+
+                            <form id="formPerfil" class="competicao-form" enctype="multipart/form-data">
+                                <p id="mensagemPerfil" aria-live="polite" role="status"></p>
+
+                                <div class="config-perfil-layout">
+                                    <div class="config-foto">
+                                        <div class="form-imagem">
+                                            <label for="imagemPerfil" class="seletor-imagem">
+                                                <img id="fotoAtual" src="/assets/img/no-prof-pic.png" alt="Prévia da imagem de perfil" class="imagem-selecionada">
+                                                <span class="imagem-adicionar" aria-hidden="true">+</span>
+                                            </label>
+                                            <input type="file" id="imagemPerfil" name="foto_perfil" accept="image/jpeg,image/png,image/webp" hidden>
+                                        </div>
+                                    </div>
+
+                                    <div class="config-perfil-campos">
+                                        <div class="competicao-form-campo">
+                                            <label for="nomeUsuario" class="form-label">Nome</label>
+                                            <input type="text" id="nomeUsuario" name="nm_usuario" class="form-input" maxlength="100" autocomplete="name" required>
+                                        </div>
+
+                                        <div class="competicao-form-campo">
+                                            <label for="emailUsuario" class="form-label">E-mail</label>
+                                            <input type="email" id="emailUsuario" name="email" class="form-input" autocomplete="email" required>
+                                        </div>
+
+                                        <div class="competicao-form-campo">
+                                            <label for="cargoUsuario" class="form-label">Cargo</label>
+                                            <input type="text" id="cargoUsuario" class="form-input" value="Carregando..." readonly>
+                                            <small>O cargo é definido pelo sistema e não pode ser alterado nesta página.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="config-acoes">
+                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPerfil">Salvar alterações</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- APARÊNCIA -->
+                <details class="competicao-gerenciar-grupo config-grupo">
+                    <summary class="competicao-gerenciar-item config-cabecalho">
+                        <div>
+                            <strong>Aparência</strong>
+                            <span>Escolha entre o modo claro e o modo escuro.</span>
+                        </div>
+                        <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
+                    </summary>
+
+                    <div class="competicao-gerenciar-conteudo config-conteudo">
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Tema do aplicativo</h3>
+
+                            <fieldset class="config-fieldset">
+                                <legend class="form-label">Modo de exibição</legend>
+
+                                <div class="config-opcoes">
+                                    <label class="config-opcao">
+                                        <input type="radio" name="tema" value="claro" checked>
+                                        <span>Modo claro</span>
+                                    </label>
+
+                                    <label class="config-opcao">
+                                        <input type="radio" name="tema" value="escuro">
+                                        <span>Modo escuro</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- ACESSIBILIDADE -->
+                <details class="competicao-gerenciar-grupo config-grupo">
+                    <summary class="competicao-gerenciar-item config-cabecalho">
+                        <div>
+                            <strong>Acessibilidade</strong>
+                            <span>Adapte as cores e o tamanho das letras.</span>
+                        </div>
+                        <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
+                    </summary>
+
+                    <div class="competicao-gerenciar-conteudo config-conteudo">
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Preferências de acessibilidade</h3>
+
+                            <div class="config-acessibilidade-campos">
+                                <div class="competicao-form-campo">
+                                    <label for="modoDaltonismo" class="form-label">Adaptação de cores</label>
+                                    <select id="modoDaltonismo" class="form-input">
+                                        <option value="padrao">Padrão</option>
+                                        <option value="protanopia">Protanopia</option>
+                                        <option value="deuteranopia">Deuteranopia</option>
+                                        <option value="tritanopia">Tritanopia</option>
+                                        <option value="acromatopsia">Acromatopsia</option>
+                                    </select>
+                                    <small>Selecione uma adaptação visual para as cores do aplicativo.</small>
+                                </div>
+
+                                <div class="competicao-form-campo">
+                                    <label class="form-label">Tamanho das letras</label>
+                                    <div class="config-controle-fonte" role="group" aria-label="Ajustar tamanho das letras">
+                                        <button type="button" id="diminuirFonte" aria-label="Diminuir tamanho das letras">A−</button>
+                                        <output id="valorFonte" aria-live="polite">100%</output>
+                                        <button type="button" id="aumentarFonte" aria-label="Aumentar tamanho das letras">A+</button>
+                                        <button type="button" id="restaurarFonte" class="config-restaurar">Restaurar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- EXCLUIR CONTA -->
+                <details class="competicao-gerenciar-grupo config-grupo config-perigo">
+                    <summary class="competicao-gerenciar-item config-cabecalho">
+                        <div>
+                            <strong>Excluir conta</strong>
+                            <span>Remova sua conta do sistema.</span>
+                        </div>
+                        <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
+                    </summary>
+
+                    <div class="competicao-gerenciar-conteudo config-conteudo">
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Excluir minha conta</h3>
+                            <p>Essa ação pode remover permanentemente seu acesso ao ACE e afetar informações vinculadas ao usuário. Tenha certeza antes de continuar.</p>
+                            <p id="mensagemExclusao" aria-live="polite">A disponibilidade desta ação depende das permissões definidas pelo sistema.</p>
+                            <button type="button" class="custom-btn custom-btn-danger" id="btnExcluirConta" disabled>Excluir minha conta</button>
+                        </div>
+                    </div>
+                </details>
+
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/usuario/configuracoes.js"></script>
+</body>
+</html>

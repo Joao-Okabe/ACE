@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
-    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
-
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
     <link rel="stylesheet" href="/assets/css/modal.css">
     <link rel="stylesheet" href="/assets/css/pages/lista.css">
 
@@ -14,9 +26,12 @@
     
     <title>Escolas</title>
 
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/escola/listar.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
 <body>
-
 <app-bar></app-bar>
 <app-sidebar></app-sidebar>
 
@@ -187,8 +202,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>  Cancelar </button>
-                <button type="submit" class="custom-btn custom-btn-primary"> Confirmar </button> 
+                <button type="button" class="custom-btn custom-btn-danger" id="btnRemoverEscola"> Remover escola </button>
+                <button type="submit" class="custom-btn custom-btn-primary">Confirmar</button>
             </div>
 
         </div>

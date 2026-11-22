@@ -235,6 +235,26 @@ class Router
             if (!empty($_SESSION['usuario']['id'])) {
                 AuthContext::definir($_SESSION['usuario']);
             }
+
+            /*
+             * Requisições GET da API são somente leitura. O PHP mantém um
+             * bloqueio exclusivo da sessão desde session_start() até o fim
+             * da requisição. Como o frontend dispara vários GET em paralelo,
+             * esse bloqueio fazia as consultas aguardarem umas pelas outras.
+             *
+             * Depois de validar a sessão e copiar o usuário para AuthContext,
+             * liberamos o bloqueio antes de executar o controller. $_SESSION
+             * continua disponível para leitura durante esta requisição.
+             * O endpoint de CSRF é exceção porque cria/atualiza o token.
+             */
+            if (
+                $method === 'GET'
+                && str_starts_with($uri, '/api/')
+                && $uri !== '/api/csrf'
+                && session_status() === PHP_SESSION_ACTIVE
+            ) {
+                session_write_close();
+            }
         }
 
         /*

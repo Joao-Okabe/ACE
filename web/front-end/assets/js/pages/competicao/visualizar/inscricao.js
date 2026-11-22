@@ -1,63 +1,38 @@
 import { competicaoService } from "../../../services/competicaoService.js";
 import { idCompeticao } from "./competicao.js";
+import { exibirMensagem } from "../../../utils/mensagens.js";
 import { formatarData } from "./utilitarios.js";
-
-// EXIBIR MENSAGENS
-function exibirMensagem(elemento, mensagem, tipo = "info") {
-    const icones = {
-        sucesso: "/assets/img/icones/sucesso.svg",
-        erro: "/assets/img/icones/erro.svg",
-        info: "/assets/img/icones/info.svg"
-    };
-
-    const imagem = document.createElement("img");
-    imagem.src = icones[tipo];
-    imagem.alt = "";
-    imagem.className = "icone-mensagem";
-
-    const texto = document.createElement("span");
-    texto.textContent = mensagem;
-
-    elemento.className = `mensagem-feedback mensagem-${tipo}`;
-    elemento.replaceChildren(imagem, texto);
-}
 
 // CONFIGURAR INSCRIÇÃO DE TIMES
 export function configurarFormularioInscricao(atualizarCompeticao) {
     const formulario = document.getElementById("formInscreverTime");
-    const lista = document.getElementById("listaTimesDisponiveis");
+    const containerSelect = document.getElementById("selectTimesDisponiveis");
     const botao = document.getElementById("botaoInscreverTime");
     const mensagem = document.getElementById("mensagensInscricao");
-    const abrirLista = document.getElementById("abrirListaTimes");
 
-    abrirLista.addEventListener("click", () => {
-        lista.hidden = !lista.hidden;
-        abrirLista.classList.toggle("aberto", !lista.hidden);
-    });
-
-    document.addEventListener("click", event => {
-        const select = document.getElementById("selectTimesDisponiveis");
-
-        if (!select.contains(event.target)) {
-            lista.hidden = true;
-            abrirLista.classList.remove("aberto");
-        }
-    });
+    if (!formulario || !containerSelect || !botao || !mensagem) {
+        console.error("Elementos do formulário de inscrição não encontrados.");
+        return;
+    }
 
     formulario.addEventListener("submit", async event => {
         event.preventDefault();
 
-        const selecionados = [
-            ...lista.querySelectorAll('input[name="timesSelecionados"]:checked')
-        ];
+        /* OBTER TIMES SELECIONADOS */
+        const selecionados = containerSelect.querySelectorAll(
+            'input[name="timesSelecionados"]:checked'
+        );
 
-        const idsTimes = selecionados.map(checkbox => checkbox.value);
+        const idsTimes = Array.from(selecionados).map(
+            checkbox => checkbox.value
+        );
 
         if (!idsTimes.length) {
             exibirMensagem(mensagem, "Selecione pelo menos um time.", "erro");
             return;
         }
 
+        /* VALIDAR PERÍODO DE INSCRIÇÃO */
         const inicioInscricao = document.getElementById("inicioInscricao");
 
         if (
@@ -78,6 +53,7 @@ export function configurarFormularioInscricao(atualizarCompeticao) {
         let falhas = 0;
 
         try {
+            /* INSCREVER TIMES */
             for (const idTime of idsTimes) {
                 try {
                     await competicaoService.inscreverTime(idCompeticao, idTime);
@@ -90,6 +66,7 @@ export function configurarFormularioInscricao(atualizarCompeticao) {
 
             await atualizarCompeticao();
 
+            /* EXIBIR RESULTADO */
             if (falhas === 0) {
                 exibirMensagem(
                     mensagem,
@@ -106,6 +83,7 @@ export function configurarFormularioInscricao(atualizarCompeticao) {
 
         } catch (erro) {
             console.error("Erro ao atualizar competição:", erro);
+
             exibirMensagem(
                 mensagem,
                 "Não foi possível atualizar os dados da competição.",
@@ -116,6 +94,7 @@ export function configurarFormularioInscricao(atualizarCompeticao) {
         }
     });
 }
+
 
 // CONFIGURAR PERÍODO DE INSCRIÇÃO
 export function configurarFormularioPeriodo(atualizarCompeticao) {
@@ -163,12 +142,24 @@ export function preencherPeriodoInscricao(periodo) {
     const inicio = document.getElementById("inicioInscricao");
     const fim = document.getElementById("fimInscricao");
 
+    const campoInicio = document.getElementById("dataInicioInscricao");
+    const campoFim = document.getElementById("dataFimInscricao");
+
     if (!periodo) {
-        inicio.textContent = "Não definido";
-        fim.textContent = "Não definido";
+        inicio.textContent = "Não definida";
+        fim.textContent = "Não definida";
+
+        campoInicio.value = "";
+        campoFim.value = "";
         return;
     }
 
-    inicio.textContent = formatarData(periodo.dt_inicio_inscricao);
-    fim.textContent = formatarData(periodo.dt_encerramento_inscricao);
+    const dataInicio = periodo.dt_inicio_inscricao || "";
+    const dataFim = periodo.dt_encerramento_inscricao || "";
+
+    inicio.textContent = formatarData(dataInicio);
+    fim.textContent = formatarData(dataFim);
+
+    campoInicio.value = dataInicio ? dataInicio.slice(0, 10) : "";
+    campoFim.value = dataFim ? dataFim.slice(0, 10) : "";
 }

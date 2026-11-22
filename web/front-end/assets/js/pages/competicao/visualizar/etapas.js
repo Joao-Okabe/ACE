@@ -1,25 +1,105 @@
 import { competicaoService } from "../../../services/competicaoService.js";
 import { idCompeticao } from "./competicao.js";
+import { exibirMensagem, limparMensagem } from "../../../utils/mensagens.js";
+
+let etapasAtuais = [];
+
+// CONFIGURAR CADASTRO DE ETAPA
+function configurarFormularioCadastroEtapa() {
+    const botaoAbrir = document.getElementById("botaoAbrirModalCadastrarEtapa");
+    const modal = document.getElementById("modalCadastrarEtapa");
+    const formulario = document.getElementById("formCadastrarEtapa");
+    const mensagem = document.getElementById("mensagemCadastrarEtapa");
+    const botaoSalvar = document.getElementById("botaoCadastrarEtapa");
+
+    if (!botaoAbrir || !modal || !formulario) return;
+
+    const podeGerenciar =
+        window.usuarioVisitante !== true &&
+        window.podeGerenciarCompeticao === true;
+    botaoAbrir.hidden = !podeGerenciar;
+    if (!podeGerenciar) {
+        botaoAbrir.style.setProperty("display", "none", "important");
+    } else {
+        botaoAbrir.style.removeProperty("display");
+    }
+
+    if (!botaoAbrir.dataset.configurado) {
+        botaoAbrir.dataset.configurado = "true";
+
+        botaoAbrir.addEventListener("click", () => {
+            formulario.reset();
+            limparMensagem(mensagem);
+
+            const proximaOrdem = etapasAtuais.length
+                ? Math.max(...etapasAtuais.map(e => Number(e.ordem) || 0)) + 1
+                : 1;
+
+            document.getElementById("ordemEtapaCadastro").value = proximaOrdem;
+            modal.abrir();
+        });
+    }
+
+    if (formulario.dataset.configurado) return;
+    formulario.dataset.configurado = "true";
+
+    formulario.addEventListener("submit", async evento => {
+        evento.preventDefault();
+
+        const tipo = Number(document.getElementById("tipoEtapaCadastro").value);
+        const nome = document.getElementById("nomeEtapaCadastro").value.trim();
+        const ordem = Number(document.getElementById("ordemEtapaCadastro").value);
+        const descricao = document.getElementById("descricaoEtapaCadastro").value.trim();
+
+        if (
+            !Number.isInteger(tipo) || tipo <= 0 ||
+            !nome ||
+            !Number.isInteger(ordem) || ordem <= 0
+        ) {
+            exibirMensagem(mensagem, "Preencha corretamente todos os campos obrigatórios.", "erro");
+            return;
+        }
+
+        const dados = {
+            nm_etapa: nome,
+            cd_tipo_etapa: tipo,
+            ordem,
+            descricao: descricao || null
+        };
+
+        try {
+            botaoSalvar.disabled = true;
+            exibirMensagem(mensagem, "Cadastrando etapa...", "info");
+
+            await competicaoService.criarEtapa(idCompeticao, dados);
+
+            formulario.reset();
+            modal.fechar();
+
+            await carregarEtapas();
+            exibirMensagem(
+                document.getElementById("mensagemEtapas"),
+                "Etapa cadastrada com sucesso.",
+                "sucesso"
+            );
+
+        } catch (erro) {
+            console.error("Erro ao cadastrar etapa:", erro);
+            exibirMensagem(mensagem, erro.message || "Não foi possível cadastrar a etapa.", "erro");
+        } finally {
+            botaoSalvar.disabled = false;
+        }
+    });
+}
 
 // ABRIR MODAL DE EDIÇÃO DE ETAPA
 function abrirModalEdicaoEtapa(etapa) {
-    document.getElementById("idEtapaEditar").value =
-        etapa.cd_etapa_competicao;
-
-    document.getElementById("tipoEtapaEditar").value =
-        etapa.cd_tipo_etapa;
-
-    document.getElementById("nomeEtapaEditar").value =
-        etapa.nm_etapa || "";
-
-    document.getElementById("ordemEtapaEditar").value =
-        etapa.ordem || "";
-
-    document.getElementById("descricaoEtapaEditar").value =
-        etapa.descricao || "";
-
-    document.getElementById("mensagemEditarEtapa").textContent = "";
-
+    document.getElementById("idEtapaEditar").value = etapa.cd_etapa_competicao;
+    document.getElementById("tipoEtapaEditar").value = etapa.cd_tipo_etapa;
+    document.getElementById("nomeEtapaEditar").value = etapa.nm_etapa || "";
+    document.getElementById("ordemEtapaEditar").value = etapa.ordem || "";
+    document.getElementById("descricaoEtapaEditar").value = etapa.descricao || "";
+    limparMensagem(document.getElementById("mensagemEditarEtapa"));
     document.getElementById("modalEditarEtapa").abrir();
 }
 
@@ -27,18 +107,14 @@ function abrirModalEdicaoEtapa(etapa) {
 export function configurarFormularioEdicaoEtapa() {
     const formulario = document.getElementById("formEditarEtapa");
 
-    if (!formulario) return;
+    if (!formulario || formulario.dataset.configurado) return;
+    formulario.dataset.configurado = "true";
 
-    formulario.addEventListener("submit", async (evento) => {
+    formulario.addEventListener("submit", async evento => {
         evento.preventDefault();
 
-        const idEtapa = Number(
-            document.getElementById("idEtapaEditar").value
-        );
-
-        const cdTipoEtapa = Number(
-            document.getElementById("tipoEtapaEditar").value
-        );
+        const idEtapa = Number(document.getElementById("idEtapaEditar").value);
+        const cdTipoEtapa = Number(document.getElementById("tipoEtapaEditar").value);
 
         const dados = {
             nm_etapa: document.getElementById("nomeEtapaEditar").value.trim(),
@@ -51,38 +127,33 @@ export function configurarFormularioEdicaoEtapa() {
         const botao = document.getElementById("botaoSalvarEtapa");
 
         if (
-            !Number.isInteger(idEtapa) ||
-            idEtapa <= 0 ||
-            !Number.isInteger(cdTipoEtapa) ||
-            cdTipoEtapa <= 0 ||
+            !Number.isInteger(idEtapa) || idEtapa <= 0 ||
+            !Number.isInteger(cdTipoEtapa) || cdTipoEtapa <= 0 ||
             !dados.nm_etapa ||
-            !Number.isInteger(dados.ordem) ||
-            dados.ordem <= 0
+            !Number.isInteger(dados.ordem) || dados.ordem <= 0
         ) {
-            mensagem.textContent = "Preencha corretamente todos os campos obrigatórios.";
+            exibirMensagem(mensagem, "Preencha corretamente todos os campos obrigatórios.", "erro");
             return;
         }
 
         botao.disabled = true;
-        mensagem.textContent = "Salvando alterações...";
+        exibirMensagem(mensagem, "Salvando alterações...", "info");
 
         try {
-            await competicaoService.atualizarEtapa(
-                idCompeticao,
-                idEtapa,
-                dados
-            );
-
-            mensagem.textContent = "Etapa atualizada com sucesso!";
+            await competicaoService.atualizarEtapa(idCompeticao, idEtapa, dados);
 
             document.getElementById("modalEditarEtapa").fechar();
 
             await carregarEtapas();
+            exibirMensagem(
+                document.getElementById("mensagemEtapas"),
+                "Etapa atualizada com sucesso.",
+                "sucesso"
+            );
 
         } catch (erro) {
             console.error("Erro ao atualizar etapa:", erro);
-            mensagem.textContent =
-                erro.message || "Não foi possível atualizar a etapa.";
+            exibirMensagem(mensagem, erro.message || "Não foi possível atualizar a etapa.", "erro");
         } finally {
             botao.disabled = false;
         }
@@ -94,23 +165,29 @@ export async function carregarEtapas() {
     const lista = document.getElementById("listaEtapas");
     const mensagem = document.getElementById("mensagemEtapas");
 
+    if (!lista || !mensagem) return;
+
+    configurarFormularioCadastroEtapa();
+
     lista.replaceChildren();
     lista.classList.add("etapas-grid");
-    mensagem.textContent = "Carregando etapas...";
+    exibirMensagem(mensagem, "Carregando etapas...", "info");
 
     try {
         const resposta = await competicaoService.listarEtapas(idCompeticao);
 
         const etapas = Array.isArray(resposta)
             ? resposta
-            : resposta.etapas || [];
+            : resposta?.etapas || resposta?.dados?.etapas || [];
+
+        etapasAtuais = etapas;
 
         if (!etapas.length) {
-            mensagem.textContent = "Esta competição ainda não possui etapas cadastradas.";
+            exibirMensagem(mensagem, "Esta competição ainda não possui etapas cadastradas.", "info");
             return;
         }
 
-        mensagem.textContent = "";
+        limparMensagem(mensagem);
 
         etapas.forEach(etapa => {
             const card = document.createElement("div");
@@ -139,7 +216,7 @@ export async function carregarEtapas() {
 
             card.append(cabecalho, tipo, descricao);
 
-            if (window.podeGerenciarCompeticao === true) {
+            if (window.usuarioVisitante !== true && window.podeGerenciarCompeticao === true) {
                 const acoes = document.createElement("div");
                 acoes.className = "etapa-card-acoes";
 
@@ -161,6 +238,6 @@ export async function carregarEtapas() {
 
     } catch (erro) {
         console.error("Erro ao carregar etapas:", erro);
-        mensagem.textContent = erro.message || "Não foi possível carregar as etapas.";
+        exibirMensagem(mensagem, erro.message || "Não foi possível carregar as etapas.", "erro");
     }
 }

@@ -1,0 +1,427 @@
+/*
+ * Preferências visuais do ACE
+ * Este arquivo só altera a apresentação quando o usuário escolhe uma opção
+ * nas Configurações. O modo claro mantém o CSS original sem modificações.
+ */
+
+html[data-tema="escuro"] {
+    color-scheme: dark;
+
+    --branco: #1d2633;
+    --preto: #edf1f6;
+    --cinza: #b4bfcc;
+    --fundo: #111923;
+    --borda: #3a4656;
+    --bege-principal: #293544;
+    --fundo-form: #202b39;
+
+    --shadow-sm: 0 3px 8px rgba(0, 0, 0, .24);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, .34);
+
+    --texto-secundario: #b4bfcc;
+    --borda-lista: #3a4656;
+    --fundo-lista: #253141;
+
+    --dashboard-branco: #1d2633;
+    --dashboard-cinza: #b4bfcc;
+    --dashboard-borda: #3a4656;
+}
+
+html[data-tema="escuro"] body {
+    background-color: var(--fundo);
+    color: var(--preto);
+}
+
+/* Superfícies principais e cartões */
+html[data-tema="escuro"] :is(
+    .visu-box,
+    .form-card,
+    .info-card,
+    .card-entidade,
+    .visu-menu,
+    .visu-painel-conteudo,
+    .visu-lista-item,
+    .time-card,
+    .time-card--small,
+    .integrante-card,
+    .partida-card,
+    #listaPartidas .partida-card-completo,
+    .escalacao-card,
+    .escalacao-vazio-icone,
+    .card-escalacao,
+    .card-posicoes,
+    .competicao-info-item,
+    .periodo-inscricao-item,
+    .time-selecao-item,
+    .mensagem-vazia,
+    .time-inscrito-card,
+    .local-data-card,
+    .etapa-card,
+    .competicao-gerenciar-grupo,
+    .competicao-gerenciar-item,
+    .competicao-gerenciar-conteudo,
+    .escola-identificacao,
+    .dashboard-card,
+    .dashboard-secao,
+    .dashboard-estado,
+    .dashboard-ranking-item,
+    .dashboard-calendario-dialog,
+    .dashboard-calendario-popover,
+    .dashboard-calendario-popover-header,
+    .dashboard-calendario-popover-body,
+    .classificacao-tabela,
+    .fc-popover,
+    .ranking-filtro,
+    .ranking-podio-card,
+    .ranking-tabela-box,
+    .ranking-lateral,
+    .ranking-aba:not(.ativo),
+    .ranking-limpar,
+    .listagem-card,
+    .campo-busca,
+    .campo-filtro,
+    .lista-brasao,
+    .config-grupo,
+    .config-opcao,
+    .config-controle-fonte button,
+    .modal-container,
+    .painel-perfil,
+    .painel-notificacoes,
+    .form-section,
+    .select-multiplos-toggle,
+    .select-multiplos-lista,
+    .select-unico-toggle,
+    .select-unico-lista,
+    .auth-card-login,
+    .auth-card-cadastro,
+    .auth-card-right
+) {
+    background-color: var(--branco) !important;
+    border-color: var(--borda) !important;
+    color: var(--preto);
+}
+
+/* Superfícies de apoio */
+html[data-tema="escuro"] :is(
+    .auth-card-left,
+    .config-opcao:has(:checked),
+    .competicao-info-item,
+    .escalacao-info-item,
+    .etapa-card-ordem,
+    .partida-status,
+    .time-selecao-item.selecionado,
+    .fc .fc-list-day-cushion
+) {
+    background-color: var(--bege-principal) !important;
+}
+
+/* Textos dentro do conteúdo */
+html[data-tema="escuro"] .content :is(
+    h1, h2, h3, h4, h5, h6,
+    p, li, label, legend, small,
+    th, td,
+    .form-title,
+    .form-label,
+    .form-subtitle,
+    .lista-titulo,
+    .lista-subtitulo,
+    .visu-subtitulo,
+    .info-title,
+    .info-value,
+    .value-info,
+    .card-entidade-nome,
+    .card-entidade-detalhes,
+    .time-inscrito-nome,
+    .time-inscrito-posicao,
+    .partida-data,
+    .partida-time,
+    .partida-time h3,
+    .partida-time span,
+    .partida-placar,
+    .etapa-card-nome,
+    .etapa-card-descricao,
+    .competicao-gerenciar-item,
+    .competicao-gerenciar-item strong,
+    .competicao-gerenciar-item span,
+    .competicao-info-item span,
+    .competicao-info-item strong,
+    .escalacao-card-titulo,
+    .escalacao-card-descricao,
+    .escalacao-vazio h4,
+    .escalacao-vazio p,
+    .escalacao-info-label,
+    .escalacao-info-item strong,
+    .escalacao-subtitulo,
+    .escalacao-jogador-info strong,
+    .escalacao-jogador-info span,
+    .card-posicoes h3,
+    .card-posicoes .form-label,
+    .ranking-tabela,
+    .ranking-tabela-box h2,
+    .ranking-campo label,
+    .ranking-lateral-titulo h2,
+    .ranking-filtro-header h2,
+    .ranking-aba:not(.ativo),
+    .dashboard-ranking-info strong,
+    .dashboard-ranking-info span,
+    .dashboard-secao-titulo,
+    .dashboard-calendario-dialog h2,
+    .dashboard-dialog-informacoes p,
+    .auth-card h1,
+    .auth-card p,
+    .auth-card label,
+    .auth-card-left h3,
+    .config-cabecalho strong,
+    .config-cabecalho span,
+    .configuracoes-container .visu-subtitulo
+) {
+    color: #edf1f6 !important;
+}
+
+/* Textos secundários */
+html[data-tema="escuro"] .content :is(
+    .form-subtitle,
+    .lista-subtitulo,
+    .card-entidade-detalhes,
+    .etapa-card-descricao,
+    .periodo-inscricao-item span,
+    .contador-times,
+    .mensagem-vazia,
+    .dashboard-dialog-informacoes p,
+    .ranking-filtro-header p,
+    .ranking-tabela-header p,
+    .config-cabecalho span
+) {
+    color: #b4bfcc !important;
+}
+
+/* Campos e seletores */
+html[data-tema="escuro"] .content :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    select,
+    textarea,
+    .form-input,
+    .form-select,
+    .campo-busca input,
+    .campo-filtro select
+) {
+    background-color: #202b39 !important;
+    color: #edf1f6 !important;
+    border-color: #465466 !important;
+}
+
+html[data-tema="escuro"] .content :is(input, select, textarea)::placeholder {
+    color: #aab5c2 !important;
+    opacity: 1;
+}
+
+html[data-tema="escuro"] option {
+    background-color: #202b39;
+    color: #edf1f6;
+}
+
+/* Tabelas, divisórias e bordas */
+html[data-tema="escuro"] .content :is(
+    table,
+    th,
+    td,
+    .visu-box h5,
+    .info-acoes,
+    .partida-card-topo,
+    .partida-card-rodape,
+    .partida-topo,
+    .competicao-gerenciar-conteudo,
+    .ranking-filtro-divisor,
+    .ranking-avancados-btn,
+    .ranking-tabela td,
+    .lista-item,
+    .modal-header,
+    .modal-footer
+) {
+    border-color: var(--borda) !important;
+}
+
+html[data-tema="escuro"] .ranking-tabela th,
+html[data-tema="escuro"] .ranking-tabela thead,
+html[data-tema="escuro"] .ranking-aba:not(.ativo) {
+    background-color: var(--bege-principal) !important;
+}
+
+/* Textos dos painéis da barra superior e dos modais, fora de .content */
+html[data-tema="escuro"] .painel-perfil :is(strong, span, small, button),
+html[data-tema="escuro"] .painel-notificacoes :is(h3, strong, p, small, .notificacao-vazia) {
+    color: #edf1f6 !important;
+}
+
+html[data-tema="escuro"] .painel-notificacoes .marcar-lidas {
+    color: var(--laranja-principal) !important;
+}
+
+html[data-tema="escuro"] .modal-container :is(h1, h2, h3, h4, h5, h6, label, p, small, span, strong) {
+    color: #edf1f6;
+}
+
+html[data-tema="escuro"] .modal-container .modal-body p {
+    color: #b4bfcc !important;
+}
+
+/* Dropdowns, alertas e popovers */
+html[data-tema="escuro"] :is(
+    .painel-perfil,
+    .painel-notificacoes,
+    .notificacao-header,
+    .notificacao-item,
+    .fc-popover,
+    .fc-popover .fc-popover-header,
+    .fc-popover .fc-popover-body,
+    .dashboard-calendario-popover,
+    .dashboard-calendario-popover-header,
+    .dashboard-calendario-popover-body
+) {
+    background-color: var(--branco) !important;
+    color: var(--preto) !important;
+    border-color: var(--borda) !important;
+}
+
+html[data-tema="escuro"] .fc :is(
+    .fc-scrollgrid,
+    .fc-daygrid-day,
+    .fc-col-header-cell,
+    .fc-list,
+    .fc-list-day-cushion
+) {
+    background-color: #1d2633 !important;
+    border-color: var(--borda) !important;
+    color: #edf1f6 !important;
+}
+
+html[data-tema="escuro"] .fc :is(
+    .fc-daygrid-day-number,
+    .fc-col-header-cell-cushion,
+    .fc-list-day-text,
+    .fc-list-day-side-text
+) {
+    color: #edf1f6 !important;
+}
+
+/* Calendário do dashboard */
+html[data-tema="escuro"] .dashboard-calendario .fc {
+    color: #edf1f6 !important;
+    --fc-border-color: #3a4656;
+    --fc-neutral-bg-color: #293544;
+    --fc-page-bg-color: transparent;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc :is(
+    .fc-toolbar-title,
+    .fc-daygrid-day-number,
+    .fc-col-header-cell-cushion,
+    .fc-list-day-text,
+    .fc-list-day-side-text
+) {
+    color: #edf1f6 !important;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc .evento-partida--em-andamento {
+    color: #ffc09f !important;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc .evento-partida--finalizada,
+html[data-tema="escuro"] .dashboard-calendario .fc .evento-partida--cancelada {
+    color: #c0c8d2 !important;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc-popover,
+html[data-tema="escuro"] .dashboard-calendario-popover {
+    background: #1d2633 !important;
+    color: #edf1f6 !important;
+    border-color: #3a4656 !important;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc-popover .fc-popover-header,
+html[data-tema="escuro"] .dashboard-calendario-popover-header {
+    background: #293544 !important;
+    color: #edf1f6 !important;
+}
+
+html[data-tema="escuro"] .dashboard-calendario .fc-popover .fc-popover-body,
+html[data-tema="escuro"] .dashboard-calendario-popover-body {
+    background: #1d2633 !important;
+    color: #edf1f6 !important;
+}
+
+/* Mantém cores funcionais de sucesso, erro e informação legíveis no tema escuro. */
+html[data-tema="escuro"] .mensagem-sucesso {
+    color: #9ce0b5 !important;
+    background-color: #173b2b !important;
+    border-color: #286447 !important;
+}
+
+html[data-tema="escuro"] .mensagem-erro,
+html[data-tema="escuro"] .auth-error {
+    color: #ffb4b4 !important;
+    background-color: #421f26 !important;
+    border-color: #71343e !important;
+}
+
+html[data-tema="escuro"] .mensagem-info {
+    color: #b8d9ff !important;
+    background-color: #1b3048 !important;
+    border-color: #315579 !important;
+}
+
+/* Foco de teclado mais perceptível, sem alterar o estado normal dos elementos. */
+:where(html[data-tema="claro"], html[data-tema="escuro"]) :focus-visible:not(:is(input, select, textarea, [contenteditable="true"], .form-input, .form-control, .lista-pesquisa, .campo-filtro, .select-multiplos-toggle, .select-unico-toggle, [role="combobox"])) {
+    outline: 3px solid var(--laranja-principal) !important;
+    outline-offset: 3px;
+}
+
+/* Campos e seletores mantêm o foco suave do próprio componente,
+   sem o contorno retangular adicional de acessibilidade. */
+:where(html[data-tema="claro"], html[data-tema="escuro"])
+:is(input:not([type="checkbox"]):not([type="radio"]), select, textarea, [contenteditable="true"], .form-input, .form-control, .lista-pesquisa, .campo-filtro, .select-multiplos-toggle, .select-unico-toggle, [role="combobox"]):focus-visible {
+    outline: none !important;
+    outline-offset: 0 !important;
+}
+
+/* Paletas de adaptação para dificuldades de percepção de cores.
+   As opções substituem as cores de marca por combinações mais distinguíveis. */
+html[data-adaptacao-cores="protanopia"] {
+    --azul-principal: #00649A;
+    --laranja-principal: #9C6500;
+}
+
+html[data-adaptacao-cores="deuteranopia"] {
+    --azul-principal: #00649A;
+    --laranja-principal: #9C4276;
+}
+
+html[data-adaptacao-cores="tritanopia"] {
+    --azul-principal: #006B55;
+    --laranja-principal: #B33C0D;
+}
+
+html[data-adaptacao-cores="acromatopsia"] {
+    --azul-principal: #292929;
+    --laranja-principal: #626262;
+    --bege-principal: #dedede;
+}
+
+/* A adaptação monocromática também mantém os cartões legíveis no tema escuro. */
+html[data-tema="escuro"][data-adaptacao-cores="acromatopsia"] {
+    --bege-principal: #303030;
+}
+
+/* Movimento reduzido já respeita a preferência do sistema operacional.
+   Esta regra também cobre animações acrescentadas por bibliotecas. */
+@media (prefers-reduced-motion: reduce) {
+    html,
+    html *,
+    html *::before,
+    html *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

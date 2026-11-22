@@ -3,22 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
 
     <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.5/skeleton.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.5/themes/monarch/theme.css">
+
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
     <link rel="stylesheet" href="/assets/css/pages/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/partidas.css">
 
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
-    
-    <title>Dashboard</title>
 
+    <title>Dashboard | ACE</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/dashboard.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
-<body>
 
+<body class="dashboard-page">
 <app-bar></app-bar>
-<app-sidebar></app-sidebar>
+    <app-sidebar></app-sidebar>
 
-<script type="module" src="/assets/js/main.js"></script>
+    <main class="content" id="conteudoPrincipal">
+        <!-- CABEÇALHO -->
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div>
+                <h2 class="form-title"id="nomeCompeticao">Bem-vindo!</h2>
+                <p class="form-subtitle">Acompanhe os números, as competições e os próximos jogos da sua escola.</p>
+            </div>
+            <div class="dashboard-data-atual" id="dataAtualDashboard" aria-label="Data atual">
+                <span>Carregando data...</span>
+            </div>
+        </div>
+        
+        <!-- CARDS E RANKING -->
+        <div class="dashboard-topo-layout">
+            <section class="dashboard-resumo" aria-label="Resumo geral">
+                <article class="dashboard-card dashboard-card--times">
+                    <div class="dashboard-card-topo">
+                        <span class="dashboard-card-icone" aria-hidden="true">
+                            <img src="/assets/icons/shield.svg" alt="" class="icon">
+                        </span>
+                        <span class="dashboard-card-detalhe">Visão geral</span>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <span>Times ativos</span>
+                        <strong id="totalTimes">0</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card dashboard-card--competicoes">
+                    <div class="dashboard-card-topo">
+                        <span class="dashboard-card-icone" aria-hidden="true">
+                            <img src="/assets/icons/trophy.svg" alt="" class="icon">
+                        </span>
+                        <span class="dashboard-card-detalhe">Organização</span>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <span>Competições</span>
+                        <strong id="totalCompeticoes">0</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card dashboard-card--atletas">
+                    <div class="dashboard-card-topo">
+                        <span class="dashboard-card-icone" aria-hidden="true">
+                            <img src="/assets/icons/group.svg" alt="" class="icon">
+                        </span>
+                        <span class="dashboard-card-detalhe">Participantes</span>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <span>Atletas ativos</span>
+                        <strong id="totalAtletas">0</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card dashboard-card--partidas">
+                    <div class="dashboard-card-topo">
+                        <span class="dashboard-card-icone" aria-hidden="true">
+                            <img src="/assets/icons/medal2.svg" alt="" class="icon">
+                        </span>
+                        <span class="dashboard-card-detalhe">Agenda</span>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <span>Partidas</span>
+                        <strong id="totalPartidas">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="dashboard-secao dashboard-ranking" aria-labelledby="tituloRanking">
+                <div class="dashboard-secao-header">
+                    <div>
+                        <span class="dashboard-secao-kicker">DESEMPENHO</span>
+                        <h2 class="section-title" id="tituloRanking">Ranking</h2>
+                        <p class="section-description">
+                            As três equipes em destaque.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-lista-ranking" id="listaRankingDashboard">
+                    <p class="dashboard-estado">Carregando ranking...</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- PARTIDAS E CALENDÁRIO -->
+        <div class="dashboard-layout">
+            <section class="dashboard-secao dashboard-partidas" aria-labelledby="tituloProximasPartidas">
+                <div class="dashboard-secao-header">
+                    <div>
+                        <span class="dashboard-secao-kicker">ACOMPANHAMENTO</span>
+                        <h2 class="section-title" id="tituloProximasPartidas">Próximas partidas</h2>
+                        <p class="section-description">
+                            Veja os próximos confrontos programados.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-lista-partidas" id="listaPartidasDashboard">
+                    <p class="dashboard-estado">Carregando partidas...</p>
+                </div>
+            </section>
+
+            <section class="dashboard-secao dashboard-calendario" aria-labelledby="tituloCalendario">
+                <div class="dashboard-secao-header dashboard-calendario-header">
+                    <div>
+                        <span class="dashboard-secao-kicker">PROGRAMAÇÃO</span>
+                        <h2 class="section-title" id="tituloCalendario">Calendário</h2>
+                        <p class="section-description">
+                            Consulte os jogos e confrontos.
+                        </p>
+                    </div>
+
+                    <div class="dashboard-calendario-legenda" aria-label="Legenda dos status">
+                        <span class="legenda-item legenda-item--agendada">Agendada</span>
+                        <span class="legenda-item legenda-item--andamento">Em andamento</span>
+                        <span class="legenda-item legenda-item--finalizada">Finalizada</span>
+                    </div>
+                </div>
+
+                <div id="calendarioDashboard" aria-label="Calendário de partidas"></div>
+                <p id="mensagemCalendario" class="dashboard-mensagem" role="status" aria-live="polite"></p>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- DETALHES DA PARTIDA NO CALENDÁRIO -->
+    <dialog
+        id="modalPartidaCalendario"
+        class="dashboard-calendario-dialog"
+        aria-labelledby="modalCalendarioTitulo"
+    >
+        <div class="dashboard-calendario-dialog-conteudo">
+            <div class="dashboard-dialog-cabecalho">
+                <span class="dashboard-dialog-icone" aria-hidden="true">
+                    <img src="/assets/icons/calender.svg" alt="" class="icon">
+                </span>
+                <button
+                    type="button"
+                    id="fecharModalCalendario"
+                    class="dashboard-dialog-fechar"
+                    aria-label="Fechar detalhes da partida"
+                >
+                    <img src="/assets/icons/close.svg" alt="" class="icon">
+                </button>
+            </div>
+
+            <span class="dashboard-secao-kicker">DETALHES DO CONFRONTO</span>
+            <h2 id="modalCalendarioTitulo">Partida</h2>
+
+            <div class="dashboard-dialog-informacoes">
+                <p>
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    <span id="modalCalendarioData">Data não informada</span>
+                </p>
+                <p>
+                    <i class="bi bi-trophy" aria-hidden="true"></i>
+                    <span id="modalCalendarioCompeticao">Competição não informada</span>
+                </p>
+                <p>
+                    <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                    <span id="modalCalendarioLocal">Local não informado</span>
+                </p>
+                <p>
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <span id="modalCalendarioStatus">Status não informado</span>
+                </p>
+            </div>
+
+            <button
+                type="button"
+                id="fecharModalCalendarioSecundario"
+                class="custom-btn custom-btn-primary dashboard-dialog-botao"
+            >
+                Fechar
+            </button>
+        </div>
+    </dialog>
+
+    <!-- FULLCALENDAR -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.5/all/global.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.5/themes/monarch/global.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.5/locales/pt-br/global.js" defer></script>
+
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/dashboard.js"></script>
 </body>
 </html>

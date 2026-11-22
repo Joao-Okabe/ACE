@@ -8,6 +8,8 @@ export function renderizarChaveamento(dados = [], formato = 1) {
     const mensagem = document.getElementById("mensagemChaveamento");
     const botaoGerar = document.getElementById("btnGerarChaveamento");
 
+    if (!container || !mensagem) return;
+
     const existeChaveamento = Array.isArray(dados) && dados.length > 0;
 
     if (botaoGerar) {
@@ -24,28 +26,32 @@ export function renderizarChaveamento(dados = [], formato = 1) {
         return;
     }
 
-    // ELIMINATÓRIA DUPLA
     if (Number(formato) === 2) {
-        renderizarChaveamentoDupla(dados, rodadas, container);
+        renderizarChaveamentoDupla(rodadas, container);
         return;
     }
 
-    // SISTEMA SUÍÇO
+    if (Number(formato) === 3) {
+        renderizarChaveamentoGrupos(rodadas, container);
+        return;
+    }
+
     if (Number(formato) === 4) {
         renderizarChaveamentoSuico(rodadas, container);
         return;
     }
 
-    // ELIMINATÓRIA SIMPLES
+    renderizarChaveamentoSimples(dados, rodadas, container);
+}
+
+// ELIMINATÓRIA SIMPLES
+function renderizarChaveamentoSimples(dados, rodadas, container) {
     const quantidadeTimes = contarTimes(dados);
     const quantidadeConfrontosInicial = rodadas[0].confrontos.length;
-
-    const alturaTotal = calcularAlturaRodada(
-        quantidadeConfrontosInicial
-    );
+    const alturaTotal = calcularAlturaRodada(quantidadeConfrontosInicial);
 
     const bracket = document.createElement("div");
-    bracket.className = "bracket";
+    bracket.className = "bracket bracket-simples";
     bracket.dataset.times = quantidadeTimes;
 
     rodadas.forEach((rodada, indice) => {
@@ -68,11 +74,20 @@ export function renderizarChaveamento(dados = [], formato = 1) {
         }
     });
 
+    const ultimaRodada = rodadas.at(-1);
+
+    if (rodadas.length > 1 && ultimaRodada.confrontos.length > 1) {
+        console.warn(
+            "A última rodada recebida contém vários confrontos. Verifique se a API retornou a final.",
+            ultimaRodada
+        );
+    }
+
     container.appendChild(bracket);
 }
 
-// RENDERIZAR ELIMINATÓRIA DUPLA
-function renderizarChaveamentoDupla(dados, rodadas, container) {
+// ELIMINATÓRIA DUPLA
+function renderizarChaveamentoDupla(rodadas, container) {
     const bracket = document.createElement("div");
     bracket.className = "bracket bracket-dupla";
 
@@ -124,11 +139,7 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
     };
 
     function identificarRodada(nome) {
-        const normalizado = String(nome || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/[\s_-]/g, "");
+        const normalizado = normalizarNome(nome);
 
         if (normalizado.includes("granfinal")) return "granfinal";
         if (normalizado.includes("repescagem4")) return "repescagem4";
@@ -174,19 +185,7 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
             partida.className = "partida";
             partida.style.top = `${top}px`;
             partida.dataset.confronto = confronto.id;
-
-            partida.innerHTML = `
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 1
-                    )
-                )}
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 2
-                    )
-                )}
-            `;
+            partida.innerHTML = criarConteudoConfronto(confronto);
 
             area.appendChild(partida);
 
@@ -202,9 +201,8 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
         bracket.appendChild(coluna);
     });
 
-    // CAMADA DE CONEXÕES
+    // CONEXÕES DA ELIMINATÓRIA DUPLA
     const larguraCard = 190;
-
     const camadaConexoes = document.createElement("div");
     camadaConexoes.className = "bracket-conexoes";
     bracket.appendChild(camadaConexoes);
@@ -227,12 +225,9 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
         camadaConexoes.appendChild(linha);
     }
 
-    // IDENTIFICAR PARTIDAS DE ORIGEM
     rodadas.forEach(rodada => {
         rodada.confrontos.forEach(confronto => {
-            const destino = posicoesConfrontos.get(
-                String(confronto.id)
-            );
+            const destino = posicoesConfrontos.get(String(confronto.id));
 
             if (!destino) return;
 
@@ -246,7 +241,8 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
             confronto.participantes.forEach(participante => {
                 idsOrigem.push(
                     participante.cd_confronto_anterior_a,
-                    participante.cd_confronto_anterior_b
+                    participante.cd_confronto_anterior_b,
+                    participante.origem_confronto
                 );
             });
 
@@ -265,10 +261,8 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
 
             if (partidasOrigem.some(origem => origem.coluna >= destino.coluna)) {
                 console.warn(
-                    "Verifique a posição das rodadas e a origem do confronto:",
-                    confronto.id,
-                    partidasOrigem,
-                    destino
+                    "Verifique a posição das rodadas:",
+                    confronto.id
                 );
                 return;
             }
@@ -278,12 +272,8 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
                 y: origem.y
             }));
 
-            const maiorSaida = Math.max(
-                ...pontosOrigem.map(ponto => ponto.x)
-            );
-
-            const meioX = maiorSaida +
-                (destino.x - maiorSaida) / 2;
+            const maiorSaida = Math.max(...pontosOrigem.map(ponto => ponto.x));
+            const meioX = maiorSaida + (destino.x - maiorSaida) / 2;
 
             pontosOrigem.forEach((ponto, indice) => {
                 criarLinha(
@@ -306,21 +296,48 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
             );
 
             criarLinhaVertical(meioX, menorY, maiorY);
-
-            criarLinha(
-                "saida",
-                meioX,
-                destino.y,
-                destino.x,
-                destino.y
-            );
+            criarLinha("saida", meioX, destino.y, destino.x, destino.y);
         });
     });
 
     container.appendChild(bracket);
 }
 
-// RENDERIZAR SISTEMA SUÍÇO
+// FASE DE GRUPOS + ELIMINATÓRIA
+
+function renderizarChaveamentoGrupos(rodadas, container) {
+    const bracket = document.createElement("div");
+    bracket.className = "bracket-grupos";
+
+    rodadas.forEach(rodada => {
+        const coluna = document.createElement("section");
+        coluna.className = "bracket-grupos-coluna";
+
+        const titulo = document.createElement("h3");
+        titulo.className = "round-title";
+        titulo.textContent = rodada.nome || `Rodada ${rodada.numero}`;
+
+        const lista = document.createElement("div");
+        lista.className = "bracket-grupos-lista";
+
+        rodada.confrontos.forEach(confronto => {
+            const partida = document.createElement("div");
+            partida.className = "partida";
+            partida.dataset.confronto = confronto.id;
+            partida.innerHTML = criarConteudoConfronto(confronto);
+
+            lista.appendChild(partida);
+        });
+
+        coluna.append(titulo, lista);
+        bracket.appendChild(coluna);
+    });
+
+    container.appendChild(bracket);
+}
+
+
+// SISTEMA SUÍÇO
 function renderizarChaveamentoSuico(rodadas, container) {
     const bracket = document.createElement("div");
     bracket.className = "bracket bracket-suico";
@@ -340,69 +357,155 @@ function renderizarChaveamentoSuico(rodadas, container) {
             const partida = document.createElement("div");
             partida.className = "partida";
             partida.dataset.confronto = confronto.id;
-
-            partida.innerHTML = `
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 1
-                    )
-                )}
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 2
-                    )
-                )}
-            `;
+            partida.innerHTML = criarConteudoConfronto(confronto);
 
             area.appendChild(partida);
         });
 
-        coluna.appendChild(titulo);
-        coluna.appendChild(area);
+        coluna.append(titulo, area);
         bracket.appendChild(coluna);
     });
 
     container.appendChild(bracket);
 }
 
+// CONTEÚDO DE UM CONFRONTO
+function criarConteudoConfronto(confronto) {
+    const participante1 = confronto.participantes.find(
+        participante => Number(participante.posicao) === 1
+    );
+
+    const participante2 = confronto.participantes.find(
+        participante => Number(participante.posicao) === 2
+    );
+
+    return `
+        ${criarParticipante(participante1)}
+        ${criarParticipante(participante2)}
+    `;
+}
+
 // AGRUPAR CONFRONTOS POR RODADA
 function agruparRodadas(dados) {
-    const mapaRodadas = new Map();
+    const mapaConfrontos = new Map();
 
     dados.forEach(item => {
-        const numeroRodada = Number(item.nr_rodada);
+        const id = Number(item.cd_confronto);
 
-        if (!mapaRodadas.has(numeroRodada)) {
-            mapaRodadas.set(numeroRodada, {
-                numero: numeroRodada,
-                nome: item.nm_rodada || `Rodada ${numeroRodada}`,
-                confrontos: new Map()
-            });
-        }
+        if (!Number.isInteger(id) || id <= 0) return;
 
-        const rodada = mapaRodadas.get(numeroRodada);
-
-        if (!rodada.confrontos.has(item.cd_confronto)) {
-            rodada.confrontos.set(item.cd_confronto, {
-                id: item.cd_confronto,
+        if (!mapaConfrontos.has(id)) {
+            mapaConfrontos.set(id, {
+                id,
                 numero: item.nr_confronto,
                 nome: item.nome,
                 status: item.status,
-                vencedor: item.cd_vencedor,
+                vencedor: item.cd_vencedor
+                    ? Number(item.cd_vencedor)
+                    : null,
+                numeroRodada: Number(item.nr_rodada),
+                idRodada: item.cd_rodada ?? null,
+                idEtapa: item.cd_etapa_competicao ?? null,
+                nomeRodada: item.nm_rodada,
+                cd_confronto_anterior_a: item.cd_confronto_anterior_a,
+                cd_confronto_anterior_b: item.cd_confronto_anterior_b,
                 participantes: []
             });
         }
 
-        rodada.confrontos.get(item.cd_confronto)
-            .participantes.push(item);
+        mapaConfrontos.get(id).participantes.push(item);
+    });
+
+    // RESOLVER PARTICIPANTES DE CONFRONTOS ANTERIORES
+    function resolverParticipante(participante, visitados = new Set()) {
+        if (!participante) return participante;
+
+        if (participante.tipo_origem === "TIME") {
+            return participante;
+        }
+
+        if (participante.tipo_origem !== "CONFRONTO") {
+            return participante;
+        }
+
+        const idOrigem = Number(participante.origem_confronto);
+
+        if (!idOrigem || visitados.has(idOrigem)) {
+            return participante;
+        }
+
+        const origem = mapaConfrontos.get(idOrigem);
+
+        if (!origem || !origem.vencedor) {
+            return participante;
+        }
+
+        const novosVisitados = new Set(visitados);
+        novosVisitados.add(idOrigem);
+
+        const times = origem.participantes
+            .map(item => resolverParticipante(item, novosVisitados))
+            .filter(item => item?.cd_time);
+
+        const resultado = String(
+            participante.resultado_confronto || "VENCEDOR"
+        ).toUpperCase();
+
+        const selecionado = resultado === "PERDEDOR"
+            ? times.find(time => Number(time.cd_time) !== origem.vencedor)
+            : times.find(time => Number(time.cd_time) === origem.vencedor);
+
+        if (!selecionado) return participante;
+
+        return {
+            ...participante,
+            cd_time: selecionado.cd_time,
+            nm_time: selecionado.nm_time,
+            path_escudo: selecionado.path_escudo,
+            time_resolvido: true
+        };
+    }
+
+    const mapaRodadas = new Map();
+
+    mapaConfrontos.forEach(confronto => {
+        const numero = confronto.numeroRodada;
+
+        const chave = confronto.idRodada != null
+            ? `rodada:${confronto.idRodada}`
+            : confronto.idEtapa != null
+                ? `etapa:${confronto.idEtapa}:rodada:${numero}`
+                : `numero:${numero}`;
+
+        if (!mapaRodadas.has(chave)) {
+            mapaRodadas.set(chave, {
+                numero,
+                nome: confronto.nomeRodada || `Rodada ${numero}`,
+                confrontos: []
+            });
+        }
+
+        mapaRodadas.get(chave).confrontos.push({
+            id: confronto.id,
+            numero: confronto.numero,
+            nome: confronto.nome,
+            status: confronto.status,
+            vencedor: confronto.vencedor,
+            cd_confronto_anterior_a: confronto.cd_confronto_anterior_a,
+            cd_confronto_anterior_b: confronto.cd_confronto_anterior_b,
+            participantes: confronto.participantes.map(
+                participante => resolverParticipante(participante)
+            )
+        });
     });
 
     return [...mapaRodadas.values()]
         .sort((a, b) => a.numero - b.numero)
         .map(rodada => ({
             ...rodada,
-            confrontos: [...rodada.confrontos.values()]
-                .sort((a, b) => Number(a.numero) - Number(b.numero))
+            confrontos: rodada.confrontos.sort(
+                (a, b) => Number(a.numero) - Number(b.numero)
+            )
         }));
 }
 
@@ -414,7 +517,7 @@ function calcularAlturaRodada(quantidadeConfrontos) {
     return quantidadeConfrontos * (alturaPartida + espacamento);
 }
 
-// CRIAR COLUNA DA RODADA
+// CRIAR COLUNA DA ELIMINATÓRIA SIMPLES
 function criarColunaRodada(rodada, alturaTotal, indiceRodada) {
     const classeRodada = classeDaRodada(rodada.nome);
     const fator = Math.pow(2, indiceRodada);
@@ -429,12 +532,7 @@ function criarColunaRodada(rodada, alturaTotal, indiceRodada) {
             <div class="partida"
                  style="top: ${posicao}px"
                  data-confronto="${escapeHtml(confronto.id)}">
-                ${criarParticipante(confronto.participantes.find(
-                    participante => Number(participante.posicao) === 1
-                ))}
-                ${criarParticipante(confronto.participantes.find(
-                    participante => Number(participante.posicao) === 2
-                ))}
+                ${criarConteudoConfronto(confronto)}
             </div>
         `;
     }).join("");
@@ -449,24 +547,6 @@ function criarColunaRodada(rodada, alturaTotal, indiceRodada) {
     `;
 }
 
-// CRIAR CONFRONTO
-function criarConfronto(confronto) {
-    const participante1 = confronto.participantes.find(
-        participante => Number(participante.posicao) === 1
-    );
-
-    const participante2 = confronto.participantes.find(
-        participante => Number(participante.posicao) === 2
-    );
-
-    return `
-        <div class="partida" data-confronto="${escapeHtml(confronto.id)}">
-            ${criarParticipante(participante1)}
-            ${criarParticipante(participante2)}
-        </div>
-    `;
-}
-
 // CRIAR PARTICIPANTE
 function criarParticipante(participante) {
     if (!participante) {
@@ -476,7 +556,10 @@ function criarParticipante(participante) {
     let nome = "A definir";
     let imagem = "";
 
-    if (participante.tipo_origem === "TIME") {
+    if (
+        participante.tipo_origem === "TIME" ||
+        participante.time_resolvido
+    ) {
         nome = participante.nm_time || "Time sem nome";
         imagem = participante.path_escudo || "";
     } else if (participante.tipo_origem === "CONFRONTO") {
@@ -506,13 +589,12 @@ function criarParticipante(participante) {
     `;
 }
 
-// CRIAR CONEXÕES ENTRE RODADAS
+// CONEXÕES DA ELIMINATÓRIA SIMPLES
 function criarConexoes(quantidade, indiceRodada) {
     const fator = Math.pow(2, indiceRodada);
     const espacamento = 76;
     const alturaPartida = 60;
     const alturaTituloRodada = 55;
-
     const distancia = fator * espacamento;
 
     return Array.from({ length: quantidade }, (_, indice) => {
@@ -523,17 +605,15 @@ function criarConexoes(quantidade, indiceRodada) {
         const meio = alturaPartida / 2 + distancia / 2;
 
         return `
-            <div
-                class="conexao"
-                style="
+            <div class="conexao"
+                 style="
                     top: ${top}px;
                     height: ${distancia + alturaPartida}px;
                     --entrada-1: ${alturaPartida / 2}px;
                     --entrada-2: ${alturaPartida / 2 + distancia}px;
                     --saida-y: ${meio}px;
                     --vertical-h: ${distancia}px;
-                "
-            >
+                 ">
                 <div class="entrada-1"></div>
                 <div class="entrada-2"></div>
                 <div class="vertical"></div>
@@ -545,42 +625,30 @@ function criarConexoes(quantidade, indiceRodada) {
 
 // IDENTIFICAR CLASSE DA RODADA
 function classeDaRodada(nome) {
-    const normalizado = String(nome || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .replace(/[\s_-]/g, "");
+    const normalizado = normalizarNome(nome);
 
-    if (normalizado.includes("16avos") ||
-        normalizado.includes("dezesseisavos")) {
+    if (
+        normalizado.includes("16avos") ||
+        normalizado.includes("dezesseisavos")
+    ) {
         return "dezesseisavos";
     }
 
-    if (normalizado.includes("oitavas")) {
-        return "oitavas";
-    }
-
-    if (normalizado.includes("quartas")) {
-        return "quartas";
-    }
-
-    if (normalizado.includes("semifinal")) {
-        return "semifinal";
-    }
-
-    if (normalizado.includes("final")) {
-        return "final";
-    }
+    if (normalizado.includes("oitavas")) return "oitavas";
+    if (normalizado.includes("quartas")) return "quartas";
+    if (normalizado.includes("semifinal")) return "semifinal";
+    if (normalizado.includes("final")) return "final";
 
     return "rodada";
 }
 
-// IDENTIFICAR CONEXÃO ENTRE RODADAS
-function criarClasseConexao(rodadaAtual, proximaRodada) {
-    const classeAtual = classeDaRodada(rodadaAtual.nome);
-    const classeProxima = classeDaRodada(proximaRodada.nome);
-
-    return `${classeAtual}-para-${classeProxima}`;
+// NORMALIZAR NOMES
+function normalizarNome(valor) {
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[\s_-]/g, "");
 }
 
 // CONTAR TIMES ÚNICOS
@@ -619,15 +687,15 @@ export function configurarBotaoGerarChaveamento(atualizarCompeticao) {
         try {
             await competicaoService.gerarChaveamento(idCompeticao);
             await atualizarCompeticao();
-
         } catch (erro) {
             console.error("Erro ao gerar chaveamento:", erro);
 
             const mensagem = document.getElementById("mensagemChaveamento");
 
-            mensagem.textContent =
-                erro.message || "Não foi possível gerar o chaveamento.";
-
+            if (mensagem) {
+                mensagem.textContent =
+                    erro.message || "Não foi possível gerar o chaveamento.";
+            }
         } finally {
             botao.disabled = false;
         }

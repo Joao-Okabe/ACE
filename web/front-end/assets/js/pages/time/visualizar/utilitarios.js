@@ -2,7 +2,10 @@
 export const estadoTime = {
     integrantes: [],
     funcoes: [],
-    responsaveis: []
+    responsaveis: [],
+    podeGerenciar: false,
+    permissaoVerificada: false,
+    somenteLeitura: true
 };
 
 // OBTER ID DO TIME

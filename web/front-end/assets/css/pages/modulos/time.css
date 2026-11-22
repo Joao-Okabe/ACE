@@ -1,26 +1,22 @@
-
-/* ========================================
-   LAYOUT DO PAINEL
-======================================== */
 .visu-painel {
     margin-top: 24px;
     row-gap: 20px;
 }
+
 .visu-painel > div,
 .visu-painel-conteudo {
     min-width: 0;
 }
+
 .visu-painel-conteudo {
     min-height: 340px;
     padding: 28px;
 }
+
 .visu-secao[hidden] {
     display: none !important;
 }
 
-/* ========================================
-   MENU LATERAL
-======================================== */
 .visu-menu {
     display: flex;
     flex-direction: column;
@@ -30,6 +26,7 @@
     background: var(--branco);
     box-shadow: var(--shadow-sm);
 }
+
 .visu-menu-item {
     display: flex;
     align-items: center;
@@ -48,13 +45,16 @@
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
+
 .visu-menu-item:hover {
     background: var(--bege-principal);
 }
+
 .visu-menu-item.active {
     background: var(--azul-principal);
     color: #fff;
 }
+
 .visu-menu-icon {
     display: inline-flex;
     align-items: center;
@@ -63,19 +63,18 @@
     flex-shrink: 0;
     font-size: 18px;
 }
+
 .visu-menu-seta {
     margin-left: auto;
     font-size: 22px;
     line-height: 1;
 }
+
 .visu-menu-item:focus-visible {
     outline: 3px solid var(--laranja-principal);
-    outline-offset: 3px;
+   outline-offset: 3px;
 }
 
-/* ========================================
-   CABEÇALHO DAS SEÇÕES
-======================================== */
 .visu-secao-header {
     display: flex;
     align-items: center;
@@ -84,15 +83,18 @@
     gap: 16px;
     margin-bottom: 24px;
 }
+
 .visu-secao-header .section-title {
     margin: 0 0 8px;
 }
+
 .section-description {
     margin: 0;
     font-size: 14px;
     line-height: 1.6;
     opacity: 0.8;
 }
+
 .visu-secao-header .custom-btn {
     display: inline-flex;
     align-items: center;
@@ -110,15 +112,18 @@
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
 .visu-secao-header .custom-btn:hover {
     background: var(--laranja-principal);
     color: #fff;
     transform: translateY(-1px);
 }
+
 .visu-secao-header .custom-btn:focus-visible {
     outline: 3px solid var(--azul-principal);
     outline-offset: 3px;
 }
+
 .visu-secao-header .custom-btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
@@ -126,15 +131,13 @@
     box-shadow: none;
 }
 
-/* ========================================
-   LISTAS
-======================================== */
 .visu-lista {
     display: flex;
     flex-direction: column;
     gap: 12px;
     min-width: 0;
 }
+
 .visu-lista-item {
     display: flex;
     align-items: center;
@@ -144,6 +147,7 @@
     border-radius: 12px;
     background: var(--branco);
 }
+
 .visu-lista-item img {
     width: 52px;
     height: 52px;
@@ -151,10 +155,12 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
 .visu-lista-info {
     flex: 1;
     min-width: 0;
 }
+
 .visu-lista-info h3 {
     margin: 0 0 5px;
     color: var(--azul-principal);
@@ -162,29 +168,30 @@
     font-weight: 600;
     overflow-wrap: anywhere;
 }
+
 .visu-lista-info p {
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
+
 .visu-subsecao {
     margin-top: 24px;
 }
+
 .visu-subtitulo {
     margin: 0 0 14px;
     color: var(--azul-principal);
     font-size: 16px;
     font-weight: 600;
 }
+
 .visu-mensagem {
     font-size: 14px;
     line-height: 1.6;
 }
 
-/* ========================================
-   CARDS DOS INTEGRANTES
-======================================== */
 .time-card {
     display: flex;
     flex-direction: column;
@@ -197,6 +204,7 @@
     border-radius: 12px;
     background: var(--branco, #fff);
 }
+
 .time-card--small {
     width: 400px;
     height: 100px;
@@ -208,10 +216,12 @@
     box-shadow: var(--shadow-sm, 0 2px 8px rgba(24, 24, 71, 0.04));
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
 .time-card--small:hover {
     border-color: rgba(244, 78, 28, 0.4);
     box-shadow: 0 4px 14px rgba(24, 24, 71, 0.07);
 }
+
 .time-seta {
     display: inline-block;
     flex-shrink: 0;
@@ -220,24 +230,24 @@
     font-size: 26px;
     transition: transform 0.3s ease;
 }
+
 .time-card:hover .time-seta {
     transform: translateX(6px);
 }
 
-/* ========================================
-   PESSOAS E INTEGRANTES
-======================================== */
 .pessoa-topo {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     width: 100%;
 }
+
 .pessoa-avatar {
     flex-shrink: 0;
     border: 2px solid var(--azul-principal);
     border-radius: 50%;
 }
+
 .pessoa-avatar img {
     display: block;
     width: 75px;
@@ -245,18 +255,22 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
 .pessoa-info {
     flex: 1;
     min-width: 0;
 }
+
 .pessoa-info h3 {
     margin: 0 0 6px;
     font-size: 15px;
 }
+
 .pessoa-info p {
     margin: 0 0 8px;
     font-size: 13px;
 }
+
 .pessoa-tag {
     display: inline-flex;
     align-items: center;
@@ -268,6 +282,7 @@
     font-size: 12px;
     font-weight: 600;
 }
+
 .pessoa-acoes {
     display: flex;
     flex-direction: column;
@@ -275,16 +290,19 @@
     gap: 8px;
     width: 100%;
 }
+
 .pessoa-acoes button {
     width: 100%;
     padding: 6px;
     font-size: 11px;
 }
+
 .pessoa-card {
     display: flex;
     align-items: center;
     gap: 16px;
 }
+
 .pessoa-acao {
     display: flex;
     align-items: center;
@@ -301,15 +319,18 @@
     cursor: pointer;
     transition: var(--transition);
 }
+
 .pessoa-acao:hover {
     background: rgba(24, 24, 71, 0.08);
     color: var(--laranja-principal);
     transform: translateY(-1px);
 }
+
 .pessoa-acao:focus-visible {
     outline: 3px solid var(--laranja-principal, #F44E1C);
     outline-offset: 3px;
 }
+
 .btn-editar-integrante {
     display: flex;
     align-items: center;
@@ -324,15 +345,13 @@
     cursor: pointer;
     transition: var(--transition);
 }
+
 .btn-editar-integrante:hover {
     border-color: var(--laranja-principal);
     background: var(--laranja-principal);
     color: var(--branco);
 }
 
-/* ========================================
-   BOTÕES DE AÇÃO
-======================================== */
 .btn-acao,
 .btn-remover {
     display: inline-flex;
@@ -347,526 +366,27 @@
     font-weight: 600;
     transition: var(--transition);
 }
+
 .btn-acao {
     border-color: var(--azul-principal);
     color: var(--azul-principal);
 }
+
 .btn-acao:hover {
     background: var(--azul-principal);
     color: var(--branco);
 }
+
 .btn-remover {
     border-color: var(--laranja-principal);
     color: var(--laranja-principal);
 }
+
 .btn-remover:hover {
     background: var(--laranja-principal);
     color: var(--branco);
 }
 
-/* ========================================
-   CARDS DE PARTIDA
-======================================== */
-.partida-card {
-    width: 100%;
-    min-width: 0;
-    padding: 10px 16px;
-    border: 1px solid rgba(24, 24, 71, 0.10);
-    border-radius: 12px;
-    background: var(--branco, #fff);
-    box-shadow: 0 4px 15px rgba(24, 24, 71, 0.06);
-}
-.partida-card-topo,
-.partida-card-rodape,
-.partida-topo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.partida-card-topo {
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(24, 24, 71, 0.1);
-}
-.partida-topo {
-    gap: 12px;
-    margin-bottom: 3px;
-}
-.partida-card-rodape {
-    padding-top: 14px;
-    border-top: 1px solid rgba(24, 24, 71, 0.1);
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.8;
-}
-.partida-data {
-    color: var(--azul-principal);
-    font-size: 13px;
-    font-weight: 600;
-    opacity: 0.75;
-}
-.partida-status {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: var(--bege-principal, #F1E4D1);
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    font-weight: 600;
-}
-.partida-status.agendada {
-    background: #e8f0ff;
-    color: #2456a6;
-}
-.partida-status.finalizada {
-    background: #e5f5eb;
-    color: #237447;
-}
-.partida-status.andamento {
-    background: #e5f5eb;
-    color: var(--laranja-principal);
-}
-.partida-confronto {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 10px;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 24px 0;
-}
-.partida-time {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    overflow-wrap: anywhere;
-}
-.partida-time img {
-    width: 78px;
-    height: 78px;
-    margin-bottom: 4px;
-    border: 3px solid var(--azul-principal);
-    border-radius: 50%;
-    object-fit: contain;
-}
-.partida-time h3 {
-    margin: 0;
-    color: #181847;
-    font-size: 15px;
-    font-weight: 700;
-}
-.partida-time span {
-    margin-top: 4px;
-    color: #777;
-    font-size: 12px;
-}
-.partida-escudo {
-    width: 58px;
-    height: 58px;
-    border: 2px solid var(--azul-principal);
-    border-radius: 50%;
-    object-fit: contain;
-}
-.partida-placar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    color: var(--azul-principal, #181847);
-    font-size: 25px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-.partida-placar strong {
-    font-size: 25px;
-    font-weight: 800;
-}
-.partida-placar span {
-    color: #999;
-    font-size: 18px;
-}
-.partida-placar strong:only-child {
-    font-size: 25px;
-}
-.partida-x {
-    color: var(--laranja-principal, #F44E1C);
-    font-size: 18px;
-}
-.partida-rodape {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 5px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(24, 24, 71, 0.10);
-    color: var(--azul-principal);
-    font-size: 12px;
-}
-.partida-rodape span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.partida-icone {
-    font-style: normal;
-}
-
-/* ========================================
-   ESCALAÇÃO - CONTEÚDO
-======================================== */
-.escalacao-conteudo {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    align-items: start;
-    gap: 20px;
-}
-.escalacao-card {
-    min-width: 0;
-    padding: 24px;
-    border: 1px solid rgba(24, 24, 71, 0.12);
-    border-radius: 12px;
-    background: var(--branco, #fff);
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(24, 24, 71, 0.04));
-}
-.escalacao-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 22px;
-}
-.escalacao-card-titulo {
-    margin: 0 0 7px;
-    color: var(--azul-principal, #181847);
-    font-size: 17px;
-    font-weight: 700;
-}
-.escalacao-card-descricao {
-    margin: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0.7;
-}
-.escalacao-imagem-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    overflow: hidden;
-    border: 1px dashed rgba(24, 24, 71, 0.22);
-    border-radius: 10px;
-    background: var(--bege-principal, #F1E4D1);
-}
-.escalacao-imagem {
-    display: block;
-    width: 100%;
-    max-height: 480px;
-    object-fit: contain;
-}
-.escalacao-imagem[hidden],
-.escalacao-vazio[hidden],
-.escalacao-status[hidden] {
-    display: none !important;
-}
-.escalacao-vazio {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    padding: 35px 24px;
-    text-align: center;
-}
-.escalacao-vazio-icone {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 18px;
-    border-radius: 16px;
-    background: var(--branco, #fff);
-    font-size: 30px;
-}
-.escalacao-vazio h4 {
-    margin: 0 0 10px;
-    color: var(--azul-principal, #181847);
-    font-size: 16px;
-    font-weight: 700;
-}
-.escalacao-vazio p {
-    max-width: 300px;
-    margin: 0;
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.7;
-    opacity: 0.75;
-}
-.escalacao-informacoes {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-.escalacao-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    min-width: 0;
-    padding: 16px;
-    border-radius: 10px;
-    background: var(--bege-principal, #F1E4D1);
-}
-.escalacao-info-label {
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.75;
-}
-.escalacao-info-item strong {
-    color: var(--azul-principal, #181847);
-    font-size: 15px;
-    overflow-wrap: anywhere;
-}
-.escalacao-status {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 11px;
-    border-radius: 20px;
-    background: rgba(244, 78, 28, 0.12);
-    color: var(--laranja-principal, #F44E1C);
-    font-size: 12px;
-    font-weight: 700;
-}
-.escalacao-jogadores {
-    margin-top: 26px;
-}
-.escalacao-subtitulo {
-    margin: 0 0 14px;
-    color: var(--azul-principal, #181847);
-    font-size: 15px;
-    font-weight: 700;
-}
-.escalacao-subtitulo-reservas {
-    margin-top: 24px;
-}
-.escalacao-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 0;
-}
-.escalacao-jogador {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-    padding: 12px;
-    border: 1px solid rgba(24, 24, 71, 0.1);
-    border-radius: 10px;
-}
-.escalacao-jogador-foto {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--bege-principal, #F1E4D1);
-    object-fit: cover;
-}
-.escalacao-jogador-info {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 0;
-}
-.escalacao-jogador-info strong {
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    overflow-wrap: anywhere;
-}
-.escalacao-jogador-info span {
-    color: var(--azul-principal, #181847);
-    font-size: 12px;
-    opacity: 0.7;
-}
-.escalacao-texto-vazio {
-    margin: 0;
-    padding: 14px;
-    border-radius: 8px;
-    background: rgba(24, 24, 71, 0.04);
-    color: var(--azul-principal, #181847);
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-/* ========================================
-   ESCALAÇÃO - CAMPO E POSIÇÕES
-======================================== */
-.escalacao-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
-    align-items: stretch;
-    gap: 24px;
-    width: 100%;
-    margin-top: 24px;
-}
-.escalacao-layout > button {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: 100%;
-    margin-top: 10px;
-}
-.card-escalacao,
-.card-posicoes {
-    box-sizing: border-box;
-    height: 100%;
-}
-.card-escalacao {
-    width: 100%;
-    min-width: 0;
-    padding: 20px;
-    border: 2px solid rgba(24, 24, 71, 0.10);
-    border-radius: 12px;
-    background: var(--branco);
-}
-.campo-futsal {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 500px;
-    overflow: hidden;
-    border-radius: 10px;
-    background: var(--branco) url("/assets/img/campo-futsal.png") center / 100% 100% no-repeat;
-}
-.jogador {
-    position: absolute;
-    z-index: 2;
-    max-width: 110px;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-.jogador img {
-    display: block;
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 5px;
-    border: 3px solid var(--laranja-principal);
-    border-radius: 50%;
-    object-fit: cover;
-}
-.jogador span {
-    display: block;
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: #181847;
-    color: #fff;
-    font-size: 12px;
-    white-space: nowrap;
-}
-.jogador small {
-    display: inline-block;
-    margin-top: 3px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: #F44E1C;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 600;
-}
-.pivo {
-    top: 22%;
-    left: 50%;
-}
-.ala-esquerda {
-    top: 38%;
-    left: 25%;
-}
-.ala-direita {
-    top: 38%;
-    left: 75%;
-}
-.fixo {
-    top: 57%;
-    left: 50%;
-}
-.goleiro {
-    top: 82%;
-    left: 50%;
-}
-.card-posicoes {
-    width: 100%;
-    min-width: 0;
-    padding: 0 24px;
-    border: 2px solid rgba(24, 24, 71, 0.10);
-    border-radius: 12px;
-    background: var(--branco);
-}
-.card-posicoes h3 {
-    margin-bottom: 8px;
-    color: #181847;
-    font-size: 22px;
-}
-.card-posicoes .form-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #181847;
-    font-weight: 600;
-}
-.card-posicoes .form-select {
-    width: 100%;
-    min-height: 44px;
-    border-radius: 8px;
-}
-#formEscalacao button {
-    display: block;
-    width: fit-content;
-    margin: 20px auto 0;
-}
-
-/* ========================================
-   LISTA DE PARTIDAS
-======================================== */
-.partidas-lista {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    min-width: 0;
-    margin-top: 24px;
-}
-
-/* ========================================
-   RESPONSIVIDADE
-======================================== */
-@media (max-width: 992px) {
-    .escalacao-conteudo,
-    .escalacao-layout {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    .card-escalacao {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-    .card-posicoes {
-        max-width: none;
-    }
-}
-@media (max-width: 900px) {
-    .escalacao-imagem-container {
-        min-height: 240px;
-    }
-}
 @media (max-width: 767px) {
     .visu-menu {
         display: grid;
@@ -893,92 +413,37 @@
         width: 100%;
     }
 }
+
 @media (max-width: 575px) {
     .time-card {
         padding: 16px;
     }
-    .partidas-lista {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    .partida-card {
-        padding: 16px;
-    }
-    .partida-confronto {
-        gap: 8px;
-        padding: 20px 0;
-    }
-    .partida-time img {
-        width: 52px;
-        height: 52px;
-    }
-    .partida-escudo {
-        width: 38px;
-        height: 38px;
-    }
-    .partida-time,
-    .partida-time h3 {
-        font-size: 11px;
-    }
-    .partida-placar {
-        gap: 7px;
-        font-size: 20px;
-    }
-    .partida-placar strong {
-        font-size: 24px;
-    }
-    .partida-card-rodape,
-    .partida-rodape {
-        align-items: flex-start;
-        flex-direction: column;
-    }
     .pessoa-card {
         gap: 12px;
     }
+
     .pessoa-avatar img {
         width: 46px;
         height: 46px;
     }
+    
     .pessoa-info h3 {
         font-size: 14px;
     }
-    .escalacao-card {
-        padding: 17px;
-    }
-    .escalacao-card-titulo {
-        font-size: 16px;
-    }
-    .escalacao-informacoes {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    .escalacao-imagem-container {
-        min-height: 200px;
-    }
-    .card-escalacao,
-    .card-posicoes {
-        padding: 16px;
-    }
-    .jogador img {
-        width: 44px;
-        height: 44px;
-    }
-    .jogador span {
-        padding: 3px 5px;
-        font-size: 10px;
-    }
-    .jogador small {
-        font-size: 9px;
-    }
 }
+
 @media (max-width: 480px) {
     .visu-cards {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
 @media (max-width: 768px) {
     .visu-cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
 @media (prefers-reduced-motion: reduce) {
     .visu-menu-item,
     .visu-secao-header .custom-btn,
@@ -990,4 +455,204 @@
     .btn-editar-integrante {
         transition: none;
     }
+}
+
+\#listaIntegrantes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+}
+
+.integrante-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    background: var(--bege-principal, #F1E4D1);
+    border: 4px solid rgba(24, 24, 71, 0.12);
+    border-radius: 12px;
+}
+
+.integrante-card .time-inscrito-brasao {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.integrante-card .time-inscrito-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+}
+
+.integrante-card .time-inscrito-nome {
+    color: var(--azul-principal, #181847);
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.integrante-card-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px 10px;
+}
+.integrante-card .time-inscrito-posicao,
+.integrante-card .time-inscrito-camisa {
+    color: #555;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.integrante-card .pessoa-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: rgba(244, 78, 28, 0.12);
+    color: var(--laranja-principal, #F44E1C);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.integrante-card .btn-editar-integrante {
+    display: flex;
+    flex: 0 0 34px;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--azul-principal, #181847);
+    cursor: pointer;
+}
+
+.integrante-card .btn-editar-integrante:hover {
+    background: rgba(24, 24, 71, 0.1);
+}
+
+@media (max-width: 480px) {
+    \#listaIntegrantes {
+       grid-template-columns: 1fr;
+    }
+}
+
+.integrante-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+.integrante-card:focus-visible {
+    outline: 2px solid var(--laranja-principal, #F44E1C);
+    outline-offset: 3px;
+}
+
+.integrante-card-seta {
+    flex: 0 0 auto;
+    color: var(--azul-principal, #181847);
+    font-size: 19px;
+    transition: transform 0.25s ease, color 0.25s ease;
+
+}
+.integrante-card:hover .integrante-card-seta {
+    transform: translateX(5px);
+    color: var(--laranja-principal, #F44E1C);
+}
+
+.integrante-card .btn-editar-integrante {
+    position: relative;
+    z-index: 1;
+}
+
+.integrante-card-acoes {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.integrante-card .btn-editar-integrante {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-shrink: 0;
+    padding: 9px 2px;
+    border: 2px solid var(--laranja-principal);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--laranja-principal);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.integrante-card .btn-editar-integrante img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.integrante-card .btn-editar-integrante:hover {
+    background: var(--laranja-principal);
+    color: var(--branco);
+}
+
+.integrante-card-seta {
+    color: var(--azul-principal, #181847);
+    font-size: 18px;
+    font-weight: 600;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.integrante-card:hover .integrante-card-seta {
+    transform: translateX(5px);
+    color: var(--laranja-principal, #F44E1C);
+}
+
+.integrante-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+@media (max-width: 480px) {
+    .integrante-card-acoes {
+        gap: 6px;
+    }
+
+    .integrante-card .btn-editar-integrante {
+        padding: 7px;
+    }
+
+    .integrante-card .btn-editar-integrante span {
+        display: none;
+
+    }
+
 }

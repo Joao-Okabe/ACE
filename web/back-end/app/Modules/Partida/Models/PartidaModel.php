@@ -78,7 +78,7 @@ class Partida extends Model
             $stmt->execute([
                 ':cd_partida' => $idPartida,
                 ':cd_time' => (int) $idTime,
-                ':mandante' => $posicao === 0,
+                ':mandante' => $posicao === 0 ? 'true' : 'false',
             ]);
         }
     }
@@ -465,7 +465,12 @@ class Partida extends Model
         }
 
         $stmtTimes = $this->pdo->prepare("
-            SELECT vpt.cd_partida, t.cd_time, t.nm_time, vpt.mandante
+            SELECT
+                vpt.cd_partida,
+                t.cd_time,
+                t.nm_time,
+                t.path_escudo,
+                vpt.mandante
             FROM vinculo_partida_time vpt
             JOIN time t ON t.cd_time = vpt.cd_time
             WHERE vpt.cd_partida IN (" . implode(', ', $placeholders) . ")
@@ -480,6 +485,51 @@ class Partida extends Model
             $indice = $indicePorPartida[(int) $time['cd_partida']];
             unset($time['cd_partida']);
             $partidas[$indice]['times'][] = $time;
+        }
+
+        // Busca os placares de todas as partidas em uma única consulta.
+        // Antes, o dashboard precisava chamar /partidas/{id} individualmente.
+        $stmtPlacares = $this->pdo->prepare("
+            SELECT
+                ep.cd_partida,
+                r.cd_time,
+                r.pontuacao
+            FROM etapa_partida ep
+            JOIN (
+                SELECT
+                    cd_partida,
+                    MAX(nr_etapa) AS nr_etapa
+                FROM etapa_partida
+                WHERE cd_partida IN (" . implode(', ', $placeholders) . ")
+                GROUP BY cd_partida
+            ) ultima
+              ON ultima.cd_partida = ep.cd_partida
+             AND ultima.nr_etapa = ep.nr_etapa
+            JOIN resultado_etapa_partida r
+              ON r.cd_etapa_partida = ep.cd_etapa_partida
+        ");
+        $stmtPlacares->execute($ids);
+
+        $placaresPorPartida = [];
+        foreach ($stmtPlacares->fetchAll(PDO::FETCH_ASSOC) as $placar) {
+            $idPartida = (int) $placar['cd_partida'];
+            $idTime = (int) $placar['cd_time'];
+            $placaresPorPartida[$idPartida][$idTime] = (int) $placar['pontuacao'];
+        }
+
+        foreach ($partidas as $indice => $partida) {
+            $idPartida = (int) $partida['cd_partida'];
+            $placares = $placaresPorPartida[$idPartida] ?? [];
+            $timeMandante = $partida['times'][0] ?? null;
+            $timeVisitante = $partida['times'][1] ?? null;
+
+            $partidas[$indice]['placar_casa'] = $timeMandante
+                ? ($placares[(int) $timeMandante['cd_time']] ?? 0)
+                : 0;
+
+            $partidas[$indice]['placar_visitante'] = $timeVisitante
+                ? ($placares[(int) $timeVisitante['cd_time']] ?? 0)
+                : 0;
         }
 
         return $partidas;

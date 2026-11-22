@@ -3,6 +3,12 @@ app-modal {
     display: block;
 }
 
+/* Antes do upgrade do Web Component, os formulários ainda estão
+   diretamente dentro de <app-modal>. Não os exiba fora do modal. */
+app-modal:not(:defined) {
+    display: none !important;
+}
+
 .modal-overlay {
     position: fixed;
     inset: 0;

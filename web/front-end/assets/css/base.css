@@ -35,3 +35,34 @@ body{
     color: var(--preto);
     font-family: "Poppins", sans-serif;
 }
+
+
+
+/* Transição do conteúdo central quando o navegador oferece View Transitions. */
+.content {
+    view-transition-name: ace-conteudo;
+}
+
+::view-transition-old(ace-conteudo) {
+    animation: ace-conteudo-saindo 100ms ease-out both;
+}
+
+::view-transition-new(ace-conteudo) {
+    animation: ace-conteudo-entrando 160ms ease-out both;
+}
+
+@keyframes ace-conteudo-saindo {
+    to { opacity: 0; }
+}
+
+@keyframes ace-conteudo-entrando {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(ace-conteudo),
+    ::view-transition-new(ace-conteudo) {
+        animation: none !important;
+    }
+}

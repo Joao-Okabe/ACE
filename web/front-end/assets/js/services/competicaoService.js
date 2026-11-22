@@ -37,9 +37,9 @@ export const competicaoService = {
         return apiFetch(`${BASE_URL}/${validarId(id)}/visualizar`);
     },
 
-   listarClassificacao(id) {
-    return apiFetch(`/competicoes/${validarId(id)}/classificacao`);
-},
+    listarClassificacao(id) {
+     return apiFetch(`/competicoes/${validarId(id)}/classificacao`);
+    },
 
     gerarChaveamento(id) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/chaveamento`, {
@@ -47,9 +47,51 @@ export const competicaoService = {
         });
     },
 
-
+    listarPartidas(id) {
+        return apiFetch(
+            `/calendario?competicaoId=${validarId(id)}`
+        );
+    },
+    
     listarEtapas(id) {
         return apiFetch(`${BASE_URL}/${validarId(id)}/etapas`);
+    },
+
+
+    listarArbitros(id) {
+        return apiFetch(`${BASE_URL}/${validarId(id)}/arbitros`);
+    },
+
+    listarUsuariosArbitro(id, busca = "") {
+        const params = new URLSearchParams();
+
+        if (busca.trim()) {
+            params.set("busca", busca.trim());
+        }
+
+        const query = params.toString();
+
+        return apiFetch(
+            `${BASE_URL}/${validarId(id)}/arbitros/usuarios${query ? `?${query}` : ""}`
+        );
+    },
+
+    adicionarArbitro(id, usuarioId) {
+        return apiFetch(`${BASE_URL}/${validarId(id)}/arbitros`, {
+            method: "POST",
+            body: {
+                usuarioId: Number(usuarioId)
+            }
+        });
+    },
+
+    removerArbitro(id, usuarioId) {
+        return apiFetch(
+            `${BASE_URL}/${validarId(id)}/arbitros/${validarId(usuarioId)}`,
+            {
+                method: "DELETE"
+            }
+        );
     },
 
     criarEtapa(id, dados) {
@@ -107,5 +149,17 @@ export const competicaoService = {
         return apiFetch(`${BASE_URL}/${validarId(id)}`, {
             method: "DELETE"
         });
+    },
+
+    // REMOVER TIME INSCRITO
+    removerTimeInscrito(idCompeticao, idTime) {
+        return apiFetch(
+            `${BASE_URL}/${validarId(idCompeticao)}/inscricao/times/${validarId(idTime)}`,
+            { method: "DELETE" }
+        );
+    },
+    
+    listarRankingEquipes(id) {
+        return apiFetch(`/rankings/equipes?competicaoId=${validarId(id)}`);
     }
 };

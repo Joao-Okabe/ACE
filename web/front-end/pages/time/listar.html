@@ -3,19 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
-    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
-
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
     <link rel="stylesheet" href="/assets/css/modal.css">
     <link rel="stylesheet" href="/assets/css/pages/lista.css">
 
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
 
     <title>Times</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/time/listar.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
 <body>
-
 <app-bar></app-bar>
 <app-sidebar></app-sidebar>
 
@@ -25,7 +40,7 @@
             <h2 class="form-title">Times</h2>
             <p class="form-subtitle">Gerencie os times da sua escola.</p>
         </div>
-        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalTime">+ Adicionar time</button>
+        <button type="button" class="custom-btn custom-btn-primary" id="abrirModalTime" hidden style="display:none!important">+ Adicionar time</button>
     </div>
     <app-lista placeholder="Pesquisar time">
         <div class="lista-item">
@@ -42,14 +57,13 @@
                 </div>
                 <span class="lista-seta" aria-hidden="true">›</span>
             </a>
-            <button type="button" class="btn-editar-lista" data-editar-time data-id="1" aria-label="Editar time">Editar</button>
         </div>
     </app-lista>
 </div>
 
 
 <!-- Modal de cadastro -->
-<app-modal titulo="Cadastrar time">
+<app-modal titulo="Cadastrar time" hidden style="display:none!important">
     <form id="form-time">
 
         <div class="form-identificacao">
@@ -113,66 +127,6 @@
     </form>
 </app-modal>
 
-
-
-<!-- Modal de editar -->
-<app-modal titulo="Editar time">
-    <form id="form-editar-time">
-
-        <input type="hidden" id="editarIdTime" name="cd_time">
-
-        <div class="form-identificacao">
-
-            <div class="form-imagem">
-                <label for="editarEscudoTime" class="seletor-imagem">
-                    <img
-                        src="/assets/img/escudo.jpg"
-                        alt=""
-                        class="icone-camera"
-                        id="editarPreviewEscudo"
-                    >
-                    <span class="imagem-adicionar" aria-hidden="true">+</span>
-                </label>
-
-                <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    name="path_escudo"
-                    id="editarEscudoTime"
-                    hidden
-                >
-            </div>
-
-            <div class="form-campos-principais">
-
-                <div class="campo-form">
-                    <label for="editarNomeTime" class="form-label">Nome do time</label>
-                    <input
-                        class="form-control form-input"
-                        type="text"
-                        id="editarNomeTime"
-                        name="nm_time"
-                        placeholder="Digite o nome do time"
-                        required
-                    >
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>
-                Cancelar
-            </button>
-
-            <button type="submit" class="custom-btn custom-btn-primary">
-                Confirmar
-            </button>
-        </div>
-
-    </form>
-</app-modal>
 
 
 <script type="module" src="/assets/js/main.js"></script>

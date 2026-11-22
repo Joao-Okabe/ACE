@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+
+    <script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/pages/ranking.css">
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <title>Ranking</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/ranking.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
+</head>
+<body>
+    <app-bar></app-bar>
+    <app-sidebar></app-sidebar>
+
+    <main class="content">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div>
+                <h2 class="form-title">Ranking</h2>
+                <p class="form-subtitle">Acompanhe o desempenho das equipes, escolas e atletas.</p>
+            </div>
+        </div>
+
+        <div class="ranking-layout">
+            <aside class="ranking-lateral" aria-label="Filtros do ranking">
+                <div class="ranking-lateral-titulo">
+                    <h2>Tipo de ranking</h2>
+                </div>
+
+                <div class="ranking-abas" role="group" aria-label="Tipo de ranking">
+                    <button type="button" class="ranking-aba ativo" data-ranking="equipes" aria-pressed="true">Equipes</button>
+                    <button type="button" class="ranking-aba" data-ranking="escolas" aria-pressed="false">Escolas</button>
+                    <button type="button" class="ranking-aba" data-ranking="atletas" aria-pressed="false">Atletas</button>
+                </div>
+
+                <div class="ranking-filtro-divisor"></div>
+
+                <section class="ranking-filtro">
+                    <div class="ranking-filtro-header">
+                        <h2>Filtros</h2>
+                        <p>Personalize sua classificação.</p>
+                    </div>
+
+                    <form id="formRanking">
+                        <div class="ranking-filtros-grid">
+                            <div class="ranking-campo">
+                                <label for="competicaoRanking">Competição</label>
+                                <select id="competicaoRanking" class="form-control form-input">
+                                    <option value="">Carregando competições...</option>
+                                </select>
+                            </div>
+
+                            <div class="ranking-campo">
+                                <label for="esporteRanking">Esporte</label>
+                                <select id="esporteRanking" class="form-control form-input">
+                                    <option value="">Carregando esportes...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="campoMetrica" class="ranking-campo ranking-campo-extra" hidden>
+                            <label for="metricaRanking">Métrica do atleta</label>
+                            <select id="metricaRanking" class="form-control form-input">
+                                <option value="">Selecione um esporte</option>
+                            </select>
+                        </div>
+
+                        <button type="button" id="btnFiltrosAvancados" class="ranking-avancados-btn" aria-expanded="false" aria-controls="filtrosAvancados">
+                            <span>Mais filtros</span>
+                            <img src="/assets/icons/seta.svg" alt="">
+                        </button>
+
+                        <div id="filtrosAvancados" class="ranking-avancados" hidden>
+                            <div class="ranking-filtros-grid">
+                                <div id="campoModalidade" class="ranking-campo">
+                                    <label for="modalidadeRanking">Modalidade</label>
+                                    <select id="modalidadeRanking" class="form-control form-input">
+                                        <option value="">Todas as modalidades</option>
+                                    </select>
+                                </div>
+
+                                <div id="campoEscola" class="ranking-campo">
+                                    <label for="escolaRanking">Escola</label>
+                                    <select id="escolaRanking" class="form-control form-input">
+                                        <option value="">Todas as escolas</option>
+                                    </select>
+                                </div>
+
+                                <div id="campoEscopo" class="ranking-campo" hidden>
+                                    <label for="escopoRanking">Escopo</label>
+                                    <select id="escopoRanking" class="form-control form-input">
+                                        <option value="geral">Geral</option>
+                                        <option value="esporte">Por esporte</option>
+                                        <option value="escola">Por escola</option>
+                                        <option value="competicao">Por competição</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ranking-filtro-acoes">
+                            <button type="submit" class="ranking-filtrar">Aplicar filtros</button>
+                            <button type="button" id="btnLimparFiltros" class="ranking-limpar">Limpar filtros</button>
+                        </div>
+                    </form>
+                </section>
+            </aside>
+
+            <div class="ranking-conteudo">
+                <section class="ranking-tabela-box">
+                    <div class="ranking-tabela-header">
+                        <div>
+                            <h2 id="tituloRanking">Ranking de equipes</h2>
+                            <p id="descricaoRanking">Classificação conforme os dados da API.</p>
+                        </div>
+                        <button type="button" id="btnExportarRanking" class="custom-btn custom-btn-secondary" disabled>
+                            Exportar CSV
+                        </button>
+                    </div>
+
+                    <section class="ranking-podio" id="secaoPodio" aria-label="Três primeiros colocados" hidden>
+                        <div id="podioRanking" class="ranking-podio-grid"></div>
+                    </section>
+
+                    <div class="ranking-tabela-scroll">
+                        <table class="ranking-tabela">
+                            <thead id="cabecalhoRanking"></thead>
+                            <tbody id="corpoRanking"></tbody>
+                        </table>
+                    </div>
+
+                    <p id="mensagemRanking" role="status" aria-live="polite"></p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="/assets/js/main.js"></script>
+    <script type="module" src="/assets/js/pages/ranking.js"></script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 import { escolaService } from "../../services/escolaService.js";
+import { exibirMensagem as exibirFeedback } from "../../utils/mensagens.js";
 
 const parametros = new URLSearchParams(window.location.search);
 const idEscola = parametros.get("id");
@@ -24,9 +25,9 @@ function preencherTexto(elemento, valor) {
     }
 }
 
-function exibirMensagem(mensagem) {
+function exibirMensagem(mensagem, tipo = "info") {
     if (elementos.mensagem) {
-        elementos.mensagem.textContent = mensagem;
+        exibirFeedback(elementos.mensagem, mensagem, tipo);
         elementos.mensagem.hidden = false;
     }
 }
@@ -52,9 +53,15 @@ function preencherEscola(escola) {
     elementos.status?.classList.toggle("ativo", ativa);
     elementos.status?.classList.toggle("inativo", !ativa);
 
+    // BRASÃO DA ESCOLA
     const brasao = escola.path_brasao || escola.img_logo;
 
     if (elementos.brasao) {
+        elementos.brasao.onerror = () => {
+            elementos.brasao.onerror = null;
+            elementos.brasao.src = "/assets/img/brasao.jpg";
+        };
+
         elementos.brasao.src = brasao || "/assets/img/brasao.jpg";
     }
 }
@@ -72,7 +79,7 @@ async function carregarEscola() {
         console.log("Escola recebida:", escola);
 
         if (!escola) {
-            exibirMensagem("Escola não encontrada.");
+            exibirMensagem("Escola não encontrada.", "erro");
             return;
         }
 
@@ -82,7 +89,8 @@ async function carregarEscola() {
         console.error("Erro ao carregar escola:", erro);
 
         exibirMensagem(
-            erro.message || "Não foi possível carregar os dados da escola."
+            erro.message || "Não foi possível carregar os dados da escola.",
+            "erro"
         );
     }
 }

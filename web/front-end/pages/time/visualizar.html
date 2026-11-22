@@ -1,26 +1,50 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+<script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/escalacao.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/partidas.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/gerenciamento.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/time.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/competicao.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/chaveamento.css">
     <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
-    
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
 
     <title>Visualizar time</title>
+
+    <link rel="modulepreload" href="/assets/js/main.js">
+    <link rel="modulepreload" href="/assets/js/pages/time/visualizar.js">
+    <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
 </head>
 <body>
-    <app-bar></app-bar>
+<app-bar></app-bar>
     <app-sidebar></app-sidebar>
 
     <div class="content">
         <!-- CABEÇALHO -->
         <div class="visu-box mt-4">
             <div class="header-visualizar">
+                <a href="/pages/time/listar.html" class="btn-voltar" id="botaoVoltarTime" aria-label="Voltar">
+                    <img src="/assets/icons/arrow.svg" alt="">
+                </a>
                 <div class="visu-perfil">
                     <img id="brasaoEscola" src="/assets/img/escudo.jpg" alt="Brasão da escola">
                 </div>
@@ -41,7 +65,7 @@
                     <button type="button" class="visu-menu-item" data-aba="responsaveis" aria-selected="false">Responsáveis</button>
                     <button type="button" class="visu-menu-item" data-aba="escalacao" aria-selected="false">Escalação</button>
                     <button type="button" class="visu-menu-item" data-aba="partidas" aria-selected="false">Partidas</button>
-                    <button type="button" class="visu-menu-item" data-aba="gerenciamento" aria-selected="false">Gerenciamento</button>
+                    <button type="button" class="visu-menu-item" data-aba="gerenciamento" aria-selected="false" hidden style="display:none!important">Gerenciamento</button>
                 </nav>
             </div>
 
@@ -56,10 +80,10 @@
                                 <h2 class="section-title">Integrantes</h2>
                                 <p class="section-description">Pessoas que fazem parte deste time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante">+ Adicionar integrante</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante" hidden style="display:none!important">+ Adicionar integrante</button>
                         </div>
                         <div id="mensagensIntegrantes" aria-live="polite"></div>
-                        <div class="times-inscritos-grid" id="listaIntegrantes">
+                        <div class="cards-entidade" id="listaIntegrantes">
                             <!-- Os integrantes vão ser listados aqui pela API -->
                         </div>
                     </section>
@@ -71,10 +95,10 @@
                                 <h2 class="section-title">Responsáveis</h2>
                                 <p class="section-description">Responsáveis vinculados ao time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalResponsavel">+ Adicionar responsável</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalResponsavel" hidden style="display:none!important">+ Adicionar responsável</button>
                         </div>
                         <div id="mensagensResponsaveis" aria-live="polite"></div>
-                        <div class="visu-cards" id="listaResponsaveis">
+                        <div class="cards-entidade" id="listaResponsaveis">
                             <p class="section-description">Carregando responsáveis...</p>
                         </div>
                     </section>
@@ -86,82 +110,29 @@
                                 <h2 class="section-title">Técnico</h2>
                                 <p class="section-description">Técnico responsável pela orientação do time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalTecnico">Gerenciar técnico</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalTecnico" hidden style="display:none!important">+ Adicionar técnico</button>
                         </div>
-                        <div class="visu-cards" id="listaTecnico">
+                        <div class="cards-entidade" id="listaTecnico">
                             <p class="section-description">Carregando técnico...</p>
                         </div>
                     </section>
 
                     <!-- ABA PARTIDAS -->
                     <section class="visu-secao" id="partidas" role="tabpanel" hidden>
+
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Partidas</h2>
-                                <p class="section-description">Acompanhe os jogos disputados e agendados pelo time.</p>
+                                <p class="section-description">
+                                    Acompanhe os jogos disputados e agendados pelo time.
+                                </p>
                             </div>
                         </div>
+
                         <div id="mensagensPartidas" aria-live="polite"></div>
-                        <div class="partidas-lista" id="listaPartidas">
 
-                            <!-- PARTIDA AGENDADA -->
-                            <article class="partida-card">
-                                <div class="partida-topo">
-                                    <span class="partida-data">12 NOV 2026 · 15:30</span>
-                                    <span class="partida-status agendada">Agendada</span>
-                                </div>
-                                <div class="partida-confronto">
-                                    <div class="partida-time">
-                                        <img src="/assets/img/escudo.jpg" alt="Escudo do ACE">
-                                        <h3>ACE</h3>
-                                    </div>
-                                    <div class="partida-placar">
-                                        <strong>VS</strong>
-                                    </div>
-                                    <div class="partida-time">
-                                        <img src="/assets/img/escudo.jpg" alt="Escudo do adversário">
-                                        <h3>Fênix</h3>
-                                    </div>
-                                </div>
-                                <div class="partida-rodape">
-                                    <span>
-                                        <i class="partida-icone"></i>
-                                        Ginásio Municipal
-                                    </span>
-                                    <span>Campeonato Escolar</span>
-                                </div>
-                            </article>
+                        <div class="partidas-lista" id="listaPartidas"></div>
 
-                            <!-- PARTIDA FINALIZADA -->
-                            <article class="partida-card">
-                                <div class="partida-topo">
-                                    <span class="partida-data">08 NOV 2026 · 14:00</span>
-                                    <span class="partida-status finalizada">Finalizada</span>
-                                </div>
-                                <div class="partida-confronto">
-                                    <div class="partida-time">
-                                        <img src="/assets/img/escudo.jpg" alt="Escudo do ACE">
-                                        <h3>ACE</h3>
-                                    </div>
-                                    <div class="partida-placar">
-                                        <strong>3</strong>
-                                        <span>×</span>
-                                        <strong>1</strong>
-                                    </div>
-                                    <div class="partida-time">
-                                        <img src="/assets/img/escudo.jpg" alt="Escudo do adversário">
-                                        <h3>Fênix</h3>
-                                    </div>
-                                </div>
-                                <div class="partida-rodape">
-                                    <span>
-                                        <i class="partida-icone"></i>
-                                        Ginásio Municipal
-                                    </span>
-                                    <span>Campeonato Escolar</span>
-                                </div>
-                            </article>
-                        </div>
                     </section>
 
                     <!-- ABA ESCALAÇÃO -->
@@ -206,32 +177,86 @@
                             </div>
 
                             <!-- POSIÇÕES -->
-                            <div class="card-posicoes">
+                            <div class="card-posicoes" hidden style="display:none!important">
                                 <div class="mb-3">
                                     <h3 class="section-title">Integrantes por função</h3>
                                     <p class="section-description">Selecione os jogadores titulares de cada posição.</p>
                                 </div>
                                 <form id="formEscalacao">
+                                    <div id="mensagemEscalacao" aria-live="polite"></div>
                                     <!-- OS SELETORES SERÃO GERADOS PELO JAVASCRIPT -->
                                     <div id="listaFuncoesEscalacao">
                                         <p class="section-description">Carregando funções...</p>
                                     </div>
                                     <button type="submit" class="custom-btn custom-btn-primary" id="salvarEscalacao">Salvar escalação</button>
                                 </form>
-                                <div id="mensagemEscalacao" aria-live="polite"></div>
+                                
                             </div>
                         </div>
                     </section>
 
-                    <!-- ABA GERENCIAMENTO -->
-                    <section class="visu-secao" id="gerenciamento" role="tabpanel" hidden>
+                   <!-- ABA GERENCIAMENTO -->
+                    <section class="visu-secao" id="gerenciamento" hidden style="display:none!important" role="tabpanel">
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Gerenciamento</h2>
-                                <p class="section-description">Gerencie as configurações e a composição do time.</p>
+                                <p class="section-description">Gerencie as informações e as configurações do time.</p>
                             </div>
                         </div>
-                        <div class="visu-cards"></div>
+                        <div class="competicao-gerenciar-lista">
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Informações do time</strong>
+                                        <span>Altere o nome e o escudo do time.</span>
+                                    </div>
+                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <div class="competicao-subsecao">
+                                        <h3 class="visu-subtitulo">Editar informações do time</h3>
+                                        <form id="formEditarInformacoesTime" class="competicao-form time-form-edicao" enctype="multipart/form-data">
+                                            <p id="mensagemInformacoesTime" aria-live="polite"></p>
+                                            <div class="time-editar-layout">
+                                                <div class="time-editar-imagem">
+                                                    <div class="form-imagem">
+                                                        <label for="editarEscudoTime" class="seletor-imagem">
+                                                            <img src="/assets/img/escudo.jpg" alt="Prévia do escudo do time" class="icone-camera" id="editarPreviewEscudo">
+                                                            <span class="imagem-adicionar" aria-hidden="true">+</span>
+                                                        </label>
+                                                        <input type="file" accept="image/jpeg,image/png,image/webp" name="path_escudo" id="editarEscudoTime" hidden>
+                                                    </div>
+                                                </div>
+                                                <div class="time-editar-dados">
+                                                    <div class="competicao-form-campo">
+                                                        <label for="editarNomeTime" class="form-label">Nome do time</label>
+                                                        <input type="text" id="editarNomeTime" name="nm_time" class="form-input" maxlength="100" required>
+                                                    </div>
+                                                    <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarInformacoesTime">Salvar alterações</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="competicao-gerenciar-grupo">
+                                <button type="button" class="competicao-gerenciar-item" aria-expanded="false">
+                                    <div>
+                                        <strong>Remover time</strong>
+                                        <span>Excluir permanentemente este time.</span>
+                                    </div>
+                                    <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta">
+                                </button>
+                                <div class="competicao-gerenciar-conteudo" hidden>
+                                    <div class="competicao-subsecao">
+                                        <h3 class="visu-subtitulo">Remover time</h3>
+                                        <p>Essa ação removerá o time do sistema. Tenha certeza antes de continuar.</p>
+                                        <p id="mensagemRemoverTime" aria-live="polite"></p>
+                                        <button type="button" class="custom-btn custom-btn-danger" id="botaoRemoverTime">Remover time</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </section>
 
                 </main>
@@ -258,10 +283,6 @@
                 <label for="integranteCamisa" class="form-label">Número da camisa</label>
                 <input type="number" class="form-input" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
             </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="integranteCapitao" name="capitao">
-                <label class="form-check-label" for="integranteCapitao">Definir como capitão</label>
-            </div>
             <div class="modal-footer">
                 <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
                 <button type="submit" class="custom-btn custom-btn-primary">Adicionar integrante</button>
@@ -277,19 +298,19 @@
 
             <div class="mb-3">
                 <label for="editarIntegranteNome">Aluno</label>
-                <input type="text" class="form-control" id="editarIntegranteNome" disabled>
+                <input type="text" class="form-input" id="editarIntegranteNome" disabled>
             </div>
 
             <div class="mb-3">
                 <label for="editarIntegranteFuncao">Função no time</label>
-                <select class="form-select" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
+                <select class="form-input" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
                     <option value="">Selecione uma função</option>
                 </select>
             </div>
 
             <div class="mb-3">
                 <label for="editarIntegranteCamisa">Número da camisa</label>
-                <input type="number" class="form-control" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
+                <input type="number" class="form-input" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
             </div>
 
             <div class="form-check mb-3">
@@ -309,8 +330,8 @@
     <app-modal titulo="Adicionar responsável">
         <form id="formAdicionarResponsavel">
             <div class="mb-3">
-                <label for="selectResponsavel">Responsável</label>
-                <select class="form-select" id="selectResponsavel" name="cd_responsavel" required>
+                <label for="selectResponsavel" class="form-label">Responsável</label>
+                <select class="form-input" id="selectResponsavel" name="cd_responsavel" required>
                     <option value="">Selecione um responsável</option>
                 </select>
             </div>
@@ -325,8 +346,8 @@
     <app-modal titulo="Adicionar técnico">
         <form id="formAdicionarTecnico">
             <div class="mb-3">
-                <label for="selectTecnico">Técnico</label>
-                <select class="form-select" id="selectTecnico" name="cd_usuario" required>
+                <label for="selectTecnico" class="form-label">Técnico</label>
+                <select class="form-input" id="selectTecnico" name="cd_usuario" required>
                     <option value="">Selecione um técnico</option>
                 </select>
             </div>
