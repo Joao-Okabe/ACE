@@ -96,7 +96,7 @@ class VinculoUsuarioEscola extends Model
     public function listarVinculo(int $idUsuario): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT
+            SELECT DISTINCT
                 v.cd_escola,
                 e.nm_escola,
                 v.cd_papel,
@@ -108,6 +108,7 @@ class VinculoUsuarioEscola extends Model
             INNER JOIN papel p
                 ON p.cd_papel = v.cd_papel
             WHERE v.cd_usuario = :cd_usuario
+              AND v.ativo = TRUE
             ORDER BY e.nm_escola, p.nm_papel
         ");
 

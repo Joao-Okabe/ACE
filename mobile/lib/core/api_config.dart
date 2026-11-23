@@ -7,10 +7,10 @@ abstract final class ApiConfig {
     if (environmentUrl.trim().isNotEmpty) {
       return normalize(environmentUrl);
     }
-    if (kIsWeb) return 'http://localhost:8080/api/v1';
+    if (kIsWeb) return 'https://aethercompany.com.br/api/v1';
     return switch (defaultTargetPlatform) {
-      TargetPlatform.android => 'http://10.0.2.2:8080/api/v1',
-      _ => 'http://localhost:8080/api/v1',
+      TargetPlatform.android => 'https://aethercompany.com.br/api/v1',
+      _ => 'https://aethercompany.com.br/api/v1',
     };
   }
 

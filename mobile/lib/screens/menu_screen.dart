@@ -123,6 +123,7 @@ class _MenuScreenState extends State<MenuScreen> {
           icon: Icons.dns_outlined,
           title: 'Configuração da API',
           subtitle: session.client.baseUrl,
+          enabled: false,
           onTap: () => pushPage(context, const ApiSettingsScreen()),
         ),
         const SizedBox(height: 20),
@@ -275,6 +276,7 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 }
 
+
 class _MenuTile extends StatelessWidget {
   const _MenuTile({
     required this.icon,
@@ -282,6 +284,7 @@ class _MenuTile extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.danger = false,
+    this.enabled = true,
   });
 
   final IconData icon;
@@ -289,61 +292,82 @@ class _MenuTile extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
   final bool danger;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final color = danger ? scheme.error : scheme.primary;
+    final disabledColor = scheme.onSurface.withValues(alpha: 0.38);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: SurfaceCard(
-        onTap: onTap,
-        child: Row(
-          children: [
-            Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: .10),
-                borderRadius: BorderRadius.circular(14),
+        onTap: enabled ? onTap : null,
+        child: Opacity(
+          opacity: enabled ? 1.0 : 0.5,
+          child: Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: (enabled ? color : disabledColor)
+                      .withValues(alpha: .10),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  icon,
+                  color: enabled ? color : disabledColor,
+                ),
               ),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: danger ? color : null,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: !enabled
+                            ? disabledColor
+                            : danger
+                            ? color
+                            : null,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    subtitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 12,
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: enabled
+                            ? scheme.onSurfaceVariant
+                            : disabledColor,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color: danger ? color : scheme.onSurfaceVariant,
-            ),
-          ],
+              Icon(
+                Icons.chevron_right,
+                color: enabled
+                    ? danger
+                    ? color
+                    : scheme.onSurfaceVariant
+                    : disabledColor,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});

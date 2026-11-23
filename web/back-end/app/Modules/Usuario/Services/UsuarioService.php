@@ -99,7 +99,29 @@ class UsuarioService
         $stmt->execute([':id' => $id]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $usuario ?: null;
+        if ($usuario === false) {
+            return null;
+        }
+
+        $vinculos = $this->listarVinculos((int) $usuario['cd_usuario']);
+        $usuario['vinculos'] = $vinculos;
+
+        $escolas = [];
+        foreach ($vinculos as $vinculo) {
+            $idEscola = (int) ($vinculo['cd_escola'] ?? 0);
+            $nomeEscola = trim((string) ($vinculo['nm_escola'] ?? ''));
+
+            if ($idEscola > 0 && $nomeEscola !== '' && !isset($escolas[$idEscola])) {
+                $escolas[$idEscola] = [
+                    'cd_escola' => $idEscola,
+                    'nm_escola' => $nomeEscola,
+                ];
+            }
+        }
+
+        $usuario['escolas'] = array_values($escolas);
+
+        return $usuario;
     }
 
     public function listarVinculos(int $idUsuario): array

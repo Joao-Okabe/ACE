@@ -292,6 +292,10 @@
     overflow-wrap: anywhere;
 }
 
+.config-info-item[data-escola-vinculada="true"] {
+    grid-column: 1 / -1;
+}
+
 @media (max-width: 900px) {
     .config-info-lista {
         grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -10,8 +10,8 @@ const mensagemPerfil = document.getElementById("mensagemPerfil");
 const botaoSalvar = document.getElementById("botaoSalvarPerfil");
 const imagemPadrao = "/assets/img/no-prof-pic.png";
 const campoPapeis = document.getElementById("papeisUsuario");
-const campoEscola = document.getElementById("escolaUsuario");
 const campoStatus = document.getElementById("statusUsuario");
+const listaInformacoes = document.getElementById("configInfoLista");
 
 const papeis = {
     ADM: "Administrador",
@@ -32,30 +32,75 @@ function exibirMensagem(elemento, texto, tipo) {
     elemento.dataset.tipo = tipo;
 }
 
-function formatarEscola(perfil) {
+function obterEscolas(perfil) {
     const escolas = perfil.escolas ?? perfil.escola;
 
     if (Array.isArray(escolas)) {
-        const nomes = escolas
-            .map(escola => {
-                if (typeof escola === "string") return escola;
-
-                return escola?.nm_escola ?? escola?.nome ?? "";
-            })
-            .filter(Boolean);
-
-        return nomes.length ? nomes.join(", ") : "Não vinculada";
+        return escolas
+            .map(escola => typeof escola === "string"
+                ? escola.trim()
+                : String(escola?.nm_escola ?? escola?.nome ?? "").trim()
+            )
+            .filter((nome, indice, nomes) => nome && nomes.indexOf(nome) === indice);
     }
 
     if (typeof escolas === "string" && escolas.trim()) {
-        return escolas;
+        return [escolas.trim()];
     }
 
     if (escolas && typeof escolas === "object") {
-        return escolas.nm_escola ?? escolas.nome ?? "Não vinculada";
+        const nome = String(escolas.nm_escola ?? escolas.nome ?? "").trim();
+        return nome ? [nome] : [];
     }
 
-    return perfil.nm_escola ?? "Não vinculada";
+    if (typeof perfil.nm_escola === "string" && perfil.nm_escola.trim()) {
+        return [perfil.nm_escola.trim()];
+    }
+
+    if (Array.isArray(perfil.vinculos)) {
+        return perfil.vinculos
+            .map(vinculo => String(vinculo?.nm_escola ?? "").trim())
+            .filter((nome, indice, nomes) => nome && nomes.indexOf(nome) === indice);
+    }
+
+    return [];
+}
+
+function renderizarEscolas(perfil) {
+    if (!listaInformacoes) return;
+
+    listaInformacoes
+        .querySelectorAll("[data-escola-vinculada]")
+        .forEach(item => item.remove());
+
+    const escolas = obterEscolas(perfil);
+    const nomes = escolas.length ? escolas : ["Não vinculada"];
+
+    nomes.forEach(nome => {
+        const item = document.createElement("div");
+        item.className = "config-info-item";
+        item.dataset.escolaVinculada = "true";
+
+        const icone = document.createElement("div");
+        icone.className = "config-info-icone";
+        icone.innerHTML = '<i class="bi bi-building"></i>';
+
+        const dados = document.createElement("div");
+        dados.className = "config-info-dados";
+
+        const label = document.createElement("span");
+        label.className = "config-info-label";
+        label.textContent = "Escola vinculada";
+
+        const valor = document.createElement("p");
+        valor.className = "config-info-valor";
+        valor.textContent = nome;
+
+        dados.append(label, valor);
+        item.append(icone, dados);
+
+        listaInformacoes.insertBefore(item, campoStatus?.closest(".config-info-item") ?? null);
+    });
 }
 
 function formatarStatus(perfil) {
@@ -81,9 +126,7 @@ function preencherPerfil(perfil) {
         campoPapeis.textContent = formatarCargo(papeisUsuario);
     }
 
-    if (campoEscola) {
-        campoEscola.textContent = formatarEscola(perfil);
-    }
+    renderizarEscolas(perfil);
 
     if (campoStatus) {
         campoStatus.textContent = formatarStatus(perfil);
