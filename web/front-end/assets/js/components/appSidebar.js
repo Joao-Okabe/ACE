@@ -53,13 +53,13 @@ class SideBar extends HTMLElement {
                         <img src="/assets/icons/group.svg" alt="" class="icon">
                         <span>Alunos</span>
                     </a>
-                    <a href="/pages/competicao/listar.html" class="menu-item">
-                        <img src="/assets/icons/trophy.svg" alt="" class="icon">
-                        <span>Competições</span>
-                    </a>
                     <a href="/pages/time/listar.html" class="menu-item">
                         <img src="/assets/icons/shield.svg" alt="" class="icon">
                         <span>Times</span>
+                    </a>
+                    <a href="/pages/competicao/listar.html" class="menu-item">
+                        <img src="/assets/icons/trophy.svg" alt="" class="icon">
+                        <span>Competições</span>
                     </a>
                     <a href="/pages/ranking.html" class="menu-item">
                         <img src="/assets/icons/barChart.svg" alt="" class="icon">

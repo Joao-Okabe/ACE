@@ -248,3 +248,62 @@
         transition: none;
     }
 }
+
+
+/* INFORMAÇÕES DA CONTA */
+
+.config-info-lista {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.config-info-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid rgba(24, 24, 71, 0.12);
+    border-radius: 12px;
+}
+
+.config-info-dados {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.config-info-label {
+    color: var(--laranja-principal, #F44E1C);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.config-info-valor {
+    margin: 0;
+    color: var(--azul-principal, #181847);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .config-info-lista {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .config-info-lista {
+        grid-template-columns: 1fr;
+    }
+
+    .config-info-item {
+        padding: 15px;
+    }
+}

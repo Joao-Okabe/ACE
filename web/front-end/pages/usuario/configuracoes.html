@@ -49,7 +49,7 @@
                 <details class="competicao-gerenciar-grupo config-grupo">
                     <summary class="competicao-gerenciar-item config-cabecalho">
                         <div>
-                            <strong>Meu perfil</strong>
+                            <strong>Editar perfil</strong>
                             <span>Altere seu nome, e-mail e imagem de perfil.</span>
                         </div>
                         <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
@@ -83,12 +83,6 @@
                                             <label for="emailUsuario" class="form-label">E-mail</label>
                                             <input type="email" id="emailUsuario" name="email" class="form-input" autocomplete="email" required>
                                         </div>
-
-                                        <div class="competicao-form-campo">
-                                            <label for="cargoUsuario" class="form-label">Cargo</label>
-                                            <input type="text" id="cargoUsuario" class="form-input" value="Carregando..." readonly>
-                                            <small>O cargo é definido pelo sistema e não pode ser alterado nesta página.</small>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -96,6 +90,55 @@
                                     <button type="submit" class="custom-btn custom-btn-primary" id="botaoSalvarPerfil">Salvar alterações</button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- INFORMAÇÕES DA CONTA -->
+                <details class="competicao-gerenciar-grupo config-grupo">
+                    <summary class="competicao-gerenciar-item config-cabecalho">
+                        <div>
+                            <strong>Informações da conta</strong>
+                            <span>Consulte seus papéis, escola e status.</span>
+                        </div>
+                        <img src="/assets/icons/seta.svg" alt="" class="gerenciar-seta config-seta">
+                    </summary>
+
+                    <div class="competicao-gerenciar-conteudo config-conteudo">
+                        <div class="competicao-subsecao">
+                            <h3 class="visu-subtitulo">Dados da conta</h3>
+
+                            <div class="config-info-lista">
+                                <div class="config-info-item">
+                                    <div class="config-info-icone">
+                                        <i class="bi bi-person-badge"></i>
+                                    </div>
+                                    <div class="config-info-dados">
+                                        <span class="config-info-label">Papéis</span>
+                                        <p id="papeisUsuario" class="config-info-valor">Carregando...</p>
+                                    </div>
+                                </div>
+
+                                <div class="config-info-item">
+                                    <div class="config-info-icone">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                    <div class="config-info-dados">
+                                        <span class="config-info-label">Escola vinculada</span>
+                                        <p id="escolaUsuario" class="config-info-valor">Carregando...</p>
+                                    </div>
+                                </div>
+
+                                <div class="config-info-item">
+                                    <div class="config-info-icone">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="config-info-dados">
+                                        <span class="config-info-label">Status da conta</span>
+                                        <p id="statusUsuario" class="config-info-valor">Carregando...</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </details>

@@ -4,12 +4,14 @@ import { apiFetch } from "../../api/api.js";
 const formulario = document.getElementById("formPerfil");
 const campoNome = document.getElementById("nomeUsuario");
 const campoEmail = document.getElementById("emailUsuario");
-const campoCargo = document.getElementById("cargoUsuario");
 const campoImagem = document.getElementById("imagemPerfil");
 const fotoAtual = document.getElementById("fotoAtual");
 const mensagemPerfil = document.getElementById("mensagemPerfil");
 const botaoSalvar = document.getElementById("botaoSalvarPerfil");
 const imagemPadrao = "/assets/img/no-prof-pic.png";
+const campoPapeis = document.getElementById("papeisUsuario");
+const campoEscola = document.getElementById("escolaUsuario");
+const campoStatus = document.getElementById("statusUsuario");
 
 const papeis = {
     ADM: "Administrador",
@@ -30,6 +32,85 @@ function exibirMensagem(elemento, texto, tipo) {
     elemento.dataset.tipo = tipo;
 }
 
+function formatarEscola(perfil) {
+    const escolas = perfil.escolas ?? perfil.escola;
+
+    if (Array.isArray(escolas)) {
+        const nomes = escolas
+            .map(escola => {
+                if (typeof escola === "string") return escola;
+
+                return escola?.nm_escola ?? escola?.nome ?? "";
+            })
+            .filter(Boolean);
+
+        return nomes.length ? nomes.join(", ") : "Não vinculada";
+    }
+
+    if (typeof escolas === "string" && escolas.trim()) {
+        return escolas;
+    }
+
+    if (escolas && typeof escolas === "object") {
+        return escolas.nm_escola ?? escolas.nome ?? "Não vinculada";
+    }
+
+    return perfil.nm_escola ?? "Não vinculada";
+}
+
+function formatarStatus(perfil) {
+    const ativo = perfil.ativo ?? perfil.is_ativo;
+
+    if (ativo === true || ativo === 1 || ativo === "1") {
+        return "Ativo";
+    }
+
+    if (ativo === false || ativo === 0 || ativo === "0") {
+        return "Inativo";
+    }
+
+    return "Não informado";
+}
+
+function preencherPerfil(perfil) {
+    campoNome.value = perfil.nm_usuario || perfil.nome || "";
+    campoEmail.value = perfil.email || "";
+
+    // Informações da conta (somente leitura)
+    if (campoPapeis) {
+        campoPapeis.textContent = formatarCargo(papeisUsuario);
+    }
+
+    if (campoEscola) {
+        campoEscola.textContent = formatarEscola(perfil);
+    }
+
+    if (campoStatus) {
+        campoStatus.textContent = formatarStatus(perfil);
+    }
+
+    // Imagem de perfil
+    const imagem = perfil.foto_perfil || perfil.path_ft_usuario;
+
+    fotoAtual.src =
+        typeof imagem === "string" && imagem.trim()
+            ? imagem
+            : imagemPadrao;
+
+    // Atualiza os dados utilizados pela barra superior
+    window.usuarioLogado = {
+        ...(window.usuarioLogado || {}),
+        id: idUsuario,
+        nome: campoNome.value,
+        nm_usuario: campoNome.value,
+        email: campoEmail.value,
+        foto_perfil: imagem || null,
+        papeis: papeisUsuario
+    };
+
+    document.querySelector("app-bar")?.atualizarUsuario?.();
+}
+
 function formatarCargo(valores) {
     if (!Array.isArray(valores) || valores.length === 0) {
         return "Não informado";
@@ -41,28 +122,6 @@ function formatarCargo(valores) {
             return papeis[codigo.toUpperCase()] || codigo;
         })
         .join(", ");
-}
-
-function preencherPerfil(perfil) {
-    campoNome.value = perfil.nm_usuario || perfil.nome || "";
-    campoEmail.value = perfil.email || "";
-    campoCargo.value = formatarCargo(papeisUsuario);
-
-    const imagem = perfil.foto_perfil || perfil.path_ft_usuario;
-    fotoAtual.src = typeof imagem === "string" && imagem.trim()
-        ? imagem
-        : imagemPadrao;
-
-    window.usuarioLogado = {
-        ...(window.usuarioLogado || {}),
-        id: idUsuario,
-        nome: campoNome.value,
-        nm_usuario: campoNome.value,
-        email: campoEmail.value,
-        foto_perfil: imagem || null,
-        papeis: papeisUsuario
-    };
-    document.querySelector("app-bar")?.atualizarUsuario?.();
 }
 
 fotoAtual.addEventListener("error", () => {
