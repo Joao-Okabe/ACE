@@ -8,7 +8,7 @@
     margin-bottom: 18px;
     padding: 14px 16px;
     border-radius: 9px;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.5;
 }
 
@@ -113,7 +113,7 @@
 
 .visu-mensagem {
     margin: 12px 0;
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
 }
 
@@ -223,7 +223,7 @@
         min-width: max-content;
         min-height: 42px;
         padding: 10px 12px;
-        font-size: 12px;
+        font-size: calc(12px * var(--ace-escala-fonte, 1));
     }
 
     .competicao-painel-conteudo {

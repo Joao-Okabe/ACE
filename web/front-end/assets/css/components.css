@@ -50,7 +50,7 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    font-size: 24px;
+    font-size: calc(24px * var(--ace-escala-fonte, 1));
     line-height: 1;
     text-decoration: none;
     cursor: pointer;
@@ -106,20 +106,20 @@
 }
 .info-item h6 {
     color: var(--laranja-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     margin-bottom: 5px;
 }
 .info-item p {
     color: var(--azul-principal);
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
     font-weight: 500;
     margin: 0;
 }
 
 .label-info {
     color: var(--laranja-principal);
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     margin-bottom: 5px;
 }
@@ -129,7 +129,7 @@
 }
 
 .value-info{
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     color: var(--azul-principal);
     font-weight: 600;
 }
@@ -182,7 +182,7 @@
     min-width: 15px;
     margin-right: 10px;
     color: var(--branco);
-    font-size: 21px;
+    font-size: calc(21px * var(--ace-escala-fonte, 1));
     text-align: center;
 }
 
@@ -235,21 +235,21 @@
 .info-title {
     margin: 0 0 6px;
     color: var(--azul-principal);
-    font-size: 17px;
+    font-size: calc(17px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
 .info-label {
     margin: 0 0 8px;
     color: var(--laranja-principal);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
 .info-value {
     margin: 3px 0;
     color: var(--azul-principal);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 500;
 }
 
@@ -272,7 +272,7 @@
 .info-acoes .btn {
     width: 100%;
     min-height: 36px;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
 }
 
 /* Botão de exclusão */
@@ -311,7 +311,7 @@
 }
 
 .form-title {
-    font-size: 36px;
+    font-size: calc(36px * var(--ace-escala-fonte, 1));
     font-weight: 700;
     margin-bottom: 6px;
     color: var(--azul-principal);
@@ -340,7 +340,7 @@
     min-height: 46px;
     padding: 10px 14px;
     font-family: inherit;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     color: var(--azul-principal);
     background-color: var(--branco);
     border: 2px solid var(--borda);
@@ -461,12 +461,12 @@
     padding: 12px 16px;
     margin-top: 12px;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 500;
     line-height: 1.5;
 }
 .mensagem-feedback i {
-    font-size: 17px;
+    font-size: calc(17px * var(--ace-escala-fonte, 1));
     flex-shrink: 0;
 }
 .mensagem-sucesso {

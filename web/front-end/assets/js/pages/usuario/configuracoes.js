@@ -222,9 +222,12 @@ function configurarPreferenciasVisuais() {
         if (valorFonte) {
             valorFonte.value = `${Math.round(valores.escalaFonte * 100)}%`;
         }
+        document.getElementById("diminuirFonte")?.toggleAttribute("disabled", valores.escalaFonte <= escalas[0]);
+        document.getElementById("aumentarFonte")?.toggleAttribute("disabled", valores.escalaFonte >= escalas.at(-1));
     }
 
     atualizarControles(atuais);
+    window.addEventListener("ace:preferencias-visuais", evento => atualizarControles(evento.detail));
 
     opcoesTema.forEach(opcao => {
         opcao.addEventListener("change", () => {
@@ -266,8 +269,6 @@ function configurarPreferenciasVisuais() {
     document.getElementById("restaurarFonte")?.addEventListener(
         "click",
         () => atualizarControles(preferencias.salvar({
-            tema: "claro",
-            adaptacaoCores: "padrao",
             escalaFonte: 1
         }))
     );

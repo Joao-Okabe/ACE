@@ -1,5 +1,6 @@
 /*VARIÁVEIS*/
 :root{
+    --ace-escala-fonte: 1;
     --azul-principal: #181847;
     --laranja-principal: #F44E1C;
     --bege-principal: #F1E4D1;
@@ -29,11 +30,26 @@ html{
 }
 
 body{
+    font-size: calc(1rem * var(--ace-escala-fonte, 1));
     margin: 0;
     min-height: 100vh;
     background-color: var(--fundo);
     color: var(--preto);
     font-family: "Poppins", sans-serif;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: calc(1rem * var(--ace-escala-fonte, 1));
+}
+
+/* Transição entre documentos, sem executar módulos de uma página sobre outra. */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
 }
 
 

@@ -17,8 +17,10 @@
         "acromatopsia"
     ];
     const ESCALAS = [0.9, 1, 1.1, 1.2, 1.3];
+    let preferenciasAtuais = { ...PADRAO };
 
     function normalizar(preferencias = {}) {
+        if (!preferencias || typeof preferencias !== "object") preferencias = {};
         const tema = TEMAS.includes(preferencias.tema)
             ? preferencias.tema
             : PADRAO.tema;
@@ -38,25 +40,28 @@
     function obter() {
         try {
             const salvo = localStorage.getItem(CHAVE);
-            return normalizar(salvo ? JSON.parse(salvo) : PADRAO);
+            return normalizar(salvo ? JSON.parse(salvo) : preferenciasAtuais);
         } catch (erro) {
             console.warn("Não foi possível ler as preferências visuais:", erro);
-            return { ...PADRAO };
+            return { ...preferenciasAtuais };
         }
     }
 
     function aplicar(preferencias = obter()) {
         const valores = normalizar(preferencias);
+        preferenciasAtuais = valores;
         const raiz = document.documentElement;
 
         raiz.dataset.tema = valores.tema;
         raiz.dataset.adaptacaoCores = valores.adaptacaoCores;
         raiz.dataset.escalaFonte = String(Math.round(valores.escalaFonte * 100));
 
-        // O zoom nativo do navegador amplia texto e controles sem reescrever
-        // os tamanhos individuais definidos pelo CSS do ACE.
-        raiz.style.zoom = String(valores.escalaFonte);
+        // A variável é usada apenas nas declarações de fonte do CSS.
+        // Dimensões, imagens e ícones não recebem zoom de página.
+        raiz.style.removeProperty("zoom");
+        raiz.style.setProperty("--ace-escala-fonte", String(valores.escalaFonte));
 
+        window.dispatchEvent(new CustomEvent("ace:preferencias-visuais", { detail: valores }));
         return valores;
     }
 
@@ -79,7 +84,7 @@
     aplicar(obter());
 
     window.addEventListener("storage", evento => {
-        if (evento.key === CHAVE) {
+        if (evento.key === CHAVE || evento.key === null) {
             let preferencias = PADRAO;
 
             try {

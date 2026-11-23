@@ -14,7 +14,7 @@
 
 .chaveamento-header h3 {
     color: var(--azul-principal);
-    font-size: 22px;
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
     font-weight: 700;
     margin: 0;
     border: none;
@@ -210,7 +210,7 @@
     margin: 0;
     padding: 8px 5px;
     text-align: center;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     z-index: 3;
 }
@@ -224,7 +224,7 @@
     align-items: center;
     justify-content: center;
     color: var(--laranja-principal);
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
     font-weight: bolder;
     text-align: center;
     margin: 0;
@@ -273,7 +273,7 @@
     padding: 0 10px;
     gap: 6px;
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     box-sizing: border-box;
 }

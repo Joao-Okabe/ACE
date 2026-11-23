@@ -42,7 +42,7 @@
     background: transparent;
     color: var(--azul-principal);
     font: inherit;
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     text-align: left;
     cursor: pointer;
@@ -61,11 +61,11 @@
     justify-content: center;
     width: 24px;
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
 }
 .visu-menu-seta {
     margin-left: auto;
-    font-size: 22px;
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
     line-height: 1;
 }
 .visu-menu-item:focus-visible {
@@ -89,7 +89,7 @@
 }
 .section-description {
     margin: 0;
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
     opacity: 0.8;
 }
@@ -104,7 +104,7 @@
     background: var(--branco);
     color: var(--laranja-principal);
     font: inherit;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
@@ -158,13 +158,13 @@
 .visu-lista-info h3 {
     margin: 0 0 5px;
     color: var(--azul-principal);
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     overflow-wrap: anywhere;
 }
 .visu-lista-info p {
     margin: 0;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
@@ -174,11 +174,11 @@
 .visu-subtitulo {
     margin: 0 0 14px;
     color: var(--azul-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .visu-mensagem {
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
 }
 
@@ -217,7 +217,7 @@
     flex-shrink: 0;
     margin-right: 15px;
     color: var(--texto-secundario);
-    font-size: 26px;
+    font-size: calc(26px * var(--ace-escala-fonte, 1));
     transition: transform 0.3s ease;
 }
 .time-card:hover .time-seta {
@@ -251,11 +251,11 @@
 }
 .pessoa-info h3 {
     margin: 0 0 6px;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
 }
 .pessoa-info p {
     margin: 0 0 8px;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
 }
 .pessoa-tag {
     display: inline-flex;
@@ -265,7 +265,7 @@
     border-radius: 20px;
     background: var(--bege-principal, #F1E4D1);
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .pessoa-acoes {
@@ -278,7 +278,7 @@
 .pessoa-acoes button {
     width: 100%;
     padding: 6px;
-    font-size: 11px;
+    font-size: calc(11px * var(--ace-escala-fonte, 1));
 }
 .pessoa-card {
     display: flex;
@@ -296,7 +296,7 @@
     border-radius: 8px;
     background: transparent;
     color: var(--azul-principal);
-    font-size: 30px;
+    font-size: calc(30px * var(--ace-escala-fonte, 1));
     line-height: 1;
     cursor: pointer;
     transition: var(--transition);
@@ -396,12 +396,12 @@
     padding-top: 14px;
     border-top: 1px solid rgba(24, 24, 71, 0.1);
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     opacity: 0.8;
 }
 .partida-data {
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     opacity: 0.75;
 }
@@ -413,7 +413,7 @@
     border-radius: 20px;
     background: var(--bege-principal, #F1E4D1);
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .partida-status.agendada {
@@ -444,7 +444,7 @@
     gap: 10px;
     min-width: 0;
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     text-align: center;
     overflow-wrap: anywhere;
@@ -460,13 +460,13 @@
 .partida-time h3 {
     margin: 0;
     color: #181847;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .partida-time span {
     margin-top: 4px;
     color: #777;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 .partida-escudo {
     width: 58px;
@@ -481,24 +481,24 @@
     justify-content: center;
     gap: 5px;
     color: var(--azul-principal, #181847);
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
     font-weight: 700;
     white-space: nowrap;
 }
 .partida-placar strong {
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
     font-weight: 800;
 }
 .partida-placar span {
     color: #999;
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
 }
 .partida-placar strong:only-child {
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
 }
 .partida-x {
     color: var(--laranja-principal, #F44E1C);
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
 }
 .partida-rodape {
     display: flex;
@@ -510,7 +510,7 @@
     padding-top: 10px;
     border-top: 1px solid rgba(24, 24, 71, 0.10);
     color: var(--azul-principal);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 .partida-rodape span {
     display: flex;
@@ -550,13 +550,13 @@
 .escalacao-card-titulo {
     margin: 0 0 7px;
     color: var(--azul-principal, #181847);
-    font-size: 17px;
+    font-size: calc(17px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .escalacao-card-descricao {
     margin: 0;
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
     opacity: 0.7;
 }
@@ -600,19 +600,19 @@
     margin-bottom: 18px;
     border-radius: 16px;
     background: var(--branco, #fff);
-    font-size: 30px;
+    font-size: calc(30px * var(--ace-escala-fonte, 1));
 }
 .escalacao-vazio h4 {
     margin: 0 0 10px;
     color: var(--azul-principal, #181847);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .escalacao-vazio p {
     max-width: 300px;
     margin: 0;
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.7;
     opacity: 0.75;
 }
@@ -632,12 +632,12 @@
 }
 .escalacao-info-label {
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     opacity: 0.75;
 }
 .escalacao-info-item strong {
     color: var(--azul-principal, #181847);
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     overflow-wrap: anywhere;
 }
 .escalacao-status {
@@ -647,7 +647,7 @@
     border-radius: 20px;
     background: rgba(244, 78, 28, 0.12);
     color: var(--laranja-principal, #F44E1C);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .escalacao-jogadores {
@@ -656,7 +656,7 @@
 .escalacao-subtitulo {
     margin: 0 0 14px;
     color: var(--azul-principal, #181847);
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .escalacao-subtitulo-reservas {
@@ -694,12 +694,12 @@
 }
 .escalacao-jogador-info strong {
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     overflow-wrap: anywhere;
 }
 .escalacao-jogador-info span {
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     opacity: 0.7;
 }
 .escalacao-texto-vazio {
@@ -708,7 +708,7 @@
     border-radius: 8px;
     background: rgba(24, 24, 71, 0.04);
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
 }
 
@@ -773,7 +773,7 @@
     border-radius: 6px;
     background: #181847;
     color: #fff;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     white-space: nowrap;
 }
 .jogador small {
@@ -783,7 +783,7 @@
     border-radius: 4px;
     background: #F44E1C;
     color: #fff;
-    font-size: 10px;
+    font-size: calc(10px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .pivo {
@@ -817,7 +817,7 @@
 .card-posicoes h3 {
     margin-bottom: 8px;
     color: #181847;
-    font-size: 22px;
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
 }
 .card-posicoes .form-label {
     display: block;
@@ -878,7 +878,7 @@
     .visu-menu-item {
         gap: 8px;
         padding: 10px;
-        font-size: 12px;
+        font-size: calc(12px * var(--ace-escala-fonte, 1));
     }
     .visu-menu-seta {
         display: none;
@@ -918,14 +918,14 @@
     }
     .partida-time,
     .partida-time h3 {
-        font-size: 11px;
+        font-size: calc(11px * var(--ace-escala-fonte, 1));
     }
     .partida-placar {
         gap: 7px;
-        font-size: 20px;
+        font-size: calc(20px * var(--ace-escala-fonte, 1));
     }
     .partida-placar strong {
-        font-size: 24px;
+        font-size: calc(24px * var(--ace-escala-fonte, 1));
     }
     .partida-card-rodape,
     .partida-rodape {
@@ -940,13 +940,13 @@
         height: 46px;
     }
     .pessoa-info h3 {
-        font-size: 14px;
+        font-size: calc(14px * var(--ace-escala-fonte, 1));
     }
     .escalacao-card {
         padding: 17px;
     }
     .escalacao-card-titulo {
-        font-size: 16px;
+        font-size: calc(16px * var(--ace-escala-fonte, 1));
     }
     .escalacao-informacoes {
         grid-template-columns: minmax(0, 1fr);
@@ -964,10 +964,10 @@
     }
     .jogador span {
         padding: 3px 5px;
-        font-size: 10px;
+        font-size: calc(10px * var(--ace-escala-fonte, 1));
     }
     .jogador small {
-        font-size: 9px;
+        font-size: calc(9px * var(--ace-escala-fonte, 1));
     }
 }
 @media (max-width: 480px) {

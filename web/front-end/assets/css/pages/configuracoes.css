@@ -54,7 +54,7 @@
 .config-cabecalho strong {
     display: block;
     color: var(--azul-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 
@@ -62,7 +62,7 @@
     display: block;
     margin-top: 5px;
     color: #777;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 400;
 }
 
@@ -135,7 +135,7 @@
 
 .config-foto small {
     text-align: center;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     color: #777;
 }
 
@@ -279,14 +279,14 @@
 
 .config-info-label {
     color: var(--laranja-principal, #F44E1C);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 
 .config-info-valor {
     margin: 0;
     color: var(--azul-principal, #181847);
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     line-height: 1.4;
     overflow-wrap: anywhere;

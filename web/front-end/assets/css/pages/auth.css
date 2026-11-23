@@ -38,7 +38,7 @@
 .auth-card h1 {
     color: var(--azul-principal);
     text-align: center;
-    font-size: 50px;
+    font-size: calc(50px * var(--ace-escala-fonte, 1));
     font-weight: 700;
     margin-top: -15px;
 }
@@ -150,7 +150,7 @@
 }
 
 .auth-error {
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
 }
 
 /* Campos do login */
@@ -226,6 +226,6 @@
     }
 
     .auth-card h1 {
-        font-size: 36px;
+        font-size: calc(36px * var(--ace-escala-fonte, 1));
     }
 }

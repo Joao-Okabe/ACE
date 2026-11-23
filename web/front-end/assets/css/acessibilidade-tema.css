@@ -387,21 +387,34 @@ html[data-tema="escuro"] .mensagem-info {
 /* Paletas de adaptação para dificuldades de percepção de cores.
    As opções substituem as cores de marca por combinações mais distinguíveis. */
 html[data-adaptacao-cores="protanopia"] {
+    --ace-sucesso: #005a8d;
+    --ace-alerta: #795200;
+    --ace-erro: #713b8a;
     --azul-principal: #00649A;
     --laranja-principal: #9C6500;
 }
 
 html[data-adaptacao-cores="deuteranopia"] {
+    --ace-sucesso: #005a8d;
+    --ace-alerta: #795200;
+    --ace-erro: #713b8a;
     --azul-principal: #00649A;
     --laranja-principal: #9C4276;
 }
 
 html[data-adaptacao-cores="tritanopia"] {
+    --ace-sucesso: #00665c;
+    --ace-alerta: #8a4100;
+    --ace-erro: #9e2454;
     --azul-principal: #006B55;
     --laranja-principal: #B33C0D;
 }
 
 html[data-adaptacao-cores="acromatopsia"] {
+    --ace-sucesso: #303030;
+    --ace-alerta: #595959;
+    --ace-erro: #161616;
+    filter: grayscale(1);
     --azul-principal: #292929;
     --laranja-principal: #626262;
     --bege-principal: #dedede;
@@ -410,6 +423,113 @@ html[data-adaptacao-cores="acromatopsia"] {
 /* A adaptação monocromática também mantém os cartões legíveis no tema escuro. */
 html[data-tema="escuro"][data-adaptacao-cores="acromatopsia"] {
     --bege-principal: #303030;
+    --ace-sucesso: #eaeaea;
+    --ace-alerta: #cccccc;
+    --ace-erro: #ffffff;
+}
+
+html[data-tema="escuro"]:is([data-adaptacao-cores="protanopia"], [data-adaptacao-cores="deuteranopia"]) {
+    --ace-sucesso: #8cceff;
+    --ace-alerta: #ffd166;
+    --ace-erro: #e3b7ff;
+}
+
+html[data-tema="escuro"][data-adaptacao-cores="tritanopia"] {
+    --ace-sucesso: #80ded2;
+    --ace-alerta: #ffc2af;
+    --ace-erro: #ffb3ce;
+}
+
+/* Estados conservam rótulos e recebem as cores da adaptação escolhida. */
+html[data-adaptacao-cores]:not([data-adaptacao-cores="padrao"]) :is(
+    .mensagem-sucesso, [data-tipo="sucesso"], .partida-status.finalizada
+) {
+    color: var(--ace-sucesso) !important;
+    background-color: color-mix(in srgb, var(--ace-sucesso) 10%, var(--branco)) !important;
+    border-color: var(--ace-sucesso) !important;
+}
+html[data-adaptacao-cores]:not([data-adaptacao-cores="padrao"]) :is(
+    .mensagem-erro, .auth-error, [data-tipo="erro"], .importacao-mensagem.erro,
+    .partida-status.cancelada
+) {
+    color: var(--ace-erro) !important;
+    background-color: color-mix(in srgb, var(--ace-erro) 10%, var(--branco)) !important;
+    border-color: var(--ace-erro) !important;
+}
+html[data-adaptacao-cores]:not([data-adaptacao-cores="padrao"]) :is(
+    .partida-status.agendada, .partida-status.andamento, .partida-status.ao-vivo
+) {
+    color: var(--ace-alerta) !important;
+    background-color: color-mix(in srgb, var(--ace-alerta) 10%, var(--branco)) !important;
+    border-color: var(--ace-alerta) !important;
+}
+
+/* Fontes de ícones conservam o tamanho que tinham antes da escala textual. */
+.bi::before, .fc-icon::before {
+    font-size: calc(1em / var(--ace-escala-fonte, 1));
+}
+
+.content, .content.close {
+    margin-top: 64px;
+    min-width: 0;
+}
+
+.content :is(h1, h2, h3, p, label, summary, .config-info-valor) {
+    overflow-wrap: anywhere;
+}
+
+.usuario { line-height: 1.35; }
+.menu-item { min-height: 44px; white-space: normal; }
+.menu-item span { min-width: 0; overflow-wrap: anywhere; }
+.config-controle-fonte { flex-wrap: wrap; }
+.config-controle-fonte button { min-height: 44px; }
+.config-perfil-campos, .config-info-dados { min-width: 0; }
+.custom-btn { max-width: 100%; white-space: normal; text-align: center; }
+html[data-tema="escuro"] .custom-btn-primary { color: #fff; }
+.auth-card-login, .auth-card-cadastro {
+    max-width: calc(100vw - 32px);
+    height: auto;
+    min-height: 495px;
+}
+.auth-card :is(input, select, button) { min-height: 44px; }
+
+#ace-carregamento {
+    position: fixed;
+    z-index: 5000;
+    top: 78px;
+    right: 16px;
+    max-width: calc(100vw - 32px);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    background: var(--branco);
+    color: var(--preto);
+    box-shadow: var(--shadow-md);
+    pointer-events: none;
+}
+#ace-carregamento::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: ace-progresso .8s linear infinite;
+}
+@keyframes ace-progresso { to { transform: rotate(360deg); } }
+
+@media (max-width: 700px) {
+    .content, .content.close { margin-top: 60px; padding: 16px 12px; }
+    .auth-card-login, .auth-card-cadastro { min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+    #ace-carregamento::before { animation: none; }
 }
 
 /* Movimento reduzido já respeita a preferência do sistema operacional.

@@ -43,13 +43,13 @@
     padding-top: 14px;
     border-top: 1px solid rgba(24, 24, 71, 0.1);
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     opacity: 0.8;
 }
 
 .partida-data {
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     opacity: 0.75;
 }
@@ -62,7 +62,7 @@
     border-radius: 20px;
     background: var(--bege-principal, #F1E4D1);
     color: var(--azul-principal, #181847);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
@@ -98,7 +98,7 @@
     gap: 10px;
     min-width: 0;
     color: var(--azul-principal, #181847);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     text-align: center;
     overflow-wrap: anywhere;
@@ -116,14 +116,14 @@
 .partida-time h3 {
     margin: 0;
     color: #181847;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 
 .partida-time span {
     margin-top: 4px;
     color: #777;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 
 .partida-escudo {
@@ -140,28 +140,28 @@
     justify-content: center;
     gap: 5px;
     color: var(--azul-principal, #181847);
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
     font-weight: 700;
     white-space: nowrap;
 }
 
 .partida-placar strong {
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
     font-weight: 800;
 }
 
 .partida-placar span {
     color: #999;
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
 }
 
 .partida-placar strong:only-child {
-    font-size: 25px;
+    font-size: calc(25px * var(--ace-escala-fonte, 1));
 }
 
 .partida-x {
     color: var(--laranja-principal, #F44E1C);
-    font-size: 18px;
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
 }
 
 .partida-rodape {
@@ -174,7 +174,7 @@
     padding-top: 10px;
     border-top: 1px solid rgba(24, 24, 71, 0.10);
     color: var(--azul-principal);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 
 .partida-rodape span {
@@ -247,16 +247,16 @@
 
     .partida-time,
     .partida-time h3 {
-        font-size: 11px;
+        font-size: calc(11px * var(--ace-escala-fonte, 1));
     }
 
     .partida-placar {
         gap: 7px;
-        font-size: 20px;
+        font-size: calc(20px * var(--ace-escala-fonte, 1));
     }
 
     .partida-placar strong {
-        font-size: 24px;
+        font-size: calc(24px * var(--ace-escala-fonte, 1));
     }
 
     .partida-card-rodape,

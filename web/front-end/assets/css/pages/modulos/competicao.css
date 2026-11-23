@@ -33,7 +33,7 @@
 .competicao-layout .visu-subtitulo {
     margin: 0 0 14px;
     color: var(--azul-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 
@@ -56,12 +56,12 @@
 }
 .competicao-info-item span {
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     opacity: 0.75;
 }
 .competicao-info-item strong {
     color: var(--azul-principal);
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     overflow-wrap: anywhere;
 }
 .competicao-info-item--full {
@@ -95,7 +95,7 @@
 }
 .competicao-form-campo label {
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .competicao-form-campo select {
@@ -152,12 +152,12 @@
 }
 .periodo-inscricao-item span {
     color: #777;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 500;
 }
 .periodo-inscricao-item strong {
     color: var(--azul-principal);
-    font-size: 17px;
+    font-size: calc(17px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
@@ -199,14 +199,14 @@
 }
 .time-selecao-nome {
     color: var(--preto);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .contador-times {
     display: block;
     margin-top: 7px;
     color: #777;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 .mensagem-vazia {
     margin: 0;
@@ -238,7 +238,7 @@
     background: var(--branco);
     color: var(--azul-principal);
     font-family: inherit;
-    font-size: 15px;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
     text-align: left;
     cursor: pointer;
 }
@@ -304,14 +304,14 @@
 }
 .select-multiplos-nome {
     color: var(--preto);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 500;
 }
 .select-multiplos-vazio {
     margin: 0;
     padding: 14px;
     color: #777;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     text-align: center;
 }
 
@@ -381,7 +381,7 @@
 }
 .time-inscrito-nome {
     color: var(--azul-principal);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     overflow-wrap: anywhere;
 }
@@ -409,7 +409,7 @@
     align-items: center;
     gap: 9px;
     color: var(--cinza);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 500;
 }
 .local-data-indicador {
@@ -423,14 +423,14 @@
 }
 .local-data-card strong {
     color: var(--azul-principal);
-    font-size: 22px;
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     overflow-wrap: anywhere;
 }
 .local-data-card p {
     margin: 0;
     color: var(--cinza);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 .local-data-card-local {
     grid-column: 1 / -1;
@@ -469,7 +469,7 @@
 .etapa-card-nome {
     margin: 0;
     color: var(--azul-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     overflow-wrap: anywhere;
 }
@@ -479,7 +479,7 @@
     border-radius: 7px;
     background: var(--bege-principal);
     color: var(--azul-principal);
-    font-size: 11px;
+    font-size: calc(11px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .etapa-card-tipo {
@@ -488,13 +488,13 @@
     border-radius: 7px;
     background: rgba(244, 78, 28, 0.08);
     color: var(--laranja-principal);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 .etapa-card-descricao {
     margin: 0;
     color: var(--cinza);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.6;
     overflow-wrap: anywhere;
 }
@@ -553,17 +553,17 @@
 }
 .competicao-gerenciar-item strong {
     color: var(--azul-principal);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
     font-weight: 700;
 }
 .competicao-gerenciar-item span {
     color: var(--cinza);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
 }
 .competicao-gerenciar-seta {
     flex-shrink: 0;
     color: var(--laranja-principal);
-    font-size: 22px;
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
     transition: transform 0.2s ease;
 }
 .competicao-gerenciar-item[aria-expanded="true"] .competicao-gerenciar-seta {
@@ -602,7 +602,7 @@
     margin-bottom: 18px;
     padding: 14px 16px;
     border-radius: 9px;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     line-height: 1.5;
 }
 .mensagem-sucesso {

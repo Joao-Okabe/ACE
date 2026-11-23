@@ -147,7 +147,7 @@ html.sidebar-fechada .content {
     padding: 8px;
     border-radius: 12px;
     color: var(--bege-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
@@ -404,13 +404,13 @@ html.sidebar-fechada .content {
 
 .perfil-botao .usuario span {
     color: var(--branco);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
 .perfil-botao .usuario small {
     color: var(--laranja-principal);
-    font-size: 11px;
+    font-size: calc(11px * var(--ace-escala-fonte, 1));
 }
 
 /* Painel flutuante */
@@ -442,18 +442,18 @@ html.sidebar-fechada .content {
 
 .perfil-info strong {
     color: var(--azul-principal);
-    font-size: 14px;
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
 }
 
 .perfil-info span {
     color: var(--laranja-principal);
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
 .perfil-info small {
     color: var(--azul-principal);
-    font-size: 11px;
+    font-size: calc(11px * var(--ace-escala-fonte, 1));
     overflow-wrap: anywhere;
 }
 
@@ -474,7 +474,7 @@ html.sidebar-fechada .content {
     border-radius: var(--radius);
     background: transparent;
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     text-align: left;
     cursor: pointer;
     transition: .2s;
@@ -537,7 +537,7 @@ html.sidebar-fechada .content {
     border-radius: 20px;
     background: var(--laranja-principal);
     color: #fff;
-    font-size: 10px;
+    font-size: calc(10px * var(--ace-escala-fonte, 1));
     font-weight: 600;
 }
 
@@ -573,14 +573,14 @@ html.sidebar-fechada .content {
 .notificacao-header h3 {
     margin: 0;
     color: var(--azul-principal);
-    font-size: 16px;
+    font-size: calc(16px * var(--ace-escala-fonte, 1));
 }
 
 .marcar-lidas {
     border: none;
     background: transparent;
     color: var(--laranja-principal);
-    font-size: 11px;
+    font-size: calc(11px * var(--ace-escala-fonte, 1));
     font-weight: 600;
     cursor: pointer;
 }
@@ -636,19 +636,19 @@ html.sidebar-fechada .content {
     display: block;
     margin-bottom: 4px;
     color: var(--azul-principal);
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
 }
 
 .notificacao-conteudo p {
     margin: 0 0 6px;
     color: #555;
-    font-size: 12px;
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
     line-height: 1.5;
 }
 
 .notificacao-conteudo small {
     color: #888;
-    font-size: 10px;
+    font-size: calc(10px * var(--ace-escala-fonte, 1));
 }
 
 .notificacao-item.lida .notificacao-conteudo strong {
@@ -659,7 +659,7 @@ html.sidebar-fechada .content {
 .notificacao-vazia {
     padding: 30px 15px;
     color: #777;
-    font-size: 13px;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
     text-align: center;
 }
 
