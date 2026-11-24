@@ -2,6 +2,7 @@ import { alunoService } from "../../services/alunoService.js";
 import { escolaService } from "../../services/escolaService.js";
 import { authService } from "../../services/authService.js";
 import { configurarImagem } from "../../utils/imagens.js";
+import { obterPapeisUsuario, definirVisibilidade } from "../../utils/permissoesVisuais.js";
 
 // COMPONENTE DE LISTAGEM
 class AppLista extends HTMLElement {
@@ -185,9 +186,13 @@ async function carregarAlunos() {
 
     try {
         window.usuarioLogado = window.usuarioLogado || await authService.me();
-        if (window.usuarioLogado?.papeis?.some((papel) => ["ADM", "DIR"].includes(papel))) {
-            linkImportarCsv.style.display = "inline-flex";
-        }
+
+        const papeis = await obterPapeisUsuario();
+        const podeCadastrarAluno = papeis.some(papel => ["ADM", "DIR"].includes(papel));
+
+        definirVisibilidade(botaoAbrirCadastro, podeCadastrarAluno);
+        definirVisibilidade(linkImportarCsv, podeCadastrarAluno);
+
         const alunos = await alunoService.listar();
 
         conteudo.innerHTML = "";
@@ -274,8 +279,16 @@ async function carregarAlunos() {
 }
 
 // ABRIR MODAL DE CADASTRO
-botaoAbrirCadastro?.addEventListener("click", () => {
-    modalCadastrar?.abrir();
+botaoAbrirCadastro?.addEventListener("click", async () => {
+    try {
+        const papeis = await obterPapeisUsuario();
+
+        if (!papeis.some(papel => ["ADM", "DIR"].includes(papel))) return;
+
+        modalCadastrar?.abrir();
+    } catch (erro) {
+        console.error("Erro ao verificar permissões:", erro);
+    }
 });
 
 // ABRIR MODAL DE EDIÇÃO

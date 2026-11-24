@@ -1,6 +1,6 @@
 import { escolaService } from "../../services/escolaService.js";
-import { authService } from "../../services/authService.js";
 import { configurarImagem } from "../../utils/imagens.js";
+import { obterPapeisUsuario, definirVisibilidade } from "../../utils/permissoesVisuais.js";
 
 import "./cadastrar.js";
 import "./editar.js";
@@ -22,7 +22,6 @@ class AppLista extends HTMLElement {
         this.innerHTML = `
             <div class="listagem-card">
                 <div class="filtros lista-filtros">
-
                     <div class="campo-busca">
                         <input type="search" class="lista-pesquisa"
                             placeholder="${this.getAttribute("placeholder") || "Pesquisar"}"
@@ -38,7 +37,6 @@ class AppLista extends HTMLElement {
                     <button type="button" class="custom-btn custom-btn-primary lista-buscar">
                         Buscar
                     </button>
-
                 </div>
 
                 <div class="lista-conteudo"></div>
@@ -71,28 +69,27 @@ class AppLista extends HTMLElement {
         });
 
         // Ordenação
-        // Ordenação
-ordenacao.addEventListener("change", () => {
-    const ordem = ordenacao.value;
+        ordenacao.addEventListener("change", () => {
+            const ordem = ordenacao.value;
 
-    const listaItens = [
-        ...conteudo.querySelectorAll(".lista-item")
-    ];
+            const listaItens = [
+                ...conteudo.querySelectorAll(".lista-item")
+            ];
 
-    listaItens.sort((a, b) => {
-        const nomeA =
-            a.querySelector(".lista-info h2")?.textContent.trim() || "";
+            listaItens.sort((a, b) => {
+                const nomeA =
+                    a.querySelector(".lista-info h2")?.textContent.trim() || "";
 
-        const nomeB =
-            b.querySelector(".lista-info h2")?.textContent.trim() || "";
+                const nomeB =
+                    b.querySelector(".lista-info h2")?.textContent.trim() || "";
 
-        return nomeA.localeCompare(nomeB, "pt-BR", {
-            sensitivity: "base"
-        }) * (ordem === "nome-desc" ? -1 : 1);
-    });
+                return nomeA.localeCompare(nomeB, "pt-BR", {
+                    sensitivity: "base"
+                }) * (ordem === "nome-desc" ? -1 : 1);
+            });
 
-    listaItens.forEach(item => conteudo.appendChild(item));
-});
+            listaItens.forEach(item => conteudo.appendChild(item));
+        });
     }
 }
 
@@ -102,17 +99,28 @@ if (!customElements.get("app-lista")) {
 
 // LISTAR ESCOLAS
 async function carregarEscolas() {
+    const botaoCadastrar = document.getElementById("abrirModalEscola");
+    const botaoImportar = document.getElementById("importarCsvEscola");
+
+    // Oculta os botões até verificar as permissões
+    definirVisibilidade(botaoCadastrar, false);
+    definirVisibilidade(botaoImportar, false);
+
     try {
-        window.usuarioLogado = window.usuarioLogado || await authService.me();
-        if (window.usuarioLogado?.papeis?.includes("ADM")) {
-            document.getElementById("importarCsvEscola").style.display = "inline-flex";
-        }
+        const papeis = await obterPapeisUsuario();
+
+        // Permissões de cadastro e edição
+        const podeCadastrarEscola = papeis.includes("ADM");
+        const podeEditarEscola = papeis.some(papel => ["ADM", "DIR"].includes(papel));
+
+        // Somente administradores podem cadastrar e importar escolas
+        definirVisibilidade(botaoCadastrar, podeCadastrarEscola);
+        definirVisibilidade(botaoImportar, podeCadastrarEscola);
+
         const escolas = await escolaService.listar();
 
         console.log("Escolas recebidas:", escolas);
-
         console.table(escolas);
-console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
 
         const lista = document.querySelector("app-lista");
         const conteudo = lista?.querySelector(".lista-conteudo");
@@ -136,6 +144,7 @@ console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
 
             const imagem = document.createElement("img");
             imagem.alt = "";
+
             configurarImagem(
                 imagem,
                 [escola.img_logo, escola.path_brasao, escola.logo, escola.imagem],
@@ -168,23 +177,23 @@ console.log("Dados completos da última escola:", escolas[escolas.length - 1]);
             seta.setAttribute("aria-hidden", "true");
 
             link.append(brasao, info, seta);
+            item.appendChild(link);
 
-            // Botão de edição
-            const botaoEditar = document.createElement("button");
-            botaoEditar.type = "button";
-            botaoEditar.classList.add("btn-editar-lista");
-            botaoEditar.dataset.editarEscola = "";
-            botaoEditar.dataset.id = escola.cd_escola;
-            botaoEditar.textContent = "Editar";
-            botaoEditar.setAttribute(
-                "aria-label",
-                `Editar ${escola.nome || escola.nm_escola || "escola"}`
-            );
+            // Botão de edição disponível apenas para ADM e DIR
+            if (podeEditarEscola) {
+                const botaoEditar = document.createElement("button");
+                botaoEditar.type = "button";
+                botaoEditar.classList.add("btn-editar-lista");
+                botaoEditar.dataset.editarEscola = "";
+                botaoEditar.dataset.id = escola.cd_escola;
+                botaoEditar.textContent = "Editar";
 
-            if (window.usuarioLogado?.papeis?.some((papel) => ["ADM", "DIR"].includes(papel))) {
-                item.append(link, botaoEditar);
-            } else {
-                item.appendChild(link);
+                botaoEditar.setAttribute(
+                    "aria-label",
+                    `Editar ${escola.nome || escola.nm_escola || "escola"}`
+                );
+
+                item.appendChild(botaoEditar);
             }
 
             conteudo.appendChild(item);
