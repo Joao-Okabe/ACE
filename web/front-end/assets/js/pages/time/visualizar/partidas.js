@@ -26,7 +26,7 @@ function formatarData(partida) {
 
     if (!valor) return "Data não informada";
 
-    const texto = String(valor);
+    const texto = String(valor).replace("T", " ");
     const partes = texto.split(" ")[0].split("-");
 
     if (partes.length !== 3) return texto;
@@ -45,7 +45,8 @@ function formatarData(partida) {
 
     if (!texto.includes(":")) return dataFormatada;
 
-    const horario = texto.split(" ")[1].slice(0, 5);
+    const horario = texto.split(" ")[1]?.slice(0, 5);
+    if (!horario) return dataFormatada;
 
     return `${dataFormatada} · ${horario}`;
 }
@@ -64,8 +65,15 @@ export async function carregarPartidasTime() {
 
         const resposta = await partidaService.listarPorTime(idTime);
 
-        const partidas = resposta?.itens ||
-            (Array.isArray(resposta) ? resposta : []);
+        const partidas = Array.isArray(resposta) ? resposta :
+            Array.isArray(resposta?.itens) ? resposta.itens :
+            Array.isArray(resposta?.dados?.itens) ? resposta.dados.itens : [];
+
+        if (!partidas.length) {
+            container.replaceChildren();
+            if (mensagem) mensagem.textContent = "Nenhuma partida vinculada a este time.";
+            return;
+        }
 
         const partidasCompletas = await Promise.all(
             partidas.map(async partida => {
@@ -83,10 +91,11 @@ export async function carregarPartidasTime() {
                     );
                 }
 
+                const dadosDetalhes = detalhes?.partida || detalhes;
                 const timesBase =
-                    detalhes?.times?.length
-                        ? detalhes.times
-                        : partida.times || [];
+                    Array.isArray(dadosDetalhes?.times) && dadosDetalhes.times.length
+                        ? dadosDetalhes.times
+                        : Array.isArray(partida.times) ? partida.times : [];
 
                 // BUSCAR ESCUDOS
                 const times = await Promise.all(
@@ -115,11 +124,11 @@ export async function carregarPartidasTime() {
                     timeB: times[1] || {},
 
                     placarA: possuiPlacar
-                        ? detalhes?.placar_casa ?? null
+                        ? dadosDetalhes?.placar_casa ?? null
                         : null,
 
                     placarB: possuiPlacar
-                        ? detalhes?.placar_visitante ?? null
+                        ? dadosDetalhes?.placar_visitante ?? null
                         : null,
 
                     dataTexto: formatarData(partida),
@@ -136,8 +145,9 @@ export async function carregarPartidasTime() {
     } catch (erro) {
         console.error("Erro ao carregar partidas do time:", erro);
 
+        container.replaceChildren();
         if (mensagem) {
-            mensagem.textContent = "Não foi possível carregar as partidas.";
+            mensagem.textContent = erro?.message || "Não foi possível carregar as partidas.";
         }
     }
 }

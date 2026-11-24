@@ -81,3 +81,17 @@
 .competicao-gerenciar-item[aria-expanded="true"] .gerenciar-seta {
     transform: rotate(180deg);
 }
+
+/* Mensagens acima dos campos no gerenciamento da competição */
+.competicao-form > p[aria-live="polite"] {
+    order: -1;
+    grid-column: 1 / -1;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 12px;
+    position: relative;
+}
+
+.competicao-form > p[aria-live="polite"]:empty {
+    display: none;
+}

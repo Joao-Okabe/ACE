@@ -1,33 +1,80 @@
-
 import { competicaoService } from "../../../services/competicaoService.js";
 import { idCompeticao } from "./competicao.js";
 import { configurarImagem } from "../../../utils/imagens.js";
 
 // RENDERIZAR CHAVEAMENTO
-export function renderizarChaveamento(dados = [], formato = 1) {
+
+export function renderizarChaveamento(
+    dados = [],
+    formato = 1,
+    classificacao = []
+) {
     const container = document.getElementById("chaveamento-container");
     const mensagem = document.getElementById("mensagemChaveamento");
     const botaoGerar = document.getElementById("btnGerarChaveamento");
 
+    if (!container || !mensagem) return;
+
     const existeChaveamento = Array.isArray(dados) && dados.length > 0;
 
     if (botaoGerar) {
-        botaoGerar.hidden = !window.podeGerarChaveamento || existeChaveamento;
+        botaoGerar.hidden =
+            !window.podeGerarChaveamento || existeChaveamento;
     }
 
     container.replaceChildren();
     mensagem.textContent = "";
+    mensagem.hidden = true;
 
     const rodadas = agruparRodadas(dados);
 
     if (!rodadas.length) {
         mensagem.textContent = "O chaveamento ainda não foi gerado.";
+        mensagem.hidden = false;
         return;
     }
 
     // ELIMINATÓRIA DUPLA
     if (Number(formato) === 2) {
         renderizarChaveamentoDupla(dados, rodadas, container);
+        configurarImagensChaveamento(container);
+        return;
+    }
+
+    // FASE DE GRUPOS + ELIMINATÓRIA
+    if (Number(formato) === 3) {
+        const rodadasGrupos = rodadas.filter(rodada =>
+            normalizarTexto(rodada.etapaNome).includes("grupo")
+        );
+
+        const rodadasEliminatorias = rodadas.filter(rodada =>
+            !normalizarTexto(rodada.etapaNome).includes("grupo")
+        );
+
+        renderizarChaveamentoGrupos(
+            rodadasGrupos,
+            classificacao,
+            container
+        );
+
+        if (rodadasEliminatorias.length > 0) {
+            const idsConfrontos = new Set(
+                rodadasEliminatorias.flatMap(rodada =>
+                    rodada.confrontos.map(confronto => String(confronto.id))
+                )
+            );
+
+            const dadosEliminatoria = dados.filter(item =>
+                idsConfrontos.has(String(item.cd_confronto))
+            );
+
+            renderizarEliminatoriaSimples(
+                dadosEliminatoria,
+                rodadasEliminatorias,
+                container
+            );
+        }
+
         configurarImagensChaveamento(container);
         return;
     }
@@ -40,6 +87,219 @@ export function renderizarChaveamento(dados = [], formato = 1) {
     }
 
     // ELIMINATÓRIA SIMPLES
+    renderizarEliminatoriaSimples(dados, rodadas, container);
+    configurarImagensChaveamento(container);
+}
+
+
+function configurarImagensChaveamento(container) {
+    container.querySelectorAll(".time-escudo").forEach(imagem => {
+        configurarImagem(
+            imagem,
+            imagem.getAttribute("src"),
+            "/assets/img/escudo.jpg"
+        );
+    });
+}
+
+
+function normalizarTexto(valor) {
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+// RENDERIZAR FASE DE GRUPOS
+function renderizarChaveamentoGrupos(rodadas, classificacao, container) {
+    if (!Array.isArray(classificacao) || classificacao.length === 0) {
+        return;
+    }
+
+    const grupos = new Map();
+    const grupoPorTime = new Map();
+
+    classificacao.forEach(time => {
+        const idGrupo = String(time.cd_grupo ?? "");
+        const idTime = Number(time.cd_time);
+
+        if (!idGrupo || !Number.isFinite(idTime) || idTime <= 0) return;
+
+        if (!grupos.has(idGrupo)) {
+            grupos.set(idGrupo, {
+                id: idGrupo,
+                nome: time.nm_grupo || `Grupo ${grupos.size + 1}`,
+                rodadas: new Map()
+            });
+        }
+
+        grupoPorTime.set(idTime, idGrupo);
+    });
+
+    rodadas.forEach(rodada => {
+        rodada.confrontos.forEach(confronto => {
+            const participantes = confronto.participantes.filter(participante =>
+                participante.tipo_origem === "TIME" &&
+                participante.cd_time !== null &&
+                participante.cd_time !== undefined
+            );
+
+            const gruposEncontrados = new Set(
+                participantes
+                    .map(participante => grupoPorTime.get(Number(participante.cd_time)))
+                    .filter(Boolean)
+            );
+
+            // Um confronto só pertence a um grupo quando seus times são do mesmo grupo.
+            if (gruposEncontrados.size !== 1) return;
+
+            const idGrupo = [...gruposEncontrados][0];
+            const grupo = grupos.get(idGrupo);
+            if (!grupo) return;
+
+            if (!grupo.rodadas.has(rodada.numero)) {
+                grupo.rodadas.set(rodada.numero, {
+                    numero: rodada.numero,
+                    nome: rodada.nome,
+                    confrontos: []
+                });
+            }
+
+            grupo.rodadas.get(rodada.numero).confrontos.push(confronto);
+        });
+    });
+
+    const listaGrupos = document.createElement("div");
+    listaGrupos.className = "bracket bracket-grupos";
+    Object.assign(listaGrupos.style, {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        gap: "24px",
+        width: "100%",
+        minWidth: "0",
+        boxSizing: "border-box"
+    });
+
+    grupos.forEach(grupo => {
+        const rodadasOrdenadas = [...grupo.rodadas.values()].sort(
+            (a, b) => Number(a.numero) - Number(b.numero)
+        );
+        if (rodadasOrdenadas.length === 0) return;
+
+        const secao = document.createElement("section");
+        secao.className = "bracket-grupo";
+        Object.assign(secao.style, {
+            display: "flex",
+            flexDirection: "column",
+            gap: "14px",
+            width: "100%",
+            minWidth: "0",
+            padding: "16px",
+            boxSizing: "border-box",
+            border: "1px solid var(--azul-principal)",
+            borderRadius: "12px"
+        });
+
+        const titulo = document.createElement("h3");
+        titulo.className = "visu-subtitulo";
+        titulo.textContent = grupo.nome;
+        titulo.style.margin = "0";
+        secao.appendChild(titulo);
+
+        const listaRodadas = document.createElement("div");
+        listaRodadas.className = "bracket-grupo-rodadas";
+        Object.assign(listaRodadas.style, {
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "20px",
+            width: "100%",
+            minWidth: "0",
+            overflowX: "auto",
+            paddingBottom: "8px",
+            boxSizing: "border-box"
+        });
+
+        rodadasOrdenadas.forEach(rodada => {
+            const coluna = document.createElement("div");
+            coluna.className = "bracket-coluna";
+            Object.assign(coluna.style, {
+                position: "relative",
+                flex: "0 0 260px",
+                width: "260px",
+                height: "auto",
+                minWidth: "260px"
+            });
+
+            const tituloRodada = document.createElement("h4");
+            tituloRodada.className = "round-title";
+            tituloRodada.textContent = rodada.nome || `Rodada ${rodada.numero}`;
+            Object.assign(tituloRodada.style, {
+                position: "relative",
+                top: "auto",
+                left: "auto",
+                width: "100%",
+                minHeight: "36px",
+                margin: "0 0 12px",
+                padding: "6px",
+                boxSizing: "border-box"
+            });
+
+            const area = document.createElement("div");
+            area.className = "round";
+            Object.assign(area.style, {
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "stretch",
+                gap: "12px",
+                width: "100%",
+                height: "auto",
+                minHeight: "0"
+            });
+
+            rodada.confrontos.forEach(confronto => {
+                const partida = document.createElement("div");
+                partida.className = "partida";
+                partida.dataset.confronto = confronto.id;
+                partida.innerHTML = `
+                    ${criarParticipante(confronto.participantes.find(p => Number(p.posicao) === 1))}
+                    ${criarParticipante(confronto.participantes.find(p => Number(p.posicao) === 2))}
+                `;
+                Object.assign(partida.style, {
+                    position: "relative",
+                    top: "auto",
+                    left: "auto",
+                    flex: "0 0 60px",
+                    width: "100%",
+                    height: "60px"
+                });
+                area.appendChild(partida);
+            });
+
+            coluna.appendChild(tituloRodada);
+            coluna.appendChild(area);
+            listaRodadas.appendChild(coluna);
+        });
+
+        secao.appendChild(listaRodadas);
+        listaGrupos.appendChild(secao);
+    });
+
+    if (listaGrupos.childElementCount > 0) {
+        container.appendChild(listaGrupos);
+    }
+}
+
+// RENDERIZAR ELIMINATÓRIA SIMPLES
+function renderizarEliminatoriaSimples(
+    dados,
+    rodadas,
+    container
+) {
+    if (!rodadas.length) return;
+
     const quantidadeTimes = contarTimes(dados);
     const quantidadeConfrontosInicial = rodadas[0].confrontos.length;
 
@@ -72,18 +332,8 @@ export function renderizarChaveamento(dados = [], formato = 1) {
     });
 
     container.appendChild(bracket);
-    configurarImagensChaveamento(container);
 }
 
-function configurarImagensChaveamento(container) {
-    container.querySelectorAll(".time-escudo").forEach(imagem => {
-        configurarImagem(
-            imagem,
-            imagem.getAttribute("src"),
-            "/assets/img/escudo.jpg"
-        );
-    });
-}
 
 // RENDERIZAR ELIMINATÓRIA DUPLA
 function renderizarChaveamentoDupla(dados, rodadas, container) {
@@ -338,6 +588,16 @@ function renderizarChaveamentoDupla(dados, rodadas, container) {
 function renderizarChaveamentoSuico(rodadas, container) {
     const bracket = document.createElement("div");
     bracket.className = "bracket bracket-suico";
+    Object.assign(bracket.style, {
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "24px",
+        width: "max-content",
+        minWidth: "100%",
+        padding: "10px",
+        boxSizing: "border-box",
+        overflowX: "auto"
+    });
 
     rodadas.forEach((rodada, indice) => {
         const coluna = document.createElement("section");
@@ -349,25 +609,33 @@ function renderizarChaveamentoSuico(rodadas, container) {
 
         const area = document.createElement("div");
         area.className = "round";
+        Object.assign(area.style, {
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: "18px",
+            width: "100%",
+            height: "auto",
+            minHeight: "0"
+        });
 
         rodada.confrontos.forEach(confronto => {
             const partida = document.createElement("div");
             partida.className = "partida";
             partida.dataset.confronto = confronto.id;
-
             partida.innerHTML = `
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 1
-                    )
-                )}
-                ${criarParticipante(
-                    confronto.participantes.find(
-                        p => Number(p.posicao) === 2
-                    )
-                )}
+                ${criarParticipante(confronto.participantes.find(p => Number(p.posicao) === 1))}
+                ${criarParticipante(confronto.participantes.find(p => Number(p.posicao) === 2))}
             `;
-
+            Object.assign(partida.style, {
+                position: "relative",
+                top: "auto",
+                left: "auto",
+                flex: "0 0 60px",
+                width: "100%",
+                height: "60px"
+            });
             area.appendChild(partida);
         });
 
@@ -380,24 +648,31 @@ function renderizarChaveamentoSuico(rodadas, container) {
 }
 
 // AGRUPAR CONFRONTOS POR RODADA
+
 function agruparRodadas(dados) {
     const mapaRodadas = new Map();
 
     dados.forEach(item => {
         const numeroRodada = Number(item.nr_rodada);
+        const idEtapa = String(item.cd_etapa_competicao);
 
-        if (!mapaRodadas.has(numeroRodada)) {
-            mapaRodadas.set(numeroRodada, {
+        const chave = `${idEtapa}:${numeroRodada}`;
+
+        if (!mapaRodadas.has(chave)) {
+            mapaRodadas.set(chave, {
+                etapaId: idEtapa,
+                etapaNome: item.nm_etapa || "",
+                ordemEtapa: Number(item.ordem_etapa) || 0,
                 numero: numeroRodada,
                 nome: item.nm_rodada || `Rodada ${numeroRodada}`,
                 confrontos: new Map()
             });
         }
 
-        const rodada = mapaRodadas.get(numeroRodada);
+        const rodada = mapaRodadas.get(chave);
 
-        if (!rodada.confrontos.has(item.cd_confronto)) {
-            rodada.confrontos.set(item.cd_confronto, {
+        if (!rodada.confrontos.has(String(item.cd_confronto))) {
+            rodada.confrontos.set(String(item.cd_confronto), {
                 id: item.cd_confronto,
                 numero: item.nr_confronto,
                 nome: item.nome,
@@ -407,18 +682,25 @@ function agruparRodadas(dados) {
             });
         }
 
-        rodada.confrontos.get(item.cd_confronto)
+        rodada.confrontos
+            .get(String(item.cd_confronto))
             .participantes.push(item);
     });
 
     return [...mapaRodadas.values()]
-        .sort((a, b) => a.numero - b.numero)
+        .sort((a, b) =>
+            a.ordemEtapa - b.ordemEtapa ||
+            a.numero - b.numero
+        )
         .map(rodada => ({
             ...rodada,
             confrontos: [...rodada.confrontos.values()]
-                .sort((a, b) => Number(a.numero) - Number(b.numero))
+                .sort((a, b) =>
+                    Number(a.numero) - Number(b.numero)
+                )
         }));
 }
+
 
 // CALCULAR ALTURA DA RODADA
 function calcularAlturaRodada(quantidadeConfrontos) {
@@ -639,8 +921,11 @@ export function configurarBotaoGerarChaveamento(atualizarCompeticao) {
 
             const mensagem = document.getElementById("mensagemChaveamento");
 
-            mensagem.textContent =
-                erro.message || "Não foi possível gerar o chaveamento.";
+            if (mensagem) {
+                mensagem.textContent =
+                    erro.message || "Não foi possível gerar o chaveamento.";
+                mensagem.hidden = false;
+            }
 
         } finally {
             botao.disabled = false;

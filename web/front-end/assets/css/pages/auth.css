@@ -229,3 +229,111 @@
         font-size: calc(36px * var(--ace-escala-fonte, 1));
     }
 }
+
+
+/* ========================================
+   LOGIN E CADASTRO — MODO ESCURO
+======================================== */
+
+html[data-tema="escuro"] .auth-card-login,
+html[data-tema="escuro"] .auth-card-cadastro {
+    background: #202b39;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+html[data-tema="escuro"] .auth-card-right {
+    background: #202b39;
+}
+
+html[data-tema="escuro"] .auth-card-left {
+    background: #181847;
+}
+
+html[data-tema="escuro"] .auth-card h1,
+html[data-tema="escuro"] .auth-card p,
+html[data-tema="escuro"] .auth-card label,
+html[data-tema="escuro"] .auth-card-left h3 {
+    color: #f1e4d1;
+}
+
+html[data-tema="escuro"] .auth-link {
+    color: #ff7043;
+}
+
+html[data-tema="escuro"] .auth-link:hover {
+    color: #ff906f;
+}
+
+html[data-tema="escuro"] .form-input,
+html[data-tema="escuro"] .form-input-group .form-input {
+    background: #293747;
+    color: #f1e4d1;
+    border: 1px solid #526174;
+}
+
+html[data-tema="escuro"] .form-input::placeholder {
+    color: #aab5c2;
+}
+
+html[data-tema="escuro"] .form-input:focus,
+html[data-tema="escuro"] .form-input-group .form-input:focus {
+    background: #293747;
+    color: #ffffff;
+    border-color: #f44e1c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 78, 28, 0.2);
+}
+
+html[data-tema="escuro"] .btn-toggle-password {
+    color: #f1e4d1;
+}
+
+html[data-tema="escuro"] .btn-toggle-password:hover {
+    background: rgba(244, 78, 28, 0.12);
+}
+
+html[data-tema="escuro"] .btn-toggle-password:hover img {
+    filter: brightness(0) saturate(100%)
+        invert(42%) sepia(91%) saturate(2200%)
+        hue-rotate(345deg) brightness(100%);
+}
+
+html[data-tema="escuro"] .btn-toggle-password:focus-visible {
+    outline-color: #f44e1c;
+}
+
+html[data-tema="escuro"] .auth-error:not([hidden]) {
+    color: #ffb4b4;
+    background: #482b32;
+    border: 1px solid #a64b55;
+}
+
+html[data-tema="escuro"] .auth-submit {
+    color: #ffffff;
+}
+
+html[data-tema="escuro"] .cor {
+    background-color: #181847;
+}
+
+/* FUNDO DA PÁGINA */
+
+html[data-tema="escuro"] .container-auth {
+    background:
+        linear-gradient(
+            rgba(12, 16, 30, 0.78),
+            rgba(12, 16, 30, 0.78)
+        ),
+        url("../../img/fundo.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ACESSIBILIDADE */
+
+html[data-tema="escuro"] .auth-link:focus-visible {
+    outline: 2px solid #f44e1c;
+    outline-offset: 4px;
+}

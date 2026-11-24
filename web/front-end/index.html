@@ -1,14 +1,174 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-
+<!doctype html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/pages/usuario/login.html">
-    <title>ACE - Redirecionando...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#181847">
+    <meta name="description" content="ACE — App de Competições Escolares. Organize competições, equipes, atletas e partidas em um só lugar.">
+    <title>ACE | Competições escolares em um só lugar</title>
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <link rel="stylesheet" href="/assets/css/landing.css">
+    <script src="/assets/js/landing.js" defer></script>
 </head>
-
 <body>
-    <p>Redirecionando para a página de <a href="/pages/usuario/login.html">login</a>...</p>
-</body>
+    <header class="site-header" id="inicio">
+        <nav class="navbar container" aria-label="Navegação principal">
+            <a class="brand" href="#inicio" aria-label="ACE — Página inicial">
+                <img src="assets/img/logo-ace-laranja.png">
+            </a>
 
+            <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuPrincipal">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="nav-links" id="menuPrincipal">
+                <a href="#inicio">Início</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#funcionalidades">Recursos</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a class="nav-login" href="/pages/usuario/login.html">Entrar no sistema</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-glow hero-glow-one"></div>
+            <div class="hero-glow hero-glow-two"></div>
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> APP DE COMPETIÇÕES ESCOLARES</span>
+                    <h1>Conectando a sua escola <span>ao esporte!</span></h1>
+                    <p class="hero-description">
+                        Competições, equipes, atletas e partidas conectados em uma única plataforma.
+                        Mais organização para quem promove o esporte nas escolas.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="/pages/usuario/login.html">
+                            Acessar o ACE <span aria-hidden="true">→</span>
+                        </a>
+                        <a class="button button-ghost" href="#funcionalidades">Conhecer recursos</a>
+                    </div>
+                    <div class="hero-note">
+                        <span class="note-line"></span>
+                        <span>Gestão esportiva escolar em um só lugar.</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="intro section" id="sobre">
+            <div class="container intro-grid">
+                <div>
+                    <span class="section-kicker">SOBRE O PROJETO</span>
+                    <h2>Uma plataforma pensada para o <span>esporte escolar.</span></h2>
+                </div>
+                <div class="intro-copy">
+                    <p>
+                        O ACE — App de Competições Escolares — foi desenvolvido para facilitar
+                        a organização e o acompanhamento de atividades esportivas entre escolas.
+                    </p>
+                    <p>
+                        A plataforma reúne informações importantes da rotina esportiva e ajuda
+                        organizadores a administrar participantes, equipes, competições e partidas
+                        com mais clareza.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features section" id="funcionalidades">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="section-kicker">RECURSOS DO ACE</span>
+                    <h2>O que você precisa para <span>organizar e acompanhar.</span></h2>
+                    <p>Os principais recursos da gestão esportiva escolar reunidos em uma plataforma.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card feature-card-highlight">
+                        <img src="assets/icons/trophy.svg">
+                        <h3>Competições</h3>
+                        <p>Cadastre competições, organize etapas, inscrições e formatos de disputa.</p>
+                        <span class="feature-index">01</span>
+                    </article>
+                    <article class="feature-card">
+                        <img src="assets/icons/group.svg">
+                        <h3>Equipes e atletas</h3>
+                        <p>Gerencie times, integrantes, técnicos e responsáveis em um só lugar.</p>
+                        <span class="feature-index">02</span>
+                    </article>
+                    <article class="feature-card">
+                        <img src="assets/icons/calender.svg">
+                        <h3>Partidas e calendário</h3>
+                        <p>Consulte confrontos e acompanhe a programação das partidas.</p>
+                        <span class="feature-index">03</span>
+                    </article>
+                    <article class="feature-card">
+                        <img src="assets/icons/barChart.svg">
+                        <h3>Classificação e ranking</h3>
+                        <p>Acompanhe resultados, pontuações e a classificação das equipes.</p>
+                        <span class="feature-index">04</span>
+                    </article>
+                    <article class="feature-card">
+                        <img src="assets/icons/school.svg">
+                        <h3>Escolas</h3>
+                        <p>Centralize o cadastro e as informações das escolas participantes.</p>
+                        <span class="feature-index">05</span>
+                    </article>
+                    <article class="feature-card">
+                        <img src="assets/icons/config.svg">
+                        <h3>Gestão e permissões</h3>
+                        <p>Organize as responsabilidades de acordo com os papéis de cada usuário.</p>
+                        <span class="feature-index">06</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow section" id="como-funciona">
+            <div class="container workflow-grid">
+                <div class="workflow-copy">
+                    <span class="section-kicker">COMO FUNCIONA</span>
+                    <h2>Da organização ao acompanhamento dos jogos.</h2>
+                    <p>O ACE conecta as etapas necessárias para administrar uma competição escolar.</p>
+                    <a class="text-link" href="/pages/usuario/login.html">Acessar a plataforma <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="workflow-steps">
+                    <article class="workflow-step">
+                        <span>01</span>
+                        <div><h3>Cadastre e organize</h3><p>Registre escolas, equipes, atletas e competições.</p></div>
+                    </article>
+                    <article class="workflow-step">
+                        <span>02</span>
+                        <div><h3>Prepare as disputas</h3><p>Gerencie inscrições, etapas, confrontos e partidas.</p></div>
+                    </article>
+                    <article class="workflow-step">
+                        <span>03</span>
+                        <div><h3>Acompanhe os resultados</h3><p>Consulte partidas, classificações e rankings.</p></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="closing">
+            <div class="container closing-inner">
+                <div>
+                    <span class="section-kicker">ACE · APP DE COMPETIÇÕES ESCOLARES</span>
+                    <h2>Mais organização para o esporte. <span>Mais espaço para competir.</span></h2>
+                    <p>Entre na plataforma e acompanhe a gestão das competições escolares.</p>
+                </div>
+                <a class="button button-primary" href="/pages/usuario/login.html">Entrar no ACE <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>App de Competições Escolares</p>
+            <span>© <span id="anoAtual"></span> ACE - Aether. Todos os direitos reservados.</span>
+        </div>
+    </footer>
+</body>
 </html>

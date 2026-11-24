@@ -70,9 +70,10 @@ app-lista {
 
 .listagem-card {
     padding: 24px;
+    min-width: 0;
     border: 1px solid var(--borda-lista);
     border-radius: var(--radius-lista);
-    background: #fff;
+    background: var(--branco, #fff);
     box-shadow: 0 3px 12px rgb(24 24 71 / 5%);
 }
 
@@ -93,7 +94,7 @@ app-lista {
     min-height: 44px;
     border: 1px solid var(--borda-lista);
     border-radius: 8px;
-    background: #fff;
+    background: var(--branco, #fff);
 }
 
 .campo-busca {
@@ -164,6 +165,7 @@ app-lista {
 .lista-conteudo {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     border: 1px solid var(--borda-lista);
     border-radius: 10px;
     overflow: hidden;
@@ -207,7 +209,7 @@ app-lista {
 }
 
 .lista-link:focus-visible,
-.btn-editar-item:focus-visible,
+.btn-editar-lista:focus-visible,
 .btn-adicionar:focus-visible,
 .btn-buscar-lista:focus-visible {
     outline: 3px solid var(--laranja-principal);
@@ -342,7 +344,7 @@ app-lista {
 /* Responsividade */
 
 @media (max-width: 1000px) {
-    .lista-filtros {
+    .filtros {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -370,7 +372,7 @@ app-lista {
         padding: 14px;
     }
 
-    .lista-filtros {
+    .filtros {
         grid-template-columns: 1fr;
         gap: 10px;
     }
@@ -427,8 +429,8 @@ app-lista {
 
 @media (prefers-reduced-motion: reduce) {
     .btn-adicionar,
-    .escola-item,
-    .escola-seta,
+    .lista-item,
+    .lista-seta,
     .btn-editar-lista {
         transition: none;
     }
@@ -440,7 +442,7 @@ app-lista {
     border: 2px solid #dc3545;
     border-radius: 12px;
     padding: 10px 16px;
-    font-weight: 00;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -458,4 +460,81 @@ app-lista {
 
 .lista-pesquisa:focus {
     box-shadow: none;
+}
+
+
+/* ===== CABEÇALHO DAS LISTAGENS ===== */
+
+.lista-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin-bottom: 24px;
+}
+
+.lista-titulo {
+    margin: 0 0 6px;
+    color: var(--azul-principal);
+    font-size: calc(28px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.lista-subtitulo {
+    margin: 0;
+    font-size: calc(15px * var(--ace-escala-fonte, 1));
+    line-height: 1.5;
+}
+
+/* Botões agrupados no cabeçalho */
+.lista-header > div:has(> .btn-adicionar) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Responsividade */
+@media (max-width: 650px) {
+    .lista-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .lista-header > div:has(> .btn-adicionar) {
+        justify-content: flex-start;
+        width: 100%;
+    }
+}
+
+
+/* ===== BOTÕES DO CABEÇALHO DAS LISTAGENS ===== */
+
+.lista-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Mantém os botões alinhados */
+.lista-acoes .custom-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+/* Responsividade */
+@media (max-width: 650px) {
+    .lista-acoes {
+        justify-content: flex-start;
+        width: 100%;
+        gap: 10px;
+    }
 }

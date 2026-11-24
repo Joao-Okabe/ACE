@@ -1,20 +1,26 @@
 import { timeService } from "../../../services/timeService.js";
 import { estadoTime, obterIdTime } from "./utilitarios.js";
-import { configurarImagem } from "../../../utils/imagens.js";
 
 // MENSAGENS
 function mostrarMensagem(elemento, texto, tipo) {
     if (!elemento) return;
 
     elemento.textContent = texto;
-    elemento.className = `alert alert-${tipo}`;
+    elemento.className = tipo === "success"
+        ? "mensagem-sucesso"
+        : "mensagem-erro";
 }
 
 // ATUALIZAR IMAGENS
 function atualizarImagem(imagem, caminho) {
     if (!imagem) return;
 
-    configurarImagem(imagem, caminho, "/assets/img/escudo.jpg");
+    imagem.src = caminho || "/assets/img/escudo.jpg";
+
+    imagem.onerror = () => {
+        imagem.onerror = null;
+        imagem.src = "/assets/img/escudo.jpg";
+    };
 }
 
 // CONFIGURAR GRUPOS EXPANSÍVEIS
@@ -24,15 +30,14 @@ function configurarAcordeoes() {
     );
 
     botoes.forEach(botao => {
+        if (botao.dataset.acordeaoConfigurado) return;
+        botao.dataset.acordeaoConfigurado = "true";
         botao.addEventListener("click", () => {
             const conteudo = botao.nextElementSibling;
-
-            if (!conteudo) return;
-
-            const expandido = botao.getAttribute("aria-expanded") === "true";
-
-            botao.setAttribute("aria-expanded", String(!expandido));
-            conteudo.hidden = expandido;
+            if (!conteudo || !conteudo.classList.contains("competicao-gerenciar-conteudo")) return;
+            const abrir = conteudo.hidden;
+            conteudo.hidden = !abrir;
+            botao.setAttribute("aria-expanded", String(abrir));
         });
     });
 }

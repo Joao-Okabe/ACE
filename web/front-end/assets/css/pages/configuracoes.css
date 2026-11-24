@@ -252,10 +252,13 @@
 
 /* INFORMAÇÕES DA CONTA */
 
+
+/* INFORMAÇÕES DA CONTA */
 .config-info-lista {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
+    width: 100%;
     margin-top: 20px;
 }
 
@@ -264,11 +267,21 @@
     flex-direction: column;
     justify-content: center;
     min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
     padding: 18px;
     background: #fff;
     border: 1px solid rgba(24, 24, 71, 0.12);
     border-radius: 12px;
 }
+
+/* CELULAR */
+@media (max-width: 650px) {
+    .config-info-lista {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 .config-info-dados {
     display: flex;
@@ -309,5 +322,37 @@
 
     .config-info-item {
         padding: 15px;
+    }
+}
+
+
+/* INFORMAÇÕES DA CONTA - 3 CARDS LADO A LADO */
+.configuracoes-container #configInfoLista {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.configuracoes-container #configInfoLista > .config-info-item {
+    grid-column: auto !important;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+    .configuracoes-container #configInfoLista {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 650px) {
+    .configuracoes-container #configInfoLista {
+        grid-template-columns: 1fr !important;
     }
 }

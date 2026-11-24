@@ -1,3 +1,4 @@
+
 import { competicaoService } from "../../../services/competicaoService.js";
 
 // CONFIGURAR REMOÇÃO MÚLTIPLA
@@ -7,89 +8,83 @@ export function configurarRemocaoTimes(atualizarCompeticao) {
     const acoes = document.getElementById("acoesRemocaoTimes");
     const confirmar = document.getElementById("confirmarRemocaoTimes");
     const quantidade = document.getElementById("quantidadeTimesSelecionados");
-    const mensagem = document.getElementById("mensagemTimesCompeticao");
 
     if (!lista || !botao || !acoes || !confirmar || !quantidade) return;
 
     const selecionados = new Set();
     let selecionando = false;
 
-    // ATUALIZAR SELEÇÃO VISUAL
-    function atualizarSelecao() {
-        lista.querySelectorAll(".card-entidade[data-id-time]").forEach(card => {
-            const marcado = selecionados.has(card.dataset.idTime);
-            card.classList.toggle("time-selecionado-remocao", marcado);
+    function obterIdTime(card) {
+        const url = new URL(card.href, window.location.origin);
+        return url.searchParams.get("id");
+    }
 
-            const checkbox = card.querySelector(".time-remocao-checkbox");
-            if (checkbox) checkbox.checked = marcado;
+    function atualizarSelecao() {
+        lista.querySelectorAll(".time-inscrito-card").forEach(card => {
+            const id = obterIdTime(card);
+            const marcado = selecionados.has(id);
+
+            card.classList.toggle("time-selecionado-remocao", marcado);
+            card.setAttribute("aria-selected", String(marcado));
         });
 
         quantidade.textContent = `${selecionados.size} time(s) selecionado(s)`;
         confirmar.disabled = selecionados.size === 0;
     }
 
-    // ENTRAR OU SAIR DO MODO DE SELEÇÃO
     function definirModoSelecao(ativo) {
         selecionando = ativo;
         selecionados.clear();
 
         lista.classList.toggle("modo-remocao", ativo);
         acoes.hidden = !ativo;
-
         botao.textContent = ativo ? "Cancelar seleção" : "Remover times";
 
         atualizarSelecao();
     }
 
-    // ABRIR SELEÇÃO
+    function alternarSelecao(card) {
+        const id = obterIdTime(card);
+        if (!id) return;
+
+        if (selecionados.has(id)) {
+            selecionados.delete(id);
+        } else {
+            selecionados.add(id);
+        }
+
+        atualizarSelecao();
+    }
+
     botao.addEventListener("click", () => {
         definirModoSelecao(!selecionando);
     });
 
-    // SELECIONAR O CARD SEM ABRIR SUA PÁGINA
     lista.addEventListener("click", evento => {
         if (!selecionando) return;
 
-        const card = evento.target.closest(".card-entidade[data-id-time]");
+        const card = evento.target.closest(".time-inscrito-card");
         if (!card || !lista.contains(card)) return;
 
         evento.preventDefault();
         evento.stopPropagation();
 
-        const id = card.dataset.idTime;
-
-        if (selecionados.has(id)) {
-            selecionados.delete(id);
-        } else {
-            selecionados.add(id);
-        }
-
-        atualizarSelecao();
+        alternarSelecao(card);
     }, true);
 
-    // PERMITIR SELEÇÃO COM TECLADO
     lista.addEventListener("keydown", evento => {
         if (!selecionando) return;
         if (evento.key !== "Enter" && evento.key !== " ") return;
 
-        const card = evento.target.closest(".card-entidade[data-id-time]");
+        const card = evento.target.closest(".time-inscrito-card");
         if (!card || !lista.contains(card)) return;
 
         evento.preventDefault();
         evento.stopPropagation();
 
-        const id = card.dataset.idTime;
-
-        if (selecionados.has(id)) {
-            selecionados.delete(id);
-        } else {
-            selecionados.add(id);
-        }
-
-        atualizarSelecao();
+        alternarSelecao(card);
     }, true);
 
-    // CONFIRMAR REMOÇÃO DOS TIMES SELECIONADOS
     confirmar.addEventListener("click", async () => {
         if (!selecionados.size) return;
 
@@ -108,17 +103,15 @@ export function configurarRemocaoTimes(atualizarCompeticao) {
         confirmar.disabled = true;
         botao.disabled = true;
 
-        const erros = [];
         const ids = [...selecionados];
+        const erros = [];
 
-        // REMOVER CADA INSCRIÇÃO PELA API EXISTENTE
         for (const idTime of ids) {
             try {
                 await competicaoService.removerTimeInscrito(
                     idCompeticao,
                     idTime
                 );
-                selecionados.delete(idTime);
             } catch (erro) {
                 erros.push(`Time ${idTime}: ${erro.message}`);
             }
@@ -135,7 +128,6 @@ export function configurarRemocaoTimes(atualizarCompeticao) {
         botao.disabled = false;
 
         if (erros.length) {
-            console.error("Erros na remoção:", erros);
             window.alert(
                 `${ids.length - erros.length} time(s) removido(s). ` +
                 `${erros.length} não puderam ser removidos.\n\n` +

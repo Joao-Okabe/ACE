@@ -92,25 +92,24 @@ class SideBar extends HTMLElement {
         }
     };
 
-    atualizarLayout(fechada) {
-        const sidebar = this.querySelector(".sidebar");
-        const navbar = document.querySelector("app-bar .navbar");
-        const content = document.querySelector(".content");
-        const botao = document.querySelector("app-bar .menu-btn");
+atualizarLayout(fechada) {
+    const sidebar = this.querySelector(".sidebar");
+    const navbar = document.querySelector("app-bar .navbar");
+    const content = document.querySelector(".content");
+    const botao = document.querySelector("app-bar .menu-btn");
 
-        sidebar?.classList.toggle("close", fechada);
-        navbar?.classList.toggle("close", fechada);
-        content?.classList.toggle("close", fechada);
+    sidebar?.classList.toggle("close", fechada);
+    navbar?.classList.toggle("close", fechada);
+    content?.classList.toggle("close", fechada);
 
-        document.documentElement.classList.toggle("sidebar-fechada", fechada);
+    document.documentElement.classList.toggle("sidebar-fechada", fechada);
 
-        botao?.setAttribute("aria-expanded", String(!fechada));
-        botao?.setAttribute(
-            "aria-label",
-            fechada ? "Abrir menu" : "Fechar menu"
-        );
-    }
-
+    botao?.setAttribute("aria-expanded", String(!fechada));
+    botao?.setAttribute(
+        "aria-label",
+        fechada ? "Abrir menu" : "Fechar menu"
+    );
+}
     configurarPaginaAtual() {
         const paginaAtual = window.location.pathname;
 

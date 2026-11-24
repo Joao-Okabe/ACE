@@ -230,3 +230,235 @@
         padding: 20px;
     }
 }
+
+/* ===== VISUALIZACAO DA ESCOLA (restaurado da api_v1) ===== */
+/* Brasão: limites fixos sem distorcer a proporção original */
+.escola-identificacao .visu-perfil {
+    width: 110px;
+    height: 110px;
+    flex: 0 0 110px;
+    overflow: hidden;
+    background: var(--bege-principal);
+}
+
+.escola-identificacao .visu-perfil img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.escola-identificacao {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
+    background: var(--branco);
+    border-radius: 16px;
+    min-width: 0;
+}
+
+.escola-brasao {
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bege-principal);
+    border-radius: 14px;
+}
+
+.escola-brasao img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.escola-identificacao-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.escola-identificacao-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--azul-principal);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.escola-nome-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.escola-nome-status h2 {
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+}
+
+.escola-identificacao-descricao {
+    margin: 8px 0 0;
+    color: var(--cinza);
+    font-size: 14px;
+}
+
+.escola-grid {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.escola-card {
+    width: 100%;
+    min-width: 0;
+    padding: 24px;
+    border-radius: 14px;
+}
+
+.escola-card--full {
+    grid-column: 1 / -1;
+}
+
+.escola-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.escola-card-header h2 {
+    margin: 0;
+}
+
+.escola-card-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--bege-principal);
+    color: var(--laranja-principal);
+    font-size: 20px;
+}
+
+.escola-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.escola-info-item {
+    min-width: 0;
+}
+
+.escola-info-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #777;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.escola-info-item p {
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.escola-card-icone img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 850px) {
+    .escola-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .escola-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .escola-identificacao {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .escola-brasao {
+        width: 85px;
+        height: 85px;
+    }
+
+    .escola-card {
+        padding: 18px;
+    }
+}
+
+
+@media (max-width: 650px) {
+    .escola-identificacao .visu-perfil {
+        width: 85px;
+        height: 85px;
+        flex-basis: 85px;
+    }
+}
+
+/* CABEÇALHO DA VISUALIZAÇÃO DE ESCOLA
+   Restringe os ajustes à página que contém .escola-identificacao. */
+.content:has(> .escola-identificacao) > .header-visualizar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 40px;
+    margin: 0 0 16px;
+}
+
+.content:has(> .escola-identificacao) > .header-visualizar .page-title {
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: calc(30px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.content:has(> .escola-identificacao) > .header-visualizar .btn-voltar {
+    margin-top: 0;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 575px) {
+    .content:has(> .escola-identificacao) > .header-visualizar .page-title {
+        font-size: calc(24px * var(--ace-escala-fonte, 1));
+    }
+}
+
+
+/* Ocultar abas inativas */
+.visu-secao[hidden],
+.competicao-gerenciar-conteudo[hidden] {
+    display: none !important;
+}

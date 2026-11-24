@@ -171,4 +171,20 @@ export function preencherPeriodoInscricao(periodo) {
 
     inicio.textContent = formatarData(periodo.dt_inicio_inscricao);
     fim.textContent = formatarData(periodo.dt_encerramento_inscricao);
+
+    const campoInicio = document.getElementById("dataInicioInscricao");
+    const campoFim = document.getElementById("dataFimInscricao");
+
+    if (campoInicio) {
+        campoInicio.value = periodo?.dt_inicio_inscricao
+            ? String(periodo.dt_inicio_inscricao).slice(0, 10)
+            : "";
+    }
+
+    if (campoFim) {
+        campoFim.value = periodo?.dt_encerramento_inscricao
+            ? String(periodo.dt_encerramento_inscricao).slice(0, 10)
+            : "";
+    }
+
 }

@@ -1,31 +1,29 @@
-// CONFIGURAR ABAS
+// ABAS SUPERIORES DO TIME - MESMO FUNCIONAMENTO DA COMPETIÇÃO
 export function configurarAbas() {
-    const menu = document.querySelector(".visu-menu");
-    const paineis = document.querySelectorAll(".visu-painel-conteudo");
-    const botoesAbas = document.querySelectorAll("[data-aba]");
-    const secoes = document.querySelectorAll(".visu-secao");
+    const menu = document.getElementById("nav-time");
+    const painel = document.querySelector(".time-painel-conteudo");
+    if (!menu || !painel || menu.dataset.abasConfiguradas) return;
+    menu.dataset.abasConfiguradas = "true";
+    const botoes = [...menu.querySelectorAll("[data-aba]")];
+    const secoes = [...painel.querySelectorAll(":scope > .visu-secao")];
 
-    if (!menu || !paineis.length || !botoesAbas.length || !secoes.length) {
-        return;
+    function abrirAba(botao) {
+        if (botao.hidden || botao.getAttribute("aria-hidden") === "true") return;
+        const destino = botao.dataset.aba;
+        if (!secoes.some(secao => secao.id === destino)) return;
+        botoes.forEach(item => {
+            const ativa = item === botao;
+            item.classList.toggle("active", ativa);
+            item.setAttribute("aria-selected", String(ativa));
+            item.tabIndex = ativa ? 0 : -1;
+        });
+        secoes.forEach(secao => {
+            secao.hidden = secao.id !== destino;
+        });
     }
 
-    botoesAbas.forEach(botao => {
-        botao.addEventListener("click", () => {
-            const abaSelecionada = botao.dataset.aba;
-
-            botoesAbas.forEach(aba => {
-                aba.classList.remove("active");
-                aba.setAttribute("aria-selected", "false");
-                aba.setAttribute("tabindex", "-1");
-            });
-
-            botao.classList.add("active");
-            botao.setAttribute("aria-selected", "true");
-            botao.setAttribute("tabindex", "0");
-
-            secoes.forEach(secao => {
-                secao.hidden = secao.id !== abaSelecionada;
-            });
-        });
+    botoes.forEach(botao => {
+        botao.addEventListener("click", () => abrirAba(botao));
     });
+    abrirAba(botoes.find(botao => botao.classList.contains("active")) || botoes[0]);
 }

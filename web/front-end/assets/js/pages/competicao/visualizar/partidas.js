@@ -7,7 +7,7 @@ import { renderizarListaPartidas } from "../../../components/cardPartida.js";
 import { timeService } from "../../../services/timeService.js";
 
 // CADASTRAR PARTIDA
-function configurarModalPartida() {
+export function configurarModalPartida() {
     const botaoAbrir = document.getElementById("abrirModalPartida");
     const modal = document.getElementById("modalCadastrarPartida");
     const tipo = document.getElementById("tipoCadastroPartida");
@@ -16,20 +16,29 @@ function configurarModalPartida() {
     const campoTime2 = document.getElementById("campoTime2");
     const form = document.getElementById("formCadastrarPartida");
 
-    if (!botaoAbrir || !modal || !tipo || !form || botaoAbrir.dataset.configurado) return;
+    if (!botaoAbrir || !modal || !tipo || !form || botaoAbrir.dataset.configurado) {
+        return;
+    }
 
     botaoAbrir.dataset.configurado = "true";
-    botaoAbrir.addEventListener("click", () => modal.abrir());
 
+    // ABRIR MODAL DE CADASTRO
+    botaoAbrir.addEventListener("click", () => {
+        if (typeof modal.abrir === "function") {
+            modal.abrir();
+        } else {
+            console.error("O componente app-modal não possui o método abrir().");
+        }
+    });
+
+    // MOSTRAR CAMPOS CONFORME O TIPO DE CADASTRO
     function atualizarCampos() {
         const manual = tipo.value === "MANUAL";
 
-        // MOSTRAR CAMPOS CONFORME O TIPO
         campoConfronto.hidden = manual;
         campoTime1.hidden = !manual;
         campoTime2.hidden = !manual;
 
-        // ATUALIZAR OBRIGATORIEDADE
         const selectConfronto = document.getElementById("confrontoPartida");
         const selectTime1 = document.getElementById("timePartida1");
         const selectTime2 = document.getElementById("timePartida2");
@@ -38,7 +47,6 @@ function configurarModalPartida() {
         selectTime1.required = manual;
         selectTime2.required = manual;
 
-        // DESABILITAR CAMPOS OCULTOS
         selectConfronto.disabled = manual;
         selectTime1.disabled = !manual;
         selectTime2.disabled = !manual;
@@ -47,6 +55,7 @@ function configurarModalPartida() {
     tipo.addEventListener("change", atualizarCampos);
     atualizarCampos();
 
+    // CADASTRAR PARTIDA
     form.addEventListener("submit", async evento => {
         evento.preventDefault();
 
@@ -66,8 +75,12 @@ function configurarModalPartida() {
 
         const dados = {
             cd_competicao: Number(idCompeticao),
-            cd_confronto: manual ? null : Number(document.getElementById("confrontoPartida").value),
-            cd_times: manual ? [Number(time1), Number(time2)] : [],
+            cd_confronto: manual
+                ? null
+                : Number(document.getElementById("confrontoPartida").value),
+            cd_times: manual
+                ? [Number(time1), Number(time2)]
+                : [],
             dt_partida: data,
             inicio_em: horario ? `${data}T${horario}` : null,
             local_partida: document.getElementById("localPartida").value.trim(),
@@ -84,18 +97,23 @@ function configurarModalPartida() {
 
             form.reset();
             atualizarCampos();
-            modal.fechar();
+
+            if (typeof modal.fechar === "function") {
+                modal.fechar();
+            }
 
             await carregarPartidas();
 
         } catch (erro) {
             console.error("Erro ao cadastrar partida:", erro);
-            mensagem.textContent = erro.message || "Não foi possível cadastrar a partida.";
+            mensagem.textContent =
+                erro.message || "Não foi possível cadastrar a partida.";
         } finally {
             botaoSalvar.disabled = false;
         }
     });
 }
+
 
 
 // CONFIGURAR MODAL DE ESCALAÇÃO DE ÁRBITRO

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/assets/js/utils/preferenciasVisuais.js"></script>
-<script>
+    <script>
         try {
             document.documentElement.classList.toggle(
                 "sidebar-fechada",
@@ -14,7 +14,7 @@
             // A página mantém o menu aberto se o armazenamento não estiver disponível.
         }
     </script>
-<link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="/assets/css/base.css">
     <link rel="stylesheet" href="/assets/css/layout.css">
     <link rel="stylesheet" href="/assets/css/components.css">
@@ -27,20 +27,18 @@
     <link rel="stylesheet" href="/assets/css/pages/modulos/chaveamento.css">
     <link rel="stylesheet" href="/assets/css/pages/visualizar.css">
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
-
     <title>Visualizar time</title>
-
     <link rel="modulepreload" href="/assets/js/main.js">
     <link rel="modulepreload" href="/assets/js/pages/time/visualizar.js">
     <link rel="stylesheet" href="/assets/css/acessibilidade-tema.css">
+    <link rel="stylesheet" href="/assets/css/pages/modulos/time-visualizar-ajustes.css">
 </head>
 <body>
-<app-bar></app-bar>
+    <app-bar></app-bar>
     <app-sidebar></app-sidebar>
-
     <div class="content">
         <!-- CABEÇALHO -->
-        <div class="visu-box mt-4">
+        <div class="visu-box">
             <div class="header-visualizar">
                 <a href="/pages/time/listar.html" class="btn-voltar" id="botaoVoltarTime" aria-label="Voltar">
                     <img src="/assets/icons/arrow.svg" alt="">
@@ -54,25 +52,24 @@
                 </div>
             </div>
         </div>
-
         <!-- PAINEL PRINCIPAL -->
         <div class="row visu-painel">
-            <!-- MENU LATERAL -->
+            <!-- ABAS SUPERIORES -->
             <div class="col-12">
-                <nav class="visu-menu" aria-label="Menu do time">
-                    <button type="button" class="visu-menu-item active" data-aba="integrantes" aria-selected="true">Integrantes</button>
-                    <button type="button" class="visu-menu-item" data-aba="tecnico" aria-selected="false">Técnico</button>
-                    <button type="button" class="visu-menu-item" data-aba="responsaveis" aria-selected="false">Responsáveis</button>
-                    <button type="button" class="visu-menu-item" data-aba="escalacao" aria-selected="false">Escalação</button>
-                    <button type="button" class="visu-menu-item" data-aba="partidas" aria-selected="false">Partidas</button>
-                    <button type="button" class="visu-menu-item" data-aba="gerenciamento" aria-selected="false" hidden style="display:none!important">Gerenciamento</button>
+                <nav aria-label="Seções do time">
+                    <div class="nav nav-tabs visu-menu" id="nav-time" role="tablist" aria-orientation="horizontal">
+                        <button class="nav-link visu-menu-item active" id="aba-integrantes" type="button" data-aba="integrantes" role="tab" aria-controls="integrantes" aria-selected="true">Integrantes</button>
+                        <button class="nav-link visu-menu-item" id="aba-tecnico" type="button" data-aba="tecnico" role="tab" aria-controls="tecnico" aria-selected="false">Técnico</button>
+                        <button class="nav-link visu-menu-item" id="aba-responsaveis" type="button" data-aba="responsaveis" role="tab" aria-controls="responsaveis" aria-selected="false">Responsáveis</button>
+                        <button class="nav-link visu-menu-item" id="aba-escalacao" type="button" data-aba="escalacao" role="tab" aria-controls="escalacao" aria-selected="false">Escalação</button>
+                        <button class="nav-link visu-menu-item" id="aba-partidas" type="button" data-aba="partidas" role="tab" aria-controls="partidas" aria-selected="false">Partidas</button>
+                        <button class="nav-link visu-menu-item" id="aba-gerenciamento" type="button" data-aba="gerenciamento" role="tab" aria-controls="gerenciamento" aria-selected="false" hidden>Gerenciamento</button>
+                    </div>
                 </nav>
             </div>
-
             <!-- CONTEÚDO -->
             <div class="col-12">
-                <main class="visu-box visu-painel-conteudo">
-
+                <main class="visu-box visu-painel-conteudo time-painel-conteudo">
                     <!-- ABA INTEGRANTES -->
                     <section class="visu-secao" id="integrantes" role="tabpanel">
                         <div class="visu-secao-header">
@@ -80,14 +77,13 @@
                                 <h2 class="section-title">Integrantes</h2>
                                 <p class="section-description">Pessoas que fazem parte deste time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante" hidden style="display:none!important">+ Adicionar integrante</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalIntegrante" hidden>+ Adicionar integrante</button>
                         </div>
                         <div id="mensagensIntegrantes" aria-live="polite"></div>
-                        <div class="times-inscritos-grid" id="listaIntegrantes">
-                            <!-- Os integrantes vão ser listados aqui pela API -->
+                        <div class="cards-entidade" id="listaIntegrantes">
+                        <!-- Os integrantes vão ser listados aqui pela API -->
                         </div>
                     </section>
-
                     <!-- ABA RESPONSÁVEIS -->
                     <section class="visu-secao" id="responsaveis" role="tabpanel" hidden>
                         <div class="visu-secao-header">
@@ -95,14 +91,13 @@
                                 <h2 class="section-title">Responsáveis</h2>
                                 <p class="section-description">Responsáveis vinculados ao time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalResponsavel" hidden style="display:none!important">+ Adicionar responsável</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalResponsavel" hidden>+ Adicionar responsável</button>
                         </div>
                         <div id="mensagensResponsaveis" aria-live="polite"></div>
                         <div class="cards-entidade" id="listaResponsaveis">
                             <p class="section-description">Carregando responsáveis...</p>
                         </div>
                     </section>
-
                     <!-- ABA TÉCNICO -->
                     <section class="visu-secao" id="tecnico" role="tabpanel" hidden>
                         <div class="visu-secao-header">
@@ -110,31 +105,24 @@
                                 <h2 class="section-title">Técnico</h2>
                                 <p class="section-description">Técnico responsável pela orientação do time.</p>
                             </div>
-                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalTecnico" hidden style="display:none!important">+ Adicionar técnico</button>
+                            <button type="button" class="custom-btn custom-btn-secondary" id="abrirModalTecnico" hidden>+ Adicionar técnico</button>
                         </div>
+                        <div id="mensagensTecnico" aria-live="polite"></div>
                         <div class="cards-entidade" id="listaTecnico">
                             <p class="section-description">Carregando técnico...</p>
                         </div>
                     </section>
-
                     <!-- ABA PARTIDAS -->
                     <section class="visu-secao" id="partidas" role="tabpanel" hidden>
-
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Partidas</h2>
-                                <p class="section-description">
-                                    Acompanhe os jogos disputados e agendados pelo time.
-                                </p>
+                                <p class="section-description">Acompanhe os jogos disputados e agendados pelo time.</p>
                             </div>
                         </div>
-
                         <div id="mensagensPartidas" aria-live="polite"></div>
-
                         <div class="partidas-lista" id="listaPartidas"></div>
-
                     </section>
-
                     <!-- ABA ESCALAÇÃO -->
                     <section class="visu-secao" id="escalacao" role="tabpanel" hidden>
                         <div class="visu-secao-header">
@@ -143,7 +131,6 @@
                                 <p class="section-description">Visualize e gerencie a formação dos jogadores em campo.</p>
                             </div>
                         </div>
-
                         <div class="escalacao-layout">
                             <!-- CAMPO DE FUTSAL -->
                             <div class="card-escalacao">
@@ -175,9 +162,8 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- POSIÇÕES -->
-                            <div class="card-posicoes" hidden style="display:none!important">
+                            <div class="card-posicoes" hidden>
                                 <div class="mb-3">
                                     <h3 class="section-title">Integrantes por função</h3>
                                     <p class="section-description">Selecione os jogadores titulares de cada posição.</p>
@@ -190,13 +176,11 @@
                                     </div>
                                     <button type="submit" class="custom-btn custom-btn-primary" id="salvarEscalacao">Salvar escalação</button>
                                 </form>
-                                
                             </div>
                         </div>
                     </section>
-
-                   <!-- ABA GERENCIAMENTO -->
-                    <section class="visu-secao" id="gerenciamento" hidden style="display:none!important" role="tabpanel">
+                    <!-- ABA GERENCIAMENTO -->
+                    <section class="visu-secao" id="gerenciamento" hidden role="tabpanel">
                         <div class="visu-secao-header">
                             <div>
                                 <h2 class="section-title">Gerenciamento</h2>
@@ -216,7 +200,6 @@
                                     <div class="competicao-subsecao">
                                         <h3 class="visu-subtitulo">Editar informações do time</h3>
                                         <form id="formEditarInformacoesTime" class="competicao-form time-form-edicao" enctype="multipart/form-data">
-                                            <p id="mensagemInformacoesTime" aria-live="polite"></p>
                                             <div class="time-editar-layout">
                                                 <div class="time-editar-imagem">
                                                     <div class="form-imagem">
@@ -228,6 +211,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="time-editar-dados">
+                                                    <p id="mensagemInformacoesTime" aria-live="polite"></p>
                                                     <div class="competicao-form-campo">
                                                         <label for="editarNomeTime" class="form-label">Nome do time</label>
                                                         <input type="text" id="editarNomeTime" name="nm_time" class="form-input" maxlength="100" required>
@@ -258,15 +242,14 @@
                             </div>
                         </div>
                     </section>
-
                 </main>
             </div>
         </div>
     </div>
-
     <!-- MODAL ADICIONAR INTEGRANTE -->
     <app-modal titulo="Adicionar integrante">
         <form id="formAdicionarIntegrante">
+            <p id="mensagemAdicionarIntegrante" aria-live="polite"></p>
             <div class="mb-3">
                 <label for="integranteAluno" class="form-label">Aluno</label>
                 <select class="form-input" id="integranteAluno" name="cd_usuario" required>
@@ -283,70 +266,45 @@
                 <label for="integranteCamisa" class="form-label">Número da camisa</label>
                 <input type="number" class="form-input" id="integranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
             </div>
-
+            <div class="modal-footer">
+                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
+                <button type="submit" class="custom-btn custom-btn-primary">Adicionar integrante</button>
+            </div>
+        </form>
+    </app-modal>
+    <!-- MODAL EDITAR INTEGRANTE -->
+    <app-modal titulo="Editar integrante">
+        <form id="formEditarIntegrante">
+            <p id="mensagemEditarIntegrante" aria-live="polite"></p>
+            <input type="hidden" id="editarIntegranteId">
+            <div class="mb-3">
+                <label for="editarIntegranteNome">Aluno</label>
+                <input type="text" class="form-input" id="editarIntegranteNome" disabled>
+            </div>
             <div class="mb-3">
                 <label for="editarIntegranteFuncao">Função no time</label>
                 <select class="form-input" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
                     <option value="">Selecione uma função</option>
                 </select>
             </div>
-
             <div class="mb-3">
                 <label for="editarIntegranteCamisa">Número da camisa</label>
                 <input type="number" class="form-input" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
             </div>
-
             <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="editarIntegranteCapitao" name="capitao">
                 <label class="form-check-label" for="editarIntegranteCapitao">Definir como capitão</label>
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
                 <button type="submit" class="custom-btn custom-btn-primary">Salvar alterações</button>
             </div>
         </form>
     </app-modal>
-
-
-    <!-- MODAL EDITAR INTEGRANTE -->
-    <app-modal titulo="Editar integrante">
-        <form id="formEditarIntegrante">
-            <input type="hidden" id="editarIntegranteId">
-
-            <div class="mb-3">
-                <label for="editarIntegranteNome">Aluno</label>
-                <input type="text" class="form-control" id="editarIntegranteNome" disabled>
-            </div>
-
-            <div class="mb-3">
-                <label for="editarIntegranteFuncao">Função no time</label>
-                <select class="form-select" id="editarIntegranteFuncao" name="cd_funcao_integrante" required>
-                    <option value="">Selecione uma função</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="editarIntegranteCamisa">Número da camisa</label>
-                <input type="number" class="form-control" id="editarIntegranteCamisa" name="numero_camisa" min="1" placeholder="Ex.: 10">
-            </div>
-
-            <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="editarIntegranteCapitao" name="capitao">
-                <label class="form-check-label" for="editarIntegranteCapitao">Definir como capitão</label>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="custom-btn custom-btn-secondary" data-fechar-modal>Cancelar</button>
-                <button type="submit" class="custom-btn custom-btn-primary">Salvar alterações</button>
-            </div>
-        </form>
-    </app-modal>
-
-
     <!-- MODAL ADICIONAR RESPONSÁVEL -->
     <app-modal titulo="Adicionar responsável">
         <form id="formAdicionarResponsavel">
+            <p id="mensagemAdicionarResponsavel" aria-live="polite"></p>
             <div class="mb-3">
                 <label for="selectResponsavel" class="form-label">Responsável</label>
                 <select class="form-input" id="selectResponsavel" name="cd_responsavel" required>
@@ -359,10 +317,10 @@
             </div>
         </form>
     </app-modal>
-
     <!-- MODAL ADICIONAR TÉCNICO -->
     <app-modal titulo="Adicionar técnico">
         <form id="formAdicionarTecnico">
+            <p id="mensagemAdicionarTecnico" aria-live="polite"></p>
             <div class="mb-3">
                 <label for="selectTecnico" class="form-label">Técnico</label>
                 <select class="form-input" id="selectTecnico" name="cd_usuario" required>
@@ -375,7 +333,6 @@
             </div>
         </form>
     </app-modal>
-
     <script type="module" src="/assets/js/main.js"></script>
     <script type="module" src="/assets/js/pages/time/visualizar.js"></script>
 </body>

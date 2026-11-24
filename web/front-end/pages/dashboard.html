@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/assets/js/utils/preferenciasVisuais.js"></script>
+    <script>
+        try {
+            document.documentElement.classList.toggle(
+                "sidebar-fechada",
+                localStorage.getItem("sidebarFechada") === "true"
+            );
+        } catch {
+            // A página mantém o menu aberto se o armazenamento não estiver disponível.
+        }
+    </script>
+
 
     <link rel="stylesheet" href="/assets/bootstrap-5.3.8-dist/css/bootstrap-grid.min.css">
 
@@ -19,7 +30,7 @@
 
     <link rel="icon" type="image/png" href="/assets/img/icon.png">
 
-    <title>Dashboard | ACE</title>
+    <title>Dashboard</title>
 
     <link rel="modulepreload" href="/assets/js/main.js">
     <link rel="modulepreload" href="/assets/js/pages/dashboard.js">

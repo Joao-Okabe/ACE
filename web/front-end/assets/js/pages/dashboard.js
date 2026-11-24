@@ -584,9 +584,6 @@ function inicializarCalendario() {
     configurarModalCalendario();
 }
 
-// =========================================================
-// PRÓXIMAS PARTIDAS
-// =========================================================
 
 function renderizarPartidasDashboard() {
     if (!listaPartidas) return;
@@ -595,8 +592,62 @@ function renderizarPartidasDashboard() {
         ? partidasDashboard
         : partidasDashboard.slice(0, LIMITE_PARTIDAS_INICIAL);
 
+    // Renderizar as partidas antes de configurar os eventos.
     renderizarListaPartidas(listaPartidas, partidasVisiveis);
 
+    // Abrir competição ao clicar na partida.
+    const cardsPartidas = listaPartidas.querySelectorAll(".partida-card");
+
+    cardsPartidas.forEach((card, indice) => {
+        const partida = partidasVisiveis[indice];
+
+        const idCompeticao = Number(
+            partida?.cd_competicao ??
+            partida?.id_competicao ??
+            partida?.competicao_id
+        );
+
+        if (!Number.isInteger(idCompeticao) || idCompeticao <= 0) return;
+
+        const voltar = "/pages/dashboard.html";
+
+        const destino =
+            `/pages/competicao/visualizar.html?id=${encodeURIComponent(idCompeticao)}&voltar=${encodeURIComponent(voltar)}#partidas`;
+
+        card.style.cursor = "pointer";
+        card.setAttribute("role", "link");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-label", "Visualizar competição da partida");
+
+        card.addEventListener("click", evento => {
+            if (evento.target.closest("a, button, input, select, textarea")) return;
+            window.location.href = destino;
+        });
+
+        card.addEventListener("keydown", evento => {
+            if (evento.target !== card || !["Enter", " "].includes(evento.key)) return;
+
+            evento.preventDefault();
+            window.location.href = destino;
+        });
+    });
+
+    // Configurar retorno das partidas ao dashboard.
+    listaPartidas.querySelectorAll("a.partida-card").forEach(card => {
+        const url = new URL(card.href, window.location.origin);
+
+        if (url.pathname !== "/pages/competicao/visualizar.html") return;
+
+        url.searchParams.set("voltar", "/pages/dashboard.html");
+        url.hash = "partidas";
+
+        card.href = url.pathname + url.search + url.hash;
+    });
+
+    // Remover botão anterior, caso exista.
+    listaPartidas.querySelector(".dashboard-mostrar-mais")?.remove();
+
+    // Não exibir botão se não houver partidas adicionais.
     if (partidasDashboard.length <= LIMITE_PARTIDAS_INICIAL) {
         return;
     }
@@ -618,6 +669,7 @@ function renderizarPartidasDashboard() {
         : "Mostrar mais";
 
     botao.append(icone, texto);
+
     botao.addEventListener("click", () => {
         partidasExpandidas = !partidasExpandidas;
         renderizarPartidasDashboard();
@@ -625,7 +677,6 @@ function renderizarPartidasDashboard() {
 
     listaPartidas.appendChild(botao);
 }
-
 async function carregarPartidas() {
     if (!listaPartidas) return;
 

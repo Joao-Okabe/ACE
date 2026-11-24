@@ -351,3 +351,597 @@
     flex: 0 0 60px;
     width: 100%;
 }
+
+
+
+/* ========================================
+   REFINAMENTO VISUAL — CHAVEAMENTO ACE
+======================================== */
+
+.chaveamento {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+    scroll-behavior: smooth;
+}
+
+.chaveamento-header {
+    justify-content: center;
+    text-align: center;
+}
+
+.chaveamento-header > div {
+    text-align: center;
+}
+
+.chaveamento-header h3 {
+    text-align: center;
+}
+
+/* ========================================
+   CENTRALIZAÇÃO DAS ESTRUTURAS
+======================================== */
+
+.bracket {
+    justify-content: center;
+    margin-inline: auto;
+}
+
+.bracket:not(.bracket-dupla):not(.bracket-suico) {
+    justify-content: center;
+    margin-inline: auto;
+}
+
+/* ========================================
+   TÍTULOS DAS RODADAS
+======================================== */
+
+.round-title {
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid var(--laranja-principal);
+}
+
+/* ========================================
+   CARDS DAS PARTIDAS
+======================================== */
+
+.partida {
+    border: 1px solid rgba(24, 24, 71, 0.22);
+    border-radius: 12px;
+    background: var(--bege-principal);
+    box-shadow: 0 3px 10px rgba(24, 24, 71, 0.09);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.partida:hover {
+    border-color: var(--laranja-principal);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+/* ========================================
+   IDENTIFICAÇÃO DOS TIMES
+======================================== */
+
+.time {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 12px;
+    text-align: left;
+}
+
+.time img {
+    width: 19px;
+    height: 19px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.time span {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ========================================
+   SISTEMA SUÍÇO
+======================================== */
+
+.bracket-suico {
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    margin-inline: auto;
+    padding: 20px;
+}
+
+.bracket-suico .coluna-suica {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 260px;
+    width: 260px;
+}
+
+.bracket-suico .round-title {
+    width: 100%;
+    min-height: 42px;
+    margin-bottom: 22px;
+    color: var(--laranja-principal);
+    border-bottom: 2px solid var(--laranja-principal);
+}
+
+.bracket-suico .round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    height: auto;
+}
+
+.bracket-suico .partida {
+    position: relative;
+    left: auto;
+    width: 100%;
+    min-height: 60px;
+    flex: 0 0 60px;
+}
+
+/* ========================================
+   ELIMINATÓRIA DUPLA
+======================================== */
+
+.bracket-dupla {
+    margin-inline: auto;
+}
+
+.bracket-dupla .round-title {
+    color: var(--laranja-principal);
+    border-bottom: 2px solid var(--laranja-principal);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 900px) {
+    .chaveamento {
+        padding: 20px 10px;
+    }
+
+    .bracket-suico {
+        justify-content: flex-start;
+        gap: 20px;
+        padding: 12px 6px;
+    }
+
+    .bracket {
+        margin-inline: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .partida {
+        transition: none;
+    }
+}
+
+
+
+/* ========================================
+   REFINAMENTO VISUAL — IDENTIDADE ACE
+======================================== */
+
+.chaveamento-header {
+    justify-content: center;
+    text-align: center;
+}
+
+.chaveamento-header h3 {
+    color: var(--azul-principal);
+    letter-spacing: -0.4px;
+}
+
+.chaveamento {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+}
+
+/* ========================================
+   CENTRALIZAÇÃO DOS CHAVEAMENTOS
+======================================== */
+
+.bracket {
+    justify-content: center;
+    margin-inline: auto;
+}
+
+.bracket-grupo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin: 0 auto 36px;
+    padding: 22px;
+    background: rgba(24, 24, 71, 0.025);
+    border: 1px solid rgba(24, 24, 71, 0.12);
+    border-radius: 16px;
+    box-sizing: border-box;
+}
+
+.bracket-grupo > .visu-subtitulo {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    color: var(--azul-principal);
+    font-size: calc(19px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+}
+
+/* ========================================
+   TÍTULOS DAS RODADAS
+======================================== */
+
+.round-title {
+    justify-content: center;
+    text-align: center;
+    color: var(--laranja-principal);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid var(--laranja-principal);
+}
+
+/* ========================================
+   CARDS DAS PARTIDAS
+======================================== */
+
+.partida {
+    background: var(--bege-principal);
+    border: 1px solid rgba(24, 24, 71, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 3px 9px rgba(24, 24, 71, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.partida:hover {
+    border-color: var(--laranja-principal);
+    box-shadow: 0 5px 13px rgba(24, 24, 71, 0.13);
+}
+
+.time {
+    padding-inline: 12px;
+    gap: 9px;
+}
+
+.time img {
+    width: 19px;
+    height: 19px;
+}
+
+/* ========================================
+   SISTEMA SUÍÇO
+======================================== */
+
+.bracket-suico {
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    margin-inline: auto;
+    padding: 20px 10px;
+}
+
+.bracket-suico .coluna-suica {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bracket-suico .round-title {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+}
+
+.bracket-suico .round {
+    align-items: center;
+    gap: 18px;
+}
+
+.bracket-suico .partida {
+    border-radius: 12px;
+}
+
+/* ========================================
+   CLASSIFICAÇÃO DOS GRUPOS
+======================================== */
+
+#classificacao-grupos-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    box-sizing: border-box;
+}
+
+#classificacao-grupos-container > .visu-subtitulo {
+    width: 100%;
+    margin: 0;
+    color: var(--azul-principal);
+    font-size: calc(22px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Cartão de cada grupo */
+
+.classificacao-grupo {
+    width: 100%;
+    min-width: 0;
+    padding: 20px;
+    background: var(--bege-principal);
+    border: 1px solid rgba(24, 24, 71, 0.18);
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(24, 24, 71, 0.07);
+    box-sizing: border-box;
+}
+
+/* Identificação do grupo */
+
+.classificacao-grupo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    margin: 0 0 16px;
+    padding: 8px 14px;
+    color: var(--azul-principal);
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 2px solid var(--laranja-principal);
+}
+
+/* Área responsiva da tabela */
+
+.classificacao-tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid rgba(24, 24, 71, 0.15);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* Tabela */
+
+.classificacao-tabela {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--azul-principal);
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
+    text-align: center;
+}
+
+/* Cabeçalho */
+
+.classificacao-tabela thead {
+    background: var(--azul-principal);
+    color: #ffffff;
+}
+
+.classificacao-tabela th {
+    height: 44px;
+    padding: 10px 8px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: none;
+}
+
+.classificacao-tabela th:first-child {
+    border-radius: 8px 0 0 0;
+}
+
+.classificacao-tabela th:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+/* Células */
+
+.classificacao-tabela td {
+    height: 42px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(24, 24, 71, 0.09);
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* Linhas alternadas */
+
+.classificacao-tabela tbody tr:nth-child(even) {
+    background: rgba(24, 24, 71, 0.035);
+}
+
+.classificacao-tabela tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+/* Destaque dos dois primeiros colocados */
+
+.classificacao-tabela tbody tr:nth-child(-n+2) {
+    background: rgba(244, 78, 28, 0.075);
+}
+
+.classificacao-tabela tbody tr:nth-child(-n+2) td:first-child {
+    color: var(--laranja-principal);
+    font-weight: 800;
+}
+
+/* Nome do time */
+
+.classificacao-tabela .classificacao-nome-time {
+    min-width: 130px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--azul-principal);
+}
+
+/* Pontuação */
+
+.classificacao-tabela tbody td:last-child {
+    color: var(--laranja-principal);
+    font-weight: 800;
+}
+
+/* Última linha */
+
+.classificacao-tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ========================================
+   MENSAGEM DA CLASSIFICAÇÃO
+======================================== */
+
+#mensagemClassificacaoGrupos {
+    width: 100%;
+    text-align: center;
+    color: var(--azul-principal);
+    padding: 14px;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 900px) {
+    .chaveamento {
+        padding: 18px 8px;
+    }
+
+    .bracket-grupo {
+        padding: 14px;
+    }
+
+    .bracket-suico {
+        justify-content: flex-start;
+        gap: 18px;
+    }
+
+    #classificacao-grupos-container {
+        padding-inline: 8px;
+    }
+
+    .classificacao-grupo {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .chaveamento-header {
+        justify-content: center;
+    }
+
+    .bracket-grupo {
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .classificacao-grupo {
+        padding: 9px;
+    }
+
+    .classificacao-grupo-titulo {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .partida {
+        transition: none;
+    }
+}
+
+
+/* ========================================
+   AJUSTE FINAL — CHAVEAMENTO CENTRALIZADO
+======================================== */
+
+/* Área principal */
+.chaveamento {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 24px 12px;
+    box-sizing: border-box;
+}
+
+/* Centralizar estrutura */
+.bracket {
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Remover fundo e aparência de cartão dos grupos */
+.bracket-grupo {
+    width: 100%;
+    margin: 0 auto 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Título dos grupos */
+.bracket-grupo > .visu-subtitulo {
+    text-align: center;
+    margin: 0 auto 20px;
+}
+
+/* Centralizar chaveamento suíço */
+.bracket-suico {
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Centralizar eliminatória dupla */
+.bracket-dupla {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Não deixar as estruturas ultrapassarem a área */
+.chaveamento > .bracket,
+.chaveamento > .bracket-suico {
+    max-width: max-content;
+}
+
+/* Em telas menores, preservar rolagem horizontal */
+@media (max-width: 900px) {
+    .chaveamento {
+        align-items: flex-start;
+        overflow-x: auto;
+    }
+
+    .bracket,
+    .bracket-suico,
+    .bracket-dupla {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+

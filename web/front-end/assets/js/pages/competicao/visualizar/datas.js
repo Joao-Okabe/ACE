@@ -22,9 +22,10 @@ export function configurarFormularioInformacoes(atualizarCompeticao) {
         }
 
         const dados = {
-            nm_competicao: nome
+            nm_competicao: nome,
+            dt_inicio: document.getElementById("editarDataInicio")?.value || null,
+            dt_encerramento: document.getElementById("editarDataFim")?.value || null
         };
-
         botao.disabled = true;
         exibirMensagem(mensagem, "Salvando informações...", "info");
 

@@ -3,25 +3,43 @@ import {
     configurarFormularioInscricao,
     configurarFormularioPeriodo
 } from "./inscricao.js";
-import { configurarFormularioInformacoes } from "./datas.js";
-import { configurarFormularioLocalDatas } from "./localDatas.js";
-import { configurarFormularioEdicaoEtapa } from "./etapas.js";
+import {
+    configurarFormularioInformacoes,
+    configurarFormularioDatas
+} from "./datas.js";
+import {
+    configurarFormularioEdicaoEtapa,
+    configurarFormularioCadastroEtapa
+} from "./etapas.js";
 import { configurarBotaoGerarChaveamento } from "./chaveamento.js";
 import { configurarAbas } from "./abas.js";
 import { inicializarArbitros } from "./arbitros.js";
+import { configurarRemocaoCompeticao } from "./remover.js";
+import { configurarRemocaoTimes } from "./remocaoTimes.js";
+import { configurarModalPartida, carregarPartidas } from "./partidas.js";
 
 // INICIALIZAR VISUALIZAÇÃO
 export async function inicializarVisualizacao() {
     configurarAbas();
+
     configurarFormularioInscricao(carregarCompeticao);
     configurarFormularioPeriodo(carregarCompeticao);
+
     configurarFormularioInformacoes(carregarCompeticao);
-    configurarFormularioLocalDatas(carregarCompeticao);
+    configurarFormularioDatas(carregarCompeticao);
+
     configurarFormularioEdicaoEtapa();
     configurarBotaoGerarChaveamento(carregarCompeticao);
     configurarMenuGerenciamento();
 
+    configurarRemocaoTimes(carregarCompeticao);
+    configurarRemocaoCompeticao();
+    configurarModalPartida();
+
     await carregarCompeticao();
+    await carregarPartidas();
+
+    configurarFormularioCadastroEtapa();
     await inicializarArbitros();
 }
 

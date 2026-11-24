@@ -1,6 +1,67 @@
 import { competicaoService } from "../../../services/competicaoService.js";
 import { idCompeticao } from "./competicao.js";
 
+// CONFIGURAR CADASTRO DE ETAPAS (restaurado da api_v1)
+let etapasAtuais = [];
+
+export function configurarFormularioCadastroEtapa() {
+    const botaoAbrir = document.getElementById("botaoAbrirModalCadastrarEtapa");
+    const modal = document.getElementById("modalCadastrarEtapa");
+    const formulario = document.getElementById("formCadastrarEtapa");
+    const mensagem = document.getElementById("mensagemCadastrarEtapa");
+    const botaoSalvar = document.getElementById("botaoCadastrarEtapa");
+    if (!botaoAbrir || !modal || !formulario || !mensagem || !botaoSalvar) return;
+
+    const podeGerenciar = window.usuarioVisitante !== true && window.podeGerenciarCompeticao === true;
+    botaoAbrir.hidden = !podeGerenciar;
+    if (!podeGerenciar) return;
+
+    if (!botaoAbrir.dataset.configurado) {
+        botaoAbrir.dataset.configurado = "true";
+        botaoAbrir.addEventListener("click", () => {
+            formulario.reset();
+            mensagem.textContent = "";
+            const proximaOrdem = etapasAtuais.length
+                ? Math.max(...etapasAtuais.map(e => Number(e.ordem) || 0)) + 1
+                : 1;
+            document.getElementById("ordemEtapaCadastro").value = proximaOrdem;
+            modal.abrir();
+        });
+    }
+
+    if (formulario.dataset.configurado) return;
+    formulario.dataset.configurado = "true";
+    formulario.addEventListener("submit", async evento => {
+        evento.preventDefault();
+        if (window.usuarioVisitante === true || window.podeGerenciarCompeticao !== true) return;
+        const tipo = Number(document.getElementById("tipoEtapaCadastro").value);
+        const nome = document.getElementById("nomeEtapaCadastro").value.trim();
+        const ordem = Number(document.getElementById("ordemEtapaCadastro").value);
+        const descricao = document.getElementById("descricaoEtapaCadastro").value.trim();
+        if (!Number.isInteger(tipo) || tipo <= 0 || !nome || !Number.isInteger(ordem) || ordem <= 0) {
+            mensagem.textContent = "Preencha corretamente todos os campos obrigatórios.";
+            return;
+        }
+        try {
+            botaoSalvar.disabled = true;
+            mensagem.textContent = "Cadastrando etapa...";
+            await competicaoService.criarEtapa(idCompeticao, {
+                nm_etapa: nome, cd_tipo_etapa: tipo, ordem, descricao: descricao || null
+            });
+            formulario.reset();
+            modal.fechar();
+            await carregarEtapas();
+            const aviso = document.getElementById("mensagemEtapas");
+            if (aviso) aviso.textContent = "Etapa cadastrada com sucesso.";
+        } catch (erro) {
+            console.error("Erro ao cadastrar etapa:", erro);
+            mensagem.textContent = erro.message || "Não foi possível cadastrar a etapa.";
+        } finally {
+            botaoSalvar.disabled = false;
+        }
+    });
+}
+
 // ABRIR MODAL DE EDIÇÃO DE ETAPA
 function abrirModalEdicaoEtapa(etapa) {
     document.getElementById("idEtapaEditar").value =
@@ -94,6 +155,8 @@ export async function carregarEtapas() {
     const lista = document.getElementById("listaEtapas");
     const mensagem = document.getElementById("mensagemEtapas");
 
+    if (!lista || !mensagem) return;
+
     lista.replaceChildren();
     lista.classList.add("etapas-grid");
     mensagem.textContent = "Carregando etapas...";
@@ -103,7 +166,8 @@ export async function carregarEtapas() {
 
         const etapas = Array.isArray(resposta)
             ? resposta
-            : resposta.etapas || [];
+            : resposta?.etapas || resposta?.dados?.etapas || [];
+        etapasAtuais = etapas;
 
         if (!etapas.length) {
             mensagem.textContent = "Esta competição ainda não possui etapas cadastradas.";
@@ -139,7 +203,7 @@ export async function carregarEtapas() {
 
             card.append(cabecalho, tipo, descricao);
 
-            if (window.podeGerenciarCompeticao === true) {
+            if (window.usuarioVisitante !== true && window.podeGerenciarCompeticao === true) {
                 const acoes = document.createElement("div");
                 acoes.className = "etapa-card-acoes";
 

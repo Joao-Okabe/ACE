@@ -84,8 +84,8 @@ export function criarCardPartida(partida) {
         return elemento;
     };
 
-    const timeA = criarTime(partida.timeA);
-    const timeB = criarTime(partida.timeB);
+    const timeA = criarTime(partida.timeA || {});
+    const timeB = criarTime(partida.timeB || {});
 
     const placar = document.createElement("div");
     placar.className = "partida-placar";
@@ -120,12 +120,7 @@ export function criarCardPartida(partida) {
     competicao.textContent =
         partida.competicao || "Competição não informada";
 
-    const criador = document.createElement("span");
-    criador.textContent = `E-mail do criador: ${
-        partida.email_criador || "Não informado"
-    }`;
-
-    rodape.append(local, competicao, criador);
+    rodape.append(local, competicao);
 
     card.append(topo, confronto, rodape);
 

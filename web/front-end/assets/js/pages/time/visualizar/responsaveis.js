@@ -1,6 +1,6 @@
 import { apiFetch } from "../../../api/api.js";
 import { estadoTime, obterIdTime } from "./utilitarios.js";
-import { configurarImagem } from "../../../utils/imagens.js";
+import { criarCardEntidade } from "../../../components/cardEntidade.js";
 
 // CARREGAR RESPONSÁVEIS DO TIME
 export async function carregarResponsaveisTime(idTime = obterIdTime()) {
@@ -10,6 +10,7 @@ export async function carregarResponsaveisTime(idTime = obterIdTime()) {
     if (!lista) {
         return;
     }
+    lista.classList.add("cards-entidade");
 
     try {
         const responsaveis = await apiFetch(`/times/${idTime}/responsaveis`);
@@ -39,32 +40,30 @@ export async function carregarResponsaveisTime(idTime = obterIdTime()) {
     }
 }
 
-// CRIAR CARD DO RESPONSÁVEL
+
+/*CRIAR CARD DO RESPONSÁVEL*/
 export function criarCardResponsavel(responsavel) {
-    const card = document.createElement("div");
-    card.className = "time-inscrito-card";
+    return criarCardEntidade({
+        foto: responsavel.foto_perfil ||
+              responsavel.path_ft_usuario ||
+              "/assets/img/no-prof-pic.png",
 
-    const imagem = document.createElement("img");
-    imagem.className = "time-inscrito-brasao";
-    configurarImagem(
-        imagem,
-        [responsavel.foto_perfil, responsavel.path_ft_usuario, responsavel.imagem],
-        "/assets/img/no-prof-pic.png"
-    );
-    imagem.alt = `Foto de ${responsavel.nm_usuario}`;
+        nome: responsavel.nm_usuario || "Responsável sem nome",
 
-    const nome = document.createElement("span");
-    nome.className = "time-inscrito-nome";
-    nome.textContent = responsavel.nm_usuario || "Responsável sem nome";
+        detalhes: ["Responsável"],
 
-    card.append(imagem, nome);
-
-    return card;
+        url: null,
+        editar: null
+    });
 }
 
 // CONFIGURAR MODAL DE RESPONSÁVEL
 export function configurarModalResponsavel() {
-    const modal = document.querySelector('app-modal[titulo="Adicionar responsável"]');
+    if (!estadoTime.podeGerenciar) return;
+    const modal = document.querySelector(
+        'app-modal[titulo="Adicionar responsável"]'
+    );
+
     const botaoAbrir = document.getElementById("abrirModalResponsavel");
     const formulario = document.getElementById("formAdicionarResponsavel");
     const selectResponsavel = document.getElementById("selectResponsavel");
@@ -73,9 +72,9 @@ export function configurarModalResponsavel() {
         return;
     }
 
-    botaoAbrir.addEventListener("click", () => {
-        modal.setAttribute("aberto", "");
-        carregarOpcoesResponsaveis();
+    botaoAbrir.addEventListener("click", async () => {
+        modal.abrir();
+        await carregarOpcoesResponsaveis();
     });
 
     async function carregarOpcoesResponsaveis() {
@@ -86,50 +85,73 @@ export function configurarModalResponsavel() {
             ]);
 
             const idsVinculados = (vinculados || []).map(responsavel =>
-                String(responsavel.cd_usuario)
+                String(responsavel.cd_responsavel)
             );
 
             selectResponsavel.replaceChildren();
 
-            const opcaoInicial = document.createElement("option");
-            opcaoInicial.value = "";
-            opcaoInicial.textContent = "Selecione um responsável";
-            selectResponsavel.appendChild(opcaoInicial);
+            const inicial = document.createElement("option");
+            inicial.value = "";
+            inicial.textContent = "Selecione um responsável";
+
+            selectResponsavel.appendChild(inicial);
 
             (disponiveis || [])
                 .filter(responsavel =>
-                    !idsVinculados.includes(String(responsavel.cd_usuario))
+                    !idsVinculados.includes(
+                        String(responsavel.cd_responsavel)
+                    )
                 )
                 .forEach(responsavel => {
                     const opcao = document.createElement("option");
-                    opcao.value = responsavel.cd_usuario;
+
+                    opcao.value = responsavel.cd_responsavel;
                     opcao.textContent = responsavel.nm_usuario;
+
                     selectResponsavel.appendChild(opcao);
                 });
+
         } catch (erro) {
-            console.error("Erro ao carregar responsáveis disponíveis:", erro);
+            console.error("Erro ao carregar responsáveis:", erro);
+            alert("Não foi possível carregar os responsáveis.");
         }
     }
 
     formulario.addEventListener("submit", async evento => {
         evento.preventDefault();
 
-        try {
-            const dados = {
-                cd_usuario: Number(selectResponsavel.value)
-            };
+        const idTime = obterIdTime();
+        const idResponsavel = Number(selectResponsavel.value);
+        const botao = formulario.querySelector('[type="submit"]');
 
-            await apiFetch(`/times/${obterIdTime()}/responsaveis`, {
+        if (!idResponsavel) {
+            alert("Selecione um responsável.");
+            return;
+        }
+
+        try {
+            botao.disabled = true;
+
+            await apiFetch(`/times/${idTime}/responsaveis`, {
                 method: "POST",
-                body: JSON.stringify(dados)
+                body: {
+                    cd_responsavel: idResponsavel
+                }
             });
 
-            modal.removeAttribute("aberto");
             formulario.reset();
+            modal.fechar();
 
-            await carregarResponsaveisTime();
+            await carregarResponsaveisTime(idTime);
+
+            alert("Responsável vinculado com sucesso!");
+
         } catch (erro) {
             console.error("Erro ao adicionar responsável:", erro);
+            alert(erro.message || "Não foi possível adicionar o responsável.");
+
+        } finally {
+            botao.disabled = false;
         }
     });
 }

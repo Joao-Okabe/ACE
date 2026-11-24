@@ -21,16 +21,28 @@
     line-height: 1.5;
 }
 
+
 .importacao-campos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .importacao-campos .campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
     min-width: 0;
 }
+
+.importacao-campos .form-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 
 .importacao-mensagem {
     margin: 18px 0 0;
@@ -125,3 +137,193 @@
         padding: 16px;
     }
 }
+
+
+/* ========================================
+   UPLOAD CSV - ACE
+======================================== */
+
+.importacao-upload {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+.importacao-upload-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.importacao-upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+    width: 100%;
+    min-height: 220px;
+    padding: 28px 20px;
+
+    border: 2px dashed var(--azul-principal);
+    border-radius: 14px;
+
+    background: var(--branco);
+    color: var(--azul-principal);
+
+    text-align: center;
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.importacao-upload-area:hover {
+    border-color: var(--laranja-principal);
+    background: var(--fundo-form);
+}
+
+.importacao-upload-input:focus-visible
+    + .importacao-upload-area {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+.importacao-upload-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+
+    background: var(--bege-principal);
+}
+
+.importacao-upload-icone img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.importacao-upload-titulo {
+    font-size: calc(17px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+}
+
+.importacao-upload-descricao {
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
+    color: var(--cinza);
+    line-height: 1.5;
+}
+
+.importacao-upload-botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+    padding: 9px 18px;
+    margin-top: 5px;
+
+    border-radius: 9px;
+    background: var(--azul-principal);
+    color: var(--branco);
+
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
+    font-weight: 600;
+}
+
+.importacao-upload-ajuda {
+    font-size: calc(12px * var(--ace-escala-fonte, 1));
+    color: var(--cinza);
+}
+
+.importacao-upload-nome {
+    margin: 12px 0 0;
+    font-size: calc(13px * var(--ace-escala-fonte, 1));
+    color: var(--azul-principal);
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+    .importacao-upload-area {
+        min-height: 190px;
+        padding: 22px 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .importacao-upload-area {
+        transition: none;
+    }
+}
+
+
+/* Área inteira clicável */
+.importacao-upload-area {
+    box-sizing: border-box;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Botão de escolher arquivo */
+.importacao-upload-botao {
+    cursor: pointer;
+    pointer-events: none;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover do botão */
+.importacao-upload-area:hover .importacao-upload-botao {
+    background: var(--laranja-principal);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 78, 28, 0.2);
+}
+
+/* Feedback ao clicar */
+.importacao-upload-area:active .importacao-upload-botao {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Foco pelo teclado */
+.importacao-upload-input:focus-visible + .importacao-upload-area {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .importacao-upload-botao {
+        transition: none;
+    }
+
+    .importacao-upload-area:hover .importacao-upload-botao,
+    .importacao-upload-area:active .importacao-upload-botao {
+        transform: none;
+    }
+}
+
+
+/* Botão Carregar prévia alinhado à direita */
+#formImportacaoCsv {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#analisarImportacao {
+    align-self: flex-end;
+    margin-top: 8px;
+}
+

@@ -1,126 +1,179 @@
 
-// IMPORTAÇÕES
 import { apiFetch } from "../../../api/api.js";
-import { obterIdTime } from "./utilitarios.js";
-import { configurarImagem } from "../../../utils/imagens.js";
+import { estadoTime, obterIdTime } from "./utilitarios.js";
+import { criarCardEntidade } from "../../../components/cardEntidade.js";
+
+// NORMALIZAR RESPOSTA DA API
+function obterLista(resposta) {
+    if (Array.isArray(resposta)) return resposta;
+    if (Array.isArray(resposta?.dados)) return resposta.dados;
+    return [];
+}
 
 // CARREGAR TÉCNICOS DO TIME
 export async function carregarTecnicosTime(idTime = obterIdTime()) {
     const lista = document.getElementById("listaTecnico");
 
-    if (!lista) {
-        return;
-    }
+    if (!lista) return;
+
+    lista.classList.add("cards-entidade");
 
     try {
-        const tecnicos = await apiFetch(`/times/${idTime}/tecnicos`);
+        const resposta = await apiFetch(`/times/${idTime}/tecnicos`);
+        const tecnicos = obterLista(resposta);
 
         lista.replaceChildren();
 
-        if (!tecnicos || !tecnicos.length) {
-            lista.innerHTML = '<p class="text-muted">Nenhum técnico cadastrado.</p>';
+        if (!tecnicos.length) {
+            lista.innerHTML =
+                '<p class="text-muted">Nenhum técnico cadastrado.</p>';
             return;
         }
 
         tecnicos.forEach(tecnico => {
             lista.appendChild(criarCardTecnico(tecnico));
         });
+
     } catch (erro) {
         console.error("Erro ao carregar técnicos:", erro);
+        lista.innerHTML =
+            '<p class="text-muted">Não foi possível carregar os técnicos.</p>';
     }
 }
 
 // CRIAR CARD DO TÉCNICO
 export function criarCardTecnico(tecnico) {
-    const card = document.createElement("div");
-    card.className = "time-inscrito-card";
+    return criarCardEntidade({
+        foto: tecnico.foto_perfil ||
+            tecnico.path_ft_usuario ||
+            "/assets/img/no-prof-pic.png",
 
-    const imagem = document.createElement("img");
-    imagem.className = "time-inscrito-brasao";
-    configurarImagem(
-        imagem,
-        [tecnico.foto_perfil, tecnico.path_ft_usuario, tecnico.imagem],
-        "/assets/img/no-prof-pic.png"
-    );
-    imagem.alt = `Foto de ${tecnico.nm_usuario}`;
+        nome: tecnico.nm_usuario || "Técnico sem nome",
 
-    const nome = document.createElement("span");
-    nome.className = "time-inscrito-nome";
-    nome.textContent = tecnico.nm_usuario || "Técnico sem nome";
+        detalhes: ["Técnico"],
 
-    card.append(imagem, nome);
-
-    return card;
+        url: null
+    });
 }
 
 // CONFIGURAR MODAL DE TÉCNICO
 export function configurarModalTecnico() {
-    const modal = document.querySelector('app-modal[titulo="Adicionar técnico"]');
+    if (!estadoTime.podeGerenciar) return;
+    const modal = document.querySelector(
+        'app-modal[titulo="Adicionar técnico"]'
+    );
+
     const botaoAbrir = document.getElementById("abrirModalTecnico");
     const formulario = document.getElementById("formAdicionarTecnico");
     const selectTecnico = document.getElementById("selectTecnico");
 
     if (!modal || !botaoAbrir || !formulario || !selectTecnico) {
+        console.error("Elementos do modal de técnico não encontrados.");
         return;
     }
 
-    botaoAbrir.addEventListener("click", () => {
-        modal.setAttribute("aberto", "");
-        carregarOpcoesTecnicos();
+    if (formulario.dataset.configurado) return;
+    formulario.dataset.configurado = "true";
+
+    // ABRIR MODAL
+    botaoAbrir.addEventListener("click", async () => {
+        modal.abrir();
+        await carregarOpcoesTecnicos();
     });
 
+    // CARREGAR OPÇÕES
     async function carregarOpcoesTecnicos() {
         try {
-            const [disponiveis, vinculados] = await Promise.all([
-                apiFetch(`/times/${obterIdTime()}/tecnicos/disponiveis`),
-                apiFetch(`/times/${obterIdTime()}/tecnicos`)
-            ]);
+            const idTime = obterIdTime();
 
-            const idsVinculados = (vinculados || []).map(tecnico =>
+            const [respostaDisponiveis, respostaVinculados] =
+                await Promise.all([
+                    apiFetch(`/times/${idTime}/tecnicos/disponiveis`),
+                    apiFetch(`/times/${idTime}/tecnicos`)
+                ]);
+
+            const disponiveis = obterLista(respostaDisponiveis);
+            const vinculados = obterLista(respostaVinculados);
+
+            const idsVinculados = vinculados.map(tecnico =>
                 String(tecnico.cd_usuario)
             );
 
             selectTecnico.replaceChildren();
 
-            const opcaoInicial = document.createElement("option");
-            opcaoInicial.value = "";
-            opcaoInicial.textContent = "Selecione um técnico";
-            selectTecnico.appendChild(opcaoInicial);
+            const inicial = document.createElement("option");
+            inicial.value = "";
+            inicial.textContent = "Selecione um técnico";
+            selectTecnico.appendChild(inicial);
 
-            (disponiveis || [])
-                .filter(tecnico =>
-                    !idsVinculados.includes(String(tecnico.cd_usuario))
-                )
-                .forEach(tecnico => {
-                    const opcao = document.createElement("option");
-                    opcao.value = tecnico.cd_usuario;
-                    opcao.textContent = tecnico.nm_usuario;
-                    selectTecnico.appendChild(opcao);
-                });
+            const opcoes = disponiveis.filter(tecnico =>
+                !idsVinculados.includes(String(tecnico.cd_usuario))
+            );
+
+            opcoes.forEach(tecnico => {
+                const opcao = document.createElement("option");
+
+                opcao.value = tecnico.cd_usuario;
+                opcao.textContent = tecnico.nm_usuario;
+
+                selectTecnico.appendChild(opcao);
+            });
+
+            if (!opcoes.length) {
+                const vazio = document.createElement("option");
+                vazio.value = "";
+                vazio.textContent = "Nenhum técnico disponível";
+                vazio.disabled = true;
+                selectTecnico.appendChild(vazio);
+            }
+
         } catch (erro) {
             console.error("Erro ao carregar técnicos disponíveis:", erro);
+            alert("Não foi possível carregar os técnicos disponíveis.");
         }
     }
 
+    // CADASTRAR TÉCNICO
     formulario.addEventListener("submit", async evento => {
         evento.preventDefault();
 
-        try {
-            const dados = {
-                cd_usuario: Number(selectTecnico.value)
-            };
+        const idTime = obterIdTime();
+        const idUsuario = Number(selectTecnico.value);
 
-            await apiFetch(`/times/${obterIdTime()}/tecnicos`, {
+        const botao = formulario.querySelector('[type="submit"]');
+
+        if (!idUsuario) {
+            alert("Selecione um técnico.");
+            return;
+        }
+
+        try {
+            if (botao) botao.disabled = true;
+
+            await apiFetch(`/times/${idTime}/tecnicos`, {
                 method: "POST",
-                body: JSON.stringify(dados)
+                body: {
+                    cd_usuario: idUsuario
+                }
             });
 
-            modal.removeAttribute("aberto");
             formulario.reset();
+            modal.fechar();
 
-            await carregarTecnicosTime();
+            await carregarTecnicosTime(idTime);
+
+            alert("Técnico vinculado com sucesso!");
+
         } catch (erro) {
             console.error("Erro ao adicionar técnico:", erro);
+
+            alert(
+                erro.message ||
+                "Não foi possível adicionar o técnico."
+            );
+
+        } finally {
+            if (botao) botao.disabled = false;
         }
     });
 }

@@ -1,0 +1,72 @@
+/* Ajustes específicos da visualização de Time - preserva o tema ACE */
+#nav-time { display:flex; flex-direction:row; flex-wrap:wrap; align-items:stretch; width:100%; }
+#nav-time [data-aba][hidden] { display:none !important; }
+#nav-time .visu-menu-item { flex:1 1 auto; min-width:max-content; text-align:center; }
+#gerenciamento .competicao-gerenciar-conteudo[hidden] { display:none !important; }
+#listaIntegrantes.cards-entidade { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:14px; }
+#listaIntegrantes .card-entidade { min-width:0; }
+#listaIntegrantes .card-entidade-acoes { display:flex; flex-wrap:wrap; gap:8px; }
+#listaIntegrantes .card-entidade-acoes button { cursor:pointer; }
+#escalacao .campo-futsal { height:auto; min-height:520px; aspect-ratio:4/5; }
+#escalacao .jogador { position:absolute; width:clamp(76px,24%,118px); max-width:none; transform:translate(-50%,-50%); }
+#escalacao .jogador img { width:clamp(40px,12vw,58px); height:clamp(40px,12vw,58px); }
+#escalacao .jogador span { max-width:100%; overflow-wrap:anywhere; white-space:normal; font-size:clamp(10px,1.5vw,12px); }
+#escalacao .pivo {top:19%;left:50%;}
+#escalacao .ala-esquerda {top:36%;left:24%;}
+#escalacao .ala-direita {top:36%;left:76%;}
+#escalacao .fixo {top:57%;left:50%;}
+#escalacao .goleiro {top:80%;left:50%;}
+#escalacao select.form-input { width:100%; min-height:42px; }
+@media (max-width:650px) {
+  #nav-time .visu-menu-item { flex:1 1 34%; min-width:0; }
+  #escalacao .campo-futsal {min-height:430px;}
+  #escalacao .jogador {width:32%;}
+}
+
+/* ========================================
+   FORMULÁRIO DE EDIÇÃO DO TIME
+======================================== */
+
+.time-editar-dados {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+    min-width: 0;
+}
+
+#mensagemInformacoesTime {
+    grid-column: 1 / -1;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#mensagemInformacoesTime:empty,
+#mensagemRemoverTime:empty {
+    display: none;
+}
+
+.time-editar-dados .competicao-form-campo {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+#botaoSalvarInformacoesTime {
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 650px) {
+    .time-editar-dados {
+        grid-template-columns: 1fr;
+    }
+}

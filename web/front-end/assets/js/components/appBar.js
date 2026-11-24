@@ -1,4 +1,8 @@
 
+import { authService } from "../services/authService.js";
+
+const FOTO_PADRAO = "/assets/img/no-prof-pic.png";
+
 class AppBar extends HTMLElement {
     connectedCallback() {
         if (!this.querySelector(".navbar")) {
@@ -9,7 +13,15 @@ class AppBar extends HTMLElement {
 
         if (this._eventosConfigurados) return;
         this._eventosConfigurados = true;
+
         this.configurarMenu();
+        this.configurarPerfil();
+    }
+
+    disconnectedCallback() {
+        document.removeEventListener("click", this._fecharAoClicarFora);
+        document.removeEventListener("keydown", this._fecharComEscape);
+        this._eventosConfigurados = false;
     }
 
     renderizar() {
@@ -19,50 +31,93 @@ class AppBar extends HTMLElement {
                     <img src="/assets/icons/sidebar.svg" alt="" class="icon">
                 </button>
 
-                <div class="logo">
+                <a href="/pages/dashboard.html" class="logo" aria-label="Ir para o Dashboard">
                     <img src="/assets/img/logo-ace-laranja.png" alt="Logo ACE">
-                </div>
+                </a>
 
                 <div class="perfil">
                     <div class="perfil-wrapper">
-                        <div class="perfil-botao" style="cursor: default;">
-                            <img src="/assets/img/no-prof-pic.png" alt="" class="perfil-foto">
+                        <button type="button" class="perfil-botao" id="abrirMenuPerfil" aria-label="Abrir menu do perfil" aria-expanded="false" aria-controls="menuPerfilFlutuante">
+                            <img src="${FOTO_PADRAO}" alt="" class="perfil-foto">
                             <div class="usuario">
                                 <span></span>
                                 <small></small>
                             </div>
+                        </button>
+                      
+                        <div class="perfil-menu-flutuante" id="menuPerfilFlutuante" role="region" aria-label="Informações do perfil" hidden>
+                            <div class="perfil-menu-cabecalho">
+                                <img src="${FOTO_PADRAO}" alt="" class="perfil-menu-foto">
+
+                                <div class="perfil-menu-usuario">
+                                    <strong id="perfilMenuNome">Usuário</strong>
+                                    <span id="perfilMenuEmail">Não informado</span>
+                                    <span id="perfilMenuCargo">Usuário</span>
+                                </div>
+                            </div>
+
+                            <div class="perfil-menu-acoes">
+                                <a href="/pages/usuario/configuracoes.html" class="perfil-menu-link">
+                                <img src="/assets/icons/config.svg" alt="" class="icon" onerror="this.style.display='none'">
+                                    <span>Configurações da conta</span>
+                                </a>
+
+                                <button type="button" class="perfil-menu-logout" id="botaoLogout">
+                                <img src="/assets/icons/exit1.svg" alt="" class="icon" onerror="this.style.display='none'">
+                                    <span>Sair da conta</span>
+                                    
+                                </button>
+                            </div>
+
+                            <p class="perfil-menu-mensagem" id="mensagemLogout" role="alert" hidden></p>
                         </div>
+
                     </div>
                 </div>
             </nav>
         `;
 
-        const imagem = this.querySelector(".perfil-foto");
+        const imagens = this.querySelectorAll(".perfil-foto, .perfil-menu-foto");
 
-        imagem?.addEventListener("error", () => {
-            imagem.src = "/assets/img/no-prof-pic.png";
-        }, { once: true });
+        imagens.forEach(imagem => {
+            imagem.onerror = () => {
+                imagem.onerror = null;
+                imagem.src = FOTO_PADRAO;
+            };
+        });
     }
 
     atualizarUsuario() {
-        const usuario = window.usuarioLogado || {};
+        const dados = window.usuarioLogado || {};
+        const usuario = dados.usuario || dados;
 
         const nome =
             usuario.nome ||
             usuario.nm_usuario ||
+            dados.nome ||
+            dados.nm_usuario ||
             "Usuário";
+
+        const email =
+            usuario.email ||
+            usuario.ds_email ||
+            dados.email ||
+            dados.ds_email ||
+            "Não informado";
 
         const fotoInformada =
             usuario.foto_perfil ||
             usuario.foto ||
-            "/assets/img/no-prof-pic.png";
+            dados.foto_perfil ||
+            dados.foto ||
+            FOTO_PADRAO;
 
         const foto =
             typeof fotoInformada === "string" &&
             fotoInformada.trim() &&
             !/^file:/i.test(fotoInformada.trim())
                 ? fotoInformada.trim()
-                : "/assets/img/no-prof-pic.png";
+                : FOTO_PADRAO;
 
         const papelUsuario = Array.isArray(usuario.papeis)
             ? usuario.papeis[0] || "Usuário"
@@ -82,32 +137,41 @@ class AppBar extends HTMLElement {
             VIS: "Visitante"
         };
 
-        const cargo =
-            papeis[String(papelUsuario).toUpperCase()] ||
-            papelUsuario;
+        const codigoPapel = typeof papelUsuario === "object"
+            ? papelUsuario.sg_papel ||
+              papelUsuario.nm_papel ||
+              papelUsuario.codigo ||
+              "Usuário"
+            : papelUsuario;
 
-        const elementos = {
-            nome: this.querySelector(".usuario span"),
-            cargo: this.querySelector(".usuario small"),
-            foto: this.querySelector(".perfil-foto")
+        const cargo =
+            papeis[String(codigoPapel).toUpperCase()] ||
+            String(codigoPapel);
+
+        const preencherTexto = (seletor, valor) => {
+            const elemento = this.querySelector(seletor);
+            if (elemento) elemento.textContent = valor;
         };
 
-        if (!elementos.nome) return;
+        preencherTexto(".usuario span", nome);
+        preencherTexto(".usuario small", cargo);
 
-        elementos.nome.textContent = nome;
-        elementos.cargo.textContent = cargo;
+        preencherTexto("#perfilMenuNome", nome);
+        preencherTexto("#perfilMenuNomeCompleto", nome);
+        preencherTexto("#perfilMenuEmail", email);
+        preencherTexto("#perfilMenuCargo", cargo);
+        preencherTexto("#perfilMenuCargoCompleto", cargo);
 
-        if (
-            elementos.foto &&
-            elementos.foto.getAttribute("src") !== foto
-        ) {
-            elementos.foto.onerror = () => {
-                elementos.foto.onerror = null;
-                elementos.foto.src = "/assets/img/no-prof-pic.png";
+        this.querySelectorAll(".perfil-foto, .perfil-menu-foto").forEach(imagem => {
+            if (imagem.getAttribute("src") === foto) return;
+
+            imagem.onerror = () => {
+                imagem.onerror = null;
+                imagem.src = FOTO_PADRAO;
             };
 
-            elementos.foto.src = foto;
-        }
+            imagem.src = foto;
+        });
     }
 
     configurarMenu() {
@@ -117,6 +181,65 @@ class AppBar extends HTMLElement {
             document.dispatchEvent(
                 new CustomEvent("ace:toggle-sidebar")
             );
+        });
+    }
+
+    configurarPerfil() {
+        const botao = this.querySelector("#abrirMenuPerfil");
+        const menu = this.querySelector("#menuPerfilFlutuante");
+        const botaoLogout = this.querySelector("#botaoLogout");
+
+        if (!botao || !menu) return;
+
+        const fecharMenu = () => {
+            menu.hidden = true;
+            botao.setAttribute("aria-expanded", "false");
+        };
+
+        botao.addEventListener("click", () => {
+            this.atualizarUsuario();
+
+            const abrir = menu.hidden;
+
+            menu.hidden = !abrir;
+            botao.setAttribute("aria-expanded", String(abrir));
+        });
+
+        this._fecharAoClicarFora = evento => {
+            if (!this.querySelector(".perfil-wrapper")?.contains(evento.target)) {
+                fecharMenu();
+            }
+        };
+
+        this._fecharComEscape = evento => {
+            if (evento.key === "Escape" && !menu.hidden) {
+                fecharMenu();
+                botao.focus();
+            }
+        };
+
+        document.addEventListener("click", this._fecharAoClicarFora);
+        document.addEventListener("keydown", this._fecharComEscape);
+
+        botaoLogout?.addEventListener("click", async () => {
+            const mensagem = this.querySelector("#mensagemLogout");
+
+            botaoLogout.disabled = true;
+            if (mensagem) mensagem.hidden = true;
+
+            try {
+                await authService.logout();
+                window.location.replace("/pages/usuario/login.html");
+            } catch (erro) {
+                console.error("Erro ao sair da conta:", erro);
+
+                if (mensagem) {
+                    mensagem.textContent = "Não foi possível sair da conta. Tente novamente.";
+                    mensagem.hidden = false;
+                }
+
+                botaoLogout.disabled = false;
+            }
         });
     }
 }

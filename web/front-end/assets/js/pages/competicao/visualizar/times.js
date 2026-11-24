@@ -47,7 +47,10 @@ export function renderizarTimesCompeticao(times = []) {
     times.forEach(time => {
         const card = document.createElement("a");
         card.className = "time-inscrito-card";
-        card.href = `/pages/time/visualizar.html?id=${encodeURIComponent(time.cd_time)}`;
+        const idCompeticao = new URLSearchParams(window.location.search).get("id");
+        const voltar = `/pages/competicao/visualizar.html?id=${encodeURIComponent(idCompeticao)}#times`;
+
+        card.href = `/pages/time/visualizar.html?id=${encodeURIComponent(time.cd_time)}&voltar=${encodeURIComponent(voltar)}`;
         card.style.textDecoration = "none";
 
         const brasao = document.createElement("img");

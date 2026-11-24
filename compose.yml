@@ -5,10 +5,9 @@ services:
       dockerfile: docker/nginx/Dockerfile
     restart: unless-stopped
     ports:
-      - ${APP_PORT:-8080}:80
+      - "8080:80"
     volumes:
-       - ./web/front-end:/usr/share/nginx/html:ro
-  
+      - ./web/front-end:/usr/share/nginx/html:ro
     depends_on:
       - backend
 
@@ -19,7 +18,7 @@ services:
     restart: unless-stopped
     command: sh -c "composer install --no-dev --no-interaction --prefer-source --optimize-autoloader && chown -R www-data:www-data /var/www/html/storage/upload && apache2-foreground"
     ports:
-      - ${APP_PORT}:80
+      - "8000:80"
     volumes:
       - ./web/back-end:/var/www/html:rw
       - backend_vendor:/var/www/html/vendor
@@ -45,7 +44,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${DB_PORT}:5432
+      - "${DB_PORT}:5432"
     env_file:
       - .env
     volumes:

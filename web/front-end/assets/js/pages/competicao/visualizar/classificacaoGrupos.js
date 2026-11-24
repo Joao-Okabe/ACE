@@ -26,7 +26,17 @@ function obterEstatisticas(valor) {
     return valor && typeof valor === "object" ? valor : {};
 }
 
-export async function carregarClassificacaoGrupos(idCompeticao, formato) {
+function obterValorEstatistica(estatisticas, chave) {
+    const valor = estatisticas?.[chave];
+    if (valor === null || valor === undefined || valor === "") return 0;
+    return valor;
+}
+
+export async function carregarClassificacaoGrupos(
+    idCompeticao,
+    formato,
+    classificacaoRecebida = null
+) {
     if (!container || !mensagem) return;
 
     container.replaceChildren();
@@ -37,7 +47,9 @@ export async function carregarClassificacaoGrupos(idCompeticao, formato) {
     if (Number(formato) !== 3) return;
 
     try {
-        const dados = await competicaoService.listarClassificacao(idCompeticao);
+        const dados = Array.isArray(classificacaoRecebida)
+            ? classificacaoRecebida
+            : await competicaoService.listarClassificacao(idCompeticao);
 
         if (!Array.isArray(dados) || dados.length === 0) {
             mensagem.textContent = "A classificação ainda não está disponível.";
@@ -48,17 +60,24 @@ export async function carregarClassificacaoGrupos(idCompeticao, formato) {
         const grupos = new Map();
 
         dados.forEach(time => {
-            const id = String(time.cd_grupo);
+            const idGrupo = String(time.cd_grupo ?? "");
+            if (!idGrupo) return;
 
-            if (!grupos.has(id)) {
-                grupos.set(id, {
-                    nome: time.nm_grupo,
+            if (!grupos.has(idGrupo)) {
+                grupos.set(idGrupo, {
+                    nome: time.nm_grupo || `Grupo ${grupos.size + 1}`,
                     times: []
                 });
             }
 
-            grupos.get(id).times.push(time);
+            grupos.get(idGrupo).times.push(time);
         });
+
+        if (grupos.size === 0) {
+            mensagem.textContent = "Não há grupos cadastrados para esta competição.";
+            mensagem.hidden = false;
+            return;
+        }
 
         const titulo = document.createElement("h3");
         titulo.className = "visu-subtitulo";
@@ -99,11 +118,10 @@ export async function carregarClassificacaoGrupos(idCompeticao, formato) {
                 .forEach(time => {
                     const linha = document.createElement("tr");
                     const estatisticas = obterEstatisticas(time.estatisticas);
-
                     const valores = [
-                        `${time.posicao}º`,
-                        time.nm_time,
-                        ...colunas.map(([chave]) => estatisticas[chave] ?? 0)
+                        `${time.posicao ?? "-"}º`,
+                        time.nm_time || "Time sem nome",
+                        ...colunas.map(([chave]) => obterValorEstatistica(estatisticas, chave))
                     ];
 
                     valores.forEach((valor, indice) => {
@@ -127,11 +145,9 @@ export async function carregarClassificacaoGrupos(idCompeticao, formato) {
         });
 
         container.hidden = false;
-
     } catch (erro) {
         console.error("Erro ao carregar classificação:", erro);
         mensagem.textContent = erro.message || "Não foi possível carregar a classificação.";
         mensagem.hidden = false;
     }
 }
-

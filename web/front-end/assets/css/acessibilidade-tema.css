@@ -205,9 +205,9 @@ html[data-tema="escuro"] .content :is(
     .campo-busca input,
     .campo-filtro select
 ) {
-    background-color: #202b39 !important;
-    color: #edf1f6 !important;
-    border-color: #465466 !important;
+    background-color: #292929 !important;
+    color: #ffffff !important;
+    border-color: #484848 !important;
 }
 
 html[data-tema="escuro"] .content :is(input, select, textarea)::placeholder {
@@ -216,8 +216,8 @@ html[data-tema="escuro"] .content :is(input, select, textarea)::placeholder {
 }
 
 html[data-tema="escuro"] option {
-    background-color: #202b39;
-    color: #edf1f6;
+    background-color: #292929;
+    color: #ffffff;
 }
 
 /* Tabelas, divisórias e bordas */
@@ -544,4 +544,890 @@ html[data-tema="escuro"] .custom-btn-primary { color: #fff; }
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+
+
+/* =========================================================
+   AJUSTES DO MODO ESCURO - ACE
+   ========================================================= */
+
+/* CORES PRINCIPAIS */
+html[data-tema="escuro"] {
+    --ace-fundo-escuro: #111923;
+    --ace-superficie-escura: #1d2633;
+    --ace-superficie-secundaria: #253141;
+    --ace-texto-claro: #edf1f6;
+    --ace-texto-secundario: #b4bfcc;
+    --ace-borda-escura: #3a4656;
+}
+
+/* NAVBAR E MENU FLUTUANTE */
+html[data-tema="escuro"] .navbar .perfil-menu-flutuante {
+    background: var(--ace-superficie-escura);
+    border-color: var(--ace-borda-escura);
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-cabecalho {
+    border-bottom-color: var(--ace-borda-escura);
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-usuario strong {
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .navbar #perfilMenuEmail {
+    color: var(--ace-texto-secundario);
+}
+
+html[data-tema="escuro"] .navbar #perfilMenuCargo {
+    color: var(--laranja-principal);
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-link {
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-link:hover {
+    background: var(--ace-superficie-secundaria);
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-logout {
+    color: #ff9b9b;
+}
+
+html[data-tema="escuro"] .navbar .perfil-menu-logout:hover {
+    background: rgba(255, 100, 100, 0.10);
+}
+
+/* INFORMAÇÕES DA CONTA */
+html[data-tema="escuro"] .config-info-item {
+    background: var(--ace-superficie-escura);
+    border-color: var(--ace-borda-escura);
+}
+
+html[data-tema="escuro"] .config-info-label {
+    color: var(--laranja-principal);
+}
+
+html[data-tema="escuro"] .config-info-valor {
+    color: var(--ace-texto-claro);
+}
+
+/* CABEÇALHOS DAS CONFIGURAÇÕES */
+html[data-tema="escuro"] .config-cabecalho {
+    background: var(--ace-superficie-escura);
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .config-cabecalho strong {
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .config-cabecalho span {
+    color: var(--ace-texto-secundario);
+}
+
+html[data-tema="escuro"] .config-conteudo {
+    background: var(--ace-superficie-escura);
+    border-color: var(--ace-borda-escura);
+}
+
+/* OPÇÕES DE APARÊNCIA */
+html[data-tema="escuro"] .config-opcao {
+    background: var(--ace-superficie-secundaria);
+    border-color: var(--ace-borda-escura);
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .config-opcao:has(:checked) {
+    border-color: var(--laranja-principal);
+}
+
+/* BOTÕES DE AJUSTE DE FONTE */
+html[data-tema="escuro"] .config-controle-fonte button {
+    background: var(--ace-superficie-secundaria);
+    color: var(--ace-texto-claro);
+    border-color: var(--ace-borda-escura);
+}
+
+/* CARDS DE PARTIDAS */
+html[data-tema="escuro"] .partida-card {
+    background: var(--ace-superficie-escura);
+    border-color: var(--ace-borda-escura);
+}
+
+html[data-tema="escuro"] .partida-card :is(
+    .partida-data,
+    .partida-time h3,
+    .partida-placar strong,
+    .partida-rodape
+) {
+    color: var(--ace-texto-claro);
+}
+
+/* RANKING DO DASHBOARD */
+html[data-tema="escuro"] .dashboard-ranking-item {
+    background: var(--ace-superficie-escura);
+    border-color: var(--ace-borda-escura);
+}
+
+html[data-tema="escuro"] .dashboard-ranking-info strong {
+    color: var(--ace-texto-claro);
+}
+
+html[data-tema="escuro"] .dashboard-ranking-info span {
+    color: var(--ace-texto-secundario);
+}
+/* ============================================================
+   COMPLEMENTOS DO MODO ESCURO - ACE
+   Apenas html[data-tema="escuro"]: o modo claro nao e alterado.
+   As regras ficam centralizadas para evitar sobrescrever layouts.
+   ============================================================ */
+html[data-tema="escuro"] {
+    --ace-superficie: #1d2633;
+    --ace-superficie-elevada: #253141;
+    --ace-superficie-campo: #202b39;
+    --ace-texto: #edf1f6;
+    --ace-texto-suave: #b4bfcc;
+    --ace-divisoria: #3a4656;
+    --ace-destaque-azul: #aebaff;
+}
+
+/* Base: manter fundo escuro mesmo quando o CSS base pinta o html. */
+html[data-tema="escuro"] {
+    background-color: var(--fundo);
+}
+
+/* Identidade: navbar e sidebar continuam no azul original do ACE. */
+html[data-tema="escuro"] :is(.navbar, .sidebar) {
+    background-color: var(--azul-principal);
+}
+
+/* Menu de perfil, adicionado a appBar: e externo a .content. */
+html[data-tema="escuro"] .navbar .perfil-menu-flutuante {
+    background: var(--ace-superficie) !important;
+    border-color: var(--ace-divisoria) !important;
+    box-shadow: 0 14px 36px rgb(0 0 0 / 38%);
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] .navbar .perfil-menu-cabecalho {
+    border-color: var(--ace-divisoria);
+}
+html[data-tema="escuro"] .navbar .perfil-menu-usuario strong,
+html[data-tema="escuro"] .navbar .perfil-menu-link {
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] .navbar #perfilMenuEmail {
+    color: var(--ace-texto-suave);
+}
+html[data-tema="escuro"] .navbar #perfilMenuCargo {
+    color: #ff976f;
+}
+html[data-tema="escuro"] .navbar .perfil-menu-link:hover,
+html[data-tema="escuro"] .navbar .perfil-menu-link:focus-visible {
+    background-color: var(--ace-superficie-elevada);
+}
+html[data-tema="escuro"] .navbar .perfil-menu-logout,
+html[data-tema="escuro"] .navbar .perfil-menu-mensagem {
+    color: #ffabab;
+}
+html[data-tema="escuro"] .navbar .perfil-menu-logout:hover {
+    background-color: rgb(255 120 120 / 12%);
+}
+html[data-tema="escuro"] .navbar .perfil-menu-logout .icon,
+html[data-tema="escuro"] .navbar .perfil-menu-link .icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Configuracoes / preferencias visuais. */
+html[data-tema="escuro"] :is(
+    .config-conteudo, .config-info-item, .config-perfil-layout,
+    .config-fieldset, .config-acessibilidade-campos
+) {
+    border-color: var(--ace-divisoria);
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] :is(.config-info-item, .config-opcao) {
+    background-color: var(--ace-superficie-elevada) !important;
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .config-opcao:has(:checked) {
+    background-color: #354153 !important;
+    border-color: var(--laranja-principal) !important;
+}
+html[data-tema="escuro"] .configuracoes-container :is(
+    .config-cabecalho strong, .config-info-valor, .config-controle-fonte output
+) {
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .configuracoes-container :is(
+    .config-cabecalho span, .config-info-label, .config-foto small
+) {
+    color: var(--ace-texto-suave) !important;
+}
+html[data-tema="escuro"] .config-controle-fonte button {
+    background-color: var(--ace-superficie-elevada) !important;
+    color: var(--ace-texto) !important;
+    border-color: var(--ace-divisoria) !important;
+}
+
+/* Elementos de visualizacao e listas. */
+html[data-tema="escuro"] :is(
+    .escola-card, .escola-info-item, .info-section, .visu-painel,
+    .competicao-info-bloco, .competicao-subsecao, .time-editar-dados,
+    .time-editar-imagem, .lista-conteudo, .lista-item,
+    .pessoa-topo, .pessoa-info, .escalacao-jogador,
+    .select-multiplos-item, .select-unico-item
+) {
+    border-color: var(--ace-divisoria);
+}
+html[data-tema="escuro"] :is(
+    .escola-card, .escola-info-item, .escalacao-jogador,
+    .select-multiplos-item, .select-unico-item
+) {
+    background-color: var(--ace-superficie) !important;
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] :is(
+    .select-multiplos-item:hover, .select-unico-item:hover,
+    .select-multiplos-item.selecionado, .select-unico-item.selecionado,
+    .lista-item:hover
+) {
+    background-color: var(--ace-superficie-elevada) !important;
+}
+html[data-tema="escuro"] .content :is(
+    .section-title, .chaveamento-header h3, .escola-card-header h2,
+    .visu-lista-info h3, .pessoa-info h3, .info-section strong,
+    .lista-info h2, .lista-detalhes, .lista-titulo,
+    .dashboard-cabecalho .form-title, .ranking-podio-card h3
+) {
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .content :is(
+    .section-description, .visu-lista-info p, .pessoa-info p,
+    .escola-identificacao-descricao, .lista-subtitulo, .dashboard-card-detalhe
+) {
+    color: var(--ace-texto-suave) !important;
+}
+
+/* Campos e listas suspensas de pagina/modais. */
+html[data-tema="escuro"] :is(.modal-container, .auth-card) :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    select, textarea, .form-input, .form-select
+) {
+    background-color: var(--ace-superficie-campo) !important;
+    color: var(--ace-texto) !important;
+    border-color: #465466 !important;
+}
+html[data-tema="escuro"] :is(.modal-container, .auth-card) :is(input, textarea)::placeholder {
+    color: var(--ace-texto-suave) !important;
+    opacity: 1;
+}
+html[data-tema="escuro"] :is(.modal-header, .modal-footer, .modal-body) {
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .modal-container :is(.modal-header h2, .modal-fechar) {
+    color: var(--ace-texto) !important;
+}
+
+/* Botao primario: antes usava --branco, que vira superficie escura. */
+html[data-tema="escuro"] :is(
+    .custom-btn-primary, .auth-submit, .btn-adicionar,
+    .btn-buscar-lista, .ranking-filtrar, .importacao-upload-botao
+) {
+    color: #fff !important;
+}
+html[data-tema="escuro"] .custom-btn-secondary {
+    color: #ff9771;
+    border-color: var(--laranja-principal);
+}
+html[data-tema="escuro"] .custom-btn-secondary:hover {
+    color: #fff;
+}
+html[data-tema="escuro"] .btn-voltar {
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] .btn-voltar:hover {
+    background-color: var(--ace-superficie-elevada);
+}
+
+/* Cards de partidas e estados: preservar significados dos status. */
+html[data-tema="escuro"] :is(
+    .partida-card, .partida-card-topo, .partida-card-rodape,
+    .partida-topo, .partida-rodape, .partida-confronto
+) {
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .content :is(
+    .partida-placar strong, .partida-x, .partida-rodape span,
+    .partida-card .partida-time h3, .partida-card .partida-time span
+) {
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .partida-status.agendada {
+    background: #283b57 !important;
+    color: #b8d9ff !important;
+}
+html[data-tema="escuro"] .partida-status.finalizada {
+    background: #294337 !important;
+    color: #a4e4bb !important;
+}
+html[data-tema="escuro"] :is(.partida-status.andamento, .partida-status.ao-vivo) {
+    background: #513528 !important;
+    color: #ffd0a5 !important;
+}
+
+/* Dashboard: numeros, legendas e status continuam visiveis. */
+html[data-tema="escuro"] :is(
+    .dashboard-card-topo, .dashboard-calendario-header,
+    .dashboard-ranking-item, .dashboard-calendario-legenda
+) {
+    border-color: var(--ace-divisoria);
+}
+html[data-tema="escuro"] .content :is(
+    .dashboard-card-info strong, .dashboard-secao-header .section-title,
+    .dashboard-calendario .fc-toolbar-title
+) {
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .content :is(
+    .dashboard-card-info span, .dashboard-secao-header .section-description,
+    .dashboard-cabecalho .form-subtitle, .dashboard-data-atual
+) {
+    color: var(--ace-texto-suave) !important;
+}
+html[data-tema="escuro"] :is(
+    .dashboard-calendario .fc .fc-button,
+    .dashboard-calendario-popover-close, .fc-popover .fc-popover-close
+) {
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] .dashboard-calendario :is(.fc-event, .fc-event-title) {
+    color: inherit;
+}
+
+/* Ranking: abas, medalhas, tabela e filtros. */
+html[data-tema="escuro"] :is(
+    .ranking-filtro, .ranking-tabela-box, .ranking-lateral,
+    .ranking-podio-card, .ranking-aba, .ranking-limpar
+) {
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .ranking-aba:not(.ativo),
+html[data-tema="escuro"] .ranking-limpar {
+    background-color: var(--ace-superficie-elevada) !important;
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .ranking-tabela tbody tr:hover {
+    background-color: var(--ace-superficie-elevada) !important;
+}
+html[data-tema="escuro"] :is(.ranking-tabela th, .ranking-tabela td) {
+    border-color: var(--ace-divisoria) !important;
+}
+
+/* Importacao CSV: a tabela tinha fundo branco e cabeçalho bege fixos. */
+html[data-tema="escuro"] :is(
+    .importacao-card, .importacao-tabela, .importacao-upload-area,
+    .importacao-tabela-scroll
+) {
+    background-color: var(--ace-superficie) !important;
+    color: var(--ace-texto) !important;
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .importacao-tabela th {
+    background-color: var(--ace-superficie-elevada) !important;
+    color: var(--ace-texto) !important;
+}
+html[data-tema="escuro"] .importacao-tabela td {
+    color: var(--ace-texto) !important;
+    border-color: var(--ace-divisoria) !important;
+}
+html[data-tema="escuro"] .importacao-tabela tr.com-erros {
+    background-color: #40292e !important;
+}
+html[data-tema="escuro"] .importacao-resultado {
+    background-color: #18372a !important;
+    border-color: #36674d !important;
+}
+html[data-tema="escuro"] .importacao-resultado h2,
+html[data-tema="escuro"] .importacao-mensagem {
+    color: #a4e4bb !important;
+}
+html[data-tema="escuro"] :is(.importacao-mensagem.erro, .importacao-erros) {
+    color: #ffb4b4 !important;
+}
+html[data-tema="escuro"] :is(.importacao-descricao, .importacao-resumo, .importacao-upload-descricao) {
+    color: var(--ace-texto-suave) !important;
+}
+html[data-tema="escuro"] .importacao-upload-titulo {
+    color: var(--ace-texto) !important;
+}
+
+/* Chaveamento: manter linhas claras e os confrontos distinguiveis. */
+html[data-tema="escuro"] :is(
+    .conexao .entrada-1, .conexao .entrada-2, .conexao .saida, .conexao .vertical,
+    .bracket-dupla .entrada-1, .bracket-dupla .entrada-2,
+    .bracket-dupla .saida, .bracket-dupla .vertical
+) {
+    background-color: #7389d1;
+}
+html[data-tema="escuro"] :is(.bracket .partida, .bracket-dupla .partida) {
+    background-color: var(--ace-superficie-elevada) !important;
+    border-color: var(--ace-divisoria) !important;
+    color: var(--ace-texto);
+}
+html[data-tema="escuro"] :is(.round-title, .bracket .time, .bracket-dupla .time) {
+    color: var(--ace-texto) !important;
+}
+
+/* Feedback e textos dos menus: evitar interferencia da regra geral .content p. */
+html[data-tema="escuro"] .content .mensagem-sucesso {
+    background-color: #173b2b !important;
+    color: #9ce0b5 !important;
+}
+html[data-tema="escuro"] .content .mensagem-erro {
+    background-color: #421f26 !important;
+    color: #ffb4b4 !important;
+}
+html[data-tema="escuro"] .content .mensagem-info {
+    background-color: #1b3048 !important;
+    color: #b8d9ff !important;
+}
+
+/* Componentes nativos sem mudar tamanhos e layout. */
+html[data-tema="escuro"] :is(input, select, textarea) {
+    accent-color: var(--laranja-principal);
+}
+html[data-tema="escuro"] :is(hr, fieldset) {
+    border-color: var(--ace-divisoria);
+}
+
+/* ==========================================================
+   MODO ESCURO — GRAFITE COM TEXTOS CLAROS
+   Complemento específico: não altera o tema claro.
+   ========================================================== */
+html[data-tema="escuro"] {
+    --azul-principal: #242424;
+    --branco: #242424;
+    --preto: #f5f5f5;
+    --fundo: #161616;
+    --bege-principal: #333333;
+    --fundo-form: #292929;
+    --fundo-lista: #303030;
+    --borda-lista: #454545;
+    --borda: #454545;
+    --texto-secundario: #c4c4c4;
+    --dashboard-branco: #242424;
+    --dashboard-cinza: #c4c4c4;
+    --dashboard-borda: #454545;
+    --ace-superficie: #242424;
+    --ace-superficie-elevada: #333333;
+    --ace-superficie-campo: #292929;
+    --ace-superficie-escura: #242424;
+    --ace-superficie-secundaria: #333333;
+    --ace-fundo-escuro: #161616;
+    --ace-texto: #f5f5f5;
+    --ace-texto-claro: #f5f5f5;
+    --ace-texto-suave: #c4c4c4;
+    --ace-texto-secundario: #c4c4c4;
+    --ace-divisoria: #454545;
+    --ace-borda-escura: #454545;
+}
+
+/* Barras de navegação: fundos grafite, letras brancas. */
+html[data-tema="escuro"] :is(.navbar, .sidebar) {
+    background-color: #242424 !important;
+}
+html[data-tema="escuro"] .navbar :is(.usuario span, .usuario small),
+html[data-tema="escuro"] .sidebar .menu-item,
+html[data-tema="escuro"] .sidebar .menu-item span {
+    color: #fff !important;
+}
+html[data-tema="escuro"] .sidebar .menu-item.active {
+    background-color: var(--laranja-principal) !important;
+    color: #fff !important;
+}
+
+/* Textos antes azuis: apenas conteúdo, sem afetar fundos ou ícones. */
+html[data-tema="escuro"] .content :is(
+    .page-title, .visu-title, .section-title, .form-title,
+    .lista-titulo, .lista-info h2, .lista-vazia p,
+    .visu-subtitulo, .visu-lista-info h3,
+    .escola-identificacao-label, .escola-nome-status h2,
+    .escola-info-item p,
+    .competicao-layout .visu-subtitulo,
+    .competicao-info-item span, .competicao-info-item strong,
+    .competicao-form-campo label, .periodo-inscricao-item strong,
+    .time-inscrito-nome, .local-data-card strong,
+    .etapa-card-nome, .etapa-card-ordem,
+    .competicao-gerenciar-item strong,
+    .ranking-podio-card h3, .dashboard-secao-titulo,
+    .config-info-valor, .config-cabecalho strong
+) {
+    color: #fff !important;
+}
+
+/* Abas e menus: estados inativos legíveis, ativo em laranja. */
+html[data-tema="escuro"] .content :is(
+    .visu-menu-item,
+    #nav-competicao .visu-menu-item,
+    .competicao-layout .visu-menu-item
+):not(.active):not([aria-selected="true"]) {
+    color: #f5f5f5 !important;
+}
+html[data-tema="escuro"] .content :is(
+    .visu-menu-item.active,
+    #nav-competicao .visu-menu-item[aria-selected="true"]
+) {
+    color: #fff !important;
+    background-color: #454545 !important;
+    border-color: #555 !important;
+}
+html[data-tema="escuro"] .content :is(
+    .visu-menu-item:hover,
+    #nav-competicao .visu-menu-item:hover
+):not(.active):not([aria-selected="true"]) {
+    color: #fff !important;
+    background-color: #333 !important;
+}
+
+/* Listagem e filtros: trocar o azul do texto por branco. */
+html[data-tema="escuro"] .content :is(
+    .campo-busca input, .campo-filtro select,
+    .competicao-form-campo select, .select-multiplos-toggle,
+    .select-unico-toggle, .lista-seta,
+    .competicao-layout .visu-mensagem
+) {
+    color: #f5f5f5 !important;
+}
+html[data-tema="escuro"] .campo-busca:focus-within,
+html[data-tema="escuro"] .campo-filtro:focus-within {
+    border-color: var(--laranja-principal) !important;
+    box-shadow: 0 0 0 3px rgb(244 78 28 / 15%) !important;
+}
+
+/* Botões e controles sobre grafite. */
+html[data-tema="escuro"] :is(.btn-buscar-lista, .visu-menu-item.active) {
+    color: #fff !important;
+}
+html[data-tema="escuro"] .btn-buscar-lista:hover {
+    background: #393939 !important;
+}
+html[data-tema="escuro"] .content :is(.pessoa-tag, .etapa-card-ordem) {
+    background-color: #383838 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .navbar :is(
+    .perfil-menu-link, .perfil-menu-usuario strong
+) {
+    color: #fff !important;
+}
+html[data-tema="escuro"] .navbar #perfilMenuEmail {
+    color: #c4c4c4 !important;
+}
+html[data-tema="escuro"] .navbar #perfilMenuCargo {
+    color: #ff9771 !important;
+}
+
+/* Manter rótulos secundários legíveis sem apagar destaques laranja. */
+html[data-tema="escuro"] .content :is(
+    .lista-subtitulo, .lista-detalhes,
+    .periodo-inscricao-item span, .contador-times
+) {
+    color: #c4c4c4 !important;
+}
+
+/* ==========================================================
+   AJUSTES COMPLEMENTARES — LISTAS, RANKING E VISUALIZAÇÃO
+   Regras derivadas dos CSS atuais; exclusivas do modo escuro.
+   ========================================================== */
+
+/* LISTA: títulos, campos, estados vazios e botões. */
+html[data-tema="escuro"] .content :is(
+    .lista-info h2, .lista-vazia p, .lista-titulo,
+    .lista-seta, .campo-busca input, .campo-filtro select
+) { color: #fff !important; }
+html[data-tema="escuro"] .content :is(
+    .lista-subtitulo, .lista-detalhes, .lista-vazia span
+) { color: #c4c4c4 !important; }
+html[data-tema="escuro"] :is(
+    .lista-conteudo, .lista-item, .listagem-card,
+    .campo-busca, .campo-filtro, .lista-brasao
+) { border-color: #454545 !important; }
+html[data-tema="escuro"] .lista-item:hover { background: #333 !important; }
+html[data-tema="escuro"] .btn-buscar-lista {
+    background: #393939 !important;
+    border-color: #555 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .btn-buscar-lista:hover {
+    background: #484848 !important;
+}
+html[data-tema="escuro"] .custom-btn-danger {
+    background-color: #242424 !important;
+    color: #ff8e98 !important;
+}
+html[data-tema="escuro"] .custom-btn-danger:hover {
+    background-color: #c92f42 !important;
+    color: #fff !important;
+}
+
+/* RANKING: os arquivos originais aplicam azul também em textos. */
+html[data-tema="escuro"] .content :is(
+    .ranking-filtro, .ranking-filtro h2, .ranking-filtro label,
+    .ranking-filtro-header h2, .ranking-lateral-titulo h2,
+    .ranking-campo label, .ranking-tabela-box h2,
+    .ranking-podio-card h3, .ranking-podio-card p,
+    .ranking-tabela, .ranking-tabela th, .ranking-tabela td,
+    .ranking-avancados-btn, #mensagemRanking,
+    .ranking-aba:not(.ativo), .ranking-limpar
+) { color: #fff !important; }
+html[data-tema="escuro"] .content :is(
+    .ranking-filtro-header p, .ranking-tabela-header p
+) { color: #c4c4c4 !important; }
+html[data-tema="escuro"] :is(
+    .ranking-filtro, .ranking-podio-card,
+    .ranking-tabela-box, .ranking-lateral
+) {
+    background-color: #242424 !important;
+    border-color: #454545 !important;
+}
+html[data-tema="escuro"] .ranking-aba.ativo {
+    background-color: #474747 !important;
+    border-color: #666 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .ranking-aba:not(.ativo),
+html[data-tema="escuro"] .ranking-limpar {
+    background-color: #333 !important;
+    border-color: #555 !important;
+}
+html[data-tema="escuro"] .ranking-filtro-divisor {
+    background-color: #454545 !important;
+}
+html[data-tema="escuro"] .ranking-filtro select {
+    background-color: #292929 !important;
+    color: #fff !important;
+    border-color: #454545 !important;
+}
+html[data-tema="escuro"] .ranking-filtrar {
+    background-color: #393939 !important;
+    border-color: #555 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .ranking-filtrar:hover {
+    background-color: #484848 !important;
+}
+
+/* VISUALIZAR: textos antigamente azuis sobre fundos escuros. */
+html[data-tema="escuro"] .content :is(
+    .visu-box h5, .info-item p, .value-info,
+    .info-title, .info-value, .form-title, .form-label,
+    .form-check-label, .btn-voltar
+) { color: #fff !important; }
+html[data-tema="escuro"] .content :is(
+    .form-subtitle, .lista-subtitulo
+) { color: #c4c4c4 !important; }
+html[data-tema="escuro"] :is(
+    .info-card, .form-section, .info-acoes
+) { border-color: #454545 !important; }
+html[data-tema="escuro"] :is(.form-input, .form-input:focus) {
+    background-color: #292929 !important;
+    color: #fff !important;
+    border-color: #555 !important;
+}
+html[data-tema="escuro"] .form-input:focus {
+    border-color: var(--laranja-principal) !important;
+}
+html[data-tema="escuro"] :is(.custom-btn-primary, .btn-action) {
+    background-color: #393939 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] :is(.custom-btn-primary, .btn-action):hover {
+    background-color: var(--laranja-principal) !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .btn-action i { color: #fff !important; }
+html[data-tema="escuro"] .btn-voltar:hover {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+html[data-tema="escuro"] .badge-status {
+    background-color: #4d3026 !important;
+    color: #ffad90 !important;
+}
+html[data-tema="escuro"] .btn-delete:hover { color: #fff !important; }
+
+/* CORREÇÃO DEFINITIVA DOS CAMPOS - MODO ESCURO */
+html[data-tema="escuro"] .content input.lista-pesquisa,
+html[data-tema="escuro"] .content input.form-input,
+html[data-tema="escuro"] .content select.form-input,
+html[data-tema="escuro"] .content textarea.form-input,
+html[data-tema="escuro"] .content .form-control,
+html[data-tema="escuro"] .content .form-select,
+html[data-tema="escuro"] .content .campo-busca input,
+html[data-tema="escuro"] .content .campo-filtro select {
+    background: #292929 !important;
+    background-color: #292929 !important;
+    color: #ffffff !important;
+    border-color: #484848 !important;
+}
+
+html[data-tema="escuro"] .content input.lista-pesquisa:focus,
+html[data-tema="escuro"] .content .form-input:focus,
+html[data-tema="escuro"] .content .form-control:focus {
+    background: #292929 !important;
+    border-color: var(--laranja-principal) !important;
+}
+
+html[data-tema="escuro"] .content input.lista-pesquisa::placeholder,
+html[data-tema="escuro"] .content .form-input::placeholder {
+    color: #bcbcbc !important;
+    opacity: 1;
+}
+
+
+/* BARRA DE PESQUISA - MODO ESCURO */
+
+/* Container externo */
+html[data-tema="escuro"] .campo-busca {
+    background: #292929 !important;
+    border: 1px solid #484848 !important;
+    border-radius: 8px;
+}
+
+/* Input interno sem caixa própria */
+html[data-tema="escuro"] .campo-busca input {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: #ffffff !important;
+}
+
+/* Pesquisa das listagens */
+html[data-tema="escuro"] input.lista-pesquisa {
+    background: #292929 !important;
+    border: 1px solid #484848 !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+}
+
+/* Foco apenas no container */
+html[data-tema="escuro"] .campo-busca:focus-within {
+    border-color: var(--laranja-principal) !important;
+    box-shadow: 0 0 0 3px rgba(244, 78, 28, 0.15) !important;
+}
+
+/* BARRA DE PESQUISA - MODO ESCURO */
+html[data-tema="escuro"] .content .campo-busca {
+    background: #292929 !important;
+    border: 1px solid #484848 !important;
+    border-radius: 8px;
+    box-shadow: none !important;
+}
+
+/* INPUT DENTRO DA BARRA */
+html[data-tema="escuro"] .content .campo-busca input,
+html[data-tema="escuro"] .content .campo-busca input.lista-pesquisa,
+html[data-tema="escuro"] .content .campo-busca input:focus {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: #ffffff !important;
+}
+
+/* BORDA LARANJA AO CLICAR */
+html[data-tema="escuro"] .content .campo-busca:focus-within {
+    border-color: var(--laranja-principal) !important;
+    box-shadow: 0 0 0 3px rgba(244, 78, 28, 0.15) !important;
+}
+
+/* ÍCONES SVG - MODO ESCURO */
+html[data-tema="escuro"] .content svg {
+    color: #F44E1C;
+    stroke: #F44E1C;
+}
+
+/* SVGs que usam preenchimento */
+html[data-tema="escuro"] .content svg:not([fill="none"]) {
+    fill: #F44E1C;
+}
+
+/* SVGs carregados por img - MODO ESCURO */
+html[data-tema="escuro"] .content img[src$=".svg"] {
+    filter: brightness(0) saturate(100%)
+        invert(38%) sepia(96%) saturate(2838%)
+        hue-rotate(354deg) brightness(101%) contrast(92%);
+}
+
+/* BOLINHA DE INÍCIO DA COMPETIÇÃO - MODO ESCURO */
+html[data-tema="escuro"] .local-data-indicador:not(.local-data-indicador-fim) {
+    background-color: #ffffff !important;
+}
+
+/* BOTÃO GERENCIAR PARTIDA - MODO ESCURO */
+html[data-tema="escuro"] #listaPartidas .partida-botao-gerenciar,
+html[data-tema="escuro"] #listaPartidas .partida-botao-gerenciar:hover,
+html[data-tema="escuro"] #listaPartidas .partida-botao-gerenciar:focus,
+html[data-tema="escuro"] #listaPartidas .partida-botao-gerenciar[aria-expanded="true"] {
+    color: #ffffff !important;
+}
+
+/* FUNDO ATRÁS DOS MODAIS - MODO ESCURO */
+html[data-tema="escuro"] .modal-backdrop,
+html[data-tema="escuro"] .modal-overlay,
+html[data-tema="escuro"] .modal-fundo {
+    background: rgba(0, 0, 0, 0.65) !important;
+    background-color: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* MODAIS NATIVOS */
+html[data-tema="escuro"] dialog::backdrop {
+    background: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* ÍCONE DE CONFIGURAÇÕES BRANCO - MODO ESCURO */
+html[data-tema="escuro"] .navbar .perfil-menu-link img[src*="config.svg"] {
+    filter: brightness(0) invert(1) !important;
+}
+
+/* BOTÃO ADICIONAR IMAGEM - MODO ESCURO */
+html[data-tema="escuro"] .imagem-adicionar {
+    color: #F44E1C !important;
+}
+
+/* FUNDO DO BOTÃO MAIS CLARO */
+html[data-tema="escuro"] .imagem-adicionar:only-child {
+    background-color: #383838;
+}
+
+/* BOTÃO ADICIONAR IMAGEM - MODO ESCURO */
+html[data-tema="escuro"] .imagem-adicionar {
+    color: #F44E1C !important;
+}
+
+html[data-tema="escuro"] .imagem-adicionar:only-child {
+    background-color: #383838;
+}
+
+/* HOVER */
+html[data-tema="escuro"] .imagem-adicionar:hover,
+html[data-tema="escuro"] .imagem-adicionar:only-child:hover {
+    background-color: #F44E1C !important;
+    color: #000000 !important;
+    cursor: pointer;
+}
+/* Ícone fechar - modo escuro */
+html[data-tema="escuro"] img[src*="close.svg"] {
+    filter: brightness(0) saturate(100%)
+        invert(39%) sepia(95%) saturate(2500%)
+        hue-rotate(350deg) brightness(100%) contrast(100%);
 }

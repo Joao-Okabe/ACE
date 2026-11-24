@@ -992,3 +992,257 @@
         transition: none;
     }
 }
+
+
+/* CARDS DOS INTEGRANTES */
+
+#listaIntegrantes {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, 280px), 1fr)
+    );
+    gap: 16px;
+}
+
+.integrante-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    background: var(--bege-principal);
+    border: 4px solid rgba(24, 24, 71, 0.12);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.integrante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 14px rgba(24, 24, 71, 0.14);
+}
+
+.integrante-card .time-inscrito-brasao {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.integrante-card .time-inscrito-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+}
+
+.integrante-card .time-inscrito-nome {
+    color: var(--azul-principal);
+    font-size: calc(14px * var(--ace-escala-fonte, 1));
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.integrante-card-acoes {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.integrante-card-seta {
+    flex-shrink: 0;
+    color: var(--azul-principal);
+    font-size: calc(18px * var(--ace-escala-fonte, 1));
+    transition: transform 0.25s ease;
+}
+
+.integrante-card:hover .integrante-card-seta {
+    transform: translateX(5px);
+}
+
+.integrante-card:focus-visible {
+    outline: 2px solid var(--laranja-principal);
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    #listaIntegrantes {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .integrante-card-acoes {
+        gap: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .integrante-card,
+    .integrante-card-seta {
+        transition: none;
+    }
+
+    .integrante-card:hover,
+    .integrante-card:hover .integrante-card-seta {
+        transform: none;
+    }
+}
+
+
+/* ABAS SUPERIORES DO TIME */
+
+#nav-time {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: var(--branco);
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+#nav-time .visu-menu-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--azul-principal);
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+#nav-time .visu-menu-item:hover {
+    background: var(--bege-principal);
+}
+
+#nav-time .visu-menu-item.active,
+#nav-time .visu-menu-item[aria-selected="true"] {
+    background: var(--azul-principal);
+    color: #fff;
+}
+
+#nav-time .visu-menu-item:focus-visible {
+    outline: 3px solid var(--laranja-principal);
+    outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+    #nav-time {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #nav-time .visu-menu-item {
+        width: auto;
+        flex: 1 1 auto;
+        font-size: calc(13px * var(--ace-escala-fonte, 1));
+    }
+}
+
+
+/* ABAS DO TIME OCUPANDO TODA A LARGURA */
+
+#nav-time {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 8px;
+}
+
+#nav-time .visu-menu-item {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 8px;
+    white-space: normal;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 767px) {
+    #nav-time {
+        flex-wrap: wrap;
+    }
+
+    #nav-time .visu-menu-item {
+        flex: 1 1 130px;
+        width: auto;
+    }
+}
+
+
+/* DIMINUIR A LARGURA DO CAMPO DE ESCALAÇÃO */
+
+#escalacao .escalacao-layout {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#escalacao .card-escalacao {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 16px;
+    height: auto;
+}
+
+#escalacao .campo-futsal {
+    width: 100%;
+    height: 500px;
+    min-height: 0;
+    background-size: 100% 100%;
+}
+
+@media (max-width: 575px) {
+    #escalacao .card-escalacao {
+        max-width: 100%;
+    }
+
+    #escalacao .campo-futsal {
+        height: 420px;
+    }
+}
+
+
+
+/* INTEGRANTES - CARDS EM UMA ÚNICA COLUNA */
+#listaIntegrantes.cards-entidade {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+}
+
+#listaIntegrantes.cards-entidade > .card-entidade {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
